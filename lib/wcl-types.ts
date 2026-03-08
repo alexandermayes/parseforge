@@ -293,11 +293,18 @@ export interface TalentDiff {
   diff: number;
 }
 
+export interface TalentTreeSummary {
+  playerDistribution: number[]; // e.g. [40, 0, 21]
+  topDistribution: number[];
+  treeNames: string[]; // e.g. ["Affliction", "Demonology", "Destruction"]
+}
+
 export interface TalentAnalysis {
   diffs: TalentDiff[];
   playerSpec: string;
   topSpec: string;
   totalDiffs: number;
+  treeSummary?: TalentTreeSummary;
 }
 
 export interface BuffComparison {

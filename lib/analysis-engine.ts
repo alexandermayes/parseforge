@@ -5,6 +5,7 @@ import {
   ELIXIR_BUFF_IDS,
   FOOD_BUFF_IDS,
   WEAPON_ENHANCEMENT_IDS,
+  CLASS_TALENT_TREES,
   getPerformanceGrade,
 } from "./constants";
 import {
@@ -15,6 +16,7 @@ import {
   GearSlotComparison,
   TalentAnalysis,
   TalentDiff,
+  TalentTreeSummary,
   BuffAnalysis,
   BuffComparison,
   CastAnalysis,
@@ -215,8 +217,62 @@ export function analyzeTalents(
   playerTalents: WCLTalent[],
   topTalents: WCLTalent[],
   playerSpec: string,
-  topSpec: string
+  topSpec: string,
+  playerClass?: string
 ): TalentAnalysis {
+  // Detect Classic/TBC tree-based format: talents are just point distributions per tree
+  // (typically 3 entries where guid is the point count, e.g. 40/0/21)
+  const isTreeBased =
+    playerTalents.length <= 3 &&
+    playerTalents.every((t) => !t.name || t.name === "Unknown Ability");
+
+  if (isTreeBased && playerTalents.length > 0) {
+    const treeNames: string[] = playerClass ? (CLASS_TALENT_TREES[playerClass] ?? []) : [];
+    const playerDist = playerTalents.map((t) => t.guid);
+
+    // Top talents from rankings are also tree-based if they have the same structure
+    // But rankings often return broken data (all zeros) — detect and handle
+    const topIsTreeBased =
+      topTalents.length <= 3 &&
+      topTalents.every((t) => !t.name || t.name === "Unknown Ability");
+    const topHasData = topIsTreeBased && topTalents.length === playerTalents.length;
+    const topDist = topHasData ? topTalents.map((t) => t.guid) : [];
+    const hasTopComparison = topDist.length > 0 && topDist.some((v) => v > 0);
+
+    // Build diffs per tree (only if we have valid top data)
+    const diffs: TalentDiff[] = [];
+    let totalDiffs = 0;
+    if (hasTopComparison) {
+      for (let i = 0; i < playerDist.length; i++) {
+        const playerPts = playerDist[i] ?? 0;
+        const topPts = topDist[i] ?? 0;
+        const diff = topPts - playerPts;
+        if (diff !== 0) {
+          totalDiffs += Math.abs(diff);
+          diffs.push({
+            name: treeNames[i] ?? `Tree ${i + 1}`,
+            guid: i,
+            icon: "",
+            playerPoints: playerPts,
+            topPoints: topPts,
+            diff,
+          });
+        }
+      }
+    }
+
+    const treeSummary: TalentTreeSummary = {
+      playerDistribution: playerDist,
+      topDistribution: hasTopComparison ? topDist : [],
+      treeNames: treeNames.length >= playerDist.length
+        ? treeNames.slice(0, playerDist.length)
+        : Array.from({ length: playerDist.length }, (_, i) => `Tree ${i + 1}`),
+    };
+
+    return { diffs, playerSpec, topSpec, totalDiffs, treeSummary };
+  }
+
+  // Standard per-talent comparison (Wrath+)
   const topByGuid = new Map<number, WCLTalent>();
   for (const t of topTalents) {
     topByGuid.set(t.guid, t);
@@ -1133,7 +1189,8 @@ export function buildAnalysisResult(params: {
     params.playerTalents,
     topTalentsNormalized,
     params.playerSpec,
-    topRanking?.spec ?? params.playerSpec
+    topRanking?.spec ?? params.playerSpec,
+    params.playerClass
   );
 
   // Use averaged comparisons when we have top player data

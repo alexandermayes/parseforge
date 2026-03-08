@@ -184,6 +184,7 @@ export async function POST(request: NextRequest) {
       abilityIcon: t.icon,
       points: detailsTalents[i]?.points ?? 1,
     }));
+    // Note: playerTalent names may be empty — they get backfilled from rankings data below
 
     const totalDamage = throughputEntries.reduce((s, e) => s + e.total, 0);
 
@@ -333,6 +334,21 @@ export async function POST(request: NextRequest) {
         }
       } catch (err) {
         console.error("Top players data fetch error:", err);
+      }
+    }
+
+    // Backfill empty talent names from rankings data
+    const talentNameMap = new Map<number, string>();
+    for (const r of rankingsData.rankings) {
+      for (const t of r.talents ?? []) {
+        if (t.name && !talentNameMap.has(t.id)) {
+          talentNameMap.set(t.id, t.name);
+        }
+      }
+    }
+    for (const t of playerTalents) {
+      if (!t.name && talentNameMap.has(t.guid)) {
+        t.name = talentNameMap.get(t.guid)!;
       }
     }
 

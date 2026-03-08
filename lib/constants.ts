@@ -278,6 +278,20 @@ export function percentileBg(p: number): string {
   return "bg-gray-400/20 text-gray-400 border-gray-400/30";
 }
 
+// TBC/Classic talent tree names per class (order matches CombatantInfo talents array)
+export const CLASS_TALENT_TREES: Record<string, string[]> = {
+  Warrior: ["Arms", "Fury", "Protection"],
+  Paladin: ["Holy", "Protection", "Retribution"],
+  Hunter: ["Beast Mastery", "Marksmanship", "Survival"],
+  Rogue: ["Assassination", "Combat", "Subtlety"],
+  Priest: ["Discipline", "Holy", "Shadow"],
+  Shaman: ["Elemental", "Enhancement", "Restoration"],
+  Mage: ["Arcane", "Fire", "Frost"],
+  Warlock: ["Affliction", "Demonology", "Destruction"],
+  Druid: ["Balance", "Feral Combat", "Restoration"],
+  DeathKnight: ["Blood", "Frost", "Unholy"],
+};
+
 export function getWowheadDomain(zoneName?: string): WowheadDomain {
   if (!zoneName) return "classic";
   const lower = zoneName.toLowerCase();
