@@ -1,26 +1,548 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* WoW gold + arcane palette */
+  --color-gold-from: var(--gold-from);
+  --color-gold-to: var(--gold-to);
+  --color-arcane-from: var(--arcane-from);
+  --color-arcane-to: var(--arcane-to);
+  --color-glow-gold: var(--glow-gold);
+  --color-glow-arcane: var(--glow-arcane);
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  /* Semantic status colors */
+  --color-status-good: var(--status-good);
+  --color-status-warn: var(--status-warn);
+  --color-status-bad: var(--status-bad);
+  --color-status-info: var(--status-info);
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+  @keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+    }
+  }
+  @keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+    }
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);
+    }
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);
+    }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+    }
+  }
+  --animate-meteor: meteor 5s linear infinite
+;
+  @keyframes meteor {
+  0% {
+    transform: rotate(var(--angle)) translateX(0);
+    opacity: 1;}
+  70% {
+    opacity: 1;}
+  100% {
+    transform: rotate(var(--angle)) translateX(-500px);
+    opacity: 0;}}
+  --animate-shiny-text: shiny-text 8s infinite;
+  @keyframes shiny-text {
+  0%, 90%, 100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;}
+  30%, 60% {
+    background-position: calc(100% + var(--shiny-width)) 0;}}
+  --animate-shine: shine var(--duration) infinite linear;
+  @keyframes shine {
+  0% {
+    background-position: 0% 0%;}
+  50% {
+    background-position: 100% 100%;}
+  to {
+    background-position: 0% 0%;}}}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  --gold-from: oklch(0.82 0.16 85);
+  --gold-to: oklch(0.72 0.14 60);
+  --arcane-from: oklch(0.6 0.2 290);
+  --arcane-to: oklch(0.5 0.18 310);
+  --glow-gold: oklch(0.82 0.16 85 / 40%);
+  --glow-arcane: oklch(0.6 0.2 290 / 40%);
+  --surface-0: oklch(0.13 0.015 270);
+  --surface-1: oklch(0.17 0.015 270);
+  --surface-2: oklch(0.21 0.015 270);
+  --surface-3: oklch(0.25 0.015 270);
+
+  --status-good: oklch(0.72 0.19 145);
+  --status-warn: oklch(0.75 0.18 75);
+  --status-bad: oklch(0.65 0.2 25);
+  --status-info: oklch(0.7 0.15 250);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  --background: oklch(0.13 0.015 270);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.17 0.015 270 / 80%);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.17 0.015 270);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.82 0.16 85);
+  --primary-foreground: oklch(0.13 0.015 270);
+  --secondary: oklch(0.25 0.04 280);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.21 0.015 270);
+  --muted-foreground: oklch(0.65 0.015 270);
+  --accent: oklch(0.25 0.04 280);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.82 0.16 85);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.17 0.015 270);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.82 0.16 85);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.25 0.04 280);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.82 0.16 85);
+
+  --gold-from: oklch(0.82 0.16 85);
+  --gold-to: oklch(0.72 0.14 60);
+  --arcane-from: oklch(0.6 0.2 290);
+  --arcane-to: oklch(0.5 0.18 310);
+  --glow-gold: oklch(0.82 0.16 85 / 40%);
+  --glow-arcane: oklch(0.6 0.2 290 / 40%);
+  --surface-0: oklch(0.13 0.015 270);
+  --surface-1: oklch(0.17 0.015 270);
+  --surface-2: oklch(0.21 0.015 270);
+  --surface-3: oklch(0.25 0.015 270);
+
+  --status-good: oklch(0.72 0.19 145);
+  --status-warn: oklch(0.75 0.18 75);
+  --status-bad: oklch(0.65 0.2 25);
+  --status-info: oklch(0.7 0.15 250);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Typography Scale ─────────────────────────────────────────────── */
+
+.text-display {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.text-heading-lg {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-heading-sm {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.text-body-sm {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+}
+
+.text-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+}
+
+/* ─── Status Badge Classes ─────────────────────────────────────────── */
+
+.badge-good {
+  background: oklch(from var(--status-good) l c h / 15%);
+  color: var(--status-good);
+  border: 1px solid oklch(from var(--status-good) l c h / 25%);
+}
+
+.badge-warn {
+  background: oklch(from var(--status-warn) l c h / 15%);
+  color: var(--status-warn);
+  border: 1px solid oklch(from var(--status-warn) l c h / 25%);
+}
+
+.badge-bad {
+  background: oklch(from var(--status-bad) l c h / 15%);
+  color: var(--status-bad);
+  border: 1px solid oklch(from var(--status-bad) l c h / 25%);
+}
+
+.badge-info {
+  background: oklch(from var(--status-info) l c h / 15%);
+  color: var(--status-info);
+  border: 1px solid oklch(from var(--status-info) l c h / 25%);
+}
+
+.badge-neutral {
+  background: oklch(1 0 0 / 3%);
+  color: oklch(0.8 0 0);
+  border: 1px solid oklch(1 0 0 / 8%);
+}
+
+/* ─── Progress Bar Utilities ───────────────────────────────────────── */
+
+.bar-track {
+  width: 100%;
+  border-radius: 9999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.bar-primary {
+  height: 0.625rem; /* h-2.5 */
+}
+
+.bar-sm {
+  height: 0.375rem; /* h-1.5 */
+}
+
+.bar-xs {
+  height: 0.25rem; /* h-1 */
+}
+
+/* ─── Surface Card Classes ─────────────────────────────────────────── */
+
+.surface-card {
+  background: oklch(0.17 0.015 270 / 70%);
+  backdrop-filter: blur(20px);
+  border: 1px solid oklch(1 0 0 / 6%);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 12%), 0 1px 2px oklch(0 0 0 / 8%);
+}
+
+.surface-card-elevated {
+  background: oklch(0.17 0.015 270 / 80%);
+  backdrop-filter: blur(20px);
+  border: 1px solid oklch(1 0 0 / 8%);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px oklch(0 0 0 / 15%), 0 2px 4px oklch(0 0 0 / 10%);
+}
+
+/* ─── Transition Standard ──────────────────────────────────────────── */
+
+.transition-interactive {
+  transition-property: background-color, color, border-color, box-shadow, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+
+/* ─── Glassmorphism ─────────────────────────────────────────────────── */
+
+.glass {
+  background: oklch(0.17 0.015 270 / 60%);
+  backdrop-filter: blur(16px);
+  border: 1px solid oklch(1 0 0 / 6%);
+}
+
+.glass-strong {
+  background: oklch(0.17 0.015 270 / 95%);
+  backdrop-filter: blur(24px);
+  border: 1px solid oklch(1 0 0 / 10%);
+}
+
+/* ─── Gradient Text ─────────────────────────────────────────────────── */
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-from), var(--gold-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-arcane {
+  background: linear-gradient(135deg, var(--arcane-from), var(--arcane-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Gradient Backgrounds ──────────────────────────────────────────── */
+
+.bg-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-from), var(--gold-to));
+}
+
+.bg-gradient-gold:hover {
+  filter: brightness(1.1);
+}
+
+/* ─── Glow Effects ──────────────────────────────────────────────────── */
+
+.glow-gold {
+  box-shadow: 0 0 24px var(--glow-gold), 0 0 48px oklch(0.82 0.16 85 / 15%);
+}
+
+.glow-gold-sm {
+  box-shadow: 0 0 12px oklch(0.82 0.16 85 / 20%);
+}
+
+.glow-arcane {
+  box-shadow: 0 0 24px var(--glow-arcane), 0 0 48px oklch(0.6 0.2 290 / 15%);
+}
+
+.glow-border-gold {
+  border-color: var(--gold-from) !important;
+  box-shadow: 0 0 0 3px oklch(0.82 0.16 85 / 15%), 0 0 12px oklch(0.82 0.16 85 / 15%);
+}
+
+/* ─── Noise Texture Overlay ─────────────────────────────────────────── */
+
+.bg-noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+.bg-noise > * {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar-fixed {
+  position: fixed !important;
+  z-index: 50 !important;
+}
+
+/* ─── Hero Glow ─────────────────────────────────────────────────────── */
+
+.hero-glow {
+  position: relative;
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, oklch(0.82 0.16 85 / 12%) 0%, oklch(0.6 0.2 290 / 6%) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-glow > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Tab Active Gold ───────────────────────────────────────────────── */
+
+.tab-active-gold {
+  position: relative;
+}
+
+.tab-active-gold::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-from), var(--gold-to));
+  border-radius: 1px;
+  box-shadow: 0 0 8px oklch(0.82 0.16 85 / 40%);
+}
+
+/* ─── Progress Bar Gradients ────────────────────────────────────────── */
+
+.progress-gradient-gold {
+  background: linear-gradient(90deg, var(--gold-from), var(--gold-to));
+}
+
+.progress-gradient-blue {
+  background: linear-gradient(90deg, oklch(0.55 0.2 260), oklch(0.65 0.18 240));
+}
+
+.progress-gradient-arcane {
+  background: linear-gradient(90deg, var(--arcane-from), var(--arcane-to));
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────────── */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 12px oklch(0.82 0.16 85 / 20%);
+  }
+  50% {
+    box-shadow: 0 0 24px oklch(0.82 0.16 85 / 40%);
+  }
+}
+
+/* ─── Animation Classes ─────────────────────────────────────────────── */
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.21 0.015 270) 25%,
+    oklch(0.25 0.015 270) 50%,
+    oklch(0.21 0.015 270) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
 }
