@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnalysisResult } from "@/lib/wcl-types";
+import { AnalysisSnapshot } from "@/lib/analysis-history";
 import { CLASS_COLORS } from "@/lib/constants";
 import DpsComparison from "./DpsComparison";
 import GearComparison from "./GearComparison";
@@ -31,7 +32,7 @@ export function AnalysisLoading() {
   );
 }
 
-export default function AnalysisView({ data }: { data: AnalysisResult }) {
+export default function AnalysisView({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
   const classColor = CLASS_COLORS[data.playerClass] ?? "#888";
 
   // Build comparison label
@@ -68,7 +69,7 @@ export default function AnalysisView({ data }: { data: AnalysisResult }) {
       </div>
 
       {/* Summary always visible */}
-      <ComparisonSummary data={data} />
+      <ComparisonSummary data={data} previousSnapshot={previousSnapshot} />
 
       {/* Tabbed analysis sections */}
       <Tabs defaultValue="dps" className="w-full">
@@ -82,7 +83,7 @@ export default function AnalysisView({ data }: { data: AnalysisResult }) {
         </TabsList>
 
         <TabsContent value="dps" className="mt-4">
-          <DpsComparison data={data.dps} role={data.playerRole} />
+          <DpsComparison data={data.dps} role={data.playerRole} previousSnapshot={previousSnapshot} />
         </TabsContent>
 
         <TabsContent value="abilities" className="mt-4 space-y-4">

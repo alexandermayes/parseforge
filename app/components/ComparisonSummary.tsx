@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnalysisResult, ImprovementSuggestion, MetricPercentileAnalysis } from "@/lib/wcl-types";
+import { AnalysisSnapshot } from "@/lib/analysis-history";
 import { GRADE_COLORS, PerformanceGrade } from "@/lib/constants";
 import { Copy, Check } from "lucide-react";
 import { ShineBorder } from "@/components/ui/shine-border";
@@ -52,7 +53,18 @@ function ScorecardCell({
   );
 }
 
-function PerformanceBreakdown({ data }: { data: MetricPercentileAnalysis }) {
+function DeltaBadge({ value, suffix = "", invert = false }: { value: number; suffix?: string; invert?: boolean }) {
+  if (value === 0) return null;
+  const positive = invert ? value < 0 : value > 0;
+  const sign = value > 0 ? "+" : "";
+  return (
+    <span className={`text-[11px] font-medium ${positive ? "text-emerald-400" : "text-red-400"}`}>
+      {sign}{value}{suffix}
+    </span>
+  );
+}
+
+function PerformanceBreakdown({ data, previousSnapshot }: { data: MetricPercentileAnalysis; previousSnapshot?: AnalysisSnapshot | null }) {
   if (data.metrics.length === 0) return null;
 
   const overallGradeColor = GRADE_COLORS[data.overallGrade as PerformanceGrade] ?? GRADE_COLORS.D;
@@ -65,6 +77,9 @@ function PerformanceBreakdown({ data }: { data: MetricPercentileAnalysis }) {
         </h3>
         <Badge variant="outline" className={overallGradeColor}>
           {data.overallGrade} ({data.overallScore}%)
+          {previousSnapshot && previousSnapshot.overallScore > 0 && (
+            <> <DeltaBadge value={data.overallScore - previousSnapshot.overallScore} suffix="%" /></>
+          )}
         </Badge>
       </div>
       <div className="space-y-2">
@@ -76,6 +91,7 @@ function PerformanceBreakdown({ data }: { data: MetricPercentileAnalysis }) {
               : m.percentile >= 50
                 ? "progress-gradient-blue"
                 : "bg-red-500/60";
+          const prevMetric = previousSnapshot?.metrics.find((pm) => pm.metric === m.metric);
 
           return (
             <div key={m.metric} className="space-y-1">
@@ -88,6 +104,7 @@ function PerformanceBreakdown({ data }: { data: MetricPercentileAnalysis }) {
                 </div>
                 <span className="text-xs font-mono text-muted-foreground">
                   {m.percentile}%
+                  {prevMetric && <> <DeltaBadge value={m.percentile - prevMetric.percentile} suffix="%" /></>}
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-surface-2">
@@ -156,7 +173,7 @@ function formatForDiscord(data: AnalysisResult): string {
   return `${scorecard}${metricsLine}\n\n**Suggestions**\n${lines.join("\n\n")}`;
 }
 
-export default function ComparisonSummary({ data }: { data: AnalysisResult }) {
+export default function ComparisonSummary({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyDiscord = async () => {
@@ -222,6 +239,9 @@ export default function ComparisonSummary({ data }: { data: AnalysisResult }) {
               {metricLabel}
             </span>
             <NumberTicker value={Math.round(dps.playerDps)} className="text-sm font-semibold" />
+            {previousSnapshot && (
+              <DeltaBadge value={Math.round(dps.playerDps - previousSnapshot.dps)} />
+            )}
           </div>
           <div
             className={`flex flex-col items-center justify-center rounded-lg border px-3 py-2.5 min-w-[80px] ${
@@ -234,6 +254,9 @@ export default function ComparisonSummary({ data }: { data: AnalysisResult }) {
             <span className="text-sm font-semibold">
               <NumberTicker value={dps.percentile} className="text-sm font-semibold" />th
             </span>
+            {previousSnapshot && (
+              <DeltaBadge value={dps.percentile - previousSnapshot.percentile} />
+            )}
           </div>
           <ScorecardCell
             label="Flask"
@@ -269,7 +292,7 @@ export default function ComparisonSummary({ data }: { data: AnalysisResult }) {
         </div>
 
         {/* Performance Breakdown */}
-        {metricPercentiles && <PerformanceBreakdown data={metricPercentiles} />}
+        {metricPercentiles && <PerformanceBreakdown data={metricPercentiles} previousSnapshot={previousSnapshot} />}
 
         {/* Suggestions */}
         {suggestions.length === 0 ? (

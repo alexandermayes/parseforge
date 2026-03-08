@@ -14,6 +14,7 @@ import CLAView, { CLALoading } from "@/app/components/CLAView";
 import PlayerQuickGrid from "@/app/components/PlayerQuickGrid";
 import { ReportMeta, AnalysisResult, RaidOverviewResult } from "@/lib/wcl-types";
 import { saveRecentReport } from "@/lib/recent-reports";
+import { AnalysisSnapshot, buildSnapshot, saveSnapshot, getHistory } from "@/lib/analysis-history";
 import type { CLAResult } from "@/lib/cla-types";
 import { ShineBorder } from "@/components/ui/shine-border";
 import {
@@ -61,6 +62,7 @@ export default function AnalyzePage({
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [previousSnapshot, setPreviousSnapshot] = useState<AnalysisSnapshot | null>(null);
 
   // Raid Overview state
   const [raidResult, setRaidResult] = useState<RaidOverviewResult | null>(null);
@@ -149,6 +151,10 @@ export default function AnalyzePage({
       if (!res.ok) {
         setAnalysisError(data.error ?? "Analysis failed");
       } else {
+        const snapshot = buildSnapshot(data, reportCode);
+        const history = getHistory(data.playerName, data.encounterName);
+        setPreviousSnapshot(history[0] ?? null);
+        saveSnapshot(snapshot);
         setAnalysisResult(data);
       }
     } catch (err) {
@@ -394,7 +400,7 @@ export default function AnalyzePage({
               >
                 &larr; All Players
               </button>
-              <AnalysisView data={analysisResult} />
+              <AnalysisView data={analysisResult} previousSnapshot={previousSnapshot} />
             </div>
           )}
           {!analysisResult && !analyzing && !analysisError && raidResult && (

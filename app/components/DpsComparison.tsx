@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { DpsComparison as DpsData } from "@/lib/wcl-types";
+import { AnalysisSnapshot } from "@/lib/analysis-history";
 import { getPerformanceGrade, GRADE_COLORS, percentileColor, percentileBg } from "@/lib/constants";
 
 function formatDps(dps: number): string {
@@ -20,9 +21,10 @@ const GRADE_BEAM_COLORS: Record<string, { from: string; to: string }> = {
   D: { from: "#6B7280", to: "#4B5563" },
 };
 
-export default function DpsComparison({ data, role = "dps" }: { data: DpsData; role?: "dps" | "healer" }) {
+export default function DpsComparison({ data, role = "dps", previousSnapshot }: { data: DpsData; role?: "dps" | "healer"; previousSnapshot?: AnalysisSnapshot | null }) {
   const metricLabel = role === "healer" ? "HPS" : "DPS";
-  const maxDps = Math.max(data.playerDps, data.topDps, data.medianDps);
+  const prevDps = previousSnapshot?.dps ?? 0;
+  const maxDps = Math.max(data.playerDps, data.topDps, data.medianDps, prevDps);
   const grade = getPerformanceGrade(data.percentile);
   const gradeStyle = GRADE_COLORS[grade];
   const beamColors = GRADE_BEAM_COLORS[grade] ?? GRADE_BEAM_COLORS.D;
@@ -65,6 +67,11 @@ export default function DpsComparison({ data, role = "dps" }: { data: DpsData; r
                   className={percentileColor(data.percentile)}
                 />{" "}
                 {metricLabel}
+                {previousSnapshot && (
+                  <span className={`ml-1.5 text-xs font-medium ${data.playerDps >= prevDps ? "text-emerald-400" : "text-red-400"}`}>
+                    ({data.playerDps >= prevDps ? "+" : ""}{Math.round(data.playerDps - prevDps)} from last)
+                  </span>
+                )}
               </span>
             </div>
             <div className="h-2.5 w-full rounded-full bg-surface-2">
@@ -74,6 +81,24 @@ export default function DpsComparison({ data, role = "dps" }: { data: DpsData; r
               />
             </div>
           </div>
+
+          {/* Previous DPS */}
+          {previousSnapshot && (
+            <div className="space-y-1">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Previous</span>
+                <span className="font-mono text-muted-foreground">
+                  {formatDps(prevDps)} {metricLabel}
+                </span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-surface-2">
+                <div
+                  className="h-full rounded-full bg-indigo-500/50 transition-all"
+                  style={{ width: barWidth(prevDps) }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Median DPS */}
           <div className="space-y-1">
