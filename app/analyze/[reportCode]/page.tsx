@@ -322,7 +322,7 @@ export default function AnalyzePage({
 
       {/* Selectors */}
       {report && (
-        <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-wrap items-end gap-4 min-h-[4.5rem]">
           <div className="space-y-1">
             <label className="text-heading-sm text-muted-foreground">
               Fight
@@ -347,35 +347,25 @@ export default function AnalyzePage({
             </div>
           )}
 
-          {activeTab === "player" && (
-            <Button
-              onClick={runAnalysis}
-              disabled={!selectedFight || !selectedSource || analyzing}
-              size="default"
-            >
-              {analyzing ? "Analyzing..." : "Analyze"}
-            </Button>
-          )}
-
-          {activeTab === "raid" && (
-            <Button
-              onClick={runRaidOverview}
-              disabled={!selectedFight || raidLoading}
-              size="default"
-            >
-              {raidLoading ? "Loading..." : "Load Raid Overview"}
-            </Button>
-          )}
-
-          {activeTab === "cla" && (
-            <Button
-              onClick={runCLA}
-              disabled={claLoading}
-              size="default"
-            >
-              {claLoading ? "Running Audit..." : "Run Audit"}
-            </Button>
-          )}
+          <Button
+            onClick={
+              activeTab === "player" ? runAnalysis :
+              activeTab === "cla" ? runCLA :
+              runRaidOverview
+            }
+            disabled={
+              activeTab === "player" ? (!selectedFight || !selectedSource || analyzing) :
+              activeTab === "cla" ? claLoading :
+              (!selectedFight || raidLoading)
+            }
+            size="default"
+          >
+            {activeTab === "player"
+              ? (analyzing ? "Analyzing..." : "Analyze")
+              : activeTab === "cla"
+                ? (claLoading ? "Running Audit..." : "Run Audit")
+                : (raidLoading ? "Loading..." : "Load Raid Overview")}
+          </Button>
         </div>
       )}
 
