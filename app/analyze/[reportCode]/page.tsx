@@ -16,7 +16,6 @@ import { ReportMeta, AnalysisResult, RaidOverviewResult } from "@/lib/wcl-types"
 import { saveRecentReport } from "@/lib/recent-reports";
 import type { CLAResult } from "@/lib/cla-types";
 import { ShineBorder } from "@/components/ui/shine-border";
-import { BlurFade } from "@/components/ui/blur-fade";
 import {
   Select,
   SelectContent,
@@ -388,25 +387,21 @@ export default function AnalyzePage({
           )}
           {analyzing && <AnalysisLoading />}
           {analysisResult && !analyzing && (
-            <BlurFade delay={0} inView>
-              <div className="space-y-4">
-                <button
-                  onClick={() => { setAnalysisResult(null); setAnalysisError(null); setSelectedSource(null); }}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                >
-                  &larr; All Players
-                </button>
-                <AnalysisView data={analysisResult} />
-              </div>
-            </BlurFade>
+            <div className="space-y-4">
+              <button
+                onClick={() => { setAnalysisResult(null); setAnalysisError(null); setSelectedSource(null); }}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+              >
+                &larr; All Players
+              </button>
+              <AnalysisView data={analysisResult} />
+            </div>
           )}
           {!analysisResult && !analyzing && !analysisError && raidResult && (
-            <BlurFade delay={0} inView>
-              <PlayerQuickGrid
-                players={raidResult.players}
-                onPlayerClick={handlePlayerClick}
-              />
-            </BlurFade>
+            <PlayerQuickGrid
+              players={raidResult.players}
+              onPlayerClick={handlePlayerClick}
+            />
           )}
           {!analysisResult && !analyzing && !analysisError && raidLoading && (
             <AnalysisLoading />
@@ -424,9 +419,7 @@ export default function AnalyzePage({
           )}
           {raidLoading && <RaidOverviewLoading />}
           {raidResult && !raidLoading && (
-            <BlurFade delay={0} inView>
-              <RaidOverview data={raidResult} onPlayerClick={handlePlayerClick} />
-            </BlurFade>
+            <RaidOverview data={raidResult} onPlayerClick={handlePlayerClick} />
           )}
         </>
       )}
@@ -464,9 +457,7 @@ export default function AnalyzePage({
           )}
           {claLoading && <CLALoading />}
           {claResult && !claLoading && (
-            <BlurFade delay={0} inView>
-              <CLAView data={claResult} selectedFightId={claFightSelection} />
-            </BlurFade>
+            <CLAView data={claResult} selectedFightId={claFightSelection} />
           )}
         </>
       )}
