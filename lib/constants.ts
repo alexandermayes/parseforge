@@ -236,7 +236,6 @@ export const ENCHANTABLE_SLOTS = new Set([
   9,   // Hands
   14,  // Back
   15,  // Main Hand
-  16,  // Off Hand (if weapon)
 ]);
 
 // ─── Performance Grade ──────────────────────────────────────────────

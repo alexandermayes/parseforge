@@ -154,9 +154,10 @@ export function analyzeGear(
   let missingGems = 0;
   const slots: GearSlotComparison[] = [];
 
-  // Slots where enchants are common in Classic/TBC
-  // Head(0), Shoulder(2), Chest(4), Legs(6), Feet(7), Wrist(8), Hands(9), Back(14), Main Hand(15), Off Hand(16)
-  const enchantableSlots = new Set([0, 2, 4, 6, 7, 8, 9, 14, 15, 16]);
+  // Slots where enchants are expected in Classic/TBC
+  // Head(0), Shoulder(2), Chest(4), Legs(6), Feet(7), Wrist(8), Hands(9), Back(14), Main Hand(15)
+  // Off Hand(16) excluded — held-in-off-hand items (orbs, tomes) are not enchantable
+  const enchantableSlots = new Set([0, 2, 4, 6, 7, 8, 9, 14, 15]);
 
   for (const [slotId, slotName] of Object.entries(GEAR_SLOTS)) {
     const slot = parseInt(slotId);
