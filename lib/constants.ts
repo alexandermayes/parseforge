@@ -187,15 +187,29 @@ export const FLASK_BUFF_IDS = new Set([
 
 // Battle + Guardian elixirs (if no flask, check for elixirs)
 export const ELIXIR_BUFF_IDS = new Set([
+  // Classic Battle Elixirs
+  17538, // Elixir of the Mongoose (+25 agi, +2% crit)
+  17537, // Elixir of Brute Force (+18 str/stam)
+  11334, // Elixir of Greater Agility (+25 agi)
+  11405, // Elixir of the Giants (+25 str)
+  17535, // Elixir of the Sages (+18 int/spirit)
+  26276, // Elixir of Greater Firepower (+40 fire dmg)
+  11474, // Elixir of Shadow Power (+40 shadow dmg)
+  21920, // Elixir of Frost Power (+15 frost dmg)
+  11406, // Elixir of Demonslaying (+265 AP vs demons)
+  // Classic Guardian Elixirs
+  11348, // Elixir of Superior Defense (+450 armor)
+  11396, // Elixir of Greater Intellect (+25 int)
+  3593,  // Elixir of Fortitude (+120 HP)
+  11371, // Gift of Arthas (+10 shadow resist)
   // TBC Battle Elixirs
   28497, 28490, 28491, 28493, 28501, 28503, 33720, 33721, 33726, 38954, 54452,
   // TBC Guardian Elixirs
   28502, 28509, 28514, 39625, 39627, 39628,
   // WotLK Battle Elixirs
-  53746, 53748, 53749, 60340, 60344, 60346, 60347,
-  53747, 53764, 60341, 60343, 60345, 60348,
+  53746, 53748, 53749, 60340, 60341, 60344, 60345, 60346,
   // WotLK Guardian Elixirs
-  53751, 53752, 53763, 53898,
+  53747, 53751, 53752, 53763, 53764, 60343, 60347,
   // Cata Elixirs
   79474, 79468, 79481, 79632, 79477, 79480, 79631,
 ]);

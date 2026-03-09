@@ -48,6 +48,23 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [13512, { name: "Flask of Supreme Power (Classic)", category: "flask", isSuboptimal: false }],
   [13513, { name: "Flask of Chromatic Resistance (Classic)", category: "flask", isSuboptimal: true, betterAlternative: "Flask of the Titans or Supreme Power" }],
 
+  // ─── Classic Battle Elixirs ──────────────────────────────────────
+  [17538, { name: "Elixir of the Mongoose", category: "battle_elixir", isSuboptimal: false }],
+  [17537, { name: "Elixir of Brute Force", category: "battle_elixir", isSuboptimal: false }],
+  [11334, { name: "Elixir of Greater Agility", category: "battle_elixir", isSuboptimal: false }],
+  [11405, { name: "Elixir of the Giants", category: "battle_elixir", isSuboptimal: false }],
+  [17535, { name: "Elixir of the Sages", category: "battle_elixir", isSuboptimal: false }],
+  [26276, { name: "Elixir of Greater Firepower", category: "battle_elixir", isSuboptimal: false }],
+  [11474, { name: "Elixir of Shadow Power", category: "battle_elixir", isSuboptimal: false }],
+  [21920, { name: "Elixir of Frost Power", category: "battle_elixir", isSuboptimal: false }],
+  [11406, { name: "Elixir of Demonslaying", category: "battle_elixir", isSuboptimal: false }],
+
+  // ─── Classic Guardian Elixirs ──────────────────────────────────────
+  [11348, { name: "Elixir of Superior Defense", category: "guardian_elixir", isSuboptimal: false }],
+  [11396, { name: "Elixir of Greater Intellect", category: "guardian_elixir", isSuboptimal: false }],
+  [3593, { name: "Elixir of Fortitude", category: "guardian_elixir", isSuboptimal: false }],
+  [11371, { name: "Gift of Arthas", category: "guardian_elixir", isSuboptimal: false }],
+
   // ─── TBC Battle Elixirs ───────────────────────────────────────────
   [28497, { name: "Elixir of Major Agility", category: "battle_elixir", isSuboptimal: false }],
   [28490, { name: "Elixir of Major Strength", category: "battle_elixir", isSuboptimal: false }],
@@ -74,21 +91,19 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [53748, { name: "Elixir of Mighty Strength", category: "battle_elixir", isSuboptimal: false }],
   [53749, { name: "Guru's Elixir", category: "battle_elixir", isSuboptimal: true, betterAlternative: "Elixir of Mighty Strength or Accuracy" }],
   [60340, { name: "Elixir of Accuracy", category: "battle_elixir", isSuboptimal: false }],
+  [60341, { name: "Elixir of Deadly Strikes", category: "battle_elixir", isSuboptimal: false }],
   [60344, { name: "Elixir of Expertise", category: "battle_elixir", isSuboptimal: false }],
-  [60346, { name: "Elixir of Lightning Speed", category: "battle_elixir", isSuboptimal: false }],
-  [60347, { name: "Elixir of Deadly Strikes", category: "battle_elixir", isSuboptimal: false }],
-  [53747, { name: "Elixir of Spirit", category: "battle_elixir", isSuboptimal: false }],
-  [53764, { name: "Elixir of Mighty Mageblood", category: "battle_elixir", isSuboptimal: false }],
-  [60341, { name: "Elixir of Draenic Wisdom (WotLK)", category: "battle_elixir", isSuboptimal: false }],
   [60345, { name: "Elixir of Armor Piercing", category: "battle_elixir", isSuboptimal: false }],
-  [60348, { name: "Elixir of Mighty Thoughts", category: "battle_elixir", isSuboptimal: false }],
+  [60346, { name: "Elixir of Lightning Speed", category: "battle_elixir", isSuboptimal: false }],
 
   // ─── WotLK Guardian Elixirs ───────────────────────────────────────
+  [53747, { name: "Elixir of Spirit", category: "guardian_elixir", isSuboptimal: false }],
   [53751, { name: "Elixir of Mighty Fortitude", category: "guardian_elixir", isSuboptimal: false }],
   [53752, { name: "Elixir of Mighty Defense", category: "guardian_elixir", isSuboptimal: false }],
   [53763, { name: "Elixir of Protection", category: "guardian_elixir", isSuboptimal: false }],
-  [53898, { name: "Elixir of Mighty Thoughts", category: "guardian_elixir", isSuboptimal: false }],
-  [60343, { name: "Elixir of Mighty Mageblood (Guardian)", category: "guardian_elixir", isSuboptimal: false }],
+  [53764, { name: "Elixir of Mighty Mageblood", category: "guardian_elixir", isSuboptimal: false }],
+  [60343, { name: "Elixir of Mighty Defense", category: "guardian_elixir", isSuboptimal: false }],
+  [60347, { name: "Elixir of Mighty Thoughts", category: "guardian_elixir", isSuboptimal: false }],
 
   // ─── Cata Elixirs ─────────────────────────────────────────────────
   [79474, { name: "Elixir of the Cobra", category: "battle_elixir", isSuboptimal: false }],
