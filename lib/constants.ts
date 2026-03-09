@@ -229,12 +229,26 @@ export const FOOD_BUFF_IDS = new Set([
 ]);
 
 export const WEAPON_ENHANCEMENT_IDS = new Set([
-  // TBC Oils
-  28016, 28013, 25120, 25123, 22756,
-  // WotLK weapon enhancements (temporary enchant auras)
-  28093, 28095, 28891, 34538, 34539, 53307, 54803, 55637, 55836,
-  // Sharpening Stones / Weightstones
-  6615, 10399, 16138, 16622, 28898, 29453,
+  // Classic Oils (use spell IDs)
+  25120, // Brilliant Mana Oil
+  25123, // Brilliant Mana Oil (alt)
+  25122, // Brilliant Wizard Oil
+  // Classic Sharpening Stones / Weightstones (use spell IDs)
+  22756, // Elemental Sharpening Stone
+  16138, // Dense Sharpening Stone
+  16622, // Dense Weightstone
+  // TBC Oils (use spell IDs)
+  28017, // Superior Wizard Oil
+  28013, // Superior Mana Oil
+  28898, // Blessed Wizard Oil
+  // TBC Sharpening Stones / Weightstones (use spell IDs)
+  29453, // Adamantite Sharpening Stone
+  34340, // Adamantite Weightstone
+  29452, // Fel Sharpening Stone
+  // WotLK
+  28093, // Lightning Speed
+  28095, // Deathfrost
+  55836, // Titanium Weapon Chain
   // Cata
   96264, 96294,
 ]);

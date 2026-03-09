@@ -165,29 +165,28 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [87556, { name: "Broiled Dragon Feast", category: "food", isSuboptimal: false }],
   [87557, { name: "Seafood Magnifique Feast", category: "food", isSuboptimal: false }],
 
-  // ─── Weapon Enhancements ──────────────────────────────────────────
-  // TBC Oils
-  [28016, { name: "Superior Wizard Oil", category: "weapon_enhancement", isSuboptimal: false }],
-  [28013, { name: "Superior Mana Oil", category: "weapon_enhancement", isSuboptimal: false }],
+  // ─── Weapon Enhancements (use spell IDs) ─────────────────────────
+  // Classic Oils
   [25120, { name: "Brilliant Mana Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Superior Mana Oil" }],
-  [25123, { name: "Brilliant Wizard Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Superior Wizard Oil" }],
-  [22756, { name: "Minor Wizard Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Superior Wizard Oil" }],
-  // TBC + WotLK stones/chains
+  [25122, { name: "Brilliant Wizard Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Superior Wizard Oil" }],
+  [25123, { name: "Brilliant Mana Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Superior Mana Oil" }],
+  // Classic Stones
+  [22756, { name: "Elemental Sharpening Stone", category: "weapon_enhancement", isSuboptimal: false }],
+  [16138, { name: "Dense Sharpening Stone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Adamantite Sharpening Stone" }],
+  [16622, { name: "Dense Weightstone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Adamantite Weightstone" }],
+  // TBC Oils
+  [28017, { name: "Superior Wizard Oil", category: "weapon_enhancement", isSuboptimal: false }],
+  [28013, { name: "Superior Mana Oil", category: "weapon_enhancement", isSuboptimal: false }],
+  [28898, { name: "Blessed Wizard Oil", category: "weapon_enhancement", isSuboptimal: false }],
+  // TBC Stones
+  [29453, { name: "Adamantite Sharpening Stone", category: "weapon_enhancement", isSuboptimal: false }],
+  [34340, { name: "Adamantite Weightstone", category: "weapon_enhancement", isSuboptimal: false }],
+  [29452, { name: "Fel Sharpening Stone", category: "weapon_enhancement", isSuboptimal: false }],
+  // WotLK
   [28093, { name: "Lightning Speed", category: "weapon_enhancement", isSuboptimal: false }],
   [28095, { name: "Deathfrost", category: "weapon_enhancement", isSuboptimal: false }],
-  [28891, { name: "Adamantite Weightstone", category: "weapon_enhancement", isSuboptimal: false }],
-  [34538, { name: "Greater Rune of Warding", category: "weapon_enhancement", isSuboptimal: false }],
-  [34539, { name: "Greater Ward of Shielding", category: "weapon_enhancement", isSuboptimal: false }],
-  [53307, { name: "Titanium Weapon Chain", category: "weapon_enhancement", isSuboptimal: false }],
-  [54803, { name: "Titanium Shield Spike", category: "weapon_enhancement", isSuboptimal: false }],
-  [55637, { name: "Saronite Weightstone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Titanium Weapon Chain" }],
-  [55836, { name: "Titanium Plating", category: "weapon_enhancement", isSuboptimal: false }],
-  [6615, { name: "Rough Sharpening Stone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Titanium Weapon Chain/Weightstone" }],
-  [10399, { name: "Blackmouth Oil", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Appropriate weapon enhancement" }],
-  [16138, { name: "Dense Weightstone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Titanium Weapon Chain/Weightstone" }],
-  [16622, { name: "Dense Sharpening Stone", category: "weapon_enhancement", isSuboptimal: true, betterAlternative: "Titanium Weapon Chain/Weightstone" }],
-  [28898, { name: "Adamantite Sharpening Stone", category: "weapon_enhancement", isSuboptimal: false }],
-  [29453, { name: "Adamantite Weightstone", category: "weapon_enhancement", isSuboptimal: false }],
+  [55836, { name: "Titanium Weapon Chain", category: "weapon_enhancement", isSuboptimal: false }],
+  // Cata
   [96264, { name: "Pyrium Weapon Chain (Cata)", category: "weapon_enhancement", isSuboptimal: false }],
   [96294, { name: "Pyrium Shield Spike (Cata)", category: "weapon_enhancement", isSuboptimal: false }],
 
