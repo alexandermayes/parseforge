@@ -237,13 +237,19 @@ export default function CLABuffTable({ players, selectedFightId }: Props) {
                   <RoleBadge role={player.role} />
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <ConsumableCell detail={consumables.flask} />
+                  {!consumables.flask.present && (consumables.battleElixir.present || consumables.guardianElixir.present)
+                    ? <span className="text-muted-foreground/50">—</span>
+                    : <ConsumableCell detail={consumables.flask} />}
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <ConsumableCell detail={consumables.battleElixir} />
+                  {!consumables.battleElixir.present && consumables.flask.present
+                    ? <span className="text-muted-foreground/50">—</span>
+                    : <ConsumableCell detail={consumables.battleElixir} />}
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <ConsumableCell detail={consumables.guardianElixir} />
+                  {!consumables.guardianElixir.present && consumables.flask.present
+                    ? <span className="text-muted-foreground/50">—</span>
+                    : <ConsumableCell detail={consumables.guardianElixir} />}
                 </td>
                 <td className="px-3 py-2 text-center">
                   <ConsumableCell detail={consumables.food} />
