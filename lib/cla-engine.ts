@@ -114,12 +114,31 @@ function findScrolls(
 export function analyzeConsumables(
   buffs: WCLBuffEntry[],
   fightDuration: number,
+  gear?: WCLCombatantInfoEvent["gear"],
 ): CLAConsumableRow {
   const flask = findBestBuff(buffs, FLASK_BUFF_IDS, fightDuration);
   const battleElixir = findBestBuff(buffs, BATTLE_ELIXIR_IDS, fightDuration);
   const guardianElixir = findBestBuff(buffs, GUARDIAN_ELIXIR_IDS, fightDuration);
   const food = findBestBuff(buffs, FOOD_BUFF_IDS, fightDuration);
-  const weaponEnhancement = findBestBuff(buffs, WEAPON_ENHANCEMENT_IDS, fightDuration);
+  let weaponEnhancement = findBestBuff(buffs, WEAPON_ENHANCEMENT_IDS, fightDuration);
+
+  // Weapon oils/stones are temporary item enchants, not buff auras — they often
+  // don't appear in the Buffs table. Fall back to checking gear temporaryEnchant.
+  if (!weaponEnhancement.present && gear) {
+    const hasTemp = gear.some(
+      (g, i) => (i === 15 || i === 16) && g && g.temporaryEnchant
+    );
+    if (hasTemp) {
+      weaponEnhancement = {
+        present: true,
+        uptimePercent: 100,
+        spellId: 0,
+        spellName: "Weapon Enhancement (detected on gear)",
+        isSuboptimal: false,
+        suboptimalReason: "",
+      };
+    }
+  }
   const scrolls = findScrolls(buffs, fightDuration);
 
   // Average uptime across the main consumable categories that are present
@@ -329,20 +348,20 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
 
     const role = classifyRole(className, spec, player.icon);
 
-    // Per-fight consumable data
-    const fightDataArr: CLAPlayerFightData[] = [];
-    for (const fight of fights) {
-      const playerBuffs = buffData[fight.id]?.[player.id] ?? [];
-      const consumables = analyzeConsumables(playerBuffs, fight.duration);
-      fightDataArr.push({ fightId: fight.id, consumables });
-    }
-
     // Gear analysis from first available fight's combatant info
     let playerCombatantInfo: WCLCombatantInfoEvent | undefined;
     for (const fight of fights) {
       const events = combatantData[fight.id] ?? [];
       playerCombatantInfo = events.find((e) => e.sourceID === player.id);
       if (playerCombatantInfo) break;
+    }
+
+    // Per-fight consumable data
+    const fightDataArr: CLAPlayerFightData[] = [];
+    for (const fight of fights) {
+      const playerBuffs = buffData[fight.id]?.[player.id] ?? [];
+      const consumables = analyzeConsumables(playerBuffs, fight.duration, playerCombatantInfo?.gear);
+      fightDataArr.push({ fightId: fight.id, consumables });
     }
 
     const detailsGear = player.combatantInfo?.gear;

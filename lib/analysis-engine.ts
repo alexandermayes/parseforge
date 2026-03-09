@@ -489,10 +489,10 @@ export function detectConsumables(
     || [...ELIXIR_BUFF_IDS].some((id) => buffGuids.has(id));
   const food = [...FOOD_BUFF_IDS].some((id) => buffGuids.has(id));
 
-  // Check buff auras first, then fall back to temporaryEnchant on weapons (slots 15/16)
+  // Weapon oils/stones are temporary item enchants — check gear first, then buffs table
   const weaponEnhancement =
-    [...WEAPON_ENHANCEMENT_IDS].some((id) => buffGuids.has(id))
-    || gear.some((g, i) => (i === 15 || i === 16) && !!g.temporaryEnchant);
+    gear.some((g, i) => (i === 15 || i === 16) && !!g.temporaryEnchant)
+    || [...WEAPON_ENHANCEMENT_IDS].some((id) => buffGuids.has(id));
 
   return { flask, food, weaponEnhancement };
 }
