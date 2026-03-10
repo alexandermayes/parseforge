@@ -15,7 +15,7 @@ export default function Navbar() {
           {/* Logo / Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <Image src="/logo.png" alt="ParseForge" width={20} height={20} className="transition-transform group-hover:-rotate-12" />
-            <span className="text-sm font-bold tracking-tight text-gradient-gold">
+            <span className="text-lg font-bold tracking-tight text-gradient-gold">
               ParseForge
             </span>
           </Link>
