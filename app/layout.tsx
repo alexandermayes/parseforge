@@ -16,9 +16,46 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ParseForge — Warcraft Logs Performance Analysis",
+  metadataBase: new URL("https://parseforge.gg"),
+  title: {
+    default: "ParseForge — WoW Classic Log Analyzer",
+    template: "%s | ParseForge",
+  },
   description:
-    "Compare your WoW Classic / SoD raid performance against top-ranked players. Get actionable improvement suggestions for DPS, gear, talents, buffs, and rotation.",
+    "Analyze your WoW Classic raid logs against top-ranked players. Get DPS comparisons, gear audits, consumable tracking, buff uptime analysis, and improvement suggestions — all from a single Warcraft Logs URL.",
+  keywords: [
+    "WoW Classic",
+    "Warcraft Logs",
+    "WoW log analyzer",
+    "DPS analysis",
+    "raid analysis",
+    "WoW Classic TBC",
+    "WoW Classic WotLK",
+    "gear audit",
+    "buff tracking",
+    "consumable tracking",
+    "raid performance",
+    "WoW parse",
+    "log analyzer",
+    "ParseForge",
+  ],
+  authors: [{ name: "ParseForge" }],
+  creator: "ParseForge",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://parseforge.gg",
+    siteName: "ParseForge",
+    title: "ParseForge — WoW Classic Log Analyzer",
+    description:
+      "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and actionable improvement suggestions.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ParseForge — WoW Classic Log Analyzer",
+    description:
+      "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and improvement suggestions.",
+  },
 };
 
 export default function RootLayout({
