@@ -17,6 +17,7 @@ import { saveRecentReport } from "@/lib/recent-reports";
 import { AnalysisSnapshot, buildSnapshot, saveSnapshot, getHistory } from "@/lib/analysis-history";
 import type { CLAResult } from "@/lib/cla-types";
 import { ShineBorder } from "@/components/ui/shine-border";
+import posthog from "posthog-js";
 import {
   Select,
   SelectContent,
@@ -109,6 +110,7 @@ export default function AnalyzePage({
   const switchTab = useCallback(
     (tab: TabMode) => {
       setActiveTab(tab);
+      posthog.capture("tab_switched", { tab });
       const params = new URLSearchParams(window.location.search);
       params.set("tab", tab);
       router.replace(`?${params.toString()}`, { scroll: false });
@@ -150,17 +152,29 @@ export default function AnalyzePage({
       const data = await res.json();
       if (!res.ok) {
         setAnalysisError(data.error ?? "Analysis failed");
+        posthog.capture("analysis_error", { report_code: reportCode, error: data.error });
       } else {
         const snapshot = buildSnapshot(data, reportCode);
         const history = getHistory(data.playerName, data.encounterName);
         setPreviousSnapshot(history[0] ?? null);
         saveSnapshot(snapshot);
         setAnalysisResult(data);
+        posthog.capture("analysis_complete", {
+          report_code: reportCode,
+          player_name: data.playerName,
+          player_class: data.playerClass,
+          player_spec: data.playerSpec,
+          encounter: data.encounterName,
+          dps: Math.round(data.dps.playerDps),
+          percentile: data.dps.percentile,
+          has_previous: !!history[0],
+        });
       }
     } catch (err) {
       setAnalysisError(
         err instanceof Error ? err.message : "Analysis request failed"
       );
+      posthog.capture("analysis_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
     } finally {
       setAnalyzing(false);
     }

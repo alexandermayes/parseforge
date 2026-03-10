@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { parseWCLUrl } from "@/lib/url-parser";
+import posthog from "posthog-js";
 
 export default function ReportUrlForm() {
   const [url, setUrl] = useState("");
@@ -22,8 +23,15 @@ export default function ReportUrlForm() {
       setError(
         "Invalid Warcraft Logs URL. Paste a URL like: https://classic.warcraftlogs.com/reports/ABC123"
       );
+      posthog.capture("report_url_invalid", { url });
       return;
     }
+
+    posthog.capture("report_submitted", {
+      report_code: parsed.code,
+      has_fight: !!parsed.fightId,
+      has_source: !!parsed.sourceId,
+    });
 
     setLoading(true);
     let path = `/analyze/${parsed.code}`;

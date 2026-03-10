@@ -15,6 +15,21 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       person_profiles: "identified_only",
       capture_pageview: true,
       capture_pageleave: true,
+      // Session replay
+      disable_session_recording: false,
+      session_recording: {
+        maskAllInputs: false,
+        maskInputFn: (text, element) => {
+          // Only mask actual sensitive fields, not the report URL input
+          const el = element as HTMLInputElement | null;
+          if (el?.type === "password") return "*".repeat(text.length);
+          return text;
+        },
+      },
+      // Console log capture
+      enable_recording_console_log: true,
+      // Autocapture clicks, inputs, form submits
+      autocapture: true,
       loaded: (ph) => {
         if (process.env.NODE_ENV === "development") ph.debug();
       },
