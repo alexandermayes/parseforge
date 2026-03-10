@@ -81,13 +81,22 @@ export default function Navbar() {
               </Link>
             )}
 
+            <a
+              href="https://classic.warcraftlogs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-gold-from transition-interactive"
+            >
+              Warcraft Logs
+            </a>
+
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="text-xs">
                   How It Works
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+              <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto !z-[200]">
                 <DialogHeader>
                   <DialogTitle className="text-xl text-gradient-gold">How ParseForge Works</DialogTitle>
                 </DialogHeader>
@@ -143,15 +152,6 @@ export default function Navbar() {
                 </div>
               </DialogContent>
             </Dialog>
-
-            <a
-              href="https://classic.warcraftlogs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-gold-from transition-interactive"
-            >
-              Warcraft Logs
-            </a>
           </div>
         </div>
       </div>
