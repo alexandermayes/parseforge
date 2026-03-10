@@ -140,6 +140,7 @@ export function LandingHero() {
           </p>
           <p>Supports Classic Era, Season of Discovery, and Anniversary</p>
           <p>Built with <Heart className="inline w-3 h-3 text-status-bad fill-status-bad -mt-0.5" /> by <a href="https://discord.gg/bigyikes" target="_blank" rel="noopener noreferrer" className="text-gold-from hover:underline">Big Yikes</a> for the WoW community.</p>
+          <p><a href="https://github.com/alexandermayes/parseforge" target="_blank" rel="noopener noreferrer" className="text-gold-from hover:underline">GitHub</a></p>
         </footer>
       </BlurFade>
     </div>
