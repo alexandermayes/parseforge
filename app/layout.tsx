@@ -41,6 +41,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ParseForge" }],
   creator: "ParseForge",
+  alternates: {
+    canonical: "https://parseforge.gg",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
