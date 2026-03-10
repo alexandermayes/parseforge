@@ -114,6 +114,26 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [79480, { name: "Elixir of the Naga", category: "battle_elixir", isSuboptimal: false }],
   [79631, { name: "Prismatic Elixir", category: "guardian_elixir", isSuboptimal: false }],
 
+  // ─── MoP Flasks ─────────────────────────────────────────────────
+  [105689, { name: "Flask of Spring Blossoms", category: "flask", isSuboptimal: false }],
+  [105691, { name: "Flask of the Warm Sun", category: "flask", isSuboptimal: false }],
+  [105693, { name: "Flask of Falling Leaves", category: "flask", isSuboptimal: false }],
+  [105694, { name: "Flask of the Earth", category: "flask", isSuboptimal: false }],
+  [105696, { name: "Flask of Winter's Bite", category: "flask", isSuboptimal: false }],
+  [105617, { name: "Alchemist's Flask", category: "flask", isSuboptimal: true, betterAlternative: "Stat-specific flask" }],
+
+  // ─── MoP Battle Elixirs ─────────────────────────────────────────
+  [105682, { name: "Mad Hozen Elixir", category: "battle_elixir", isSuboptimal: false }],
+  [105683, { name: "Elixir of Weaponry", category: "battle_elixir", isSuboptimal: false }],
+  [105684, { name: "Elixir of the Rapids", category: "battle_elixir", isSuboptimal: false }],
+  [105685, { name: "Elixir of Peace", category: "battle_elixir", isSuboptimal: false }],
+  [105686, { name: "Elixir of Perfection", category: "battle_elixir", isSuboptimal: false }],
+  [105688, { name: "Monk's Elixir", category: "battle_elixir", isSuboptimal: false }],
+
+  // ─── MoP Guardian Elixirs ───────────────────────────────────────
+  [105681, { name: "Mantid Elixir", category: "guardian_elixir", isSuboptimal: false }],
+  [105687, { name: "Elixir of Mirrors", category: "guardian_elixir", isSuboptimal: false }],
+
   // ─── TBC Food Buffs ──────────────────────────────────────────────
   [33254, { name: "Well Fed (Ravager Dog)", category: "food", isSuboptimal: false }],
   [33256, { name: "Well Fed (Roasted Clefthoof)", category: "food", isSuboptimal: false }],
@@ -164,6 +184,31 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [87555, { name: "Lavascale Minestrone", category: "food", isSuboptimal: false }],
   [87556, { name: "Broiled Dragon Feast", category: "food", isSuboptimal: false }],
   [87557, { name: "Seafood Magnifique Feast", category: "food", isSuboptimal: false }],
+
+  // ─── MoP Food Buffs ────────────────────────────────────────────
+  // 300 tier (top)
+  [104272, { name: "Well Fed (+300 Str)", category: "food", isSuboptimal: false }],
+  [104275, { name: "Well Fed (+300 Agi)", category: "food", isSuboptimal: false }],
+  [104277, { name: "Well Fed (+300 Int)", category: "food", isSuboptimal: false }],
+  [104280, { name: "Well Fed (+300 Spirit)", category: "food", isSuboptimal: false }],
+  [104283, { name: "Well Fed (+450 Stam)", category: "food", isSuboptimal: false }],
+  [125113, { name: "Well Fed (+300 Hit)", category: "food", isSuboptimal: false }],
+  [125115, { name: "Well Fed (+300 Expertise)", category: "food", isSuboptimal: false }],
+  // 275 tier (banquet)
+  [104271, { name: "Well Fed (+275 Str)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104274, { name: "Well Fed (+275 Agi)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104276, { name: "Well Fed (+275 Int)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104279, { name: "Well Fed (+275 Spirit)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104282, { name: "Well Fed (+415 Stam)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [125106, { name: "Well Fed (+275 Hit)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [125108, { name: "Well Fed (+275 Expertise)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  // 250 tier (basic)
+  [104267, { name: "Well Fed (+250 Str)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104273, { name: "Well Fed (+250 Agi)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104264, { name: "Well Fed (+250 Int)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104278, { name: "Well Fed (+250 Spirit)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [104281, { name: "Well Fed (+375 Stam)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
+  [125104, { name: "Well Fed (+250 Hit)", category: "food", isSuboptimal: true, betterAlternative: "300-stat food" }],
 
   // ─── Weapon Enhancements (use spell IDs) ─────────────────────────
   // Classic Oils

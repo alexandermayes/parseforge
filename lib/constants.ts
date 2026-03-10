@@ -9,6 +9,7 @@ export const CLASS_COLORS: Record<string, string> = {
   Warlock: "#9482C9",
   Druid: "#FF7D0A",
   DeathKnight: "#C41E3A",
+  Monk: "#00FF96",
 };
 
 // WCL CombatantInfo gear array follows WoW's INVSLOT enum (1-indexed), offset by -1.
@@ -85,6 +86,7 @@ export const HEALER_SPECS = new Set([
   "Restoration",
   "Holy",
   "Discipline",
+  "Mistweaver",
 ]);
 
 export function isHealerSpec(spec: string): boolean {
@@ -93,7 +95,7 @@ export function isHealerSpec(spec: string): boolean {
 
 // Wowhead tooltip domain strings (matches EnvKey in tooltips.js)
 // classic=4(vanilla), tbc=5, wrath=8, cata=11, mists=15
-export type WowheadDomain = "classic" | "tbc" | "wrath" | "cata";
+export type WowheadDomain = "classic" | "tbc" | "wrath" | "cata" | "mists";
 
 // Classic Era / Season of Discovery zone names
 const CLASSIC_ZONE_NAMES = [
@@ -122,6 +124,11 @@ const CATA_ZONE_NAMES = [
   "Firelands", "Dragon Soul", "Baradin Hold",
 ];
 
+const MOP_ZONE_NAMES = [
+  "Mogu'shan Vaults", "Heart of Fear", "Terrace of Endless Spring",
+  "Throne of Thunder", "Siege of Orgrimmar",
+];
+
 // ─── Raid Overview (RPB) Constants ───────────────────────────────────
 
 import type { RaidRole } from "./wcl-types";
@@ -138,6 +145,7 @@ const ROLE_MAP: Record<string, Record<string, RaidRole>> = {
   Warlock: { __default: "Caster" },
   Druid: { Balance: "Caster", "Feral Combat": "Physical", Feral: "Physical", Restoration: "Healer", Guardian: "Tank", __default: "Physical" },
   DeathKnight: { Blood: "Tank", Frost: "Physical", Unholy: "Physical", __default: "Physical" },
+  Monk: { Brewmaster: "Tank", Windwalker: "Physical", Mistweaver: "Healer", __default: "Physical" },
 };
 
 // Protection warriors need to be classified as Tank via spec icon detection
@@ -151,6 +159,7 @@ export function classifyRole(className: string, spec: string, icon?: string): Ra
     }
     if (iconSpec === "Guardian" && className === "Druid") return "Tank";
     if (iconSpec === "Blood" && className === "DeathKnight") return "Tank";
+    if (iconSpec === "Brewmaster" && className === "Monk") return "Tank";
   }
 
   const classMap = ROLE_MAP[className];
@@ -183,6 +192,8 @@ export const FLASK_BUFF_IDS = new Set([
   17626, 17627, 17628, 17629, 28518, 28519, 28520, 28521, 28540,
   // Classic Flasks
   13510, 13511, 13512, 13513,
+  // MoP Flasks
+  105689, 105691, 105693, 105694, 105696, 105617,
 ]);
 
 // Battle + Guardian elixirs (if no flask, check for elixirs)
@@ -212,6 +223,10 @@ export const ELIXIR_BUFF_IDS = new Set([
   53747, 53751, 53752, 53763, 53764, 60343, 60347,
   // Cata Elixirs
   79474, 79468, 79481, 79632, 79477, 79480, 79631,
+  // MoP Battle Elixirs
+  105682, 105683, 105684, 105685, 105686, 105688,
+  // MoP Guardian Elixirs
+  105681, 105687,
 ]);
 
 export const FOOD_BUFF_IDS = new Set([
@@ -226,6 +241,11 @@ export const FOOD_BUFF_IDS = new Set([
   87545, 87546, 87547, 87548, 87549, 87550, 87551, 87552, 87554, 87555, 87556, 87557,
   // Fish Feast / Great Feast
   58067,
+  // MoP food buffs (300/275/250 stat tiers)
+  104272, 104275, 104277, 104280, 104283, // 300 tier (Str/Agi/Int/Spirit/Stam)
+  104271, 104274, 104276, 104279, 104282, // 275 tier
+  104267, 104273, 104264, 104278, 104281, // 250 tier
+  125113, 125115, 125106, 125108, 125104, // Hit/Expertise foods
 ]);
 
 export const WEAPON_ENHANCEMENT_IDS = new Set([
@@ -317,11 +337,13 @@ export const CLASS_TALENT_TREES: Record<string, string[]> = {
   Warlock: ["Affliction", "Demonology", "Destruction"],
   Druid: ["Balance", "Feral Combat", "Restoration"],
   DeathKnight: ["Blood", "Frost", "Unholy"],
+  Monk: ["Brewmaster", "Mistweaver", "Windwalker"],
 };
 
 export function getWowheadDomain(zoneName?: string): WowheadDomain {
   if (!zoneName) return "classic";
   const lower = zoneName.toLowerCase();
+  if (MOP_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "mists";
   if (CATA_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "cata";
   if (WRATH_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "wrath";
   if (TBC_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "tbc";
