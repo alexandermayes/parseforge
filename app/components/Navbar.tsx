@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Hammer } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,7 +14,7 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Hammer className="w-5 h-5 text-gold-from transition-transform group-hover:-rotate-12" />
+            <Image src="/logo.png" alt="ParseForge" width={20} height={20} className="transition-transform group-hover:-rotate-12" />
             <span className="text-sm font-bold tracking-tight text-gradient-gold">
               ParseForge
             </span>
