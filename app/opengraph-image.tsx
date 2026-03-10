@@ -16,7 +16,7 @@ export default function OGImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#1b1b2e",
+          background: "#0c0c0f",
           fontFamily: "system-ui, sans-serif",
         }}
       >
