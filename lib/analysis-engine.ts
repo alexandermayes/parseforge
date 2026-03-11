@@ -792,11 +792,21 @@ export function analyzeAbilitiesAgainstAverage(
     });
   }
 
-  // Add abilities top players use but player doesn't (only if avg share > 1%)
+  // Build a set of spell GUIDs that top players actually *cast* (not just proc damage)
+  const topPlayerCastGuids = new Set<number>();
+  for (const tp of topPlayersData) {
+    for (const c of tp.castEntries) {
+      topPlayerCastGuids.add(c.guid);
+    }
+  }
+
+  // Add abilities top players use but player doesn't
+  // Only include if avg share > 1% AND at least one top player actually cast it
+  // Skip legacy/garbage spells with "(OLD)" in the name
   for (const [guid, agg] of shareAggregates) {
     if (!seen.has(guid)) {
       const avgShare = agg.totalShare / N;
-      if (avgShare > 1) {
+      if (avgShare > 1 && topPlayerCastGuids.has(guid) && !agg.name.includes("(OLD)")) {
         abilities.push({
           name: agg.name,
           guid,
@@ -968,6 +978,14 @@ export function analyzeAbilityPriority(
   const playerTotal = playerDamage.reduce((s, d) => s + d.total, 0);
   const N = topPlayersData.length;
 
+  // Build a set of spell GUIDs that top players actually *cast*
+  const topPlayerCastGuids = new Set<number>();
+  for (const tp of topPlayersData) {
+    for (const c of tp.castEntries) {
+      topPlayerCastGuids.add(c.guid);
+    }
+  }
+
   // Collect damage share % per ability per top player
   const abilityShares = new Map<number, { name: string; icon: string; shares: number[] }>();
   for (const tp of topPlayersData) {
@@ -992,6 +1010,9 @@ export function analyzeAbilityPriority(
 
   const entries: AbilityPriorityEntry[] = [];
   for (const [guid, agg] of abilityShares) {
+    // Skip legacy/garbage spells
+    if (agg.name.includes("(OLD)")) continue;
+
     // Pad missing values with 0 for players that didn't use this ability
     while (agg.shares.length < N) agg.shares.push(0);
     const avg = agg.shares.reduce((a, b) => a + b, 0) / N;
@@ -999,8 +1020,9 @@ export function analyzeAbilityPriority(
     const max = Math.max(...agg.shares);
     const playerShare = playerShareMap.get(guid) ?? 0;
 
-    // Filter out noise
+    // Filter out noise — also skip abilities nobody actually cast (proc-only damage)
     if (avg < 0.5 && playerShare < 0.5) continue;
+    if (playerShare === 0 && !topPlayerCastGuids.has(guid)) continue;
 
     entries.push({
       name: agg.name,
