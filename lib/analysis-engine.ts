@@ -154,13 +154,14 @@ export function analyzeGear(
   let missingGems = 0;
   const slots: GearSlotComparison[] = [];
 
-  // Slots where enchants are expected in Classic/TBC
-  // Head(0), Shoulder(2), Chest(4), Legs(6), Feet(7), Wrist(8), Hands(9), Back(14), Main Hand(15)
+  // Slots where enchants are reliably reported by WCL
+  // Head(0) and Shoulder(2) excluded — Arcanums/inscriptions not in permanentEnchant
   // Off Hand(16) excluded — held-in-off-hand items (orbs, tomes) are not enchantable
-  const enchantableSlots = new Set([0, 2, 4, 6, 7, 8, 9, 14, 15]);
+  const enchantableSlots = new Set([4, 6, 7, 8, 9, 14, 15]);
 
   for (const [slotId, slotName] of Object.entries(GEAR_SLOTS)) {
     const slot = parseInt(slotId);
+    if (slot === 3 || slot === 18) continue; // Skip Shirt & Tabard
     const playerItem = playerGearBySlot.get(slot) ?? null;
     const topItem = topGearBySlot.get(slot) ?? null;
 
@@ -906,7 +907,7 @@ export function analyzeGearPopularity(
 
   for (const [slotId, slotName] of Object.entries(GEAR_SLOTS)) {
     const slot = parseInt(slotId);
-    if (slot === 3) continue; // Skip Shirt
+    if (slot === 3 || slot === 18) continue; // Skip Shirt & Tabard
 
     // Count item frequency for this slot
     const itemCounts = new Map<number, { name: string; icon: string; quality: string; count: number }>();

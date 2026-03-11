@@ -126,7 +126,7 @@ function computeAvgItemLevel(
   let totalIlvl = 0;
   let count = 0;
   for (const [index, item] of combatantInfo.gear.entries()) {
-    if (index === 3) continue; // skip shirt slot
+    if (index === 3 || index === 18) continue; // skip shirt & tabard
     if (!item || item.id === 0) continue;
     if (item.itemLevel) {
       totalIlvl += item.itemLevel;

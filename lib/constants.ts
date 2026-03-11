@@ -33,7 +33,11 @@ export const GEAR_SLOTS: Record<number, string> = {
   15: "Main Hand",
   16: "Off Hand",
   17: "Ranged / Relic",
+  18: "Tabard",
 };
+
+// Cosmetic slots that should be excluded from ilvl calculations, gear comparisons, and audits
+export const COSMETIC_SLOTS = new Set([3, 18]); // Shirt, Tabard
 
 export const SPEC_ICONS: Record<string, string> = {
   // Warrior
@@ -275,8 +279,8 @@ export const WEAPON_ENHANCEMENT_IDS = new Set([
 
 // Enchantable gear slot indices (0-indexed matching WCL gear array)
 export const ENCHANTABLE_SLOTS = new Set([
-  0,   // Head
-  2,   // Shoulder
+  // Head(0) and Shoulder(2) excluded — Arcanums/inscriptions are inconsistently
+  // reported in WCL permanentEnchant data, causing false "missing enchant" flags
   4,   // Chest
   6,   // Legs
   7,   // Feet

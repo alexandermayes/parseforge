@@ -301,7 +301,7 @@ export function buildGearSnapshot(
   const detailMap = buildDetailGearMap(detailsGear);
 
   for (const [index, item] of combatantInfo.gear.entries()) {
-    if (index === 3) continue; // skip shirt
+    if (index === 3 || index === 18) continue; // skip shirt & tabard
     const slotName = GEAR_SLOTS[index] ?? `Slot ${index}`;
 
     if (!item || item.id === 0) {
