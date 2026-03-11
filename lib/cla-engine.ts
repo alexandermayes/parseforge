@@ -115,16 +115,22 @@ export function analyzeConsumables(
   buffs: WCLBuffEntry[],
   fightDuration: number,
   gear?: WCLCombatantInfoEvent["gear"],
+  wowheadDomain: string = "tbc",
 ): CLAConsumableRow {
   const flask = findBestBuff(buffs, FLASK_BUFF_IDS, fightDuration);
   const battleElixir = findBestBuff(buffs, BATTLE_ELIXIR_IDS, fightDuration);
   const guardianElixir = findBestBuff(buffs, GUARDIAN_ELIXIR_IDS, fightDuration);
   const food = findBestBuff(buffs, FOOD_BUFF_IDS, fightDuration);
-  let weaponEnhancement = findBestBuff(buffs, WEAPON_ENHANCEMENT_IDS, fightDuration);
+
+  // MoP+ doesn't have temporary weapon enhancements (oils/stones were removed)
+  const hasTemporaryEnhancements = wowheadDomain !== "mists";
+  let weaponEnhancement = hasTemporaryEnhancements
+    ? findBestBuff(buffs, WEAPON_ENHANCEMENT_IDS, fightDuration)
+    : emptyDetail();
 
   // Weapon oils/stones are temporary item enchants, not buff auras — they often
   // don't appear in the Buffs table. Fall back to checking gear temporaryEnchant.
-  if (!weaponEnhancement.present && gear) {
+  if (hasTemporaryEnhancements && !weaponEnhancement.present && gear) {
     const hasTemp = gear.some(
       (g, i) => (i === 15 || i === 16) && g && g.temporaryEnchant
     );
@@ -142,14 +148,19 @@ export function analyzeConsumables(
   const scrolls = findScrolls(buffs, fightDuration);
 
   // Average uptime across the main consumable categories that are present
-  const categories = [flask, food, weaponEnhancement];
+  // MoP+ only has flask+food (2 categories), no weapon enhancements
+  const categories = hasTemporaryEnhancements
+    ? [flask, food, weaponEnhancement]
+    : [flask, food];
   // If no flask, use battle+guardian elixirs instead
   if (!flask.present) {
     categories[0] = battleElixir;
     categories.push(guardianElixir);
   }
   const presentCategories = categories.filter((c) => c.present);
-  const totalCategories = flask.present ? 3 : 4; // flask+food+weap or battle+guardian+food+weap
+  const totalCategories = flask.present
+    ? (hasTemporaryEnhancements ? 3 : 2)
+    : (hasTemporaryEnhancements ? 4 : 3); // +battle+guardian instead of flask
   const sumUptime = presentCategories.reduce((s, c) => s + c.uptimePercent, 0);
   const averageUptime = totalCategories > 0
     ? Math.round((sumUptime / totalCategories) * 10) / 10
@@ -186,6 +197,7 @@ const SEVERITY_ORDER: Record<string, number> = { error: 0, warning: 1, info: 2 }
 export function analyzeGearIssues(
   combatantInfo: WCLCombatantInfoEvent | undefined,
   detailsGear?: import("./wcl-types").WCLGearItem[],
+  wowheadDomain: string = "tbc",
 ): CLAGearIssue[] {
   if (!combatantInfo?.gear) return [];
 
@@ -241,7 +253,9 @@ export function analyzeGearIssues(
     }
 
     // Missing weapon oil/stone on Main Hand (slot 15)
-    if (index === 15 && !item.temporaryEnchant) {
+    // MoP+ doesn't have temporary weapon enhancements (oils/stones were removed)
+    const hasTemporaryEnhancements = wowheadDomain !== "mists";
+    if (hasTemporaryEnhancements && index === 15 && !item.temporaryEnchant) {
       issues.push({
         slotIndex: index,
         slotName,
@@ -360,12 +374,12 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
     const fightDataArr: CLAPlayerFightData[] = [];
     for (const fight of fights) {
       const playerBuffs = buffData[fight.id]?.[player.id] ?? [];
-      const consumables = analyzeConsumables(playerBuffs, fight.duration, playerCombatantInfo?.gear);
+      const consumables = analyzeConsumables(playerBuffs, fight.duration, playerCombatantInfo?.gear, wowheadDomain);
       fightDataArr.push({ fightId: fight.id, consumables });
     }
 
     const detailsGear = player.combatantInfo?.gear;
-    const gearIssues = analyzeGearIssues(playerCombatantInfo, detailsGear);
+    const gearIssues = analyzeGearIssues(playerCombatantInfo, detailsGear, wowheadDomain);
     const gearSnapshot = buildGearSnapshot(playerCombatantInfo, wowheadDomain, detailsGear);
 
     players.push({

@@ -72,6 +72,7 @@ export default function CLAView({ data, selectedFightId }: Props) {
         <CLABuffTable
           players={data.players}
           selectedFightId={selectedFightId}
+          wowheadDomain={data.wowheadDomain}
         />
       )}
 

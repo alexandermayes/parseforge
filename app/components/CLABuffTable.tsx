@@ -24,6 +24,7 @@ type SortDir = "asc" | "desc";
 interface Props {
   players: CLAPlayerResult[];
   selectedFightId: number | "all";
+  wowheadDomain?: string;
 }
 
 function uptimeColor(pct: number): string {
@@ -134,7 +135,8 @@ function getPlayerConsumables(
   return fd?.consumables ?? averageConsumables(player);
 }
 
-export default function CLABuffTable({ players, selectedFightId }: Props) {
+export default function CLABuffTable({ players, selectedFightId, wowheadDomain }: Props) {
+  const hasWeaponEnhancements = wowheadDomain !== "mists";
   const [sortKey, setSortKey] = useState<SortKey>("role");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -212,7 +214,7 @@ export default function CLABuffTable({ players, selectedFightId }: Props) {
             <SortableTableHead label="Battle Elixir" sortKey="battleElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
             <SortableTableHead label="Guard Elixir" sortKey="guardianElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
             <SortableTableHead label="Food" sortKey="food" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+            {hasWeaponEnhancements && <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />}
             <SortableTableHead label="Scrolls" sortKey="scrolls" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
             <SortableTableHead label="Avg %" sortKey="averageUptime" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
           </tr>
@@ -254,9 +256,11 @@ export default function CLABuffTable({ players, selectedFightId }: Props) {
                 <td className="px-3 py-2 text-center">
                   <ConsumableCell detail={consumables.food} />
                 </td>
-                <td className="px-3 py-2 text-center">
-                  <ConsumableCell detail={consumables.weaponEnhancement} />
-                </td>
+                {hasWeaponEnhancements && (
+                  <td className="px-3 py-2 text-center">
+                    <ConsumableCell detail={consumables.weaponEnhancement} />
+                  </td>
+                )}
                 <td className="px-3 py-2 text-center">
                   {consumables.scrolls.length > 0 ? (
                     <span className="text-xs text-muted-foreground">
