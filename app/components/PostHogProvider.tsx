@@ -12,7 +12,7 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
     posthog.init(POSTHOG_KEY, {
       api_host: "/ingest",
       ui_host: "https://us.i.posthog.com",
-      person_profiles: "identified_only",
+      person_profiles: "always",
       capture_pageview: true,
       capture_pageleave: true,
       // Session replay
