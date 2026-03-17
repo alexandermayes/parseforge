@@ -207,13 +207,16 @@ export default function AnalyzePage({
       const data = await res.json();
       if (!res.ok) {
         setRaidError(data.error ?? "Raid overview failed");
+        posthog.capture("raid_overview_error", { report_code: reportCode, error: data.error });
       } else {
         setRaidResult(data);
+        posthog.capture("raid_overview_complete", { report_code: reportCode, fight_id: selectedFight, player_count: data.players?.length });
       }
     } catch (err) {
       setRaidError(
         err instanceof Error ? err.message : "Raid overview request failed"
       );
+      posthog.capture("raid_overview_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
     } finally {
       setRaidLoading(false);
     }
@@ -246,14 +249,17 @@ export default function AnalyzePage({
       const data = await res.json();
       if (!res.ok) {
         setClaError(data.error ?? "CLA analysis failed");
+        posthog.capture("cla_error", { report_code: reportCode, error: data.error });
       } else {
         setClaResult(data);
         setClaFightSelection(fightIds.length === 1 ? fightIds[0] : "all");
+        posthog.capture("cla_complete", { report_code: reportCode, fight_count: fightIds.length });
       }
     } catch (err) {
       setClaError(
         err instanceof Error ? err.message : "CLA request failed"
       );
+      posthog.capture("cla_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
     } finally {
       setClaLoading(false);
     }
@@ -349,7 +355,11 @@ export default function AnalyzePage({
             <FightSelector
               fights={report.fights}
               selectedFightId={selectedFight}
-              onSelect={setSelectedFight}
+              onSelect={(id) => {
+                setSelectedFight(id);
+                const fight = report.fights.find((f) => f.id === id);
+                posthog.capture("fight_selected", { report_code: reportCode, fight_id: id, fight_name: fight?.name });
+              }}
             />
           </div>
 
@@ -361,7 +371,11 @@ export default function AnalyzePage({
               <PlayerSelector
                 players={fightPlayers?.players ?? report.players}
                 selectedSourceId={selectedSource}
-                onSelect={setSelectedSource}
+                onSelect={(id) => {
+                  setSelectedSource(id);
+                  const player = (fightPlayers?.players ?? report.players).find((p) => p.id === id);
+                  posthog.capture("player_selected", { report_code: reportCode, player_name: player?.name, player_class: player?.type });
+                }}
               />
             </div>
           )}
