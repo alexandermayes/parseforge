@@ -446,6 +446,7 @@ export function analyzeAbilities(
 
   for (const pd of playerDamage) {
     seen.add(pd.guid);
+    if (pd.name.includes("(OLD)")) continue;
     const td = topByGuid.get(pd.guid);
     abilities.push({
       name: pd.name,
@@ -461,6 +462,7 @@ export function analyzeAbilities(
   // Add abilities that top player uses but player doesn't
   for (const td of topDamage) {
     if (!seen.has(td.guid)) {
+      if (td.name.includes("(OLD)")) continue;
       abilities.push({
         name: td.name,
         guid: td.guid,
