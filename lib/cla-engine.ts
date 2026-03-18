@@ -25,6 +25,8 @@ import {
   SCROLL_BUFF_IDS,
   CLASS_BUFF_FAMILIES,
   GEM_STAT_DB,
+  GEM_NAME_DB,
+  ENCHANT_NAME_DB,
   EXPECTED_TALENT_POINTS,
 } from "./cla-constants";
 import type { RaidRole } from "./wcl-types";
@@ -336,11 +338,14 @@ export function buildGearSnapshot(
       itemName: detailItem?.name ?? `Item #${item.id}`,
       itemLevel: item.itemLevel ?? 0,
       enchantId: item.permanentEnchant ?? 0,
-      enchantName: detailItem?.permanentEnchantName ?? "",
+      enchantName: detailItem?.permanentEnchantName
+        || (item.permanentEnchant ? ENCHANT_NAME_DB.get(item.permanentEnchant) : undefined)
+        || "",
       gems: eventGems.map((g) => {
         const dg = detailGems?.find((d) => d.id === g.id);
         const gemDbEntry = GEM_STAT_DB.get(g.id);
-        return { id: g.id, itemLevel: dg?.itemLevel ?? g.itemLevel, name: dg?.name ?? gemDbEntry?.name };
+        const gemNameEntry = GEM_NAME_DB.get(g.id);
+        return { id: g.id, itemLevel: dg?.itemLevel ?? g.itemLevel, name: dg?.name ?? gemDbEntry?.name ?? gemNameEntry };
       }),
       wowheadUrl: `https://www.wowhead.com/${wowheadDomain}/item=${item.id}`,
     });

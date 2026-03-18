@@ -9,7 +9,7 @@ import {
 } from "@/lib/wcl-queries";
 import { buildAnalysisResult } from "@/lib/analysis-engine";
 import { ANALYSIS_CACHE_TTL, TOP_PLAYERS_TO_FETCH, getWowheadDomain, isHealerSpec } from "@/lib/constants";
-import { GEM_STAT_DB } from "@/lib/cla-constants";
+import { GEM_STAT_DB, GEM_NAME_DB } from "@/lib/cla-constants";
 import {
   AnalyzeRequest,
   AnalysisResult,
@@ -176,7 +176,8 @@ export async function POST(request: NextRequest) {
         gems: g.gems?.map((gem) => {
           const detailGem = detailItem?.gems?.find((dg) => dg.id === gem.id);
           const gemDbEntry = GEM_STAT_DB.get(gem.id);
-          return { ...gem, name: detailGem?.name ?? gemDbEntry?.name ?? undefined };
+          const gemNameEntry = GEM_NAME_DB.get(gem.id);
+          return { ...gem, name: detailGem?.name ?? gemDbEntry?.name ?? gemNameEntry ?? undefined };
         }),
         setID: g.setID,
       };

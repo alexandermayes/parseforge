@@ -8,6 +8,7 @@ import {
   CLASS_TALENT_TREES,
   getPerformanceGrade,
 } from "./constants";
+import { ENCHANT_NAME_DB, GEM_NAME_DB, GEM_STAT_DB } from "./cla-constants";
 import {
   AnalysisResult,
   ConsumableStatus,
@@ -168,7 +169,9 @@ export function analyzeGear(
     // Player enchant data — prefer name from playerDetails, fall back to ID from events API
     const hasPlayerEnchant = !!playerItem?.permanentEnchant;
     const playerEnchant = hasPlayerEnchant
-      ? (playerItem!.permanentEnchantName ?? `Enchant #${playerItem!.permanentEnchant}`)
+      ? (playerItem!.permanentEnchantName
+        ?? ENCHANT_NAME_DB.get(playerItem!.permanentEnchant!)
+        ?? `Enchant #${playerItem!.permanentEnchant}`)
       : null;
     // Rankings gear doesn't include enchant info
     const topEnchant: string | null = null;

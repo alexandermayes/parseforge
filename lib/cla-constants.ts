@@ -269,6 +269,604 @@ export function getAllConsumableAbilityIds(): number[] {
   return Array.from(CONSUMABLE_DB.keys());
 }
 
+// ─── Enchant Name Database ───────────────────────────────────────────
+// Maps WCL permanentEnchant IDs (SpellItemEnchantment IDs) to display names
+
+export const ENCHANT_NAME_DB = new Map<number, string>([
+  // ─── Classic Head ─────────────────────────────────────────────────
+  [1503, "Arcanum of Voracity (+8 Str)"],
+  [1504, "Arcanum of Voracity (+8 Agi)"],
+  [1506, "Arcanum of Voracity (+8 Int)"],
+  [1510, "Arcanum of Voracity (+8 Stam)"],
+  [2543, "Arcanum of Focus (+8 SP)"],
+  [2544, "Arcanum of Protection (+1% Dodge)"],
+  [2545, "Arcanum of Rapidity (+1% Haste)"],
+  [2583, "Arcanum of Subduing (+1% hit to Dragonkin)"],
+
+  // ─── Classic Shoulder ─────────────────────────────────────────────
+  [2604, "Might of the Scourge (+26 AP, +14 Crit)"],
+  [2605, "Power of the Scourge (+15 SP, +14 Crit)"],
+  [2606, "Resilience of the Scourge (+10 Dodge, +1% Block)"],
+  [2715, "Fortitude of the Scourge (+16 Stam, +100 Armor)"],
+  [2716, "Zandalar Signet of Might (+30 AP)"],
+  [2717, "Zandalar Signet of Mojo (+18 SP)"],
+  [2718, "Zandalar Signet of Serenity (+33 Healing)"],
+
+  // ─── Classic Chest ────────────────────────────────────────────────
+  [866, "Greater Stats (+4)"],
+  [928, "Minor Stats (+3)"],
+  [847, "Major Health (+100 HP)"],
+
+  // ─── Classic Weapon ───────────────────────────────────────────────
+  [1900, "Crusader"],
+  [2564, "Major Strength (+15 Str)"],
+  [2646, "Agility (+15 Agi)"],
+  [2523, "Agility (+25 Agi, 2H)"],
+  [2505, "Spell Power (+30 SP)"],
+
+  // ─── Classic Cloak ────────────────────────────────────────────────
+  [849, "Greater Agility (+3 Agi)"],
+  [2463, "Fire Resistance (+15)"],
+  [2464, "Nature Resistance (+15)"],
+
+  // ─── Classic Bracers ──────────────────────────────────────────────
+  [1147, "Superior Stamina (+9 Stam)"],
+  [1886, "Healing Power (+24 Healing)"],
+  [2326, "Assault (+24 AP)"],
+
+  // ─── Classic Boots ────────────────────────────────────────────────
+  [911, "Minor Speed"],
+  [2658, "Dexterity (+12 Agi)"],
+
+  // ─── TBC Head Arcanums ────────────────────────────────────────────
+  [2999, "Glyph of Ferocity (+34 AP, +16 Hit)"],
+  [3001, "Glyph of Power (+22 SP, +14 Hit)"],
+  [3002, "Glyph of Renewal (+35 Healing, +7 MP5)"],
+  [3003, "Glyph of the Defender (+17 Def, +16 Dodge)"],
+  [3004, "Glyph of Fire Warding (+20 Fire Resist)"],
+  [3005, "Glyph of Nature Warding (+20 Nature Resist)"],
+  [3006, "Glyph of Shadow Warding (+20 Shadow Resist)"],
+  [3007, "Glyph of Frost Warding (+20 Frost Resist)"],
+  [3008, "Glyph of Arcane Warding (+20 Arcane Resist)"],
+  [3096, "Glyph of Chromatic Warding (+8 All Resist)"],
+
+  // ─── TBC Shoulder Inscriptions (Aldor) ────────────────────────────
+  [2974, "Inscription of Vengeance (+15 AP, +5 Crit)"],
+  [2975, "Inscription of Faith (+16 Healing, +2 MP5)"],
+  [2976, "Inscription of Discipline (+9 SP, +5 Crit)"],
+  [2977, "Inscription of Warding (+8 Dodge, +5 Def)"],
+  [2978, "Greater Inscription of Vengeance (+30 AP, +10 Crit)"],
+  [2979, "Greater Inscription of Faith (+33 Healing, +4 MP5)"],
+  [2980, "Greater Inscription of Discipline (+18 SP, +10 Crit)"],
+  [2981, "Greater Inscription of Warding (+15 Dodge, +10 Def)"],
+
+  // ─── TBC Shoulder Inscriptions (Scryer) ───────────────────────────
+  [2983, "Inscription of the Blade (+13 Crit, +7 AP)"],
+  [2986, "Greater Inscription of the Blade (+15 Crit, +20 AP)"],
+  [2987, "Inscription of the Knight (+8 Def, +5 Dodge)"],
+  [2990, "Greater Inscription of the Knight (+15 Def, +10 Dodge)"],
+  [2991, "Inscription of the Oracle (+3 MP5, +11 Healing)"],
+  [2994, "Greater Inscription of the Oracle (+6 MP5, +22 Healing)"],
+  [2995, "Inscription of the Orb (+6 SP, +8 Crit)"],
+  [2998, "Greater Inscription of the Orb (+12 SP, +15 Crit)"],
+
+  // ─── TBC Chest ────────────────────────────────────────────────────
+  [1144, "Major Spirit (+15 Spirit)"],
+  [2661, "Exceptional Health (+150 HP)"],
+  [2933, "Exceptional Stats (+6 All Stats)"],
+  [3150, "Exceptional Resilience (+15 Resilience)"],
+
+  // ─── TBC Cloak ────────────────────────────────────────────────────
+  [2621, "Subtlety (-2% Threat)"],
+  [2622, "Dodge (+12 Dodge Rating)"],
+  [2662, "Major Resistance (+7 All Resist)"],
+  [2664, "Major Armor (+120 Armor)"],
+  [2938, "Spell Penetration (+20 Spell Pen)"],
+
+  // ─── TBC Bracers ──────────────────────────────────────────────────
+  [1891, "Stats (+4 All Stats)"],
+  [2617, "Superior Healing (+30 Healing)"],
+  [2647, "Brawn (+12 Str)"],
+  [2648, "Major Intellect (+12 Int)"],
+  [2649, "Fortitude (+12 Stam)"],
+  [2650, "Spellpower (+15 SP)"],
+  [2679, "Assault (+24 AP)"],
+
+  // ─── TBC Gloves ───────────────────────────────────────────────────
+  [2613, "Threat (+2% Threat)"],
+  [2935, "Major Spellpower (+20 SP)"],
+  [2937, "Major Healing (+35 Healing)"],
+  [930, "Riding Skill"],
+  [684, "Major Agility (+15 Agi)"],
+  [2934, "Blasting (+10 Crit)"],
+  [2322, "Superior Agility (+15 Agi)"],
+
+  // ─── TBC Legs ─────────────────────────────────────────────────────
+  [2743, "Clefthide Leg Armor (+30 Stam, +10 Agi)"],
+  [2744, "Nethercleft Leg Armor (+40 Stam, +12 Agi)"],
+  [2745, "Runic Spellthread (+35 SP, +20 Stam)"],
+  [2746, "Mystic Spellthread (+25 SP, +15 Stam)"],
+  [2747, "Nethercobra Leg Armor (+50 AP, +12 Crit)"],
+  [2748, "Cobrahide Leg Armor (+40 AP, +10 Crit)"],
+
+  // ─── TBC Boots ────────────────────────────────────────────────────
+  [2656, "Vitality (+4 HP5/MP5)"],
+  [2657, "Fortitude (+12 Stam)"],
+  [2939, "Cat's Swiftness (+6 Agi, Minor Speed)"],
+  [2940, "Boar's Speed (+9 Stam, Minor Speed)"],
+
+  // ─── TBC Weapons ──────────────────────────────────────────────────
+  [2667, "Savagery (+70 AP)"],
+  [2669, "Major Spellpower (+40 SP)"],
+  [2670, "Major Agility (+35 Agi)"],
+  [2671, "Sunfire (+50 Arcane/Fire Damage)"],
+  [2672, "Soulfrost (+54 Shadow/Frost Damage)"],
+  [2673, "Mongoose"],
+  [2674, "Spellsurge"],
+  [2675, "Battlemaster"],
+  [3222, "Greater Agility (+20 Agi)"],
+  [3225, "Executioner"],
+  [3239, "Icebreaker"],
+  [3241, "Deathfrost"],
+
+  // ─── TBC Shield ───────────────────────────────────────────────────
+  [2653, "Tough Shield (+18 Stam)"],
+  [2654, "Resilience (+12 Resilience)"],
+  [2655, "Resistance (+5 All Resist)"],
+
+  // ─── TBC Off-Hand ─────────────────────────────────────────────────
+  [2666, "Major Intellect (+12 Int)"],
+
+  // ─── WotLK Head Arcanums ──────────────────────────────────────────
+  [3812, "Arcanum of Torment (+50 AP, +20 Crit)"],
+  [3815, "Arcanum of Blissful Mending (+30 SP, +10 MP5)"],
+  [3817, "Arcanum of Triumph (+50 AP, +20 Resilience)"],
+  [3818, "Arcanum of Dominance (+29 SP, +20 Resilience)"],
+  [3819, "Arcanum of the Stalwart Protector (+37 Stam, +20 Def)"],
+  [3820, "Arcanum of Burning Mysteries (+30 SP, +20 Crit)"],
+
+  // ─── WotLK Shoulder Inscriptions ──────────────────────────────────
+  [3806, "Inscription of the Axe (+30 AP, +10 Crit)"],
+  [3807, "Inscription of the Crag (+18 SP, +5 MP5)"],
+  [3808, "Greater Inscription of the Axe (+40 AP, +15 Crit)"],
+  [3809, "Greater Inscription of the Crag (+24 SP, +8 MP5)"],
+  [3810, "Greater Inscription of the Storm (+24 SP, +15 Crit)"],
+  [3811, "Greater Inscription of the Pinnacle (+20 Dodge, +15 Def)"],
+  [3793, "Inscription of the Pinnacle (+15 Dodge, +10 Def)"],
+  [3794, "Inscription of the Storm (+18 SP, +10 Crit)"],
+  [3835, "Inscription of Triumph (+40 AP, +15 Resilience)"],
+  [3836, "Inscription of Dominance (+23 SP, +15 Resilience)"],
+  [3837, "Master's Inscription of the Axe (+120 AP, +15 Crit)"],
+  [3838, "Master's Inscription of the Crag (+70 SP, +8 MP5)"],
+  [3876, "Master's Inscription of the Storm (+70 SP, +15 Crit)"],
+  [3852, "Greater Inscription of the Gladiator (+30 Stam, +15 Resilience)"],
+
+  // ─── WotLK Chest ──────────────────────────────────────────────────
+  [3233, "Super Stats (+8 All Stats)"],
+  [3236, "Exceptional Mana (+250 Mana)"],
+  [3245, "Exceptional Resilience (+20 Resilience)"],
+  [3252, "Super Health (+275 HP)"],
+  [3297, "Greater Defense (+22 Def)"],
+  [3832, "Powerful Stats (+10 All Stats)"],
+
+  // ─── WotLK Cloak ──────────────────────────────────────────────────
+  [3230, "Superior Agility (+16 Agi)"],
+  [3243, "Spell Piercing (+35 Spell Pen)"],
+  [3256, "Shadow Armor (+10 Agi, +8 Dodge)"],
+  [3294, "Wisdom (-2% Threat, +10 Spirit)"],
+  [3825, "Speed (+23 Haste)"],
+  [3831, "Greater Speed (+23 Haste)"],
+  [3859, "Springy Arachnoweave (+27 SP)"],
+  [3605, "Flexweave Underlay (+23 Agi)"],
+
+  // ─── WotLK Bracers ───────────────────────────────────────────────
+  [3231, "Expertise (+15 Expertise)"],
+  [3757, "Superior Spellpower (+30 SP)"],
+  [3758, "Exceptional Intellect (+16 Int)"],
+  [3845, "Greater Assault (+50 AP)"],
+  [3850, "Major Stamina (+40 Stam)"],
+  [3756, "Greater Stats (+6 All Stats)"],
+
+  // ─── WotLK Gloves ────────────────────────────────────────────────
+  [3234, "Precision (+20 Hit)"],
+  [3246, "Exceptional Spellpower (+28 SP)"],
+  [3253, "Crusher (+44 AP)"],
+  [3829, "Greater Assault (+44 AP)"],
+  [3604, "Hyperspeed Accelerators (Engineering)"],
+  [3603, "Hand-Mounted Pyro Rocket (Engineering)"],
+  [3860, "Reticulated Armor Webbing (+885 Armor, Engineering)"],
+
+  // ─── WotLK Legs ──────────────────────────────────────────────────
+  [3325, "Icescale Leg Armor (+75 AP, +22 Crit)"],
+  [3326, "Frosthide Leg Armor (+55 Stam, +22 Agi)"],
+  [3822, "Earthen Leg Armor (+28 Stam, +40 Resilience)"],
+  [3718, "Brilliant Spellthread (+50 SP, +20 Spirit)"],
+  [3719, "Sapphire Spellthread (+50 SP, +30 Stam)"],
+  [3720, "Shining Spellthread (+35 SP, +12 Spirit)"],
+  [3721, "Azure Spellthread (+35 SP, +20 Stam)"],
+  [3853, "Jormungar Leg Armor (+45 Stam, +15 Agi)"],
+  [3823, "Nerubian Leg Armor (+55 AP, +15 Crit)"],
+
+  // ─── WotLK Boots ─────────────────────────────────────────────────
+  [3232, "Tuskarr's Vitality (+15 Stam, Minor Speed)"],
+  [3244, "Greater Fortitude (+22 Stam)"],
+  [3824, "Icewalker (+12 Hit, +12 Crit)"],
+  [3826, "Greater Spirit (+18 Spirit)"],
+  [3606, "Nitro Boosts (Engineering)"],
+
+  // ─── WotLK Weapons ───────────────────────────────────────────────
+  [3788, "Accuracy (+25 Hit, +25 Crit)"],
+  [3789, "Berserking"],
+  [3790, "Black Magic"],
+  [3828, "Greater Spellpower (+50 SP)"],
+  [3830, "Massacre (+110 AP, 2H)"],
+  [3833, "Superior Potency (+65 AP)"],
+  [3834, "Mighty Spellpower (+63 SP)"],
+  [3844, "Greater Savagery (+85 AP, 2H)"],
+  [3827, "Exceptional Spellpower (+50 SP)"],
+  [3869, "Blade Ward"],
+  [3870, "Blood Draining"],
+
+  // ─── WotLK Shield ────────────────────────────────────────────────
+  [3229, "Resilience (+20 Resilience)"],
+  [3748, "Defense (+20 Def)"],
+  [3849, "Titanium Plating (-50% Disarm Duration)"],
+
+  // ─── Cata Head Arcanums ───────────────────────────────────────────
+  [4206, "Arcanum of the Earthen Ring (+60 Stam, +35 Dodge)"],
+  [4207, "Arcanum of Hyjal (+60 Int, +35 Crit)"],
+  [4208, "Arcanum of the Dragonmaw (+60 Str, +35 Mastery)"],
+  [4209, "Arcanum of the Ramkahen (+60 Agi, +35 Haste)"],
+  [4246, "Arcanum of Vicious Agility (+60 Agi, +35 Resilience)"],
+  [4247, "Arcanum of Vicious Strength (+60 Str, +35 Resilience)"],
+  [4248, "Arcanum of Vicious Intellect (+60 Int, +35 Resilience)"],
+
+  // ─── Cata Shoulder Inscriptions ───────────────────────────────────
+  [4193, "Greater Inscription of Charged Lodestone (+50 Int, +25 Haste)"],
+  [4194, "Greater Inscription of Jagged Stone (+50 Str, +25 Crit)"],
+  [4195, "Greater Inscription of Shattered Crystal (+50 Agi, +25 Mastery)"],
+  [4196, "Greater Inscription of Unbreakable Quartz (+75 Stam, +25 Dodge)"],
+  [4197, "Inscription of Charged Lodestone (+30 Int, +20 Haste)"],
+  [4198, "Inscription of Jagged Stone (+30 Str, +20 Crit)"],
+  [4199, "Inscription of Shattered Crystal (+30 Agi, +20 Mastery)"],
+  [4200, "Inscription of Unbreakable Quartz (+45 Stam, +20 Dodge)"],
+  [4270, "Felfire Inscription (+130 Int, +25 Haste)"],
+  [4271, "Inscription of the Earth Prince (+195 Stam, +25 Dodge)"],
+  [4272, "Lionsmane Inscription (+130 Str, +25 Crit)"],
+  [4273, "Swiftsteel Inscription (+130 Agi, +25 Mastery)"],
+
+  // ─── Cata Chest ───────────────────────────────────────────────────
+  [4063, "Peerless Stats (+20 All Stats)"],
+  [4070, "Exceptional Spirit (+40 Spirit)"],
+  [4077, "Greater Stamina (+75 Stam)"],
+  [4088, "Mighty Resilience (+40 Resilience)"],
+  [4102, "Mighty Stats (+15 All Stats)"],
+
+  // ─── Cata Cloak ───────────────────────────────────────────────────
+  [4064, "Protection (+250 Armor)"],
+  [4087, "Intellect (+30 Int)"],
+  [4096, "Greater Intellect (+50 Int)"],
+  [4100, "Greater Critical Strike (+65 Crit)"],
+
+  // ─── Cata Bracers ─────────────────────────────────────────────────
+  [4071, "Greater Speed (+65 Haste)"],
+  [4093, "Speed (+50 Haste)"],
+  [4101, "Greater Critical Strike (+65 Crit)"],
+  [4256, "Mighty Intellect (+50 Int)"],
+  [4257, "Major Strength (+50 Str)"],
+  [4258, "Greater Expertise (+50 Expertise)"],
+  [4108, "Precision (+50 Hit)"],
+
+  // ─── Cata Gloves ──────────────────────────────────────────────────
+  [4068, "Mastery (+50 Mastery)"],
+  [4075, "Greater Mastery (+65 Mastery)"],
+  [4082, "Mighty Strength (+50 Str)"],
+  [4106, "Haste (+50 Haste)"],
+  [4107, "Greater Haste (+65 Haste)"],
+
+  // ─── Cata Legs ────────────────────────────────────────────────────
+  [4109, "Powerful Ghostly Spellthread (+95 Int, +55 Spirit)"],
+  [4110, "Powerful Enchanted Spellthread (+95 Int, +80 Stam)"],
+  [4111, "Dragonscale Leg Armor (+190 AP, +55 Crit)"],
+  [4112, "Charscale Leg Armor (+145 Stam, +55 Agi)"],
+  [4113, "Drakehide Leg Armor (+145 Stam, +55 Dodge)"],
+  [4126, "Ghostly Spellthread (+55 Int, +35 Spirit)"],
+  [4127, "Enchanted Spellthread (+55 Int, +45 Stam)"],
+
+  // ─── Cata Boots ───────────────────────────────────────────────────
+  [4061, "Mastery (+50 Mastery)"],
+  [4062, "Earthen Vitality (+30 Stam, Minor Speed)"],
+  [4069, "Haste (+50 Haste)"],
+  [4076, "Assassin's Step (+25 Agi, Minor Speed)"],
+  [4086, "Lavawalker (+35 Mastery, Minor Speed)"],
+  [4104, "Precision (+50 Hit)"],
+  [4105, "Major Agility (+35 Agi)"],
+
+  // ─── Cata Weapons ─────────────────────────────────────────────────
+  [4066, "Avalanche"],
+  [4067, "Mending"],
+  [4074, "Power Torrent"],
+  [4083, "Elemental Slayer"],
+  [4084, "Hurricane"],
+  [4097, "Landslide"],
+  [4098, "Windwalk"],
+  [4099, "Heartsong"],
+
+  // ─── MoP Enchants ─────────────────────────────────────────────────
+  // Head: no enchants in MoP
+  // Shoulder
+  [4803, "Greater Crane Wing Inscription (+200 Int, +100 Crit)"],
+  [4804, "Greater Ox Horn Inscription (+200 Stam, +100 Dodge)"],
+  [4805, "Greater Tiger Claw Inscription (+200 Str, +100 Crit)"],
+  [4806, "Greater Tiger Fang Inscription (+200 Agi, +100 Crit)"],
+  // Chest
+  [4419, "Glorious Stats (+80 All Stats)"],
+  [4412, "Super Resilience (+200 Resilience)"],
+  [4413, "Mighty Spirit (+200 Spirit)"],
+  [4414, "Superior Stamina (+300 Stam)"],
+  // Cloak
+  [4418, "Superior Intellect (+180 Int)"],
+  [4421, "Superior Critical Strike (+180 Crit)"],
+  // Bracers
+  [4416, "Greater Agility (+180 Agi)"],
+  [4417, "Exceptional Strength (+180 Str)"],
+  [4420, "Super Intellect (+170 Int)"],
+  // Gloves
+  [4430, "Greater Haste (+170 Haste)"],
+  [4431, "Superior Mastery (+170 Mastery)"],
+  [4432, "Superior Expertise (+170 Expertise)"],
+  [4433, "Superior Strength (+170 Str)"],
+  // Legs
+  [4822, "Angerhide Leg Armor (+285 AP, +165 Crit)"],
+  [4823, "Ironscale Leg Armor (+430 Stam, +165 Dodge)"],
+  [4824, "Sha Armor Kit (+285 Stam)"],
+  [4825, "Greater Pearlescent Spellthread (+285 Int, +165 Spirit)"],
+  [4826, "Greater Cerulean Spellthread (+285 Int, +165 Crit)"],
+  // Boots
+  [4429, "Greater Haste (+175 Haste)"],
+  [4428, "Greater Precision (+175 Hit)"],
+  [4427, "Blurred Speed (+140 Agi, Minor Speed)"],
+  [4426, "Pandaren's Step (+140 Mastery, Minor Speed)"],
+  // Weapons
+  [4441, "Windsong"],
+  [4443, "Elemental Force"],
+  [4444, "Dancing Steel"],
+  [4445, "Colossus"],
+  [4446, "River's Song"],
+  [4442, "Jade Spirit"],
+]);
+
+// ─── Gem Name Database ──────────────────────────────────────────────
+// Maps gem item IDs to display names (supplements GEM_STAT_DB for display)
+
+export const GEM_NAME_DB = new Map<number, string>([
+  // ─── Classic Gems ─────────────────────────────────────────────────
+  // Not commonly gemmed in Classic
+
+  // ─── TBC Red Gems ─────────────────────────────────────────────────
+  [32193, "Bold Living Ruby"],          // +8 Str
+  [32194, "Delicate Living Ruby"],      // +8 Agi
+  [32195, "Brilliant Living Ruby"],     // +8 Int
+  [32196, "Runed Living Ruby"],         // +9 SP
+  [32197, "Bright Living Ruby"],        // +16 AP
+  [32198, "Subtle Living Ruby"],        // +8 Dodge
+  [32199, "Flashing Living Ruby"],      // +8 Parry
+  [32200, "Thick Living Ruby"],         // +8 Def
+  [32201, "Teardrop Living Ruby"],      // +18 Healing
+  // TBC Epic Red
+  [35487, "Delicate Crimson Spinel"],   // +10 Agi
+  [35488, "Runed Crimson Spinel"],      // +12 SP
+  [35489, "Bold Crimson Spinel"],       // +10 Str
+  [35490, "Bright Crimson Spinel"],     // +20 AP
+  [35491, "Brilliant Crimson Spinel"],  // +10 Int
+  [35492, "Subtle Crimson Spinel"],     // +10 Dodge
+  [35493, "Flashing Crimson Spinel"],   // +10 Parry
+  [35494, "Teardrop Crimson Spinel"],   // +22 Healing
+
+  // ─── TBC Blue Gems ────────────────────────────────────────────────
+  [32202, "Solid Star of Elune"],       // +12 Stam
+  [32203, "Sparkling Star of Elune"],   // +8 Spirit
+  [32204, "Lustrous Star of Elune"],    // +4 MP5
+  [32205, "Stormy Star of Elune"],      // +10 Spell Pen
+  [32206, "Rigid Star of Elune"],       // +8 Hit
+  // TBC Epic Blue
+  [35495, "Solid Empyrean Sapphire"],   // +15 Stam
+  [35496, "Sparkling Empyrean Sapphire"], // +10 Spirit
+  [35497, "Lustrous Empyrean Sapphire"], // +5 MP5
+  [35498, "Stormy Empyrean Sapphire"],  // +13 Spell Pen
+  [35499, "Rigid Empyrean Sapphire"],   // +10 Hit
+
+  // ─── TBC Yellow Gems ──────────────────────────────────────────────
+  [32207, "Gleaming Dawnstone"],        // +8 Crit
+  [32210, "Great Dawnstone"],           // +8 Hit
+  [32215, "Rigid Dawnstone"],           // +8 Hit (spell)
+  [32209, "Smooth Dawnstone"],          // +8 Crit
+  [32212, "Mystic Dawnstone"],          // +8 Resilience
+  // TBC Epic Yellow
+  [35500, "Smooth Lionseye"],           // +10 Crit
+  [35501, "Gleaming Lionseye"],         // +10 Crit
+  [35502, "Great Lionseye"],            // +10 Hit
+  [35503, "Mystic Lionseye"],           // +10 Resilience
+  [35707, "Rigid Lionseye"],            // +10 Hit (spell)
+
+  // ─── TBC Orange Gems ──────────────────────────────────────────────
+  [32211, "Luminous Noble Topaz"],      // +5 SP, +4 Int
+  [32217, "Inscribed Noble Topaz"],     // +5 Str, +4 Crit
+  [32218, "Potent Noble Topaz"],        // +5 SP, +4 Crit
+  [32219, "Veiled Noble Topaz"],        // +5 SP, +4 Hit
+  [32220, "Glinting Noble Topaz"],      // +5 Agi, +4 Hit
+  [32221, "Wicked Noble Topaz"],        // +8 AP, +4 Crit
+  [32222, "Etched Noble Topaz"],        // +5 Str, +4 Hit
+  // TBC Epic Orange
+  [35758, "Inscribed Pyrestone"],       // +5 Str, +5 Crit
+  [35759, "Potent Pyrestone"],          // +6 SP, +5 Crit
+  [35760, "Luminous Pyrestone"],        // +6 SP, +5 Int
+  [35761, "Glinting Pyrestone"],        // +5 Agi, +5 Hit
+  [35762, "Veiled Pyrestone"],          // +6 SP, +5 Hit
+
+  // ─── TBC Green Gems ───────────────────────────────────────────────
+  [32208, "Enduring Talasite"],         // +4 Def, +6 Stam
+  [32213, "Jagged Talasite"],           // +4 Crit, +6 Stam
+  [32224, "Radiant Talasite"],          // +5 SP, +4 Spell Pen
+  [32225, "Dazzling Talasite"],         // +4 Int, +2 MP5
+  // TBC Epic Green
+  [35703, "Enduring Seaspray Emerald"], // +5 Def, +7 Stam
+  [35704, "Jagged Seaspray Emerald"],   // +5 Crit, +7 Stam
+  [35705, "Radiant Seaspray Emerald"],  // +6 SP, +5 Spell Pen
+  [35706, "Dazzling Seaspray Emerald"], // +5 Int, +2 MP5
+
+  // ─── TBC Purple Gems ──────────────────────────────────────────────
+  [32214, "Glowing Nightseye"],         // +5 SP, +6 Stam
+  [32216, "Shifting Nightseye"],        // +4 Agi, +6 Stam
+  [32223, "Sovereign Nightseye"],       // +4 Str, +6 Stam
+  [32226, "Purified Shadow Pearl"],     // +5 SP, +4 Spirit
+  // TBC Epic Purple
+  [35756, "Glowing Shadowsong Amethyst"], // +6 SP, +7 Stam
+  [35757, "Shifting Shadowsong Amethyst"], // +5 Agi, +7 Stam
+
+  // ─── TBC Meta Gems ────────────────────────────────────────────────
+  [34220, "Chaotic Skyfire Diamond"],   // +12 Crit, 3% Crit Damage
+  [25893, "Mystical Skyfire Diamond"],  // Proc Haste
+  [25901, "Insightful Earthstorm Diamond"], // +12 Int, Proc Mana
+  [32409, "Relentless Earthstorm Diamond"], // +12 Agi, 3% Crit Damage
+  [25897, "Bracing Earthstorm Diamond"], // +14 SP, -2% Threat
+
+  // ─── WotLK Red Gems ──────────────────────────────────────────────
+  [39900, "Bold Bloodstone"],           // +12 Str
+  [39905, "Delicate Bloodstone"],       // +12 Agi
+  [39910, "Brilliant Bloodstone"],      // +12 Int
+  [39911, "Runed Bloodstone"],          // +12 SP
+  [39906, "Bright Bloodstone"],         // +24 AP
+  [39996, "Bold Scarlet Ruby"],         // +16 Str
+  [39997, "Delicate Scarlet Ruby"],     // +16 Agi
+  [39998, "Runed Scarlet Ruby"],        // +19 SP
+  [39999, "Brilliant Scarlet Ruby"],    // +16 Int
+  [40000, "Subtle Scarlet Ruby"],       // +16 Dodge
+  [40001, "Flashing Scarlet Ruby"],     // +16 Parry
+  [40002, "Fractured Scarlet Ruby"],    // +16 ArP
+  [40003, "Precise Scarlet Ruby"],      // +16 Expertise
+  // WotLK Epic Red
+  [40111, "Bold Cardinal Ruby"],        // +20 Str
+  [40112, "Delicate Cardinal Ruby"],    // +20 Agi
+  [40113, "Runed Cardinal Ruby"],       // +23 SP
+  [40114, "Brilliant Cardinal Ruby"],   // +20 Int
+  [40115, "Subtle Cardinal Ruby"],      // +20 Dodge
+  [40116, "Flashing Cardinal Ruby"],    // +20 Parry
+  [40117, "Fractured Cardinal Ruby"],   // +20 ArP
+  [40118, "Precise Cardinal Ruby"],     // +20 Expertise
+
+  // ─── WotLK Blue Gems ─────────────────────────────────────────────
+  [39915, "Solid Chalcedony"],          // +18 Stam
+  [39919, "Solid Sky Sapphire"],        // +24 Stam
+  [40010, "Sparkling Sky Sapphire"],    // +16 Spirit
+  [40119, "Solid Majestic Zircon"],     // +30 Stam
+  [40120, "Sparkling Majestic Zircon"], // +20 Spirit
+
+  // ─── WotLK Yellow Gems ───────────────────────────────────────────
+  [40014, "Rigid Autumn's Glow"],       // +16 Hit
+  [40015, "Thick Autumn's Glow"],       // +16 Def
+  [40016, "Smooth Autumn's Glow"],      // +16 Crit
+  [40017, "Mystic Autumn's Glow"],      // +16 Resilience
+  [40123, "Brilliant King's Amber"],    // +20 Int
+  [40124, "Smooth King's Amber"],       // +20 Crit
+  [40125, "Rigid King's Amber"],        // +20 Hit
+  [40126, "Thick King's Amber"],        // +20 Def
+  [40127, "Mystic King's Amber"],       // +20 Resilience
+  [40128, "Quick King's Amber"],        // +20 Haste
+
+  // ─── WotLK Orange Gems ───────────────────────────────────────────
+  [40023, "Veiled Monarch Topaz"],      // +8 SP, +8 Hit
+  [40024, "Potent Monarch Topaz"],      // +8 SP, +8 Crit
+  [40025, "Luminous Monarch Topaz"],    // +8 SP, +8 Int... hmm
+  [40026, "Inscribed Monarch Topaz"],   // +8 Str, +8 Crit
+  [40032, "Glinting Monarch Topaz"],    // +8 Agi, +8 Hit
+  [40037, "Etched Monarch Topaz"],      // +8 Str, +8 Hit
+  [40133, "Veiled Ametrine"],           // +10 SP, +10 Hit
+  [40142, "Potent Ametrine"],           // +10 SP, +10 Crit
+  [40143, "Inscribed Ametrine"],        // +10 Str, +10 Crit
+  [40144, "Etched Ametrine"],           // +10 Str, +10 Hit
+  [40147, "Glinting Ametrine"],         // +10 Agi, +10 Hit
+  [40148, "Accurate Ametrine"],         // +10 Expertise, +10 Hit
+  [40149, "Deadly Ametrine"],           // +10 Agi, +10 Crit
+  [40152, "Fierce Ametrine"],           // +10 Str, +10 Haste
+  [40153, "Deft Ametrine"],             // +10 Agi, +10 Haste
+  [40154, "Reckless Ametrine"],         // +10 SP, +10 Haste
+  [40155, "Wicked Ametrine"],           // +20 AP, +10 Crit
+  [40157, "Stark Ametrine"],            // +20 AP, +10 Hit
+
+  // ─── WotLK Purple Gems ───────────────────────────────────────────
+  [40011, "Purified Twilight Opal"],    // +8 SP, +8 Spirit
+  [40022, "Shifting Twilight Opal"],    // +8 Agi, +12 Stam
+  [40027, "Sovereign Twilight Opal"],   // +8 Str, +12 Stam
+  [40029, "Glowing Twilight Opal"],     // +8 SP, +12 Stam
+  [40130, "Purified Dreadstone"],       // +10 SP, +10 Spirit
+  [40129, "Sovereign Dreadstone"],      // +10 Str, +15 Stam
+  [40130, "Purified Dreadstone"],       // +10 SP, +10 Spirit
+  [40131, "Shifting Dreadstone"],       // +10 Agi, +15 Stam
+  [40132, "Glowing Dreadstone"],        // +10 SP, +15 Stam
+  [40134, "Guardian's Dreadstone"],     // +10 Expertise, +15 Stam
+
+  // ─── WotLK Green Gems ────────────────────────────────────────────
+  [40088, "Jagged Forest Emerald"],     // +8 Crit, +12 Stam
+  [40089, "Enduring Forest Emerald"],   // +8 Def, +12 Stam
+  [40091, "Vivid Forest Emerald"],      // +8 Hit, +12 Stam
+  [40094, "Forceful Forest Emerald"],   // +8 Haste, +12 Stam
+  [40095, "Energized Forest Emerald"],  // +8 Haste, +8 Spirit
+  [40105, "Jagged Eye of Zul"],         // +10 Crit, +15 Stam
+  [40106, "Enduring Eye of Zul"],       // +10 Def, +15 Stam
+
+  // ─── WotLK Meta Gems ─────────────────────────────────────────────
+  [41285, "Chaotic Skyflare Diamond"],  // +21 Crit, 3% Crit Damage
+  [41333, "Ember Skyflare Diamond"],    // +25 SP, +2% Int
+  [41376, "Revitalizing Skyflare Diamond"], // +11 SP, 3% Crit Heals
+  [41380, "Austere Earthsiege Diamond"], // +32 Stam, +2% Armor
+  [41389, "Beaming Earthsiege Diamond"], // +21 Crit, +2% Mana
+  [41395, "Insightful Earthsiege Diamond"], // +21 Int, Proc Mana
+  [41398, "Relentless Earthsiege Diamond"], // +21 Agi, 3% Crit Damage
+  [41401, "Bracing Earthsiege Diamond"], // +25 SP, -2% Threat
+
+  // ─── Cata Red Gems ────────────────────────────────────────────────
+  [52206, "Bold Inferno Ruby"],         // +40 Str
+  [52207, "Brilliant Inferno Ruby"],    // +40 Int
+  [52212, "Delicate Inferno Ruby"],     // +40 Agi
+  [52210, "Flashing Inferno Ruby"],     // +40 Parry
+  [52214, "Subtle Inferno Ruby"],       // +40 Dodge
+  [52230, "Precise Inferno Ruby"],      // +40 Expertise
+  [71878, "Delicate Queen's Garnet"],   // +50 Agi
+  [71879, "Brilliant Queen's Garnet"],  // +50 Int
+  [71880, "Bold Queen's Garnet"],       // +50 Str
+
+  // ─── Cata Blue Gems ───────────────────────────────────────────────
+  [52235, "Rigid Ocean Sapphire"],      // +40 Hit
+  [52242, "Solid Ocean Sapphire"],      // +60 Stam
+  [52244, "Sparkling Ocean Sapphire"],  // +40 Spirit
+  [71820, "Solid Deepholm Iolite"],     // +75 Stam
+  [71823, "Sparkling Deepholm Iolite"], // +50 Spirit
+
+  // ─── Cata Yellow Gems ─────────────────────────────────────────────
+  [52232, "Quick Amberjewel"],          // +40 Haste
+  [52234, "Smooth Amberjewel"],         // +40 Crit
+  [52239, "Fractured Amberjewel"],      // +40 Mastery
+  [52241, "Mystic Amberjewel"],         // +40 Resilience
+
+  // ─── MoP Red Gems ────────────────────────────────────────────────
+  [76693, "Bold Primordial Ruby"],      // +160 Str
+  [76694, "Delicate Primordial Ruby"],  // +160 Agi
+  [76695, "Brilliant Primordial Ruby"], // +160 Int
+  [76696, "Flashing Primordial Ruby"],  // +160 Parry
+  [76697, "Precise Primordial Ruby"],   // +160 Expertise
+
+  // ─── MoP Blue Gems ───────────────────────────────────────────────
+  [76693, "Solid River's Heart"],       // +240 Stam
+  [76700, "Sparkling River's Heart"],   // +160 Spirit
+  [76699, "Rigid River's Heart"],       // +160 Hit
+
+  // ─── MoP Yellow Gems ─────────────────────────────────────────────
+  [76701, "Smooth Sun's Radiance"],     // +160 Crit
+  [76702, "Fractured Sun's Radiance"],  // +160 Mastery
+  [76703, "Quick Sun's Radiance"],      // +160 Haste
+]);
+
 // ─── Class Buff Definitions ──────────────────────────────────────────
 
 import type { RaidRole } from "./wcl-types";
