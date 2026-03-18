@@ -44,7 +44,7 @@ export interface WCLGearItem {
   permanentEnchantName?: string;
   temporaryEnchant?: number;
   temporaryEnchantName?: string;
-  gems?: Array<{ id: number; itemLevel: number; icon?: string }>;
+  gems?: Array<{ id: number; itemLevel: number; icon?: string; name?: string }>;
   setID?: number;
 }
 
@@ -271,6 +271,7 @@ export interface GearSlotComparison {
   topItem: WCLGearItem | null;
   isSame: boolean;
   playerEnchant: string | null;
+  playerEnchantId: number | null;
   topEnchant: string | null;
   missingEnchant: boolean;
 }

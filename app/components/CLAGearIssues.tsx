@@ -218,9 +218,15 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                           </span>
                         )}
                         {slot.enchantId > 0 && (
-                          <span className="text-status-good">
+                          <a
+                            href={`https://www.wowhead.com/${wowheadDomain}/spell=${slot.enchantId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-status-good hover:underline"
+                            data-wowhead={`spell=${slot.enchantId}&domain=${wowheadDomain}`}
+                          >
                             {slot.enchantName || "Enchanted"}
-                          </span>
+                          </a>
                         )}
                         {slot.gems.length > 0 && (
                           <span className="text-purple-400 flex gap-1">
@@ -233,7 +239,7 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                                 className="hover:underline"
                                 data-wowhead={`item=${gem.id}&domain=${wowheadDomain}`}
                               >
-                                Gem{slot.gems.length > 1 ? ` ${gi + 1}` : ""}
+                                {gem.name || `Gem${slot.gems.length > 1 ? ` ${gi + 1}` : ""}`}
                               </a>
                             ))}
                           </span>

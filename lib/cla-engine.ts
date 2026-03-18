@@ -339,7 +339,8 @@ export function buildGearSnapshot(
       enchantName: detailItem?.permanentEnchantName ?? "",
       gems: eventGems.map((g) => {
         const dg = detailGems?.find((d) => d.id === g.id);
-        return { id: g.id, itemLevel: dg?.itemLevel ?? g.itemLevel };
+        const gemDbEntry = GEM_STAT_DB.get(g.id);
+        return { id: g.id, itemLevel: dg?.itemLevel ?? g.itemLevel, name: dg?.name ?? gemDbEntry?.name };
       }),
       wowheadUrl: `https://www.wowhead.com/${wowheadDomain}/item=${item.id}`,
     });

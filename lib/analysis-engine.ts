@@ -190,6 +190,7 @@ export function analyzeGear(
       topItem,
       isSame: playerItem?.id === topItem?.id,
       playerEnchant,
+      playerEnchantId: hasPlayerEnchant ? (playerItem!.permanentEnchant ?? null) : null,
       topEnchant,
       missingEnchant,
     });

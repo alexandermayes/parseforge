@@ -96,6 +96,6 @@ export interface CLAGearSlot {
   itemLevel: number;
   enchantId: number;
   enchantName: string;
-  gems: Array<{ id: number; itemLevel: number }>;
+  gems: Array<{ id: number; itemLevel: number; name?: string }>;
   wowheadUrl: string;
 }

@@ -155,13 +155,36 @@ export default function GearComparison({
                           </span>
                         )}
                         {slot.playerEnchant && (
-                          <span className="text-xs text-status-good">
-                            {slot.playerEnchant}
-                          </span>
+                          slot.playerEnchantId ? (
+                            <a
+                              href={`https://www.wowhead.com/${domain}/spell=${slot.playerEnchantId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-status-good hover:underline"
+                              data-wowhead={`spell=${slot.playerEnchantId}&domain=${domain}`}
+                            >
+                              {slot.playerEnchant}
+                            </a>
+                          ) : (
+                            <span className="text-xs text-status-good">
+                              {slot.playerEnchant}
+                            </span>
+                          )
                         )}
                         {slot.playerItem.gems && slot.playerItem.gems.length > 0 && (
-                          <span className="text-xs text-purple-400">
-                            {slot.playerItem.gems.length} gem{slot.playerItem.gems.length > 1 ? "s" : ""}
+                          <span className="text-xs text-purple-400 flex gap-1">
+                            {slot.playerItem.gems.map((gem, gi) => (
+                              <a
+                                key={gi}
+                                href={`https://www.wowhead.com/${domain}/item=${gem.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                                data-wowhead={`item=${gem.id}&domain=${domain}`}
+                              >
+                                {gem.name || `Gem${slot.playerItem!.gems!.length > 1 ? ` ${gi + 1}` : ""}`}
+                              </a>
+                            ))}
                           </span>
                         )}
                         {slot.missingEnchant && (
