@@ -488,9 +488,12 @@ export function checkTalentCompleteness(
   const expected = EXPECTED_TALENT_POINTS[wowheadDomain];
   if (expected === undefined) return null;
 
-  const actual = combatantInfo.talents?.length ?? 0;
-  if (actual === 0) return null; // no talent data available
+  // The events API `talents` array has one entry per tree (typically 3),
+  // NOT one per talent point. Use `talentTree` which lists individual points.
+  const talentTree = combatantInfo.talentTree;
+  if (!talentTree || talentTree.length === 0) return null;
 
+  const actual = talentTree.length;
   if (expected - actual >= 2) {
     return { expected, actual };
   }
