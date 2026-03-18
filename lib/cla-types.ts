@@ -30,6 +30,19 @@ export interface CLAPlayerResult {
   fightData: CLAPlayerFightData[];
   gearIssues: CLAGearIssue[];
   gearSnapshot: CLAGearSlot[];
+  classBuffs: CLAClassBuff[];
+  talentIssue: { expected: number; actual: number } | null;
+}
+
+// ─── Class Buff Audit ──────────────────────────────────────────────
+
+export interface CLAClassBuff {
+  buffFamily: string;
+  present: boolean;
+  spellId: number;
+  spellName: string;
+  severity: "ok" | "missing" | "warning";
+  reason: string;
 }
 
 export interface CLAPlayerFightData {
@@ -61,7 +74,7 @@ export interface CLAConsumableDetail {
 // ─── Gear Issues ────────────────────────────────────────────────────
 
 export type GearIssueSeverity = "error" | "warning" | "info";
-export type GearIssueType = "missing_enchant" | "missing_gem" | "empty_socket" | "low_ilvl" | "missing_weapon_enhancement";
+export type GearIssueType = "missing_enchant" | "missing_gem" | "empty_socket" | "low_ilvl" | "missing_weapon_enhancement" | "wrong_gem_type";
 
 export interface CLAGearIssue {
   slotIndex: number;

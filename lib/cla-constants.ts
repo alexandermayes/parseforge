@@ -268,3 +268,212 @@ for (const [id, info] of CONSUMABLE_DB) {
 export function getAllConsumableAbilityIds(): number[] {
   return Array.from(CONSUMABLE_DB.keys());
 }
+
+// ─── Class Buff Definitions ──────────────────────────────────────────
+
+import type { RaidRole } from "./wcl-types";
+
+export interface ClassBuffFamily {
+  name: string;
+  spellIds: Set<number>;
+  expectedRoles: RaidRole[];
+  isWarningFor?: RaidRole[];
+  warningReason?: string;
+  /** Which wowhead domains (expansions) this buff family applies to */
+  expansions?: string[];
+}
+
+export const CLASS_BUFF_FAMILIES: ClassBuffFamily[] = [
+  // ── Paladin Blessings ──
+  {
+    name: "Blessing of Might",
+    spellIds: new Set([19740, 25782, 48932, 48934]),
+    expectedRoles: ["Physical", "Tank"],
+  },
+  {
+    name: "Blessing of Wisdom",
+    spellIds: new Set([19742, 25894, 48935, 48937]),
+    expectedRoles: ["Caster", "Healer"],
+  },
+  {
+    name: "Blessing of Kings",
+    spellIds: new Set([20217, 25898]),
+    expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
+  },
+  {
+    name: "Blessing of Salvation",
+    spellIds: new Set([1038, 25895]),
+    expectedRoles: [],
+    isWarningFor: ["Tank"],
+    warningReason: "Salvation on Tank reduces threat",
+    expansions: ["classic", "tbc"],
+  },
+  // ── Priest Buffs ──
+  {
+    name: "Power Word: Fortitude",
+    spellIds: new Set([1243, 21562, 48161, 48162]),
+    expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
+  },
+  {
+    name: "Divine Spirit",
+    spellIds: new Set([14752, 27681, 48073, 48074]),
+    expectedRoles: ["Caster", "Healer"],
+    expansions: ["classic", "tbc", "wrath"],
+  },
+  {
+    name: "Shadow Protection",
+    spellIds: new Set([976, 27683, 48169, 48170]),
+    expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
+  },
+  // ── Druid Buffs ──
+  {
+    name: "Mark of the Wild",
+    spellIds: new Set([1126, 21849, 48469, 48470]),
+    expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
+  },
+  // ── Mage Buffs ──
+  {
+    name: "Arcane Intellect",
+    spellIds: new Set([1459, 23028, 42995, 43002]),
+    expectedRoles: ["Caster", "Healer"],
+  },
+  // ── Warrior Shouts ──
+  {
+    name: "Battle Shout",
+    spellIds: new Set([6673, 47436]),
+    expectedRoles: ["Physical", "Tank"],
+  },
+  {
+    name: "Commanding Shout",
+    spellIds: new Set([469, 47440]),
+    expectedRoles: ["Tank"],
+  },
+];
+
+// ─── Gem Stat Database ───────────────────────────────────────────────
+
+export type GemStatType =
+  | "spell_hit" | "melee_hit" | "spell_power" | "attack_power"
+  | "strength" | "agility" | "intellect" | "spirit" | "defense"
+  | "dodge" | "parry" | "stamina" | "haste" | "crit" | "hit"
+  | "expertise" | "armor_penetration" | "neutral";
+
+export interface GemInfo {
+  name: string;
+  statType: GemStatType;
+  badForRoles: RaidRole[];
+}
+
+export const GEM_STAT_DB = new Map<number, GemInfo>([
+  // ─── TBC Gems ─────────────────────────────────────────────────────
+
+  // Spell hit (Rigid / Great Lionseye variants) → bad for Physical/Tank
+  [32206, { name: "Rigid Star of Elune", statType: "spell_hit", badForRoles: ["Physical", "Tank"] }],
+  [32215, { name: "Rigid Dawnstone", statType: "spell_hit", badForRoles: ["Physical", "Tank"] }],
+  [35707, { name: "Rigid Lionseye", statType: "spell_hit", badForRoles: ["Physical", "Tank"] }],
+
+  // Spell power (Runed / Luminous) → bad for Physical
+  [32196, { name: "Runed Living Ruby", statType: "spell_power", badForRoles: ["Physical"] }],
+  [35488, { name: "Runed Crimson Spinel", statType: "spell_power", badForRoles: ["Physical"] }],
+  [32211, { name: "Luminous Noble Topaz", statType: "spell_power", badForRoles: ["Physical", "Tank"] }],
+  [35760, { name: "Luminous Pyrestone", statType: "spell_power", badForRoles: ["Physical", "Tank"] }],
+
+  // Attack power (Bold / Inscribed) → bad for Caster/Healer
+  [32193, { name: "Bold Living Ruby", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+  [35489, { name: "Bold Crimson Spinel", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+  [32217, { name: "Inscribed Noble Topaz", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+  [35758, { name: "Inscribed Pyrestone", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+
+  // Defense (Thick / Enduring) → bad for DPS roles
+  [32200, { name: "Thick Dawnstone", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [35702, { name: "Thick Lionseye", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [32208, { name: "Enduring Talasite", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [35703, { name: "Enduring Seaspray Emerald", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // ─── WotLK Gems ───────────────────────────────────────────────────
+
+  // Spell power (Runed) → bad for Physical
+  [39998, { name: "Runed Scarlet Ruby", statType: "spell_power", badForRoles: ["Physical"] }],
+  [40113, { name: "Runed Cardinal Ruby", statType: "spell_power", badForRoles: ["Physical"] }],
+
+  // Attack power (Bold) → bad for Caster/Healer
+  [39996, { name: "Bold Scarlet Ruby", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+  [40111, { name: "Bold Cardinal Ruby", statType: "attack_power", badForRoles: ["Caster", "Healer"] }],
+
+  // Strength (Bold) → bad for Caster/Healer
+  [39900, { name: "Bold Bloodstone", statType: "strength", badForRoles: ["Caster", "Healer"] }],
+
+  // Hit rating (Rigid) → universal hit, generally fine but pure hit gems:
+  [40014, { name: "Rigid Autumn's Glow", statType: "hit", badForRoles: [] }],
+  [40125, { name: "Rigid King's Amber", statType: "hit", badForRoles: [] }],
+
+  // Spell hit (Veiled) → spell power + hit, bad for Physical/Tank
+  [40023, { name: "Veiled Monarch Topaz", statType: "spell_hit", badForRoles: ["Physical", "Tank"] }],
+  [40133, { name: "Veiled Ametrine", statType: "spell_hit", badForRoles: ["Physical", "Tank"] }],
+
+  // Defense (Thick / Enduring) → bad for DPS
+  [40015, { name: "Thick Autumn's Glow", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40126, { name: "Thick King's Amber", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40089, { name: "Enduring Forest Emerald", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40106, { name: "Enduring Eye of Zul", statType: "defense", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Dodge (Subtle) → bad for DPS
+  [40000, { name: "Subtle Scarlet Ruby", statType: "dodge", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40115, { name: "Subtle Cardinal Ruby", statType: "dodge", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Parry (Flashing) → bad for DPS
+  [40001, { name: "Flashing Scarlet Ruby", statType: "parry", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40116, { name: "Flashing Cardinal Ruby", statType: "parry", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Stamina-only (Solid) → warning for DPS
+  [39919, { name: "Solid Sky Sapphire", statType: "stamina", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [40119, { name: "Solid Majestic Zircon", statType: "stamina", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Armor pen (Fractured) → bad for Caster/Healer
+  [40002, { name: "Fractured Scarlet Ruby", statType: "armor_penetration", badForRoles: ["Caster", "Healer"] }],
+  [40117, { name: "Fractured Cardinal Ruby", statType: "armor_penetration", badForRoles: ["Caster", "Healer"] }],
+
+  // Spirit (Sparkling) → bad for Physical/Tank
+  [40010, { name: "Sparkling Sky Sapphire", statType: "spirit", badForRoles: ["Physical", "Tank"] }],
+  [40120, { name: "Sparkling Majestic Zircon", statType: "spirit", badForRoles: ["Physical", "Tank"] }],
+
+  // Intellect (Brilliant) → bad for Physical/Tank
+  [40012, { name: "Brilliant Autumn's Glow", statType: "intellect", badForRoles: ["Physical", "Tank"] }],
+  [40123, { name: "Brilliant King's Amber", statType: "intellect", badForRoles: ["Physical", "Tank"] }],
+
+  // ─── Cata Gems ────────────────────────────────────────────────────
+
+  // Spell power (Brilliant Inferno Ruby) → bad for Physical
+  [52207, { name: "Brilliant Inferno Ruby", statType: "intellect", badForRoles: ["Physical"] }],
+  [71879, { name: "Brilliant Queen's Garnet", statType: "intellect", badForRoles: ["Physical"] }],
+
+  // Strength (Bold Inferno Ruby) → bad for Caster/Healer
+  [52206, { name: "Bold Inferno Ruby", statType: "strength", badForRoles: ["Caster", "Healer"] }],
+  [71880, { name: "Bold Queen's Garnet", statType: "strength", badForRoles: ["Caster", "Healer"] }],
+
+  // Agility (Delicate Inferno Ruby) → bad for Caster/Healer
+  [52212, { name: "Delicate Inferno Ruby", statType: "agility", badForRoles: ["Caster", "Healer"] }],
+  [71878, { name: "Delicate Queen's Garnet", statType: "agility", badForRoles: ["Caster", "Healer"] }],
+
+  // Defense/Dodge (Subtle / Thick) → bad for DPS
+  [52214, { name: "Subtle Inferno Ruby", statType: "dodge", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [52210, { name: "Flashing Inferno Ruby", statType: "parry", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Stamina-only (Solid Ocean Sapphire) → warning for DPS
+  [52242, { name: "Solid Ocean Sapphire", statType: "stamina", badForRoles: ["Physical", "Caster", "Healer"] }],
+  [71820, { name: "Solid Deepholm Iolite", statType: "stamina", badForRoles: ["Physical", "Caster", "Healer"] }],
+
+  // Spirit (Sparkling Ocean Sapphire) → bad for Physical/Tank
+  [52244, { name: "Sparkling Ocean Sapphire", statType: "spirit", badForRoles: ["Physical", "Tank"] }],
+  [71823, { name: "Sparkling Deepholm Iolite", statType: "spirit", badForRoles: ["Physical", "Tank"] }],
+]);
+
+// ─── Talent Point Expectations ───────────────────────────────────────
+
+export const EXPECTED_TALENT_POINTS: Record<string, number> = {
+  classic: 51,
+  tbc: 61,
+  wrath: 71,
+  cata: 41,
+  mists: 6,
+};

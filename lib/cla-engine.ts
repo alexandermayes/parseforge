@@ -7,6 +7,7 @@ import type {
   CLAGearIssue,
   CLAGearSlot,
   CLAFightMeta,
+  CLAClassBuff,
 } from "./cla-types";
 import type { WCLPlayerDetails, WCLCombatantInfoEvent, WCLBuffEntry } from "./wcl-types";
 import {
@@ -22,7 +23,11 @@ import {
   BATTLE_ELIXIR_IDS,
   GUARDIAN_ELIXIR_IDS,
   SCROLL_BUFF_IDS,
+  CLASS_BUFF_FAMILIES,
+  GEM_STAT_DB,
+  EXPECTED_TALENT_POINTS,
 } from "./cla-constants";
+import type { RaidRole } from "./wcl-types";
 
 // ─── Input types ────────────────────────────────────────────────────
 
@@ -343,6 +348,150 @@ export function buildGearSnapshot(
   return slots;
 }
 
+// ─── Class buff analysis ────────────────────────────────────────────
+
+function parseAuras(combatantInfo: WCLCombatantInfoEvent): Set<number> {
+  const auraSet = new Set<number>();
+  const rawAuras = (combatantInfo as unknown as Record<string, unknown>).auras;
+  if (Array.isArray(rawAuras)) {
+    for (const aura of rawAuras) {
+      if (typeof aura === "number") {
+        auraSet.add(aura);
+      } else if (aura && typeof aura === "object" && "ability" in aura) {
+        auraSet.add((aura as { ability: number }).ability);
+      }
+    }
+  }
+  return auraSet;
+}
+
+export function analyzeClassBuffs(
+  combatantInfo: WCLCombatantInfoEvent | undefined,
+  role: RaidRole,
+  wowheadDomain: string,
+): CLAClassBuff[] {
+  if (!combatantInfo) return [];
+
+  const auras = parseAuras(combatantInfo);
+  const results: CLAClassBuff[] = [];
+
+  for (const family of CLASS_BUFF_FAMILIES) {
+    // Filter by expansion if specified
+    if (family.expansions && !family.expansions.includes(wowheadDomain)) continue;
+
+    // Find which spell from this family is active
+    let foundSpellId = 0;
+    for (const id of family.spellIds) {
+      if (auras.has(id)) {
+        foundSpellId = id;
+        break;
+      }
+    }
+
+    const present = foundSpellId > 0;
+
+    // Check if this is a warning case (buff present but bad for this role)
+    if (present && family.isWarningFor?.includes(role)) {
+      results.push({
+        buffFamily: family.name,
+        present: true,
+        spellId: foundSpellId,
+        spellName: family.name,
+        severity: "warning",
+        reason: family.warningReason ?? `${family.name} is suboptimal for ${role}`,
+      });
+      continue;
+    }
+
+    // Check if missing and expected for this role
+    if (!present && family.expectedRoles.includes(role)) {
+      results.push({
+        buffFamily: family.name,
+        present: false,
+        spellId: 0,
+        spellName: family.name,
+        severity: "missing",
+        reason: "",
+      });
+      continue;
+    }
+
+    // Only include in results if relevant to this role
+    if (family.expectedRoles.includes(role) || (present && family.isWarningFor?.includes(role))) {
+      results.push({
+        buffFamily: family.name,
+        present,
+        spellId: foundSpellId,
+        spellName: family.name,
+        severity: "ok",
+        reason: "",
+      });
+    }
+  }
+
+  return results;
+}
+
+// ─── Gem type mismatch detection ────────────────────────────────────
+
+function analyzeGemMismatches(
+  combatantInfo: WCLCombatantInfoEvent,
+  role: RaidRole,
+  detailsGear?: import("./wcl-types").WCLGearItem[],
+): CLAGearIssue[] {
+  const issues: CLAGearIssue[] = [];
+  const detailMap = buildDetailGearMap(detailsGear);
+
+  for (const [index, item] of combatantInfo.gear.entries()) {
+    if (index === 3 || index === 18) continue;
+    if (!item || item.id === 0 || !item.gems) continue;
+
+    const slotName = GEAR_SLOTS[index] ?? `Slot ${index}`;
+    const detailItem = detailMap.get(item.id);
+    const itemName = detailItem?.name ?? `Item #${item.id}`;
+
+    for (const gem of item.gems) {
+      if (gem.id === 0) continue;
+      const gemInfo = GEM_STAT_DB.get(gem.id);
+      if (!gemInfo || gemInfo.badForRoles.length === 0) continue;
+      if (!gemInfo.badForRoles.includes(role)) continue;
+
+      issues.push({
+        slotIndex: index,
+        slotName,
+        itemId: item.id,
+        itemName,
+        issueType: "wrong_gem_type",
+        severity: "warning",
+        description: `${gemInfo.statType.replace(/_/g, " ")} gem (${gemInfo.name}) on ${role} — consider a role-appropriate gem instead`,
+      });
+    }
+  }
+
+  return issues;
+}
+
+// ─── Talent completeness check ──────────────────────────────────────
+
+export function checkTalentCompleteness(
+  combatantInfo: WCLCombatantInfoEvent | undefined,
+  wowheadDomain: string,
+): { expected: number; actual: number } | null {
+  if (!combatantInfo) return null;
+
+  const expected = EXPECTED_TALENT_POINTS[wowheadDomain];
+  if (expected === undefined) return null;
+
+  const actual = combatantInfo.talents?.length ?? 0;
+  if (actual === 0) return null; // no talent data available
+
+  if (expected - actual >= 2) {
+    return { expected, actual };
+  }
+
+  return null;
+}
+
 // ─── Main orchestrator ──────────────────────────────────────────────
 
 export function buildCLAResult(input: CLAEngineInput): CLAResult {
@@ -380,7 +529,16 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
 
     const detailsGear = player.combatantInfo?.gear;
     const gearIssues = analyzeGearIssues(playerCombatantInfo, detailsGear, wowheadDomain);
+
+    // Gem type mismatch detection
+    if (playerCombatantInfo?.gear) {
+      const gemMismatches = analyzeGemMismatches(playerCombatantInfo, role, detailsGear);
+      gearIssues.push(...gemMismatches);
+    }
+
     const gearSnapshot = buildGearSnapshot(playerCombatantInfo, wowheadDomain, detailsGear);
+    const classBuffs = analyzeClassBuffs(playerCombatantInfo, role, wowheadDomain);
+    const talentIssue = checkTalentCompleteness(playerCombatantInfo, wowheadDomain);
 
     players.push({
       sourceId: player.id,
@@ -391,6 +549,8 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
       fightData: fightDataArr,
       gearIssues,
       gearSnapshot,
+      classBuffs,
+      talentIssue,
     });
   }
 

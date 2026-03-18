@@ -4,8 +4,9 @@ import { useState } from "react";
 import type { CLAResult } from "@/lib/cla-types";
 import CLABuffTable from "./CLABuffTable";
 import { CLAGearIssuesView, CLAGearListing } from "./CLAGearIssues";
+import CLAClassBuffs from "./CLAClassBuffs";
 
-type CLASubTab = "buffs" | "gear-issues" | "gear-listing";
+type CLASubTab = "buffs" | "gear-issues" | "gear-listing" | "class-buffs";
 
 interface Props {
   data: CLAResult;
@@ -32,6 +33,7 @@ export default function CLAView({ data, selectedFightId }: Props) {
           { key: "buffs" as const, label: "Buff / Consumable Tracking" },
           { key: "gear-issues" as const, label: "Gear Issues" },
           { key: "gear-listing" as const, label: "Gear Listing" },
+          { key: "class-buffs" as const, label: "Class Buffs" },
         ]).map(({ key, label }) => (
           <button
             key={key}
@@ -88,6 +90,32 @@ export default function CLAView({ data, selectedFightId }: Props) {
           players={data.players}
           wowheadDomain={data.wowheadDomain}
         />
+      )}
+
+      {subTab === "class-buffs" && (
+        <CLAClassBuffs
+          players={data.players}
+          wowheadDomain={data.wowheadDomain}
+        />
+      )}
+
+      {/* Talent warnings */}
+      {data.players.some((p) => p.talentIssue) && (
+        <div className="glass rounded-lg p-3 space-y-1">
+          <p className="text-xs font-medium text-status-warn">Incomplete Talent Builds</p>
+          {data.players
+            .filter((p) => p.talentIssue)
+            .map((p) => (
+              <p key={p.sourceId} className="text-sm">
+                <span className="font-medium" style={{ color: undefined }}>
+                  {p.name}
+                </span>
+                <span className="text-muted-foreground ml-1">
+                  — Missing {p.talentIssue!.expected - p.talentIssue!.actual} talent points ({p.talentIssue!.actual}/{p.talentIssue!.expected})
+                </span>
+              </p>
+            ))}
+        </div>
       )}
     </div>
   );
