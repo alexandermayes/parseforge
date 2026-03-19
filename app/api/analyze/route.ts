@@ -4,10 +4,10 @@ import {
   PLAYER_FULL_DATA_QUERY,
   PLAYER_FULL_DATA_QUERY_HEALING,
   ENCOUNTER_RANKINGS_QUERY,
-  TOP_PLAYER_DATA_QUERY,
-  TOP_PLAYER_DATA_QUERY_HEALING,
+  ENCOUNTER_META_QUERY,
 } from "@/lib/wcl-queries";
 import { buildAnalysisResult } from "@/lib/analysis-engine";
+import { fetchTopPlayers } from "@/lib/wcl-fetchers";
 import { ANALYSIS_CACHE_TTL, TOP_PLAYERS_TO_FETCH, getWowheadDomain, isHealerSpec } from "@/lib/constants";
 import { GEM_STAT_DB, GEM_NAME_DB } from "@/lib/cla-constants";
 import { flattenPlayerDetails, parsePlayerSpec } from "@/lib/wcl-helpers";
@@ -22,7 +22,6 @@ import {
   WCLFight,
   WCLCombatantInfoEvent,
   WCLGearItem,
-  TopPlayerFullData,
 } from "@/lib/wcl-types";
 
 interface PlayerFullDataResponse {
@@ -51,22 +50,6 @@ interface RankingsResponse {
   };
 }
 
-interface TopPlayerDataResponse {
-  reportData: {
-    report: {
-      playerDetails: {
-        data: {
-          playerDetails: Record<string, WCLPlayerDetails[]>;
-        };
-      };
-      damage?: { data: { entries: WCLDamageEntry[] } };
-      healing?: { data: { entries: WCLDamageEntry[] } };
-      buffs: { data: { auras: WCLBuffEntry[] } };
-      casts: { data: { entries: WCLCastEntry[] } };
-      fights: WCLFight[];
-    };
-  };
-}
 
 export async function POST(request: NextRequest) {
   let body: AnalyzeRequest;
@@ -203,21 +186,7 @@ export async function POST(request: NextRequest) {
             fights: Array<{ id: number; encounterID: number; name: string }>;
           };
         };
-      }>(
-        `query GetEncounterID($code: String!, $fightIDs: [Int!]!) {
-          reportData {
-            report(code: $code) {
-              zone { id name }
-              fights(fightIDs: $fightIDs) {
-                id
-                encounterID
-                name
-              }
-            }
-          }
-        }`,
-        { code: reportCode, fightIDs: [fightId] }
-      );
+      }>(ENCOUNTER_META_QUERY, { code: reportCode, fightIDs: [fightId] });
 
       const fightMeta = reportMetaData.reportData.report.fights[0];
       encounterID = fightMeta?.encounterID;
@@ -250,100 +219,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Fetch top N players in parallel
-    const topPlayersData: TopPlayerFullData[] = [];
-    const topRankings = rankingsData.rankings.slice(0, TOP_PLAYERS_TO_FETCH);
-
-    if (topRankings.length > 0) {
-      try {
-        // Group by report code to minimize actor lookups
-        const reportCodes = [...new Set(topRankings.map((r) => r.report.code))];
-
-        // Fetch actors for each unique report in parallel
-        const actorResults = await Promise.all(
-          reportCodes.map((code) =>
-            wclQuery<{
-              reportData: {
-                report: {
-                  masterData: {
-                    actors: Array<{ id: number; name: string; type: string }>;
-                  };
-                };
-              };
-            }>(
-              `query TopPlayerMeta($code: String!) {
-                reportData {
-                  report(code: $code) {
-                    masterData {
-                      actors(type: "Player") {
-                        id
-                        name
-                        type
-                      }
-                    }
-                  }
-                }
-              }`,
-              { code }
-            ).then((res) => ({ code, actors: res.reportData.report.masterData.actors }))
-              .catch(() => ({ code, actors: [] as Array<{ id: number; name: string; type: string }> }))
-          )
-        );
-
-        const actorsByReport = new Map(actorResults.map((r) => [r.code, r.actors]));
-
-        // Fetch full data for each top player in parallel
-        const topPlayerQuery = playerRole === "healer"
-          ? TOP_PLAYER_DATA_QUERY_HEALING
-          : TOP_PLAYER_DATA_QUERY;
-
-        const fetchResults = await Promise.all(
-          topRankings.map(async (ranking) => {
-            try {
-              const actors = actorsByReport.get(ranking.report.code) ?? [];
-              const actor = actors.find((a) => a.name === ranking.name);
-              if (!actor) return null;
-
-              const data = await wclQuery<TopPlayerDataResponse>(
-                topPlayerQuery,
-                {
-                  code: ranking.report.code,
-                  fightIDs: [ranking.report.fightID],
-                  sourceID: actor.id,
-                }
-              );
-
-              const topReport = data.reportData.report;
-              const topFight = topReport.fights[0];
-              const duration = topFight
-                ? topFight.endTime - topFight.startTime
-                : ranking.duration;
-
-              const throughput = playerRole === "healer"
-                ? (topReport.healing?.data.entries ?? [])
-                : (topReport.damage?.data.entries ?? []);
-
-              return {
-                name: ranking.name,
-                ranking,
-                duration,
-                throughputEntries: throughput,
-                buffEntries: topReport.buffs?.data?.auras ?? [],
-                castEntries: topReport.casts?.data?.entries ?? [],
-              } as TopPlayerFullData;
-            } catch (err) {
-              console.error(`Top player fetch error for ${ranking.name}:`, err);
-              return null;
-            }
-          })
-        );
-
-        for (const result of fetchResults) {
-          if (result) topPlayersData.push(result);
-        }
-      } catch (err) {
-        console.error("Top players data fetch error:", err);
-      }
-    }
+    const topPlayersData = await fetchTopPlayers(
+      rankingsData.rankings,
+      TOP_PLAYERS_TO_FETCH,
+      playerRole,
+    );
 
     // Backfill empty talent names from rankings data
     const talentNameMap = new Map<number, string>();

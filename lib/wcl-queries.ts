@@ -241,6 +241,41 @@ export const PLAYER_FULL_DATA_QUERY = `
   }
 `;
 
+// ─── Encounter & Actor Lookup Queries ────────────────────────────────
+
+/** Fallback query when client doesn't provide encounterID */
+export const ENCOUNTER_META_QUERY = `
+  query GetEncounterID($code: String!, $fightIDs: [Int!]!) {
+    reportData {
+      report(code: $code) {
+        zone { id name }
+        fights(fightIDs: $fightIDs) {
+          id
+          encounterID
+          name
+        }
+      }
+    }
+  }
+`;
+
+/** Fetch player actors for a report (used to resolve top player sourceIDs) */
+export const REPORT_ACTORS_QUERY = `
+  query ReportActors($code: String!) {
+    reportData {
+      report(code: $code) {
+        masterData {
+          actors(type: "Player") {
+            id
+            name
+            type
+          }
+        }
+      }
+    }
+  }
+`;
+
 // ─── CLA Queries ────────────────────────────────────────────────────
 
 /**
