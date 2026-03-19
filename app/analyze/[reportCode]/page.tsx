@@ -357,6 +357,13 @@ export default function AnalyzePage({
               selectedFightId={selectedFight}
               onSelect={(id) => {
                 setSelectedFight(id);
+                // Clear stale results from the previous fight
+                setAnalysisResult(null);
+                setAnalysisError(null);
+                setRaidResult(null);
+                setRaidError(null);
+                setClaResult(null);
+                setClaError(null);
                 const fight = report.fights.find((f) => f.id === id);
                 posthog.capture("fight_selected", { report_code: reportCode, fight_id: id, fight_name: fight?.name });
               }}

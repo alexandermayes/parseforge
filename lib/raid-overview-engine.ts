@@ -205,14 +205,14 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
 
     if (isHealer) {
       const healEntry = healingById.get(player.id);
-      throughput = healEntry ? healEntry.total / durationSec : 0;
-      activityPercent = healEntry
+      throughput = healEntry && durationSec > 0 ? healEntry.total / durationSec : 0;
+      activityPercent = healEntry && fightDuration > 0
         ? Math.min(100, (healEntry.activeTime / fightDuration) * 100)
         : 0;
     } else {
       const dmgEntry = damageById.get(player.id);
-      throughput = dmgEntry ? dmgEntry.total / durationSec : 0;
-      activityPercent = dmgEntry
+      throughput = dmgEntry && durationSec > 0 ? dmgEntry.total / durationSec : 0;
+      activityPercent = dmgEntry && fightDuration > 0
         ? Math.min(100, (dmgEntry.activeTime / fightDuration) * 100)
         : 0;
     }

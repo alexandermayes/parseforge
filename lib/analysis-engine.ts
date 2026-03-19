@@ -342,7 +342,7 @@ export function analyzeBuffs(
   // Check all top player buffs
   for (const topBuff of topBuffs) {
     const playerBuff = playerByGuid.get(topBuff.guid);
-    const topUptime = Math.min((topBuff.totalUptime / fightDuration) * 100, 100);
+    const topUptime = fightDuration > 0 ? Math.min((topBuff.totalUptime / fightDuration) * 100, 100) : 0;
 
     if (!playerBuff) {
       if (topUptime > 20) {
@@ -358,10 +358,10 @@ export function analyzeBuffs(
         });
       }
     } else {
-      const playerUptime = Math.min(
+      const playerUptime = fightDuration > 0 ? Math.min(
         (playerBuff.totalUptime / fightDuration) * 100,
         100
-      );
+      ) : 0;
       const gap = topUptime - playerUptime;
       if (gap > 5) {
         lowUptimeBuffs.push(topBuff.name);
@@ -634,11 +634,11 @@ export function analyzeBuffsAgainstAverage(
     // Only include buffs present in >= 2 of N players (or all if N <= 2)
     if (agg.count < Math.min(2, N)) continue;
 
-    const avgTopUptime = agg.totalPct / N; // missing players contribute 0
+    const avgTopUptime = N > 0 ? agg.totalPct / N : 0;
     if (avgTopUptime < 5) continue; // skip very low uptime buffs
 
     const playerBuff = playerByGuid.get(guid);
-    const playerUptime = playerBuff
+    const playerUptime = playerBuff && playerDuration > 0
       ? Math.min((playerBuff.totalUptime / playerDuration) * 100, 100)
       : 0;
     const gap = avgTopUptime - playerUptime;
@@ -724,7 +724,7 @@ export function analyzeCastsAgainstAverage(
     seen.add(pc.guid);
     const agg = castAggregates.get(pc.guid);
     const playerCpm = playerMinutes > 0 ? pc.total / playerMinutes : 0;
-    const avgTopCpm = agg ? agg.totalCpm / N : 0;
+    const avgTopCpm = agg && N > 0 ? agg.totalCpm / N : 0;
 
     casts.push({
       name: pc.name,
@@ -732,7 +732,7 @@ export function analyzeCastsAgainstAverage(
       icon: pc.abilityIcon,
       playerCasts: pc.total,
       playerCpm: Math.round(playerCpm * 10) / 10,
-      topCasts: agg ? Math.round(agg.totalCasts / N) : 0,
+      topCasts: agg && N > 0 ? Math.round(agg.totalCasts / N) : 0,
       topCpm: Math.round(avgTopCpm * 10) / 10,
       cpmDiff: Math.round((avgTopCpm - playerCpm) * 10) / 10,
     });
@@ -745,7 +745,7 @@ export function analyzeCastsAgainstAverage(
   return {
     casts: casts.slice(0, 20),
     playerActiveTime: playerMinutes > 0 ? playerTotalCasts / playerMinutes : 0,
-    topActiveTime: topTotalCpmSum / N,
+    topActiveTime: N > 0 ? topTotalCpmSum / N : 0,
   };
 }
 
@@ -786,7 +786,7 @@ export function analyzeAbilitiesAgainstAverage(
     seen.add(pd.guid);
     if (pd.name.includes("(OLD)")) continue;
     const agg = shareAggregates.get(pd.guid);
-    const avgTopShare = agg ? agg.totalShare / N : 0;
+    const avgTopShare = agg && N > 0 ? agg.totalShare / N : 0;
 
     abilities.push({
       name: pd.name,
@@ -795,7 +795,7 @@ export function analyzeAbilitiesAgainstAverage(
       playerShare: playerTotal > 0 ? Math.round((pd.total / playerTotal) * 1000) / 10 : 0,
       topShare: Math.round(avgTopShare * 10) / 10,
       playerTotal: pd.total,
-      topTotal: agg ? Math.round(agg.totalDmg / N) : 0,
+      topTotal: agg && N > 0 ? Math.round(agg.totalDmg / N) : 0,
     });
   }
 
@@ -812,7 +812,7 @@ export function analyzeAbilitiesAgainstAverage(
   // Skip legacy/garbage spells with "(OLD)" in the name
   for (const [guid, agg] of shareAggregates) {
     if (!seen.has(guid)) {
-      const avgShare = agg.totalShare / N;
+      const avgShare = N > 0 ? agg.totalShare / N : 0;
       if (avgShare > 1 && topPlayerCastGuids.has(guid) && !agg.name.includes("(OLD)")) {
         abilities.push({
           name: agg.name,
@@ -821,7 +821,7 @@ export function analyzeAbilitiesAgainstAverage(
           playerShare: 0,
           topShare: Math.round(avgShare * 10) / 10,
           playerTotal: 0,
-          topTotal: Math.round(agg.totalDmg / N),
+          topTotal: N > 0 ? Math.round(agg.totalDmg / N) : 0,
         });
       }
     }
@@ -1022,7 +1022,7 @@ export function analyzeAbilityPriority(
 
     // Pad missing values with 0 for players that didn't use this ability
     while (agg.shares.length < N) agg.shares.push(0);
-    const avg = agg.shares.reduce((a, b) => a + b, 0) / N;
+    const avg = N > 0 ? agg.shares.reduce((a, b) => a + b, 0) / N : 0;
     const min = Math.min(...agg.shares);
     const max = Math.max(...agg.shares);
     const playerShare = playerShareMap.get(guid) ?? 0;
