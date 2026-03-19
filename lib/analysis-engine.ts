@@ -158,7 +158,7 @@ export function analyzeGear(
   // Slots where enchants are reliably reported by WCL
   // Head(0) and Shoulder(2) excluded — Arcanums/inscriptions not in permanentEnchant
   // Off Hand(16) excluded — held-in-off-hand items (orbs, tomes) are not enchantable
-  const enchantableSlots = new Set([4, 6, 7, 8, 9, 14, 15]);
+  const enchantableSlots = ENCHANTABLE_SLOTS;
 
   for (const [slotId, slotName] of Object.entries(GEAR_SLOTS)) {
     const slot = parseInt(slotId);

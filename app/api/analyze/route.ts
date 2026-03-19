@@ -10,6 +10,7 @@ import {
 import { buildAnalysisResult } from "@/lib/analysis-engine";
 import { ANALYSIS_CACHE_TTL, TOP_PLAYERS_TO_FETCH, getWowheadDomain, isHealerSpec } from "@/lib/constants";
 import { GEM_STAT_DB, GEM_NAME_DB } from "@/lib/cla-constants";
+import { flattenPlayerDetails, parsePlayerSpec } from "@/lib/wcl-helpers";
 import {
   AnalyzeRequest,
   AnalysisResult,
@@ -107,21 +108,14 @@ export async function POST(request: NextRequest) {
     const fightDuration = fight.endTime - fight.startTime;
 
     // Find player in details
-    const allPlayers = Object.values(report.playerDetails?.data?.playerDetails ?? {}).flat();
+    const allPlayers = flattenPlayerDetails(report.playerDetails);
     const player = allPlayers.find((p) => p.id === sourceId);
     if (!player) {
       return NextResponse.json({ error: "Player not found in fight" }, { status: 404 });
     }
 
     const playerClass = player.type;
-    // specs can be objects like {spec: "Guardian", count: 1} or plain strings
-    const rawSpec = player.specs?.[0];
-    const playerSpec =
-      typeof rawSpec === "object" && rawSpec !== null && "spec" in rawSpec
-        ? (rawSpec as unknown as { spec: string }).spec
-        : typeof rawSpec === "string"
-          ? rawSpec
-          : player.icon?.split("-")[1] ?? "";
+    const playerSpec = parsePlayerSpec(player);
 
     const playerRole = isHealerSpec(playerSpec) ? "healer" as const : "dps" as const;
 

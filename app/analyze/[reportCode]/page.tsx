@@ -12,10 +12,8 @@ import AnalysisView, { AnalysisLoading } from "@/app/components/AnalysisView";
 import RaidOverview, { RaidOverviewLoading } from "@/app/components/RaidOverview";
 import CLAView, { CLALoading } from "@/app/components/CLAView";
 import PlayerQuickGrid from "@/app/components/PlayerQuickGrid";
-import { ReportMeta, AnalysisResult, RaidOverviewResult } from "@/lib/wcl-types";
+import type { ReportMeta } from "@/lib/wcl-types";
 import { saveRecentReport } from "@/lib/recent-reports";
-import { AnalysisSnapshot, buildSnapshot, saveSnapshot, getHistory } from "@/lib/analysis-history";
-import type { CLAResult } from "@/lib/cla-types";
 import { ShineBorder } from "@/components/ui/shine-border";
 import posthog from "posthog-js";
 import {
@@ -25,6 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRaidOverview } from "./hooks/useRaidOverview";
+import { usePlayerAnalysis } from "./hooks/usePlayerAnalysis";
+import { useCLA } from "./hooks/useCLA";
 
 type TabMode = "player" | "raid" | "cla";
 
@@ -58,23 +59,6 @@ export default function AnalyzePage({
       ? parseInt(searchParams.get("source")!, 10)
       : null
   );
-
-  // Player Analysis state
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [previousSnapshot, setPreviousSnapshot] = useState<AnalysisSnapshot | null>(null);
-
-  // Raid Overview state
-  const [raidResult, setRaidResult] = useState<RaidOverviewResult | null>(null);
-  const [raidError, setRaidError] = useState<string | null>(null);
-  const [raidLoading, setRaidLoading] = useState(false);
-
-  // CLA state
-  const [claResult, setClaResult] = useState<CLAResult | null>(null);
-  const [claError, setClaError] = useState<string | null>(null);
-  const [claLoading, setClaLoading] = useState(false);
-  const [claFightSelection, setClaFightSelection] = useState<number | "all">("all");
 
   // Fetch report metadata
   const {
@@ -131,166 +115,20 @@ export default function AnalyzePage({
     }
   }, [report, selectedFight, updateUrlParam]);
 
-  // Auto-run raid overview when raid or player tab is active and fight is selected
-  const raidAutoRun = (activeTab === "raid" || activeTab === "player") && !!selectedFight && !raidResult && !raidLoading && !raidError;
-  useEffect(() => {
-    if (raidAutoRun) runRaidOverview();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [raidAutoRun]);
-
-  // Auto-run CLA when tab is active and report is loaded
-  const claAutoRun = activeTab === "cla" && !!report && !claResult && !claLoading && !claError;
-  useEffect(() => {
-    if (claAutoRun) runCLA();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claAutoRun]);
-
-  const runAnalysis = useCallback(async () => {
-    if (!selectedFight || !selectedSource) return;
-    setAnalyzing(true);
-    setAnalysisError(null);
-    setAnalysisResult(null);
-
-    try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          reportCode,
-          fightId: selectedFight,
-          sourceId: selectedSource,
-          encounterID: report?.fights.find((f) => f.id === selectedFight)?.encounterID,
-          encounterName: report?.fights.find((f) => f.id === selectedFight)?.name,
-          zoneName: report?.zone,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setAnalysisError(data.error ?? "Analysis failed");
-        posthog.capture("analysis_error", { report_code: reportCode, error: data.error });
-      } else {
-        const snapshot = buildSnapshot(data, reportCode);
-        const history = getHistory(data.playerName, data.encounterName);
-        setPreviousSnapshot(history[0] ?? null);
-        saveSnapshot(snapshot);
-        setAnalysisResult(data);
-        posthog.capture("analysis_complete", {
-          report_code: reportCode,
-          player_name: data.playerName,
-          player_class: data.playerClass,
-          player_spec: data.playerSpec,
-          encounter: data.encounterName,
-          dps: Math.round(data.dps.playerDps),
-          percentile: data.dps.percentile,
-          has_previous: !!history[0],
-        });
-      }
-    } catch (err) {
-      setAnalysisError(
-        err instanceof Error ? err.message : "Analysis request failed"
-      );
-      posthog.capture("analysis_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
-    } finally {
-      setAnalyzing(false);
-    }
-  }, [reportCode, selectedFight, selectedSource]);
-
-  // Auto-run player analysis when player is selected on the player tab
-  useEffect(() => {
-    if (activeTab === "player" && selectedFight && selectedSource && !analyzing) {
-      runAnalysis();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSource, selectedFight, activeTab]);
-
-  const runRaidOverview = useCallback(async () => {
-    if (!selectedFight) return;
-    setRaidLoading(true);
-    setRaidError(null);
-    setRaidResult(null);
-
-    try {
-      const res = await fetch("/api/raid-overview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          reportCode,
-          fightId: selectedFight,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setRaidError(data.error ?? "Raid overview failed");
-        posthog.capture("raid_overview_error", { report_code: reportCode, error: data.error });
-      } else {
-        setRaidResult(data);
-        posthog.capture("raid_overview_complete", { report_code: reportCode, fight_id: selectedFight, player_count: data.players?.length });
-      }
-    } catch (err) {
-      setRaidError(
-        err instanceof Error ? err.message : "Raid overview request failed"
-      );
-      posthog.capture("raid_overview_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
-    } finally {
-      setRaidLoading(false);
-    }
-  }, [reportCode, selectedFight]);
-
-  const runCLA = useCallback(async () => {
-    if (!report) return;
-    setClaLoading(true);
-    setClaError(null);
-    setClaResult(null);
-
-    // Use selected fight or all boss fights
-    const fightIds = selectedFight
-      ? [selectedFight]
-      : report.fights.filter((f) => f.kill).map((f) => f.id);
-
-    if (fightIds.length === 0) {
-      setClaError("No fights selected");
-      setClaLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/cla", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reportCode, fightIds }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setClaError(data.error ?? "CLA analysis failed");
-        posthog.capture("cla_error", { report_code: reportCode, error: data.error });
-      } else {
-        setClaResult(data);
-        setClaFightSelection(fightIds.length === 1 ? fightIds[0] : "all");
-        posthog.capture("cla_complete", { report_code: reportCode, fight_count: fightIds.length });
-      }
-    } catch (err) {
-      setClaError(
-        err instanceof Error ? err.message : "CLA request failed"
-      );
-      posthog.capture("cla_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
-    } finally {
-      setClaLoading(false);
-    }
-  }, [reportCode, selectedFight, report]);
+  // ─── Analysis mode hooks ──────────────────────────────────────────
+  const raid = useRaidOverview(reportCode, selectedFight, activeTab);
+  const player = usePlayerAnalysis(reportCode, selectedFight, selectedSource, activeTab, report);
+  const cla = useCLA(reportCode, report, selectedFight, activeTab);
 
   // Player quick-jump handler: switch to player tab + select player
   const handlePlayerClick = useCallback(
     (sourceId: number) => {
-      setAnalysisResult(null);
-      setAnalysisError(null);
+      player.clear();
       setSelectedSource(sourceId);
       updateUrlParam("source", String(sourceId));
       switchTab("player");
     },
-    [switchTab, updateUrlParam]
+    [switchTab, updateUrlParam, player.clear]
   );
 
   return (
@@ -375,13 +213,6 @@ export default function AnalyzePage({
               onSelect={(id) => {
                 setSelectedFight(id);
                 updateUrlParam("fight", String(id));
-                // Clear stale results from the previous fight
-                setAnalysisResult(null);
-                setAnalysisError(null);
-                setRaidResult(null);
-                setRaidError(null);
-                setClaResult(null);
-                setClaError(null);
                 const fight = report.fights.find((f) => f.id === id);
                 posthog.capture("fight_selected", { report_code: reportCode, fight_id: id, fight_name: fight?.name });
               }}
@@ -399,8 +230,8 @@ export default function AnalyzePage({
                 onSelect={(id) => {
                   setSelectedSource(id);
                   updateUrlParam("source", String(id));
-                  const player = (fightPlayers?.players ?? report.players).find((p) => p.id === id);
-                  posthog.capture("player_selected", { report_code: reportCode, player_name: player?.name, player_class: player?.type });
+                  const p = (fightPlayers?.players ?? report.players).find((pl) => pl.id === id);
+                  posthog.capture("player_selected", { report_code: reportCode, player_name: p?.name, player_class: p?.type });
                 }}
               />
             </div>
@@ -408,22 +239,22 @@ export default function AnalyzePage({
 
           <Button
             onClick={
-              activeTab === "player" ? runAnalysis :
-              activeTab === "cla" ? runCLA :
-              runRaidOverview
+              activeTab === "player" ? player.run :
+              activeTab === "cla" ? cla.run :
+              raid.run
             }
             disabled={
-              activeTab === "player" ? (!selectedFight || !selectedSource || analyzing) :
-              activeTab === "cla" ? claLoading :
-              (!selectedFight || raidLoading)
+              activeTab === "player" ? (!selectedFight || !selectedSource || player.loading) :
+              activeTab === "cla" ? cla.loading :
+              (!selectedFight || raid.loading)
             }
             size="default"
           >
             {activeTab === "player"
-              ? (analyzing ? "Analyzing..." : "Analyze")
+              ? (player.loading ? "Analyzing..." : "Analyze")
               : activeTab === "cla"
-                ? (claLoading ? "Running Audit..." : "Run Audit")
-                : (raidLoading ? "Loading..." : "Load Raid Overview")}
+                ? (cla.loading ? "Running Audit..." : "Run Audit")
+                : (raid.loading ? "Loading..." : "Load Raid Overview")}
           </Button>
         </div>
       )}
@@ -440,30 +271,30 @@ export default function AnalyzePage({
       {/* Player Analysis tab content */}
       {activeTab === "player" && (
         <>
-          {analysisError && (
+          {player.error && (
             <Alert variant="destructive">
-              <AlertDescription>{analysisError}</AlertDescription>
+              <AlertDescription>{player.error}</AlertDescription>
             </Alert>
           )}
-          {analyzing && <AnalysisLoading />}
-          {analysisResult && !analyzing && (
+          {player.loading && <AnalysisLoading />}
+          {player.result && !player.loading && (
             <div className="space-y-4">
               <button
-                onClick={() => { setAnalysisResult(null); setAnalysisError(null); setSelectedSource(null); updateUrlParam("source", null); }}
+                onClick={() => { player.clear(); setSelectedSource(null); updateUrlParam("source", null); }}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 &larr; All Players
               </button>
-              <AnalysisView data={analysisResult} previousSnapshot={previousSnapshot} />
+              <AnalysisView data={player.result} previousSnapshot={player.previousSnapshot} />
             </div>
           )}
-          {!analysisResult && !analyzing && !analysisError && raidResult && (
+          {!player.result && !player.loading && !player.error && raid.result && (
             <PlayerQuickGrid
-              players={raidResult.players}
+              players={raid.result.players}
               onPlayerClick={handlePlayerClick}
             />
           )}
-          {!analysisResult && !analyzing && !analysisError && raidLoading && (
+          {!player.result && !player.loading && !player.error && raid.loading && (
             <AnalysisLoading />
           )}
         </>
@@ -472,14 +303,14 @@ export default function AnalyzePage({
       {/* Raid Overview tab content */}
       {activeTab === "raid" && (
         <>
-          {raidError && (
+          {raid.error && (
             <Alert variant="destructive">
-              <AlertDescription>{raidError}</AlertDescription>
+              <AlertDescription>{raid.error}</AlertDescription>
             </Alert>
           )}
-          {raidLoading && <RaidOverviewLoading />}
-          {raidResult && !raidLoading && (
-            <RaidOverview data={raidResult} onPlayerClick={handlePlayerClick} />
+          {raid.loading && <RaidOverviewLoading />}
+          {raid.result && !raid.loading && (
+            <RaidOverview data={raid.result} onPlayerClick={handlePlayerClick} />
           )}
         </>
       )}
@@ -487,21 +318,21 @@ export default function AnalyzePage({
       {/* CLA tab content */}
       {activeTab === "cla" && (
         <>
-          {claResult && !claLoading && claResult.fights.length > 1 && (
+          {cla.result && !cla.loading && cla.result.fights.length > 1 && (
             <div className="space-y-1">
               <label className="text-heading-sm text-muted-foreground">
                 Fight View
               </label>
               <Select
-                value={String(claFightSelection)}
-                onValueChange={(v) => setClaFightSelection(v === "all" ? "all" : parseInt(v, 10))}
+                value={String(cla.fightSelection)}
+                onValueChange={(v) => cla.setFightSelection(v === "all" ? "all" : parseInt(v, 10))}
               >
                 <SelectTrigger className="w-64">
                   <SelectValue placeholder="Select fight view..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Bosses (Average)</SelectItem>
-                  {claResult.fights.map((f) => (
+                  {cla.result.fights.map((f) => (
                     <SelectItem key={f.id} value={String(f.id)}>
                       {f.name}
                     </SelectItem>
@@ -510,14 +341,14 @@ export default function AnalyzePage({
               </Select>
             </div>
           )}
-          {claError && (
+          {cla.error && (
             <Alert variant="destructive">
-              <AlertDescription>{claError}</AlertDescription>
+              <AlertDescription>{cla.error}</AlertDescription>
             </Alert>
           )}
-          {claLoading && <CLALoading />}
-          {claResult && !claLoading && (
-            <CLAView data={claResult} selectedFightId={claFightSelection} />
+          {cla.loading && <CLALoading />}
+          {cla.result && !cla.loading && (
+            <CLAView data={cla.result} selectedFightId={cla.fightSelection} />
           )}
         </>
       )}

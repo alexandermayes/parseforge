@@ -15,6 +15,7 @@ import {
   isHealerSpec,
 } from "./constants";
 import { BATTLE_ELIXIR_IDS, GUARDIAN_ELIXIR_IDS } from "./cla-constants";
+import { parsePlayerSpec } from "./wcl-helpers";
 
 // ─── WCL table entry shapes (fight-wide, per-player rows) ───────────
 
@@ -190,13 +191,7 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
 
   for (const player of playerDetails) {
     const className = player.type;
-    const rawSpec = player.specs?.[0];
-    const spec =
-      typeof rawSpec === "object" && rawSpec !== null && "spec" in rawSpec
-        ? (rawSpec as unknown as { spec: string }).spec
-        : typeof rawSpec === "string"
-          ? rawSpec
-          : player.icon?.split("-")[1] ?? "";
+    const spec = parsePlayerSpec(player);
 
     const role = classifyRole(className, spec, player.icon);
     const isHealer = isHealerSpec(spec);

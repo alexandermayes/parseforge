@@ -7,6 +7,7 @@ import {
 } from "@/lib/wcl-queries";
 import { buildCLAResult, type CLAEngineInput } from "@/lib/cla-engine";
 import { ANALYSIS_CACHE_TTL, getWowheadDomain } from "@/lib/constants";
+import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 import type { CLAResult, CLAFightMeta } from "@/lib/cla-types";
 import type {
   WCLPlayerDetails,
@@ -170,9 +171,9 @@ export async function POST(request: NextRequest) {
       ...fightPromises,
     ]);
 
-    const allPlayers = Object.values(
-      playerDetailsResult.reportData?.report?.playerDetails?.data?.playerDetails ?? {}
-    ).flat();
+    const allPlayers = flattenPlayerDetails(
+      playerDetailsResult.reportData?.report?.playerDetails
+    );
 
     // Step 3: Build CLA result
     const engineInput: CLAEngineInput = {

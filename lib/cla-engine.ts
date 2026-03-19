@@ -10,6 +10,7 @@ import type {
   CLAClassBuff,
 } from "./cla-types";
 import type { WCLPlayerDetails, WCLCombatantInfoEvent, WCLBuffEntry } from "./wcl-types";
+import { parsePlayerSpec } from "./wcl-helpers";
 import {
   classifyRole,
   GEAR_SLOTS,
@@ -531,13 +532,7 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
 
   for (const player of playerDetails) {
     const className = player.type;
-    const rawSpec = player.specs?.[0];
-    const spec =
-      typeof rawSpec === "object" && rawSpec !== null && "spec" in rawSpec
-        ? (rawSpec as unknown as { spec: string }).spec
-        : typeof rawSpec === "string"
-          ? rawSpec
-          : player.icon?.split("-")[1] ?? "";
+    const spec = parsePlayerSpec(player);
 
     const role = classifyRole(className, spec, player.icon);
 

@@ -6,6 +6,7 @@ import {
 } from "@/lib/wcl-queries";
 import { buildRaidOverview } from "@/lib/raid-overview-engine";
 import { ANALYSIS_CACHE_TTL } from "@/lib/constants";
+import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 import type {
   RaidOverviewResult,
   WCLPlayerDetails,
@@ -128,7 +129,7 @@ export async function POST(request: NextRequest) {
     }
 
     const fightDuration = fight.endTime - fight.startTime;
-    const allPlayers = Object.values(report.playerDetails?.data?.playerDetails ?? {}).flat();
+    const allPlayers = flattenPlayerDetails(report.playerDetails);
 
     const result = buildRaidOverview({
       playerDetails: allPlayers,
