@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     const fightDuration = fight.endTime - fight.startTime;
 
     // Find player in details
-    const allPlayers = Object.values(report.playerDetails.data.playerDetails).flat();
+    const allPlayers = Object.values(report.playerDetails?.data?.playerDetails ?? {}).flat();
     const player = allPlayers.find((p) => p.id === sourceId);
     if (!player) {
       return NextResponse.json({ error: "Player not found in fight" }, { status: 404 });
@@ -137,14 +137,14 @@ export async function POST(request: NextRequest) {
         { code: reportCode, fightIDs: [fightId], sourceID: sourceId }
       );
       const healReport = healerData.reportData.report;
-      throughputEntries = healReport.healing?.data.entries ?? [];
-      buffEntries = healReport.buffs.data.auras ?? [];
-      castEntries = healReport.casts.data.entries ?? [];
+      throughputEntries = healReport.healing?.data?.entries ?? [];
+      buffEntries = healReport.buffs?.data?.auras ?? [];
+      castEntries = healReport.casts?.data?.entries ?? [];
       combatantInfoData = healReport;
     } else {
-      throughputEntries = report.damage?.data.entries ?? [];
-      buffEntries = report.buffs.data.auras ?? [];
-      castEntries = report.casts.data.entries ?? [];
+      throughputEntries = report.damage?.data?.entries ?? [];
+      buffEntries = report.buffs?.data?.auras ?? [];
+      castEntries = report.casts?.data?.entries ?? [];
       combatantInfoData = report;
     }
 
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
         detailsGearById.set(item.id, item);
       }
     }
-    const playerGear: WCLGearItem[] = (combatantInfoEvent?.gear ?? []).map((g, i) => {
+    const playerGear: WCLGearItem[] = (combatantInfoEvent?.gear ?? []).filter((g) => g && g.id > 0).map((g, i) => {
       // playerDetails gear has item names; CombatantInfo events have enchants/gems/ilvl
       // Match by item ID for reliable enchant/gem name resolution
       const detailItem = detailsGearById.get(g.id);
@@ -325,8 +325,8 @@ export async function POST(request: NextRequest) {
                 ranking,
                 duration,
                 throughputEntries: throughput,
-                buffEntries: topReport.buffs.data.auras ?? [],
-                castEntries: topReport.casts.data.entries ?? [],
+                buffEntries: topReport.buffs?.data?.auras ?? [],
+                castEntries: topReport.casts?.data?.entries ?? [],
               } as TopPlayerFullData;
             } catch (err) {
               console.error(`Top player fetch error for ${ranking.name}:`, err);

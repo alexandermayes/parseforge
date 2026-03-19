@@ -26,8 +26,8 @@ export async function GET(
 
     const meta: ReportMeta = {
       title: report.title,
-      owner: report.owner.name,
-      zone: report.zone.name,
+      owner: report.owner?.name ?? "Unknown",
+      zone: report.zone?.name ?? "Unknown",
       fights: report.fights
         .filter((f) => f.encounterID > 0)
         .map((f) => ({

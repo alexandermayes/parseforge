@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     const fightDuration = fight.endTime - fight.startTime;
-    const allPlayers = Object.values(report.playerDetails.data.playerDetails).flat();
+    const allPlayers = Object.values(report.playerDetails?.data?.playerDetails ?? {}).flat();
 
     const result = buildRaidOverview({
       playerDetails: allPlayers,

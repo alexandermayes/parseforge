@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     const allPlayers = Object.values(
-      playerDetailsResult.reportData.report.playerDetails.data.playerDetails
+      playerDetailsResult.reportData?.report?.playerDetails?.data?.playerDetails ?? {}
     ).flat();
 
     // Step 3: Build CLA result
