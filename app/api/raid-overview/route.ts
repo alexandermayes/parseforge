@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
       damageTakenEntries: report.damageTaken?.data?.entries ?? [],
       combatantInfoEvents: combatantData.reportData.report.combatantInfo?.data ?? [],
       fightDuration,
+      fightStartTime: fight.startTime,
       encounterName: fight.name,
     });
 

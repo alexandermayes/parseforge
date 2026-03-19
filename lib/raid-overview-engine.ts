@@ -1,6 +1,7 @@
 import type {
   RaidPlayerMetrics,
   RaidOverviewResult,
+  DeathDetail,
   ConsumableStatus,
   WCLPlayerDetails,
   WCLCombatantInfoEvent,
@@ -57,6 +58,7 @@ export interface RaidOverviewInput {
   damageTakenEntries: DamageTakenTableEntry[];
   combatantInfoEvents: WCLCombatantInfoEvent[];
   fightDuration: number;
+  fightStartTime: number;
   encounterName: string;
 }
 
@@ -151,6 +153,7 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     damageTakenEntries,
     combatantInfoEvents,
     fightDuration,
+    fightStartTime,
     encounterName,
   } = input;
 
@@ -174,11 +177,37 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     healingById.set(entry.id, entry);
   }
 
-  // Count deaths per player
-  const deathCountById = new Map<number, number>();
-  for (const death of deathEntries) {
-    deathCountById.set(death.id, (deathCountById.get(death.id) ?? 0) + 1);
+  // Build death details per player and global timeline
+  const deathDetailsById = new Map<number, DeathDetail[]>();
+  const deathTimeline: DeathDetail[] = [];
+
+  // Build a name/class lookup from playerDetails
+  const playerInfoById = new Map<number, { name: string; className: string }>();
+  for (const p of playerDetails) {
+    playerInfoById.set(p.id, { name: p.name, className: p.type });
   }
+
+  for (const death of deathEntries) {
+    const info = playerInfoById.get(death.id);
+    const detail: DeathDetail = {
+      playerName: info?.name ?? death.name,
+      playerClass: info?.className ?? death.type,
+      sourceId: death.id,
+      fightTimeMs: death.deathTime - fightStartTime,
+      damage: death.damage?.total ?? 0,
+      healing: death.healing?.total ?? 0,
+    };
+    const existing = deathDetailsById.get(death.id);
+    if (existing) {
+      existing.push(detail);
+    } else {
+      deathDetailsById.set(death.id, [detail]);
+    }
+    deathTimeline.push(detail);
+  }
+
+  // Sort timeline chronologically
+  deathTimeline.sort((a, b) => a.fightTimeMs - b.fightTimeMs);
 
   // Index damage taken by player ID
   const damageTakenById = new Map<number, number>();
@@ -216,6 +245,8 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
 
     const combatantInfo = combatantInfoBySource.get(player.id);
 
+    const playerDeaths = deathDetailsById.get(player.id) ?? [];
+
     players.push({
       sourceId: player.id,
       name: player.name,
@@ -223,7 +254,8 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
       spec,
       role,
       throughput: Math.round(throughput),
-      deaths: deathCountById.get(player.id) ?? 0,
+      deaths: playerDeaths.length,
+      deathDetails: playerDeaths,
       avoidableDamage: damageTakenById.get(player.id) ?? 0,
       activityPercent: Math.round(activityPercent * 10) / 10,
       consumables: detectConsumables(combatantInfo),
@@ -243,5 +275,6 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     encounterName,
     fightDuration,
     players,
+    deathTimeline,
   };
 }

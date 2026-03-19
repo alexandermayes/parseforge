@@ -394,6 +394,18 @@ export interface ConsumableStatus {
   weaponEnhancement: boolean;
 }
 
+export interface DeathDetail {
+  playerName: string;
+  playerClass: string;
+  sourceId: number;
+  /** Milliseconds into the fight when the death occurred */
+  fightTimeMs: number;
+  /** Damage snapshot at death */
+  damage: number;
+  /** Healing snapshot at death */
+  healing: number;
+}
+
 export interface RaidPlayerMetrics {
   sourceId: number;
   name: string;
@@ -402,6 +414,7 @@ export interface RaidPlayerMetrics {
   role: RaidRole;
   throughput: number; // DPS or HPS
   deaths: number;
+  deathDetails: DeathDetail[];
   avoidableDamage: number;
   activityPercent: number;
   consumables: ConsumableStatus;
@@ -413,6 +426,8 @@ export interface RaidOverviewResult {
   encounterName: string;
   fightDuration: number;
   players: RaidPlayerMetrics[];
+  /** All deaths in chronological order across all players */
+  deathTimeline: DeathDetail[];
 }
 
 // ─── Request / Response Types ────────────────────────────────────────

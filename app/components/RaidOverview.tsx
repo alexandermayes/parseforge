@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole } from "@/lib/wcl-types";
+import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail } from "@/lib/wcl-types";
 import { CLASS_COLORS, ROLE_COLORS } from "@/lib/constants";
 import { Check, X } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
@@ -177,6 +177,11 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
         </div>
       </div>
 
+      {/* Death Timeline */}
+      {data.deathTimeline && data.deathTimeline.length > 0 && (
+        <DeathTimeline deaths={data.deathTimeline} fightDuration={data.fightDuration} />
+      )}
+
       {/* Table */}
       <div className="overflow-x-auto rounded-lg glass">
         <table className="w-full text-sm">
@@ -209,6 +214,79 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+function formatFightTime(ms: number): string {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `${min}:${String(sec).padStart(2, "0")}`;
+}
+
+function DeathTimeline({ deaths, fightDuration }: { deaths: DeathDetail[]; fightDuration: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const displayed = expanded ? deaths : deaths.slice(0, 5);
+  const firstDeath = deaths[0];
+
+  return (
+    <div className="glass rounded-lg p-3 space-y-2">
+      <div className="flex items-center justify-between">
+        <h3 className="text-heading-sm">
+          Death Log
+          <span className="text-muted-foreground font-normal ml-2">
+            {deaths.length} death{deaths.length !== 1 ? "s" : ""}
+            {firstDeath && ` \u00b7 first at ${formatFightTime(firstDeath.fightTimeMs)}`}
+          </span>
+        </h3>
+      </div>
+
+      {/* Timeline bar */}
+      <div className="relative h-2 bg-surface-2 rounded-full overflow-hidden">
+        {deaths.map((d, i) => {
+          const pct = fightDuration > 0 ? (d.fightTimeMs / fightDuration) * 100 : 0;
+          return (
+            <div
+              key={`${d.sourceId}-${i}`}
+              className="absolute top-0 h-full w-1 rounded-full bg-status-bad"
+              style={{ left: `${Math.min(100, Math.max(0, pct))}%` }}
+              title={`${d.playerName} at ${formatFightTime(d.fightTimeMs)}`}
+            />
+          );
+        })}
+      </div>
+
+      {/* Death entries */}
+      <div className="space-y-0.5">
+        {displayed.map((d, i) => {
+          const classColor = CLASS_COLORS[d.playerClass] ?? "#FFFFFF";
+          return (
+            <div key={`${d.sourceId}-${i}`} className="flex items-center gap-3 text-sm py-0.5">
+              <span className="font-mono text-xs text-muted-foreground w-10 shrink-0 text-right">
+                {formatFightTime(d.fightTimeMs)}
+              </span>
+              <span className="font-medium" style={{ color: classColor }}>
+                {d.playerName}
+              </span>
+              {i === 0 && (
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded badge-bad">
+                  FIRST
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {deaths.length > 5 && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {expanded ? "Show less" : `Show all ${deaths.length} deaths`}
+        </button>
+      )}
     </div>
   );
 }
