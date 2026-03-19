@@ -193,7 +193,7 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
       playerName: info?.name ?? death.name,
       playerClass: info?.className ?? death.type,
       sourceId: death.id,
-      fightTimeMs: death.deathTime - fightStartTime,
+      fightTimeMs: death.deathTime,
       damage: death.damage?.total ?? 0,
       healing: death.healing?.total ?? 0,
     };
