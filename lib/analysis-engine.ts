@@ -300,12 +300,13 @@ export function analyzeTalents(
     const topPts = topT?.points ?? 0;
     const diff = topPts - playerPts;
 
-    if (diff !== 0) {
+    const talentEntry = playerT ?? topT;
+    if (diff !== 0 && talentEntry) {
       totalDiffs += Math.abs(diff);
       diffs.push({
-        name: (playerT ?? topT)!.name,
+        name: talentEntry.name,
         guid,
-        icon: (playerT ?? topT)!.abilityIcon,
+        icon: talentEntry.abilityIcon,
         playerPoints: playerPts,
         topPoints: topPts,
         diff,
