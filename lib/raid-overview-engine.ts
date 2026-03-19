@@ -9,12 +9,12 @@ import {
   classifyRole,
   ROLE_SORT_ORDER,
   FLASK_BUFF_IDS,
-  ELIXIR_BUFF_IDS,
   FOOD_BUFF_IDS,
   WEAPON_ENHANCEMENT_IDS,
   ENCHANTABLE_SLOTS,
   isHealerSpec,
 } from "./constants";
+import { BATTLE_ELIXIR_IDS, GUARDIAN_ELIXIR_IDS } from "./cla-constants";
 
 // ─── WCL table entry shapes (fight-wide, per-player rows) ───────────
 
@@ -83,18 +83,20 @@ function detectConsumables(
   }
 
   const hasFlask = auras.some((id) => FLASK_BUFF_IDS.has(id));
-  const hasElixir = auras.some((id) => ELIXIR_BUFF_IDS.has(id));
+  const hasBattleElixir = auras.some((id) => BATTLE_ELIXIR_IDS.has(id));
+  const hasGuardianElixir = auras.some((id) => GUARDIAN_ELIXIR_IDS.has(id));
   const hasFood = auras.some((id) => FOOD_BUFF_IDS.has(id));
   const hasWeaponEnh = auras.some((id) => WEAPON_ENHANCEMENT_IDS.has(id));
 
   // Check temporary enchant on gear as a fallback for weapon enhancement
   const hasTemporaryEnchant =
     combatantInfo.gear?.some(
-      (g, i) => (i === 15 || i === 16) && g.temporaryEnchant
+      (g, i) => (i === 15 || i === 16) && g && g.temporaryEnchant
     ) ?? false;
 
   return {
-    flask: hasFlask || hasElixir,
+    // Flask OR both battle + guardian elixir together
+    flask: hasFlask || (hasBattleElixir && hasGuardianElixir),
     food: hasFood,
     weaponEnhancement: hasWeaponEnh || hasTemporaryEnchant,
   };

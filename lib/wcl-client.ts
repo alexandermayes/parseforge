@@ -44,15 +44,54 @@ async function getAccessToken(): Promise<string> {
 const MAX_RETRIES = 3;
 const RETRY_BACKOFF_MS = [1000, 2000, 4000];
 const REQUEST_TIMEOUT_MS = 30_000;
+const QUERY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const QUERY_CACHE_MAX_SIZE = 500;
 
 function isRetryable(status: number): boolean {
   return status === 429 || status >= 500;
+}
+
+// Query-level cache: deduplicates identical WCL queries across routes
+const queryCache = new Map<string, { data: unknown; expiresAt: number }>();
+
+function queryCacheKey(query: string, variables: Record<string, unknown>): string {
+  // Simple fast hash — djb2 on the combined string
+  const str = query + JSON.stringify(variables);
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash + str.charCodeAt(i)) | 0;
+  }
+  return `qc_${hash >>> 0}`;
+}
+
+function getQueryCache<T>(key: string): T | undefined {
+  const entry = queryCache.get(key);
+  if (!entry) return undefined;
+  if (Date.now() > entry.expiresAt) {
+    queryCache.delete(key);
+    return undefined;
+  }
+  return entry.data as T;
+}
+
+function setQueryCache(key: string, data: unknown): void {
+  // Evict oldest entries if at capacity
+  if (queryCache.size >= QUERY_CACHE_MAX_SIZE) {
+    const firstKey = queryCache.keys().next().value;
+    if (firstKey !== undefined) queryCache.delete(firstKey);
+  }
+  queryCache.set(key, { data, expiresAt: Date.now() + QUERY_CACHE_TTL_MS });
 }
 
 export async function wclQuery<T>(
   query: string,
   variables: Record<string, unknown> = {}
 ): Promise<T> {
+  // Check query-level cache first
+  const cacheKey = queryCacheKey(query, variables);
+  const cached = getQueryCache<T>(cacheKey);
+  if (cached !== undefined) return cached;
+
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -99,7 +138,9 @@ export async function wclQuery<T>(
         );
       }
 
-      return json.data as T;
+      const result = json.data as T;
+      setQueryCache(cacheKey, result);
+      return result;
     } catch (err) {
       clearTimeout(timeout);
 
