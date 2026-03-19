@@ -98,25 +98,38 @@ export default function AnalyzePage({
     }
   }, [report, reportCode]);
 
-  // Auto-select first fight if URL had fight param
-  useEffect(() => {
-    if (report && !selectedFight && report.fights.length > 0) {
-      const firstKill = report.fights.find((f) => f.kill);
-      setSelectedFight(firstKill?.id ?? report.fights[0].id);
-    }
-  }, [report, selectedFight]);
+  // Update a URL search param without navigation
+  const updateUrlParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(window.location.search);
+      if (value !== null) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+      router.replace(`?${params.toString()}`, { scroll: false });
+    },
+    [router]
+  );
 
   // Sync active tab to URL params
   const switchTab = useCallback(
     (tab: TabMode) => {
       setActiveTab(tab);
       posthog.capture("tab_switched", { tab });
-      const params = new URLSearchParams(window.location.search);
-      params.set("tab", tab);
-      router.replace(`?${params.toString()}`, { scroll: false });
+      updateUrlParam("tab", tab);
     },
-    [router]
+    [updateUrlParam]
   );
+
+  // Auto-select first fight if none selected
+  useEffect(() => {
+    if (report && !selectedFight && report.fights.length > 0) {
+      const id = report.fights.find((f) => f.kill)?.id ?? report.fights[0].id;
+      setSelectedFight(id);
+      updateUrlParam("fight", String(id));
+    }
+  }, [report, selectedFight, updateUrlParam]);
 
   // Auto-run raid overview when raid or player tab is active and fight is selected
   const raidAutoRun = (activeTab === "raid" || activeTab === "player") && !!selectedFight && !raidResult && !raidLoading && !raidError;
@@ -271,9 +284,10 @@ export default function AnalyzePage({
       setAnalysisResult(null);
       setAnalysisError(null);
       setSelectedSource(sourceId);
+      updateUrlParam("source", String(sourceId));
       switchTab("player");
     },
-    [switchTab]
+    [switchTab, updateUrlParam]
   );
 
   return (
@@ -357,6 +371,7 @@ export default function AnalyzePage({
               selectedFightId={selectedFight}
               onSelect={(id) => {
                 setSelectedFight(id);
+                updateUrlParam("fight", String(id));
                 // Clear stale results from the previous fight
                 setAnalysisResult(null);
                 setAnalysisError(null);
@@ -380,6 +395,7 @@ export default function AnalyzePage({
                 selectedSourceId={selectedSource}
                 onSelect={(id) => {
                   setSelectedSource(id);
+                  updateUrlParam("source", String(id));
                   const player = (fightPlayers?.players ?? report.players).find((p) => p.id === id);
                   posthog.capture("player_selected", { report_code: reportCode, player_name: player?.name, player_class: player?.type });
                 }}
@@ -430,7 +446,7 @@ export default function AnalyzePage({
           {analysisResult && !analyzing && (
             <div className="space-y-4">
               <button
-                onClick={() => { setAnalysisResult(null); setAnalysisError(null); setSelectedSource(null); }}
+                onClick={() => { setAnalysisResult(null); setAnalysisError(null); setSelectedSource(null); updateUrlParam("source", null); }}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 &larr; All Players

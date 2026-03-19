@@ -41,35 +41,84 @@ async function getAccessToken(): Promise<string> {
   return cachedToken!;
 }
 
+const MAX_RETRIES = 3;
+const RETRY_BACKOFF_MS = [1000, 2000, 4000];
+const REQUEST_TIMEOUT_MS = 30_000;
+
+function isRetryable(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
 export async function wclQuery<T>(
   query: string,
   variables: Record<string, unknown> = {}
 ): Promise<T> {
-  const token = await getAccessToken();
+  let lastError: Error | null = null;
 
-  const res = await fetch(WCL_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    const token = await getAccessToken();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`WCL API request failed (${res.status}): ${text}`);
+    try {
+      const res = await fetch(WCL_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query, variables }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      // 401 = token expired between cache check and use — refresh and retry
+      if (res.status === 401) {
+        cachedToken = null;
+        tokenExpiresAt = 0;
+        lastError = new Error("WCL token expired, retrying");
+        continue;
+      }
+
+      if (!res.ok) {
+        const text = await res.text();
+        lastError = new Error(`WCL API request failed (${res.status}): ${text}`);
+        if (isRetryable(res.status) && attempt < MAX_RETRIES - 1) {
+          await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
+          continue;
+        }
+        throw lastError;
+      }
+
+      const json = await res.json();
+
+      if (json.errors && json.errors.length > 0) {
+        throw new Error(
+          `WCL GraphQL errors: ${json.errors.map((e: { message: string }) => e.message).join(", ")}`
+        );
+      }
+
+      return json.data as T;
+    } catch (err) {
+      clearTimeout(timeout);
+
+      // AbortController timeout
+      if (err instanceof DOMException && err.name === "AbortError") {
+        lastError = new Error(`WCL API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
+        if (attempt < MAX_RETRIES - 1) {
+          await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
+          continue;
+        }
+        throw lastError;
+      }
+
+      // Non-retryable errors (network failures, GraphQL errors) — don't retry
+      throw err;
+    }
   }
 
-  const json = await res.json();
-
-  if (json.errors && json.errors.length > 0) {
-    throw new Error(
-      `WCL GraphQL errors: ${json.errors.map((e: { message: string }) => e.message).join(", ")}`
-    );
-  }
-
-  return json.data as T;
+  throw lastError ?? new Error("WCL query failed after retries");
 }
 
 // Simple in-memory analysis cache
