@@ -375,10 +375,31 @@ export function analyzeClassBuffs(
   combatantInfo: WCLCombatantInfoEvent | undefined,
   role: RaidRole,
   wowheadDomain: string,
+  buffEntries?: WCLBuffEntry[],
 ): CLAClassBuff[] {
-  if (!combatantInfo) return [];
+  if (!combatantInfo && (!buffEntries || buffEntries.length === 0)) return [];
 
-  const auras = parseAuras(combatantInfo);
+  // Build a set of all buff spell IDs from both sources:
+  // 1. CombatantInfo auras (buffs active at pull)
+  // 2. Buff uptime table entries (more reliable, has all buffs with uptime data)
+  const allBuffIds = new Set<number>();
+
+  if (combatantInfo) {
+    for (const id of parseAuras(combatantInfo)) {
+      allBuffIds.add(id);
+    }
+  }
+
+  if (buffEntries) {
+    for (const entry of buffEntries) {
+      if (entry.totalUptime > 0) {
+        allBuffIds.add(entry.guid);
+      }
+    }
+  }
+
+  if (allBuffIds.size === 0) return [];
+
   const results: CLAClassBuff[] = [];
 
   for (const family of CLASS_BUFF_FAMILIES) {
@@ -388,7 +409,7 @@ export function analyzeClassBuffs(
     // Find which spell from this family is active
     let foundSpellId = 0;
     for (const id of family.spellIds) {
-      if (auras.has(id)) {
+      if (allBuffIds.has(id)) {
         foundSpellId = id;
         break;
       }
@@ -546,7 +567,9 @@ export function buildCLAResult(input: CLAEngineInput): CLAResult {
     }
 
     const gearSnapshot = buildGearSnapshot(playerCombatantInfo, wowheadDomain, detailsGear);
-    const classBuffs = analyzeClassBuffs(playerCombatantInfo, role, wowheadDomain);
+    // Collect buff entries from first fight for class buff analysis
+    const firstFightBuffs = buffData[fights[0]?.id]?.[player.id] ?? [];
+    const classBuffs = analyzeClassBuffs(playerCombatantInfo, role, wowheadDomain, firstFightBuffs);
     const talentIssue = checkTalentCompleteness(playerCombatantInfo, wowheadDomain);
 
     players.push({
