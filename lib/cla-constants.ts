@@ -885,12 +885,22 @@ export const CLASS_BUFF_FAMILIES: ClassBuffFamily[] = [
   // ── Paladin Blessings ──
   {
     name: "Blessing of Might",
-    spellIds: new Set([19740, 25782, 48932, 48934]),
+    spellIds: new Set([
+      // BoM ranks 1-10
+      19740, 19834, 19835, 19836, 19837, 19838, 25291, 27140, 48931, 48932,
+      // Greater BoM ranks 1-4
+      25782, 25916, 27141, 48933, 48934,
+    ]),
     expectedRoles: ["Physical", "Tank"],
   },
   {
     name: "Blessing of Wisdom",
-    spellIds: new Set([19742, 25894, 48935, 48937]),
+    spellIds: new Set([
+      // BoW ranks 1-9
+      19742, 19850, 19852, 19853, 19854, 25290, 27142, 48935, 48936,
+      // Greater BoW ranks 1-4
+      25894, 25918, 27143, 48937, 48938,
+    ]),
     expectedRoles: ["Caster", "Healer"],
   },
   {
@@ -909,41 +919,72 @@ export const CLASS_BUFF_FAMILIES: ClassBuffFamily[] = [
   // ── Priest Buffs ──
   {
     name: "Power Word: Fortitude",
-    spellIds: new Set([1243, 21562, 48161, 48162]),
+    spellIds: new Set([
+      // Fort ranks 1-8
+      1243, 1244, 1245, 2791, 10937, 10938, 25389, 48161,
+      // Prayer of Fortitude ranks 1-4
+      21562, 21564, 25392, 48162,
+    ]),
     expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
   },
   {
     name: "Divine Spirit",
-    spellIds: new Set([14752, 27681, 48073, 48074]),
+    spellIds: new Set([
+      // DS ranks 1-5
+      14752, 14818, 14819, 27841, 25312,
+      // Prayer of Spirit ranks 1-3
+      27681, 32999, 48073, 48074,
+    ]),
     expectedRoles: ["Caster", "Healer"],
     expansions: ["classic", "tbc", "wrath"],
   },
   {
     name: "Shadow Protection",
-    spellIds: new Set([976, 27683, 48169, 48170]),
+    spellIds: new Set([
+      // Shadow Protection ranks 1-5
+      976, 10957, 10958, 25433, 48169,
+      // Prayer of Shadow Protection ranks 1-3
+      27683, 39374, 48170,
+    ]),
     expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
   },
   // ── Druid Buffs ──
   {
     name: "Mark of the Wild",
-    spellIds: new Set([1126, 21849, 48469, 48470]),
+    spellIds: new Set([
+      // MotW ranks 1-9
+      1126, 5232, 6756, 5234, 8907, 9884, 9885, 26990, 48469,
+      // Gift of the Wild ranks 1-4
+      21849, 21850, 26991, 48470,
+    ]),
     expectedRoles: ["Tank", "Healer", "Caster", "Physical"],
   },
   // ── Mage Buffs ──
   {
     name: "Arcane Intellect",
-    spellIds: new Set([1459, 23028, 42995, 43002]),
+    spellIds: new Set([
+      // AI ranks 1-7
+      1459, 1460, 1461, 10156, 10157, 27126, 42995,
+      // Arcane Brilliance ranks 1-3
+      23028, 27127, 43002,
+    ]),
     expectedRoles: ["Caster", "Healer"],
   },
   // ── Warrior Shouts ──
   {
     name: "Battle Shout",
-    spellIds: new Set([6673, 47436]),
+    spellIds: new Set([
+      // Ranks 1-9
+      6673, 5242, 6192, 11549, 11550, 11551, 25289, 2048, 47436,
+    ]),
     expectedRoles: ["Physical", "Tank"],
   },
   {
     name: "Commanding Shout",
-    spellIds: new Set([469, 47440]),
+    spellIds: new Set([
+      // Ranks 1-4
+      469, 47439, 47440, 25203,
+    ]),
     expectedRoles: ["Tank"],
   },
 ];

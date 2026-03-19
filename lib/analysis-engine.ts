@@ -784,6 +784,7 @@ export function analyzeAbilitiesAgainstAverage(
 
   for (const pd of playerDamage) {
     seen.add(pd.guid);
+    if (pd.name.includes("(OLD)")) continue;
     const agg = shareAggregates.get(pd.guid);
     const avgTopShare = agg ? agg.totalShare / N : 0;
 
