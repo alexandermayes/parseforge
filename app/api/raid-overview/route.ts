@@ -3,6 +3,7 @@ import { wclQuery, getCached, setCache } from "@/lib/wcl-client";
 import {
   RAID_OVERVIEW_QUERY,
   RAID_COMBATANT_INFO_QUERY,
+  RAID_DEATH_EVENTS_QUERY,
 } from "@/lib/wcl-queries";
 import { buildRaidOverview } from "@/lib/raid-overview-engine";
 import { ANALYSIS_CACHE_TTL } from "@/lib/constants";
@@ -87,6 +88,24 @@ interface CombatantInfoResponse {
   };
 }
 
+interface DeathEventsResponse {
+  reportData: {
+    report: {
+      deathEvents: {
+        data: Array<{
+          timestamp: number;
+          type: string;
+          sourceID: number;
+          source?: { name: string; type: string };
+          killerID?: number;
+          killer?: { name: string; type: string };
+          killingAbility?: { name: string; guid: number };
+        }>;
+      };
+    };
+  };
+}
+
 export async function POST(request: NextRequest) {
   let body: { reportCode: string; fightId: number };
   try {
@@ -110,13 +129,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Two parallel queries: fight-wide tables + combatant info
-    const [overviewData, combatantData] = await Promise.all([
+    // Three parallel queries: fight-wide tables + combatant info + death events
+    const [overviewData, combatantData, deathEventsData] = await Promise.all([
       wclQuery<RaidOverviewResponse>(RAID_OVERVIEW_QUERY, {
         code: reportCode,
         fightIDs: [fightId],
       }),
       wclQuery<CombatantInfoResponse>(RAID_COMBATANT_INFO_QUERY, {
+        code: reportCode,
+        fightIDs: [fightId],
+      }),
+      wclQuery<DeathEventsResponse>(RAID_DEATH_EVENTS_QUERY, {
         code: reportCode,
         fightIDs: [fightId],
       }),
@@ -138,6 +161,7 @@ export async function POST(request: NextRequest) {
       deathEntries: report.deaths?.data?.entries ?? [],
       damageTakenEntries: report.damageTaken?.data?.entries ?? [],
       combatantInfoEvents: combatantData.reportData.report.combatantInfo?.data ?? [],
+      deathEvents: deathEventsData.reportData?.report?.deathEvents?.data ?? [],
       fightDuration,
       fightStartTime: fight.startTime,
       encounterName: fight.name,

@@ -185,6 +185,23 @@ export const RAID_OVERVIEW_QUERY = `
   }
 `;
 
+// Death events with timestamps for all players
+export const RAID_DEATH_EVENTS_QUERY = `
+  query RaidDeathEvents($code: String!, $fightIDs: [Int!]!) {
+    reportData {
+      report(code: $code) {
+        deathEvents: events(
+          fightIDs: $fightIDs
+          dataType: Deaths
+          limit: 100
+        ) {
+          data
+        }
+      }
+    }
+  }
+`;
+
 // CombatantInfo events for all players (gear, auras at pull)
 export const RAID_COMBATANT_INFO_QUERY = `
   query RaidCombatantInfo($code: String!, $fightIDs: [Int!]!) {

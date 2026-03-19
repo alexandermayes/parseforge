@@ -50,6 +50,16 @@ interface DamageTakenTableEntry {
 
 // ─── Input types for the engine ─────────────────────────────────────
 
+export interface DeathEvent {
+  timestamp: number;
+  type: string;
+  sourceID: number;
+  source?: { name: string; type: string };
+  killerID?: number;
+  killer?: { name: string; type: string };
+  killingAbility?: { name: string; guid: number };
+}
+
 export interface RaidOverviewInput {
   playerDetails: WCLPlayerDetails[];
   damageEntries: DamageTableEntry[];
@@ -57,6 +67,7 @@ export interface RaidOverviewInput {
   deathEntries: DeathTableEntry[];
   damageTakenEntries: DamageTakenTableEntry[];
   combatantInfoEvents: WCLCombatantInfoEvent[];
+  deathEvents?: DeathEvent[];
   fightDuration: number;
   fightStartTime: number;
   encounterName: string;
@@ -152,6 +163,7 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     deathEntries,
     damageTakenEntries,
     combatantInfoEvents,
+    deathEvents,
     fightDuration,
     fightStartTime,
     encounterName,
@@ -187,23 +199,48 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     playerInfoById.set(p.id, { name: p.name, className: p.type });
   }
 
-  for (const death of deathEntries) {
-    const info = playerInfoById.get(death.id);
-    const detail: DeathDetail = {
-      playerName: info?.name ?? death.name,
-      playerClass: info?.className ?? death.type,
-      sourceId: death.id,
-      fightTimeMs: death.deathTime,
-      damage: death.damage?.total ?? 0,
-      healing: death.healing?.total ?? 0,
-    };
-    const existing = deathDetailsById.get(death.id);
-    if (existing) {
-      existing.push(detail);
-    } else {
-      deathDetailsById.set(death.id, [detail]);
+  // Use death events (have real timestamps) when available, fall back to table entries
+  if (deathEvents && deathEvents.length > 0) {
+    for (const event of deathEvents) {
+      if (event.type !== "death") continue;
+      const info = playerInfoById.get(event.sourceID);
+      if (!info) continue; // skip non-player deaths (pets, NPCs)
+      const detail: DeathDetail = {
+        playerName: event.source?.name ?? info.name,
+        playerClass: info.className,
+        sourceId: event.sourceID,
+        fightTimeMs: event.timestamp - fightStartTime,
+        damage: 0,
+        healing: 0,
+      };
+      const existing = deathDetailsById.get(event.sourceID);
+      if (existing) {
+        existing.push(detail);
+      } else {
+        deathDetailsById.set(event.sourceID, [detail]);
+      }
+      deathTimeline.push(detail);
     }
-    deathTimeline.push(detail);
+  } else {
+    // Fallback: use death table entries (no timestamps, just counts)
+    for (const death of deathEntries) {
+      const info = playerInfoById.get(death.id);
+      const detail: DeathDetail = {
+        playerName: info?.name ?? death.name,
+        playerClass: info?.className ?? death.type,
+        sourceId: death.id,
+        fightTimeMs: 0,
+        damage: death.damage?.total ?? 0,
+        healing: death.healing?.total ?? 0,
+      };
+      const existing = deathDetailsById.get(death.id);
+      if (existing) {
+        existing.push(detail);
+      } else {
+        deathDetailsById.set(death.id, [detail]);
+      }
+      deathTimeline.push(detail);
+    }
   }
 
   // Sort timeline chronologically
