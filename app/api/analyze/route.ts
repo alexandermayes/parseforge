@@ -195,35 +195,43 @@ export async function POST(request: NextRequest) {
     const totalDamage = throughputEntries.reduce((s, e) => s + e.total, 0);
 
     // Step 2: Get encounter rankings for this class/spec
-    // We need the encounterID — extract from fight name or use a mapping
-    // For now, use the fight's encounter data from the report meta
-    const reportMetaData = await wclQuery<{
-      reportData: {
-        report: {
-          zone: { id: number; name: string };
-          fights: Array<{ id: number; encounterID: number; name: string }>;
+    // Use client-provided encounter data when available (avoids extra WCL query)
+    let encounterID = body.encounterID;
+    let encounterName = body.encounterName;
+    let wowheadDomain = body.zoneName ? getWowheadDomain(body.zoneName) : undefined;
+
+    if (!encounterID || !encounterName || !wowheadDomain) {
+      // Fallback: fetch from WCL if client didn't provide encounter data
+      const reportMetaData = await wclQuery<{
+        reportData: {
+          report: {
+            zone: { id: number; name: string };
+            fights: Array<{ id: number; encounterID: number; name: string }>;
+          };
         };
-      };
-    }>(
-      `query GetEncounterID($code: String!, $fightIDs: [Int!]!) {
-        reportData {
-          report(code: $code) {
-            zone { id name }
-            fights(fightIDs: $fightIDs) {
-              id
-              encounterID
-              name
+      }>(
+        `query GetEncounterID($code: String!, $fightIDs: [Int!]!) {
+          reportData {
+            report(code: $code) {
+              zone { id name }
+              fights(fightIDs: $fightIDs) {
+                id
+                encounterID
+                name
+              }
             }
           }
-        }
-      }`,
-      { code: reportCode, fightIDs: [fightId] }
-    );
+        }`,
+        { code: reportCode, fightIDs: [fightId] }
+      );
 
-    const zoneName = reportMetaData.reportData.report.zone?.name;
-    const wowheadDomain = getWowheadDomain(zoneName);
-    const fightMeta = reportMetaData.reportData.report.fights[0];
-    if (!fightMeta || !fightMeta.encounterID) {
+      const fightMeta = reportMetaData.reportData.report.fights[0];
+      encounterID = fightMeta?.encounterID;
+      encounterName = fightMeta?.name;
+      wowheadDomain = getWowheadDomain(reportMetaData.reportData.report.zone?.name);
+    }
+
+    if (!encounterID) {
       return NextResponse.json(
         { error: "Could not determine encounter ID" },
         { status: 400 }
@@ -235,7 +243,7 @@ export async function POST(request: NextRequest) {
       const rankingsResponse = await wclQuery<RankingsResponse>(
         ENCOUNTER_RANKINGS_QUERY,
         {
-          encounterID: fightMeta.encounterID,
+          encounterID: encounterID,
           className: playerClass,
           specName: playerSpec,
           metric: playerRole === "healer" ? "hps" : "dps",
@@ -364,7 +372,7 @@ export async function POST(request: NextRequest) {
       playerClass,
       playerSpec,
       playerRole,
-      encounterName: fightMeta.name,
+      encounterName: encounterName ?? "Unknown",
       fightDuration,
       playerTotalDamage: totalDamage,
       playerGear,

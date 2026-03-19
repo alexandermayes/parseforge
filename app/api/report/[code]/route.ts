@@ -33,6 +33,7 @@ export async function GET(
         .map((f) => ({
           id: f.id,
           name: f.name,
+          encounterID: f.encounterID,
           kill: f.kill,
           difficulty: f.difficulty,
           bossPercentage: f.bossPercentage,

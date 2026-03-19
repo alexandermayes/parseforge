@@ -421,6 +421,9 @@ export interface AnalyzeRequest {
   reportCode: string;
   fightId: number;
   sourceId: number;
+  encounterID?: number;
+  encounterName?: string;
+  zoneName?: string;
 }
 
 export interface ParsedWCLUrl {
@@ -436,6 +439,7 @@ export interface ReportMeta {
   fights: Array<{
     id: number;
     name: string;
+    encounterID: number;
     kill: boolean;
     difficulty: number;
     bossPercentage: number;

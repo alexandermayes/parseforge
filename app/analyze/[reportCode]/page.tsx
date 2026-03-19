@@ -159,6 +159,9 @@ export default function AnalyzePage({
           reportCode,
           fightId: selectedFight,
           sourceId: selectedSource,
+          encounterID: report?.fights.find((f) => f.id === selectedFight)?.encounterID,
+          encounterName: report?.fights.find((f) => f.id === selectedFight)?.name,
+          zoneName: report?.zone,
         }),
       });
 
