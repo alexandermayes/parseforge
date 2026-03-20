@@ -202,7 +202,6 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
   // Use death events (have real timestamps) when available, fall back to table entries
   if (deathEvents && deathEvents.length > 0) {
     for (const event of deathEvents) {
-      if (event.type !== "death") continue;
       const info = playerInfoById.get(event.sourceID);
       if (!info) continue; // skip non-player deaths (pets, NPCs)
       const detail: DeathDetail = {
