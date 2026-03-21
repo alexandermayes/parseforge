@@ -643,6 +643,41 @@ export const GEM_NAME_DB = new Map<number, string>([
   // ─── Classic Gems ─────────────────────────────────────────────────
   // Not commonly gemmed in Classic
 
+  // ─── TBC Uncommon Gems ────────────────────────────────────────────
+  // Red (Blood Garnet)
+  [23094, "Bold Blood Garnet"],           // +6 Str
+  [23095, "Delicate Blood Garnet"],       // +6 Agi
+  [23096, "Runed Blood Garnet"],          // +7 SP
+  [23097, "Bright Blood Garnet"],         // +12 AP
+  [23098, "Teardrop Blood Garnet"],       // +13 Healing
+  [23099, "Subtle Blood Garnet"],         // +6 Dodge
+  // Blue (Azure Moonstone)
+  [23109, "Solid Azure Moonstone"],       // +9 Stam
+  [23110, "Sparkling Azure Moonstone"],   // +6 Spirit
+  [23111, "Lustrous Azure Moonstone"],    // +3 MP5
+  [23112, "Stormy Azure Moonstone"],      // +8 Spell Pen
+  [23116, "Rigid Azure Moonstone"],       // +6 Hit
+  // Yellow (Golden Draenite)
+  [23113, "Gleaming Golden Draenite"],    // +6 Crit
+  [23114, "Thick Golden Draenite"],       // +6 Def
+  [23115, "Great Golden Draenite"],       // +6 Hit
+  [23117, "Smooth Golden Draenite"],      // +6 Crit
+  [23118, "Mystic Golden Draenite"],      // +6 Resilience
+  // Orange (Flame Spessarite)
+  [23101, "Inscribed Flame Spessarite"],  // +4 Str, +3 Crit
+  [23104, "Glinting Flame Spessarite"],   // +4 Agi, +3 Hit
+  [23098, "Luminous Flame Spessarite"],   // +4 SP, +3 Int
+  [23099, "Potent Flame Spessarite"],     // +4 SP, +3 Crit
+  // Green (Deep Peridot)
+  [23103, "Jagged Deep Peridot"],         // +3 Crit, +4 Stam
+  [23105, "Enduring Deep Peridot"],       // +3 Def, +4 Stam
+  [23106, "Dazzling Deep Peridot"],       // +3 Int, +1 MP5
+  // Purple (Shadow Draenite)
+  [23100, "Sovereign Shadow Draenite"],   // +3 Str, +4 Stam
+  [23108, "Shifting Shadow Draenite"],    // +3 Agi, +4 Stam
+  [23104, "Glowing Shadow Draenite"],     // +4 SP, +4 Stam
+  [23107, "Royal Shadow Draenite"],       // +4 SP, +2 MP5
+
   // ─── TBC Red Gems ─────────────────────────────────────────────────
   [32193, "Bold Living Ruby"],          // +8 Str
   [32194, "Delicate Living Ruby"],      // +8 Agi
@@ -731,12 +766,54 @@ export const GEM_NAME_DB = new Map<number, string>([
   [32409, "Relentless Earthstorm Diamond"], // +12 Agi, 3% Crit Damage
   [25897, "Bracing Earthstorm Diamond"], // +14 SP, -2% Threat
 
-  // ─── WotLK Red Gems ──────────────────────────────────────────────
+  // ─── WotLK Uncommon Gems ────────────────────────────────────────
+  // Red (Bloodstone)
   [39900, "Bold Bloodstone"],           // +12 Str
   [39905, "Delicate Bloodstone"],       // +12 Agi
-  [39910, "Brilliant Bloodstone"],      // +12 Int
-  [39911, "Runed Bloodstone"],          // +12 SP
+  [39908, "Precise Bloodstone"],        // +12 Expertise
+  [39909, "Flashing Bloodstone"],       // +12 Parry
+  [39907, "Runed Bloodstone"],          // +12 SP
   [39906, "Bright Bloodstone"],         // +24 AP
+  // Blue (Chalcedony)
+  [39915, "Solid Chalcedony"],          // +18 Stam
+  [39919, "Sparkling Chalcedony"],      // +12 Spirit
+  [39920, "Lustrous Chalcedony"],       // +4 MP5
+  [39927, "Rigid Chalcedony"],          // +12 Hit
+  [39932, "Stormy Chalcedony"],         // +12 Spell Pen
+  // Yellow (Sun Crystal)
+  [39917, "Smooth Sun Crystal"],        // +12 Crit
+  [39918, "Thick Sun Crystal"],         // +12 Def
+  [39916, "Quick Sun Crystal"],         // +12 Haste
+  [39933, "Mystic Sun Crystal"],        // +12 Resilience
+  // Orange (Huge Citrine)
+  [39946, "Inscribed Huge Citrine"],    // +6 Str, +6 Crit
+  [39947, "Etched Huge Citrine"],       // +6 Str, +6 Hit
+  [39949, "Glinting Huge Citrine"],     // +6 Agi, +6 Hit
+  [39950, "Veiled Huge Citrine"],       // +6 SP, +6 Hit
+  [39951, "Potent Huge Citrine"],       // +6 SP, +6 Crit
+  [39952, "Luminous Huge Citrine"],     // +6 SP, +6 Int
+  [39953, "Reckless Huge Citrine"],     // +6 SP, +6 Haste
+  [39954, "Fierce Huge Citrine"],       // +6 Str, +6 Haste
+  [39955, "Deft Huge Citrine"],         // +6 Agi, +6 Haste
+  [39956, "Deadly Huge Citrine"],       // +6 Agi, +6 Crit
+  [39957, "Accurate Huge Citrine"],     // +6 Expertise, +6 Hit
+  [39958, "Wicked Huge Citrine"],       // +12 AP, +6 Crit
+  // Green (Dark Jade)
+  [39933, "Jagged Dark Jade"],          // +6 Crit, +9 Stam
+  [39935, "Enduring Dark Jade"],        // +6 Def, +9 Stam
+  [39936, "Forceful Dark Jade"],        // +6 Haste, +9 Stam
+  [39938, "Vivid Dark Jade"],           // +6 Hit, +9 Stam
+  [39939, "Turbid Dark Jade"],          // +6 Resilience, +9 Stam
+  [39940, "Steady Dark Jade"],          // +6 Resilience, +9 Stam
+  // Purple (Shadow Crystal)
+  [39934, "Sovereign Shadow Crystal"],  // +6 Str, +9 Stam
+  [39941, "Shifting Shadow Crystal"],   // +6 Agi, +9 Stam
+  [39942, "Glowing Shadow Crystal"],    // +6 SP, +9 Stam
+  [39943, "Purified Shadow Crystal"],   // +6 SP, +6 Spirit
+  [39944, "Guardian's Shadow Crystal"], // +6 Expertise, +9 Stam
+  [39945, "Defender's Shadow Crystal"], // +6 Parry, +9 Stam
+
+  // ─── WotLK Rare Red Gems ─────────────────────────────────────────
   [39996, "Bold Scarlet Ruby"],         // +16 Str
   [39997, "Delicate Scarlet Ruby"],     // +16 Agi
   [39998, "Runed Scarlet Ruby"],        // +19 SP
@@ -756,7 +833,6 @@ export const GEM_NAME_DB = new Map<number, string>([
   [40118, "Precise Cardinal Ruby"],     // +20 Expertise
 
   // ─── WotLK Blue Gems ─────────────────────────────────────────────
-  [39915, "Solid Chalcedony"],          // +18 Stam
   [39919, "Solid Sky Sapphire"],        // +24 Stam
   [40010, "Sparkling Sky Sapphire"],    // +16 Spirit
   [40119, "Solid Majestic Zircon"],     // +30 Stam
@@ -825,6 +901,93 @@ export const GEM_NAME_DB = new Map<number, string>([
   [41398, "Relentless Earthsiege Diamond"], // +21 Agi, 3% Crit Damage
   [41401, "Bracing Earthsiege Diamond"], // +25 SP, -2% Threat
 
+  // ─── Cata Uncommon Gems ─────────────────────────────────────────
+  // Red (Carnelian)
+  [52081, "Bold Carnelian"],            // +20 Str
+  [52082, "Delicate Carnelian"],        // +20 Agi
+  [52083, "Brilliant Carnelian"],       // +20 Int
+  [52084, "Precise Carnelian"],         // +20 Expertise
+  [52085, "Flashing Carnelian"],        // +20 Parry
+  // Blue (Zephyrite)
+  [52086, "Solid Zephyrite"],           // +30 Stam
+  [52087, "Sparkling Zephyrite"],       // +20 Spirit
+  [52088, "Rigid Zephyrite"],           // +20 Hit
+  [52089, "Stormy Zephyrite"],          // +20 Spell Pen
+  // Yellow (Alicite)
+  [52090, "Smooth Alicite"],            // +20 Crit
+  [52091, "Fractured Alicite"],         // +20 Mastery
+  [52093, "Quick Alicite"],             // +20 Haste
+  [52094, "Mystic Alicite"],            // +20 Resilience
+  // Orange (Hessonite)
+  [52095, "Inscribed Hessonite"],       // +10 Str, +10 Crit
+  [52096, "Potent Hessonite"],          // +10 Int, +10 Crit
+  [52097, "Fierce Hessonite"],          // +10 Str, +10 Haste
+  [52098, "Deft Hessonite"],            // +10 Agi, +10 Haste
+  [52099, "Reckless Hessonite"],        // +10 Int, +10 Haste
+  [52100, "Deadly Hessonite"],          // +10 Agi, +10 Crit
+  [52101, "Artful Hessonite"],          // +10 Int, +10 Mastery
+  [52102, "Keen Hessonite"],            // +10 Int, +10 Hit... wait, Expertise
+  [52103, "Fine Hessonite"],            // +10 Parry, +10 Mastery
+  [52104, "Polished Hessonite"],        // +10 Agi, +10 Dodge... wait
+  // Green (Jasper)
+  [52119, "Jagged Jasper"],             // +10 Crit, +15 Stam
+  [52120, "Piercing Jasper"],           // +10 Crit, +10 Hit
+  [52121, "Forceful Jasper"],           // +10 Haste, +15 Stam
+  [52122, "Lightning Jasper"],          // +10 Haste, +10 Hit
+  [52123, "Puissant Jasper"],           // +10 Mastery, +15 Stam
+  [52124, "Zen Jasper"],               // +10 Mastery, +10 Spirit
+  [52125, "Sensei's Jasper"],           // +10 Mastery, +10 Hit
+  // Purple (Nightstone)
+  [52107, "Sovereign Nightstone"],      // +10 Str, +15 Stam
+  [52108, "Shifting Nightstone"],       // +10 Agi, +15 Stam
+  [52109, "Timeless Nightstone"],       // +10 Int, +15 Stam
+  [52110, "Purified Nightstone"],       // +10 Int, +10 Spirit
+  [52111, "Guardian's Nightstone"],     // +10 Expertise, +15 Stam
+  [52112, "Defender's Nightstone"],     // +10 Parry, +15 Stam
+
+  // ─── Cata Rare Orange Gems ────────────────────────────────────────
+  [52215, "Inscribed Ember Topaz"],     // +20 Str, +20 Crit
+  [52216, "Potent Ember Topaz"],        // +20 Int, +20 Crit
+  [52217, "Fierce Ember Topaz"],        // +20 Str, +20 Haste
+  [52218, "Deft Ember Topaz"],          // +20 Agi, +20 Haste
+  [52219, "Reckless Ember Topaz"],      // +20 Int, +20 Haste
+  [52220, "Deadly Ember Topaz"],        // +20 Agi, +20 Crit
+  [52222, "Artful Ember Topaz"],        // +20 Int, +20 Mastery
+  [52224, "Adept Ember Topaz"],         // +20 Agi, +20 Mastery
+
+  // ─── Cata Rare Green Gems ─────────────────────────────────────────
+  [52225, "Jagged Dream Emerald"],      // +20 Crit, +30 Stam
+  [52227, "Forceful Dream Emerald"],    // +20 Haste, +30 Stam
+  [52228, "Puissant Dream Emerald"],    // +20 Mastery, +30 Stam
+  [52229, "Zen Dream Emerald"],         // +20 Mastery, +20 Spirit
+  [52233, "Sensei's Dream Emerald"],    // +20 Mastery, +20 Hit
+  [52236, "Lightning Dream Emerald"],   // +20 Haste, +20 Hit
+  [52245, "Piercing Dream Emerald"],    // +20 Crit, +20 Hit
+
+  // ─── Cata Rare Purple Gems ────────────────────────────────────────
+  [52234, "Sovereign Demonseye"],       // +20 Str, +30 Stam
+  [52236, "Shifting Demonseye"],        // +20 Agi, +30 Stam
+  [52237, "Timeless Demonseye"],        // +20 Int, +30 Stam
+  [52238, "Purified Demonseye"],        // +20 Int, +20 Spirit
+  [52240, "Guardian's Demonseye"],      // +20 Expertise, +30 Stam
+  [52243, "Veiled Demonseye"],          // +20 Int, +20 Hit
+  [52246, "Glinting Demonseye"],        // +20 Agi, +20 Hit
+  [52247, "Etched Demonseye"],          // +20 Str, +20 Hit
+  [52248, "Accurate Demonseye"],        // +20 Expertise, +20 Hit
+
+  // ─── Cata Meta Gems ──────────────────────────────────────────────
+  [52291, "Chaotic Shadowspirit Diamond"], // +54 Crit, 3% Crit Damage
+  [52293, "Austere Shadowspirit Diamond"], // +81 Stam, +2% Armor
+  [52295, "Ember Shadowspirit Diamond"],   // +54 Int, +2% Mana
+  [52296, "Revitalizing Shadowspirit Diamond"], // +54 Spirit, 3% Crit Heals
+  [52297, "Destructive Shadowspirit Diamond"], // +54 Crit, +1% Spell Reflect
+  [52298, "Powerful Shadowspirit Diamond"], // +81 Stam, -10% Stun
+  [52299, "Enigmatic Shadowspirit Diamond"], // +54 Crit, -10% Snare
+  [52300, "Impassive Shadowspirit Diamond"], // +54 Crit, Fear reduction
+  [68778, "Agile Shadowspirit Diamond"],   // +54 Agi, 3% Crit Damage
+  [68779, "Reverberating Shadowspirit Diamond"], // +54 Str, 3% Crit Damage
+  [68780, "Burning Shadowspirit Diamond"], // +54 Int, 3% Crit Damage
+
   // ─── Cata Red Gems ────────────────────────────────────────────────
   [52206, "Bold Inferno Ruby"],         // +40 Str
   [52207, "Brilliant Inferno Ruby"],    // +40 Int
@@ -857,14 +1020,66 @@ export const GEM_NAME_DB = new Map<number, string>([
   [76697, "Precise Primordial Ruby"],   // +160 Expertise
 
   // ─── MoP Blue Gems ───────────────────────────────────────────────
-  [76693, "Solid River's Heart"],       // +240 Stam
-  [76700, "Sparkling River's Heart"],   // +160 Spirit
+  [76698, "Solid River's Heart"],       // +240 Stam
   [76699, "Rigid River's Heart"],       // +160 Hit
+  [76700, "Sparkling River's Heart"],   // +160 Spirit
 
   // ─── MoP Yellow Gems ─────────────────────────────────────────────
   [76701, "Smooth Sun's Radiance"],     // +160 Crit
   [76702, "Fractured Sun's Radiance"],  // +160 Mastery
   [76703, "Quick Sun's Radiance"],      // +160 Haste
+
+  // ─── MoP Orange Gems ─────────────────────────────────────────────
+  [76704, "Inscribed Vermilion Onyx"],  // +80 Str, +80 Crit
+  [76705, "Potent Vermilion Onyx"],     // +80 Int, +80 Crit
+  [76706, "Fierce Vermilion Onyx"],     // +80 Str, +80 Haste
+  [76707, "Deft Vermilion Onyx"],       // +80 Agi, +80 Haste
+  [76708, "Reckless Vermilion Onyx"],   // +80 Int, +80 Haste
+  [76709, "Deadly Vermilion Onyx"],     // +80 Agi, +80 Crit
+  [76710, "Artful Vermilion Onyx"],     // +80 Int, +80 Mastery
+  [76711, "Keen Vermilion Onyx"],       // +80 Expertise, +80 Mastery
+  [76712, "Adept Vermilion Onyx"],      // +80 Agi, +80 Mastery
+  [76713, "Wicked Vermilion Onyx"],     // +80 Expertise, +80 Crit
+  [76714, "Willful Vermilion Onyx"],    // +80 Int, +80 Resilience
+  [76715, "Splendid Vermilion Onyx"],   // +80 Mastery, +80 Resilience
+  [76716, "Resplendent Vermilion Onyx"], // +80 Str, +80 Resilience
+  [76717, "Lucent Vermilion Onyx"],     // +80 Agi, +80 Resilience
+  [76718, "Tenuous Vermilion Onyx"],    // +80 Expertise, +80 Resilience
+
+  // ─── MoP Green Gems ──────────────────────────────────────────────
+  [76719, "Jagged Wild Jade"],          // +80 Crit, +120 Stam
+  [76720, "Piercing Wild Jade"],        // +80 Crit, +80 Hit
+  [76721, "Forceful Wild Jade"],        // +80 Haste, +120 Stam
+  [76722, "Lightning Wild Jade"],       // +80 Haste, +80 Hit
+  [76723, "Puissant Wild Jade"],        // +80 Mastery, +120 Stam
+  [76724, "Zen Wild Jade"],             // +80 Mastery, +80 Spirit
+  [76725, "Sensei's Wild Jade"],        // +80 Mastery, +80 Hit
+  [76726, "Effulgent Wild Jade"],       // +80 Mastery, +80 PvP Power
+  [76727, "Radiant Wild Jade"],         // +80 Crit, +80 PvP Power
+
+  // ─── MoP Purple Gems ─────────────────────────────────────────────
+  [76728, "Sovereign Imperial Amethyst"],  // +80 Str, +120 Stam
+  [76729, "Shifting Imperial Amethyst"],   // +80 Agi, +120 Stam
+  [76730, "Timeless Imperial Amethyst"],   // +80 Int, +120 Stam
+  [76731, "Purified Imperial Amethyst"],   // +80 Int, +80 Spirit
+  [76732, "Guardian's Imperial Amethyst"], // +80 Expertise, +120 Stam
+  [76733, "Accurate Imperial Amethyst"],   // +80 Expertise, +80 Hit
+  [76734, "Veiled Imperial Amethyst"],     // +80 Int, +80 Hit
+  [76735, "Etched Imperial Amethyst"],     // +80 Str, +80 Hit
+  [76736, "Glinting Imperial Amethyst"],   // +80 Agi, +80 Hit
+
+  // ─── MoP Meta Gems ───────────────────────────────────────────────
+  [76884, "Agile Primal Diamond"],      // +216 Agi, 3% Crit Damage
+  [76885, "Reverberating Primal Diamond"], // +216 Str, 3% Crit Damage
+  [76886, "Burning Primal Diamond"],    // +216 Int, 3% Crit Damage
+  [76887, "Austere Primal Diamond"],    // +324 Stam, +2% Armor
+  [76888, "Ember Primal Diamond"],      // +216 Int, +2% Mana
+  [76890, "Revitalizing Primal Diamond"], // +216 Spirit, 3% Crit Heals
+  [76891, "Destructive Primal Diamond"], // +216 Crit, +1% Spell Reflect
+  [76892, "Powerful Primal Diamond"],   // +324 Stam, -10% Stun
+  [76893, "Enigmatic Primal Diamond"],  // +216 Crit, -10% Snare
+  [76894, "Impassive Primal Diamond"],  // +216 Crit, Fear reduction
+  [76895, "Courageous Primal Diamond"], // +324 Int, Proc
 ]);
 
 // ─── Class Buff Definitions ──────────────────────────────────────────
