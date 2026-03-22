@@ -1,6 +1,7 @@
 import type {
   RaidPlayerMetrics,
   RaidOverviewResult,
+  RaidBuffCoverage,
   DeathDetail,
   ConsumableStatus,
   WCLPlayerDetails,
@@ -151,6 +152,46 @@ function computeAvgItemLevel(
   }
 
   return count > 0 ? Math.round(totalIlvl / count) : 0;
+}
+
+// ─── Raid buff coverage ─────────────────────────────────────────────
+
+const RAID_BUFF_PROVIDERS: Array<{ buffName: string; providedBy: string; classes: string[] }> = [
+  { buffName: "Mark of the Wild", providedBy: "Druid", classes: ["Druid"] },
+  { buffName: "Power Word: Fortitude", providedBy: "Priest", classes: ["Priest"] },
+  { buffName: "Arcane Intellect", providedBy: "Mage", classes: ["Mage"] },
+  { buffName: "Blessing of Kings", providedBy: "Paladin", classes: ["Paladin"] },
+  { buffName: "Blessing of Might", providedBy: "Paladin", classes: ["Paladin"] },
+  { buffName: "Battle Shout", providedBy: "Warrior", classes: ["Warrior"] },
+  { buffName: "Shadow Protection", providedBy: "Priest", classes: ["Priest"] },
+  { buffName: "Heroism / Bloodlust", providedBy: "Shaman / Mage", classes: ["Shaman", "Mage"] },
+];
+
+function analyzeRaidBuffCoverage(playerDetails: WCLPlayerDetails[]): RaidBuffCoverage[] {
+  const classPlayers = new Map<string, string[]>();
+  for (const p of playerDetails) {
+    const cls = p.type;
+    const existing = classPlayers.get(cls);
+    if (existing) {
+      existing.push(p.name);
+    } else {
+      classPlayers.set(cls, [p.name]);
+    }
+  }
+
+  return RAID_BUFF_PROVIDERS.map((buff) => {
+    const providers: string[] = [];
+    for (const cls of buff.classes) {
+      const players = classPlayers.get(cls);
+      if (players) providers.push(...players);
+    }
+    return {
+      buffName: buff.buffName,
+      providedBy: buff.providedBy,
+      available: providers.length > 0,
+      providers,
+    };
+  });
 }
 
 // ─── Main engine function ───────────────────────────────────────────
@@ -307,10 +348,13 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     return b.throughput - a.throughput;
   });
 
+  const raidBuffCoverage = analyzeRaidBuffCoverage(playerDetails);
+
   return {
     encounterName,
     fightDuration,
     players,
     deathTimeline,
+    raidBuffCoverage,
   };
 }

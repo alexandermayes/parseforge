@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail } from "@/lib/wcl-types";
+import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage } from "@/lib/wcl-types";
 import { CLASS_COLORS, ROLE_COLORS } from "@/lib/constants";
 import { Check, X } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
@@ -177,6 +177,11 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
         </div>
       </div>
 
+      {/* Raid Buff Coverage */}
+      {data.raidBuffCoverage && data.raidBuffCoverage.length > 0 && (
+        <RaidBuffBar buffs={data.raidBuffCoverage} />
+      )}
+
       {/* Death Timeline */}
       {data.deathTimeline && data.deathTimeline.length > 0 && (
         <DeathTimeline deaths={data.deathTimeline} fightDuration={data.fightDuration} />
@@ -213,6 +218,44 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+function RaidBuffBar({ buffs }: { buffs: RaidBuffCoverage[] }) {
+  const missing = buffs.filter((b) => !b.available);
+  const hasMissing = missing.length > 0;
+
+  return (
+    <div className="glass rounded-lg p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <h3 className="text-heading-sm">Raid Buffs</h3>
+        {hasMissing ? (
+          <span className="text-xs font-medium px-1.5 py-0.5 rounded badge-warn">
+            {missing.length} missing
+          </span>
+        ) : (
+          <span className="text-xs font-medium px-1.5 py-0.5 rounded badge-good">
+            All covered
+          </span>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {buffs.map((buff) => (
+          <div
+            key={buff.buffName}
+            className={`text-xs px-2 py-1 rounded flex items-center gap-1.5 ${
+              buff.available
+                ? "bg-status-good/10 text-status-good"
+                : "bg-status-bad/10 text-status-bad"
+            }`}
+            title={buff.available ? `Provided by: ${buff.providers.join(", ")}` : `No ${buff.providedBy} in raid`}
+          >
+            <span>{buff.available ? "\u2713" : "\u2717"}</span>
+            <span>{buff.buffName}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

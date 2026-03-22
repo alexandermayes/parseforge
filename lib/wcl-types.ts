@@ -422,12 +422,24 @@ export interface RaidPlayerMetrics {
   avgItemLevel: number;
 }
 
+export interface RaidBuffCoverage {
+  buffName: string;
+  /** Which class provides this buff */
+  providedBy: string;
+  /** Whether the raid has at least one player of the providing class */
+  available: boolean;
+  /** Names of players who can provide this buff */
+  providers: string[];
+}
+
 export interface RaidOverviewResult {
   encounterName: string;
   fightDuration: number;
   players: RaidPlayerMetrics[];
   /** All deaths in chronological order across all players */
   deathTimeline: DeathDetail[];
+  /** Raid-wide buff coverage based on class composition */
+  raidBuffCoverage: RaidBuffCoverage[];
 }
 
 // ─── Request / Response Types ────────────────────────────────────────
