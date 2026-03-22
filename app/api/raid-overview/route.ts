@@ -43,6 +43,7 @@ interface RaidOverviewResponse {
             type: string;
             icon: string;
             total: number;
+            overheal?: number;
             activeTime: number;
             activeTimeReduced: number;
           }>;

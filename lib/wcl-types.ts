@@ -432,6 +432,17 @@ export interface RaidBuffCoverage {
   providers: string[];
 }
 
+export interface HealerMetrics {
+  sourceId: number;
+  name: string;
+  className: string;
+  spec: string;
+  hps: number;
+  totalHealing: number;
+  overhealPercent: number;
+  activityPercent: number;
+}
+
 export interface RaidOverviewResult {
   encounterName: string;
   fightDuration: number;
@@ -440,6 +451,8 @@ export interface RaidOverviewResult {
   deathTimeline: DeathDetail[];
   /** Raid-wide buff coverage based on class composition */
   raidBuffCoverage: RaidBuffCoverage[];
+  /** Healer-specific metrics */
+  healerMetrics: HealerMetrics[];
 }
 
 // ─── Request / Response Types ────────────────────────────────────────

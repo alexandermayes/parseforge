@@ -27,6 +27,7 @@ interface DamageTableEntry {
   type: string;
   icon: string;
   total: number;
+  overheal?: number;
   activeTime: number;
   activeTimeReduced: number;
 }
@@ -350,11 +351,44 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
 
   const raidBuffCoverage = analyzeRaidBuffCoverage(playerDetails);
 
+  // Build healer-specific metrics
+  const healerMetrics: import("./wcl-types").HealerMetrics[] = [];
+  for (const player of playerDetails) {
+    const spec = parsePlayerSpec(player);
+    if (!isHealerSpec(spec)) continue;
+
+    const healEntry = healingById.get(player.id);
+    if (!healEntry) continue;
+
+    const hps = durationSec > 0 ? healEntry.total / durationSec : 0;
+    const overhealPct = healEntry.total > 0 && healEntry.overheal
+      ? (healEntry.overheal / (healEntry.total + healEntry.overheal)) * 100
+      : 0;
+    const activity = fightDuration > 0
+      ? Math.min(100, (healEntry.activeTime / fightDuration) * 100)
+      : 0;
+
+    healerMetrics.push({
+      sourceId: player.id,
+      name: player.name,
+      className: player.type,
+      spec,
+      hps: Math.round(hps),
+      totalHealing: healEntry.total,
+      overhealPercent: Math.round(overhealPct * 10) / 10,
+      activityPercent: Math.round(activity * 10) / 10,
+    });
+  }
+
+  // Sort healers by HPS descending
+  healerMetrics.sort((a, b) => b.hps - a.hps);
+
   return {
     encounterName,
     fightDuration,
     players,
     deathTimeline,
     raidBuffCoverage,
+    healerMetrics,
   };
 }

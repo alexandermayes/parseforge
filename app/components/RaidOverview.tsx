@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage } from "@/lib/wcl-types";
+import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage, HealerMetrics } from "@/lib/wcl-types";
 import { CLASS_COLORS, ROLE_COLORS } from "@/lib/constants";
 import { Check, X } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
@@ -187,6 +187,11 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
         <DeathTimeline deaths={data.deathTimeline} fightDuration={data.fightDuration} />
       )}
 
+      {/* Healer Metrics */}
+      {data.healerMetrics && data.healerMetrics.length > 0 && (
+        <HealerPanel healers={data.healerMetrics} />
+      )}
+
       {/* Table */}
       <div className="overflow-x-auto rounded-lg glass">
         <table className="w-full text-sm">
@@ -218,6 +223,56 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+function overhealColor(pct: number): string {
+  if (pct <= 20) return "text-status-good";
+  if (pct <= 40) return "text-status-warn";
+  return "text-status-bad";
+}
+
+function HealerPanel({ healers }: { healers: HealerMetrics[] }) {
+  if (healers.length === 0) return null;
+  const topHps = healers[0]?.hps ?? 1;
+
+  return (
+    <div className="glass rounded-lg p-3 space-y-2">
+      <h3 className="text-heading-sm">Healer Breakdown</h3>
+      <div className="space-y-1.5">
+        {healers.map((h) => {
+          const classColor = CLASS_COLORS[h.className] ?? "#FFFFFF";
+          const barWidth = topHps > 0 ? (h.hps / topHps) * 100 : 0;
+          return (
+            <div key={h.sourceId} className="flex items-center gap-3">
+              <span className="font-medium text-sm w-28 shrink-0 truncate" style={{ color: classColor }}>
+                {h.name}
+              </span>
+              <span className="text-xs text-muted-foreground w-16 shrink-0">
+                {h.spec}
+              </span>
+              <div className="flex-1 flex items-center gap-2">
+                <div className="flex-1 h-3 bg-surface-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-emerald-500/60"
+                    style={{ width: `${barWidth}%` }}
+                  />
+                </div>
+                <span className="font-mono text-xs tabular-nums w-14 text-right shrink-0">
+                  {formatNumber(h.hps)} hps
+                </span>
+              </div>
+              <span className={`font-mono text-xs tabular-nums w-12 text-right shrink-0 ${overhealColor(h.overhealPercent)}`}>
+                {h.overhealPercent.toFixed(0)}% OH
+              </span>
+              <span className={`font-mono text-xs tabular-nums w-12 text-right shrink-0 ${activityColor(h.activityPercent)}`}>
+                {h.activityPercent.toFixed(0)}%
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
