@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback, use } from "react";
+import { useState, useCallback, use } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,8 +11,6 @@ import AnalysisView, { AnalysisLoading } from "@/app/components/AnalysisView";
 import RaidOverview, { RaidOverviewLoading } from "@/app/components/RaidOverview";
 import CLAView, { CLALoading } from "@/app/components/CLAView";
 import PlayerQuickGrid from "@/app/components/PlayerQuickGrid";
-import type { ReportMeta } from "@/lib/wcl-types";
-import { saveRecentReport } from "@/lib/recent-reports";
 import { ShineBorder } from "@/components/ui/shine-border";
 import posthog from "posthog-js";
 import {
@@ -23,20 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useReportMeta, useFightPlayers } from "./hooks/useReportMeta";
 import { useRaidOverview } from "./hooks/useRaidOverview";
 import { usePlayerAnalysis } from "./hooks/usePlayerAnalysis";
 import { useCLA } from "./hooks/useCLA";
 
 type TabMode = "player" | "raid" | "cla";
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error ?? `Request failed (${res.status})`);
-  }
-  return data;
-};
 
 export default function AnalyzePage({
   params,
@@ -59,28 +48,6 @@ export default function AnalyzePage({
       ? parseInt(searchParams.get("source")!, 10)
       : null
   );
-
-  // Fetch report metadata
-  const {
-    data: report,
-    error: reportError,
-    isLoading: reportLoading,
-  } = useSWR<ReportMeta>(`/api/report/${reportCode}`, fetcher);
-
-  // Fetch fight-scoped players for Player Analysis tab
-  const { data: fightPlayers } = useSWR<{
-    players: { id: number; name: string; type: string; icon: string }[];
-  }>(
-    selectedFight ? `/api/report/${reportCode}/players?fightId=${selectedFight}` : null,
-    fetcher
-  );
-
-  // Save to recent reports
-  useEffect(() => {
-    if (report) {
-      saveRecentReport({ code: reportCode, title: report.title, owner: report.owner, zone: report.zone, viewedAt: Date.now() });
-    }
-  }, [report, reportCode]);
 
   // Update a URL search param without navigation
   const updateUrlParam = useCallback(
@@ -106,14 +73,11 @@ export default function AnalyzePage({
     [updateUrlParam]
   );
 
-  // Auto-select first fight if none selected
-  useEffect(() => {
-    if (report && !selectedFight && report.fights.length > 0) {
-      const id = report.fights.find((f) => f.kill)?.id ?? report.fights[0].id;
-      setSelectedFight(id);
-      updateUrlParam("fight", String(id));
-    }
-  }, [report, selectedFight, updateUrlParam]);
+  // ─── Data hooks ───────────────────────────────────────────────────
+  const { report, reportError, reportLoading } = useReportMeta(
+    reportCode, selectedFight, setSelectedFight, updateUrlParam
+  );
+  const { players: fightPlayers } = useFightPlayers(reportCode, selectedFight);
 
   // ─── Analysis mode hooks ──────────────────────────────────────────
   const raid = useRaidOverview(reportCode, selectedFight, activeTab);
@@ -225,12 +189,12 @@ export default function AnalyzePage({
                 Player
               </label>
               <PlayerSelector
-                players={fightPlayers?.players ?? report.players}
+                players={fightPlayers ?? report.players}
                 selectedSourceId={selectedSource}
                 onSelect={(id) => {
                   setSelectedSource(id);
                   updateUrlParam("source", String(id));
-                  const p = (fightPlayers?.players ?? report.players).find((pl) => pl.id === id);
+                  const p = (fightPlayers ?? report.players).find((pl) => pl.id === id);
                   posthog.capture("player_selected", { report_code: reportCode, player_name: p?.name, player_class: p?.type });
                 }}
               />
