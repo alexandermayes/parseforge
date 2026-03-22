@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { wclQuery, getCached, setCache } from "@/lib/wcl-client";
+import { wclQuery } from "@/lib/wcl-client";
+import { cachedApiHandler, parseBody } from "@/lib/api-utils";
 import {
   PLAYER_FULL_DATA_QUERY,
   PLAYER_FULL_DATA_QUERY_HEALING,
@@ -8,7 +9,7 @@ import {
 } from "@/lib/wcl-queries";
 import { buildAnalysisResult } from "@/lib/analysis-engine";
 import { fetchTopPlayers } from "@/lib/wcl-fetchers";
-import { ANALYSIS_CACHE_TTL, TOP_PLAYERS_TO_FETCH, getWowheadDomain, isHealerSpec } from "@/lib/constants";
+import { TOP_PLAYERS_TO_FETCH, getWowheadDomain, isHealerSpec } from "@/lib/constants";
 import { GEM_STAT_DB, GEM_NAME_DB } from "@/lib/cla-constants";
 import { flattenPlayerDetails, parsePlayerSpec } from "@/lib/wcl-helpers";
 import {
@@ -52,29 +53,14 @@ interface RankingsResponse {
 
 
 export async function POST(request: NextRequest) {
-  let body: AnalyzeRequest;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
-
+  const parsed = await parseBody<AnalyzeRequest>(
+    request, ["reportCode", "fightId", "sourceId"]
+  );
+  if ("error" in parsed) return parsed.error;
+  const body = parsed.body;
   const { reportCode, fightId, sourceId } = body;
-  if (!reportCode || !fightId || !sourceId) {
-    return NextResponse.json(
-      { error: "Missing reportCode, fightId, or sourceId" },
-      { status: 400 }
-    );
-  }
 
-  // Check cache
-  const cacheKey = `${reportCode}-${fightId}-${sourceId}`;
-  const cached = getCached<AnalysisResult>(cacheKey);
-  if (cached) {
-    return NextResponse.json(cached);
-  }
-
-  try {
+  return cachedApiHandler(`analyze-${reportCode}-${fightId}-${sourceId}`, async () => {
     // Step 1: We need player details first to detect role, so fetch with DPS query initially
     // and re-fetch with healing query if needed
     const playerData = await wclQuery<PlayerFullDataResponse>(
@@ -260,13 +246,6 @@ export async function POST(request: NextRequest) {
       wowheadDomain,
     });
 
-    // Cache result
-    setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
-
-    return NextResponse.json(result);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("Analysis error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+    return result;
+  });
 }

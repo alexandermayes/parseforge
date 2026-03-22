@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { wclQuery, getCached, setCache } from "@/lib/wcl-client";
+import { wclQuery } from "@/lib/wcl-client";
 import {
   RAID_OVERVIEW_QUERY,
   RAID_COMBATANT_INFO_QUERY,
   RAID_DEATH_EVENTS_QUERY,
 } from "@/lib/wcl-queries";
 import { buildRaidOverview } from "@/lib/raid-overview-engine";
-import { ANALYSIS_CACHE_TTL } from "@/lib/constants";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
+import { cachedApiHandler, parseBody } from "@/lib/api-utils";
 import type {
-  RaidOverviewResult,
   WCLPlayerDetails,
   WCLCombatantInfoEvent,
   WCLFight,
@@ -107,29 +106,13 @@ interface DeathEventsResponse {
 }
 
 export async function POST(request: NextRequest) {
-  let body: { reportCode: string; fightId: number };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
+  const parsed = await parseBody<{ reportCode: string; fightId: number }>(
+    request, ["reportCode", "fightId"]
+  );
+  if ("error" in parsed) return parsed.error;
+  const { reportCode, fightId } = parsed.body;
 
-  const { reportCode, fightId } = body;
-  if (!reportCode || !fightId) {
-    return NextResponse.json(
-      { error: "Missing reportCode or fightId" },
-      { status: 400 }
-    );
-  }
-
-  const cacheKey = `rpb-${reportCode}-${fightId}`;
-  const cached = getCached<RaidOverviewResult>(cacheKey);
-  if (cached) {
-    return NextResponse.json(cached);
-  }
-
-  try {
-    // Three parallel queries: fight-wide tables + combatant info + death events
+  return cachedApiHandler(`rpb-${reportCode}-${fightId}`, async () => {
     const [overviewData, combatantData, deathEventsData] = await Promise.all([
       wclQuery<RaidOverviewResponse>(RAID_OVERVIEW_QUERY, {
         code: reportCode,
@@ -154,7 +137,7 @@ export async function POST(request: NextRequest) {
     const fightDuration = fight.endTime - fight.startTime;
     const allPlayers = flattenPlayerDetails(report.playerDetails);
 
-    const result = buildRaidOverview({
+    return buildRaidOverview({
       playerDetails: allPlayers,
       damageEntries: report.damage?.data?.entries ?? [],
       healingEntries: report.healing?.data?.entries ?? [],
@@ -166,12 +149,5 @@ export async function POST(request: NextRequest) {
       fightStartTime: fight.startTime,
       encounterName: fight.name,
     });
-
-    setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
-    return NextResponse.json(result);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("Raid overview error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  });
 }

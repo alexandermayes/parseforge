@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { wclQuery, getCached, setCache } from "@/lib/wcl-client";
+import { wclQuery } from "@/lib/wcl-client";
 import {
   REPORT_META_QUERY,
   RAID_COMBATANT_INFO_QUERY,
   buildCLABuffUptimeQuery,
 } from "@/lib/wcl-queries";
 import { buildCLAResult, type CLAEngineInput } from "@/lib/cla-engine";
-import { ANALYSIS_CACHE_TTL, getWowheadDomain } from "@/lib/constants";
+import { getWowheadDomain } from "@/lib/constants";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
+import { cachedApiHandler, parseBody } from "@/lib/api-utils";
 import type { CLAResult, CLAFightMeta } from "@/lib/cla-types";
 import type {
   WCLPlayerDetails,
@@ -42,28 +43,17 @@ interface BuffBatchResponse {
 }
 
 export async function POST(request: NextRequest) {
-  let body: { reportCode: string; fightIds: number[] };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  const parsed = await parseBody<{ reportCode: string; fightIds: number[] }>(
+    request, ["reportCode", "fightIds"]
+  );
+  if ("error" in parsed) return parsed.error;
+  const { reportCode, fightIds } = parsed.body;
+
+  if (fightIds.length === 0) {
+    return NextResponse.json({ error: "No fights specified" }, { status: 400 });
   }
 
-  const { reportCode, fightIds } = body;
-  if (!reportCode || !fightIds || fightIds.length === 0) {
-    return NextResponse.json(
-      { error: "Missing reportCode or fightIds" },
-      { status: 400 }
-    );
-  }
-
-  const cacheKey = `cla-${reportCode}-${fightIds.sort().join(",")}`;
-  const cached = getCached<CLAResult>(cacheKey);
-  if (cached) {
-    return NextResponse.json(cached);
-  }
-
-  try {
+  return cachedApiHandler(`cla-${reportCode}-${fightIds.sort().join(",")}`, async () => {
     // Step 1: Fetch report metadata (fights + players)
     const metaData = await wclQuery<ReportMetaResponse>(REPORT_META_QUERY, {
       code: reportCode,
@@ -184,13 +174,6 @@ export async function POST(request: NextRequest) {
       wowheadDomain,
     };
 
-    const result = buildCLAResult(engineInput);
-
-    setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
-    return NextResponse.json(result);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("CLA error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+    return buildCLAResult(engineInput);
+  });
 }
