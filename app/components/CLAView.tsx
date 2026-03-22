@@ -5,8 +5,9 @@ import type { CLAResult } from "@/lib/cla-types";
 import CLABuffTable from "./CLABuffTable";
 import { CLAGearIssuesView, CLAGearListing } from "./CLAGearIssues";
 import CLAClassBuffs from "./CLAClassBuffs";
+import CLABuffComparison from "./CLABuffComparison";
 
-type CLASubTab = "buffs" | "gear-issues" | "gear-listing" | "class-buffs";
+type CLASubTab = "buffs" | "gear-issues" | "gear-listing" | "class-buffs" | "buff-comparison";
 
 interface Props {
   data: CLAResult;
@@ -34,6 +35,7 @@ export default function CLAView({ data, selectedFightId }: Props) {
           { key: "gear-issues" as const, label: "Gear Issues" },
           { key: "gear-listing" as const, label: "Gear Listing" },
           { key: "class-buffs" as const, label: "Class Buffs" },
+          { key: "buff-comparison" as const, label: "Buff Comparison" },
         ]).map(({ key, label }) => (
           <button
             key={key}
@@ -96,6 +98,13 @@ export default function CLAView({ data, selectedFightId }: Props) {
         <CLAClassBuffs
           players={data.players}
           wowheadDomain={data.wowheadDomain}
+        />
+      )}
+
+      {subTab === "buff-comparison" && (
+        <CLABuffComparison
+          players={data.players}
+          fights={data.fights}
         />
       )}
 
