@@ -121,7 +121,11 @@ export async function POST(request: NextRequest) {
         detailsGearById.set(item.id, item);
       }
     }
-    const playerGear: WCLGearItem[] = (combatantInfoEvent?.gear ?? []).filter((g) => g && g.id > 0).map((g, i) => {
+    const playerGear: WCLGearItem[] = (combatantInfoEvent?.gear ?? []).map((g, i) => {
+      // Null/empty entries in the sparse gear array → skip with placeholder
+      if (!g || g.id === 0) {
+        return { id: 0, slot: i, quality: 0, icon: "", itemLevel: 0 } as WCLGearItem;
+      }
       // playerDetails gear has item names; CombatantInfo events have enchants/gems/ilvl
       // Match by item ID for reliable enchant/gem name resolution
       const detailItem = detailsGearById.get(g.id);
@@ -144,7 +148,7 @@ export async function POST(request: NextRequest) {
         }),
         setID: g.setID,
       };
-    });
+    }).filter((g) => g.id > 0);
     const detailsTalents = player.combatantInfo?.talents ?? [];
     const playerTalents = (combatantInfoEvent?.talents ?? []).map((t, i) => ({
       name: detailsTalents[i]?.name ?? "",
