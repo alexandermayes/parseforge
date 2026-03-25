@@ -117,10 +117,9 @@ export function analyzeDps(
 
 function normalizePlayerGear(rawGear: WCLGearItem[]): Map<number, WCLGearItem> {
   const bySlot = new Map<number, WCLGearItem>();
-  for (let i = 0; i < rawGear.length; i++) {
-    const item = rawGear[i];
-    if (item && item.id > 0) {
-      bySlot.set(i, { ...item, slot: i });
+  for (const item of rawGear) {
+    if (item && item.id > 0 && item.slot != null) {
+      bySlot.set(item.slot, item);
     }
   }
   return bySlot;
@@ -913,9 +912,9 @@ export function analyzeGearPopularity(
 
   const sampleSize = withGear.length;
   const playerGearBySlot = new Map<number, WCLGearItem>();
-  for (let i = 0; i < playerGear.length; i++) {
-    if (playerGear[i] && playerGear[i].id > 0) {
-      playerGearBySlot.set(i, playerGear[i]);
+  for (const item of playerGear) {
+    if (item && item.id > 0 && item.slot != null) {
+      playerGearBySlot.set(item.slot, item);
     }
   }
 
