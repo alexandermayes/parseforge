@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { CLAPlayerResult, CLAClassBuff } from "@/lib/cla-types";
-import { CLASS_COLORS } from "@/lib/constants";
+import PlayerAccordionRow from "./PlayerAccordionRow";
 
 function buffSeverityIcon(severity: CLAClassBuff["severity"]): string {
   switch (severity) {
@@ -74,25 +74,19 @@ export default function CLAClassBuffs({ players, wowheadDomain }: Props) {
         {playersWithBuffData.length} player{playersWithBuffData.length > 1 ? "s" : ""} with class buff data
       </p>
       {playersWithBuffData.map((player) => {
-        const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
         const { missing, warning } = summarize(player.classBuffs);
         const isExpanded = expandedPlayer === player.sourceId;
 
         return (
-          <div key={player.sourceId} className="rounded-lg glass overflow-hidden">
-            <button
-              onClick={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
-              className="w-full px-3 py-2 bg-surface-2 hover:bg-surface-2/80 transition-colors flex items-center justify-between text-left"
-            >
-              <div>
-                <span className="font-medium" style={{ color: classColor }}>
-                  {player.name}
-                </span>
-                <span className="text-xs text-muted-foreground ml-2">
-                  {player.spec} {player.className}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
+          <PlayerAccordionRow
+            key={player.sourceId}
+            name={player.name}
+            className={player.className}
+            spec={player.spec}
+            isExpanded={isExpanded}
+            onToggle={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
+            badges={
+              <>
                 {missing > 0 && (
                   <span className="text-xs font-medium px-1.5 py-0.5 rounded badge-bad">
                     {missing} missing
@@ -108,32 +102,31 @@ export default function CLAClassBuffs({ players, wowheadDomain }: Props) {
                     All buffs
                   </span>
                 )}
-              </div>
-            </button>
-            {isExpanded && (
-              <div className="divide-y divide-border">
-                {player.classBuffs.map((buff, i) => (
-                  <div
-                    key={`${buff.buffFamily}-${i}`}
-                    className={`px-3 py-2 flex items-center gap-3 ${buffRowBg(buff.severity)}`}
-                  >
-                    <span className={`text-sm font-bold shrink-0 ${buffSeverityClasses(buff.severity)}`}>
-                      {buffSeverityIcon(buff.severity)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-sm">{buff.buffFamily}</span>
-                      {buff.severity === "missing" && (
-                        <span className="text-xs text-status-bad ml-2">Missing</span>
-                      )}
-                      {buff.severity === "warning" && buff.reason && (
-                        <span className="text-xs text-status-warn ml-2">{buff.reason}</span>
-                      )}
-                    </div>
+              </>
+            }
+          >
+            <div className="divide-y divide-border">
+              {player.classBuffs.map((buff, i) => (
+                <div
+                  key={`${buff.buffFamily}-${i}`}
+                  className={`px-3 py-2 flex items-center gap-3 ${buffRowBg(buff.severity)}`}
+                >
+                  <span className={`text-sm font-bold shrink-0 ${buffSeverityClasses(buff.severity)}`}>
+                    {buffSeverityIcon(buff.severity)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-sm">{buff.buffFamily}</span>
+                    {buff.severity === "missing" && (
+                      <span className="text-xs text-status-bad ml-2">Missing</span>
+                    )}
+                    {buff.severity === "warning" && buff.reason && (
+                      <span className="text-xs text-status-warn ml-2">{buff.reason}</span>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          </PlayerAccordionRow>
         );
       })}
     </div>

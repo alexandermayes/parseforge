@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { CLAPlayerResult, CLAGearIssue, GearIssueSeverity } from "@/lib/cla-types";
-import { CLASS_COLORS } from "@/lib/constants";
 import { useWowheadTooltips } from "@/lib/use-wowhead";
+import PlayerAccordionRow from "./PlayerAccordionRow";
 
 function severityLabel(severity: GearIssueSeverity): string {
   switch (severity) {
@@ -76,27 +76,21 @@ export function CLAGearIssuesView({ players, wowheadDomain }: GearIssuesProps) {
         {playersWithIssues.length} player{playersWithIssues.length > 1 ? "s" : ""} with gear issues
       </p>
       {playersWithIssues.map((player) => {
-        const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
         const counts = severityBreakdown(player.gearIssues);
         const isExpanded = expandedPlayer === player.sourceId;
         const sortedIssues = [...player.gearIssues].sort(
           (a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity],
         );
         return (
-          <div key={player.sourceId} className="rounded-lg glass overflow-hidden">
-            <button
-              onClick={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
-              className="w-full px-3 py-2 bg-surface-2 hover:bg-surface-2/80 transition-colors flex items-center justify-between text-left"
-            >
-              <div>
-                <span className="font-medium" style={{ color: classColor }}>
-                  {player.name}
-                </span>
-                <span className="text-xs text-muted-foreground ml-2">
-                  {player.spec} {player.className}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
+          <PlayerAccordionRow
+            key={player.sourceId}
+            name={player.name}
+            className={player.className}
+            spec={player.spec}
+            isExpanded={isExpanded}
+            onToggle={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
+            badges={
+              <>
                 {counts.error > 0 && (
                   <span className="text-xs font-medium px-1.5 py-0.5 rounded badge-bad">
                     {counts.error} critical
@@ -112,42 +106,41 @@ export function CLAGearIssuesView({ players, wowheadDomain }: GearIssuesProps) {
                     {counts.info} note
                   </span>
                 )}
-              </div>
-            </button>
-            {isExpanded && (
-              <div className="divide-y divide-border">
-                {sortedIssues.map((issue, i) => (
-                  <div
-                    key={`${issue.slotIndex}-${issue.issueType}-${i}`}
-                    className={`px-3 py-2 flex items-start gap-3 ${severityColor(issue.severity)}`}
-                  >
-                    <span className={`text-[10px] font-bold tracking-wide px-1.5 py-0.5 rounded shrink-0 mt-0.5 ${severityPillClasses(issue.severity)}`}>
-                      {severityLabel(issue.severity)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs text-muted-foreground">
-                          {issue.slotName}
-                        </span>
-                        {issue.itemId > 0 && (
-                          <a
-                            href={wowheadItemUrl(issue.itemId, wowheadDomain)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm text-blue-400 hover:underline"
-                            data-wowhead={`item=${issue.itemId}&domain=${wowheadDomain}`}
-                          >
-                            {issue.itemName}
-                          </a>
-                        )}
-                      </div>
-                      <p className="text-sm">{issue.description}</p>
+              </>
+            }
+          >
+            <div className="divide-y divide-border">
+              {sortedIssues.map((issue, i) => (
+                <div
+                  key={`${issue.slotIndex}-${issue.issueType}-${i}`}
+                  className={`px-3 py-2 flex items-start gap-3 ${severityColor(issue.severity)}`}
+                >
+                  <span className={`text-[10px] font-bold tracking-wide px-1.5 py-0.5 rounded shrink-0 mt-0.5 ${severityPillClasses(issue.severity)}`}>
+                    {severityLabel(issue.severity)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs text-muted-foreground">
+                        {issue.slotName}
+                      </span>
+                      {issue.itemId > 0 && (
+                        <a
+                          href={wowheadItemUrl(issue.itemId, wowheadDomain)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-400 hover:underline"
+                          data-wowhead={`item=${issue.itemId}&domain=${wowheadDomain}`}
+                        >
+                          {issue.itemName}
+                        </a>
+                      )}
                     </div>
+                    <p className="text-sm">{issue.description}</p>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          </PlayerAccordionRow>
         );
       })}
     </div>
@@ -166,32 +159,27 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
   useWowheadTooltips([expandedPlayer]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {players.map((player) => {
-        const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
         const isExpanded = expandedPlayer === player.sourceId;
         const hasGear = player.gearSnapshot.length > 0;
+        const filledSlots = player.gearSnapshot.filter((s) => s.itemId > 0).length;
 
         return (
-          <div key={player.sourceId} className="rounded-lg glass overflow-hidden">
-            <button
-              onClick={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
-              className="w-full px-3 py-2 bg-surface-1 hover:bg-surface-2 transition-colors flex items-center justify-between text-left"
-            >
-              <div>
-                <span className="font-medium" style={{ color: classColor }}>
-                  {player.name}
-                </span>
-                <span className="text-xs text-muted-foreground ml-2">
-                  {player.spec} {player.className}
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {isExpanded ? "Hide" : "Show"} gear
+          <PlayerAccordionRow
+            key={player.sourceId}
+            name={player.name}
+            className={player.className}
+            spec={player.spec}
+            isExpanded={isExpanded}
+            onToggle={() => setExpandedPlayer(isExpanded ? null : player.sourceId)}
+            badges={
+              <span className="text-xs font-medium px-1.5 py-0.5 rounded badge-info">
+                {filledSlots} items
               </span>
-            </button>
-
-            {isExpanded && hasGear && (
+            }
+          >
+            {hasGear ? (
               <div className="divide-y divide-border/50">
                 {player.gearSnapshot.filter((s) => s.itemId > 0).map((slot) => (
                   <div
@@ -249,14 +237,12 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                   </div>
                 ))}
               </div>
-            )}
-
-            {isExpanded && !hasGear && (
+            ) : (
               <div className="px-3 py-4 text-center text-muted-foreground text-sm">
                 No gear data available
               </div>
             )}
-          </div>
+          </PlayerAccordionRow>
         );
       })}
     </div>
