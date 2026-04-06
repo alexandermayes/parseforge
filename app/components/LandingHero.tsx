@@ -123,6 +123,18 @@ export function LandingHero() {
         </div>
       </BlurFade>
 
+      {/* Guide links */}
+      <BlurFade delay={0.35} inView>
+        <div className="text-left space-y-2">
+          <h3 className="text-sm font-semibold text-muted-foreground">Guides</h3>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            <a href="/guides/how-to-analyze-wow-classic-logs" className="text-gold-from hover:underline">How to Analyze Logs</a>
+            <a href="/guides/improve-dps-wow-classic" className="text-gold-from hover:underline">Improve Your DPS</a>
+            <a href="/guides/raid-preparation-checklist" className="text-gold-from hover:underline">Raid Prep Checklist</a>
+          </div>
+        </div>
+      </BlurFade>
+
       {/* Footer */}
       <BlurFade delay={0.4} inView>
         <footer className="text-xs text-muted-foreground space-y-1">

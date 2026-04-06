@@ -81,6 +81,13 @@ export default function Navbar() {
               </Link>
             )}
 
+            <Link
+              href="/guides"
+              className="text-xs text-muted-foreground hover:text-gold-from transition-interactive"
+            >
+              Guides
+            </Link>
+
             <a
               href="https://classic.warcraftlogs.com"
               target="_blank"

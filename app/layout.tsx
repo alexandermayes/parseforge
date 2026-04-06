@@ -54,12 +54,21 @@ export const metadata: Metadata = {
     title: "ParseForge — WoW Classic Log Analyzer",
     description:
       "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and actionable improvement suggestions.",
+    images: [
+      {
+        url: "https://parseforge.gg/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ParseForge — WoW Classic Log Analyzer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ParseForge — WoW Classic Log Analyzer",
     description:
       "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and improvement suggestions.",
+    images: ["https://parseforge.gg/opengraph-image"],
   },
 };
 
