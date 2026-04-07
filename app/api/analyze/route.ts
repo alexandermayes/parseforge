@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         permanentEnchantName: detailItem?.permanentEnchantName ?? undefined,
         temporaryEnchant: g.temporaryEnchant,
         temporaryEnchantName: detailItem?.temporaryEnchantName ?? undefined,
-        gems: g.gems?.map((gem) => {
+        gems: g.gems?.filter((gem) => gem.id >= 20000).map((gem) => {
           const detailGem = detailItem?.gems?.find((dg) => dg.id === gem.id);
           const gemDbEntry = GEM_STAT_DB.get(gem.id);
           const gemNameEntry = GEM_NAME_DB.get(gem.id);

@@ -42,6 +42,20 @@ import {
   MetricPercentileAnalysis,
 } from "./wcl-types";
 
+// ─── Junk / internal spell filter ────────────────────────────────────
+// Spell IDs that are internal WoW spells, deprecated abilities, or logging
+// artefacts that should never appear in player-facing analysis.
+const JUNK_SPELL_IDS = new Set([
+  1,   // Word of Recall (OLD) — internal hearthstone
+  2,   // Word of Recall (OLD) — rank 2 variant
+  3,   // Word of Recall (OLD) — rank 3 variant
+]);
+
+/** Returns true if a damage entry is a junk/internal spell that should be hidden. */
+function isJunkSpell(entry: { guid: number; name: string }): boolean {
+  return JUNK_SPELL_IDS.has(entry.guid) || entry.name.includes("(OLD)");
+}
+
 // ─── DPS Comparison ──────────────────────────────────────────────────
 
 export function analyzeDps(
@@ -450,7 +464,7 @@ export function analyzeAbilities(
 
   for (const pd of playerDamage) {
     seen.add(pd.guid);
-    if (pd.name.includes("(OLD)")) continue;
+    if (isJunkSpell(pd)) continue;
     const td = topByGuid.get(pd.guid);
     abilities.push({
       name: pd.name,
@@ -466,7 +480,7 @@ export function analyzeAbilities(
   // Add abilities that top player uses but player doesn't
   for (const td of topDamage) {
     if (!seen.has(td.guid)) {
-      if (td.name.includes("(OLD)")) continue;
+      if (isJunkSpell(td)) continue;
       abilities.push({
         name: td.name,
         guid: td.guid,
@@ -1018,7 +1032,7 @@ export function analyzeAbilityPriority(
   const entries: AbilityPriorityEntry[] = [];
   for (const [guid, agg] of abilityShares) {
     // Skip legacy/garbage spells
-    if (agg.name.includes("(OLD)")) continue;
+    if (isJunkSpell({ guid, name: agg.name })) continue;
 
     // Pad missing values with 0 for players that didn't use this ability
     while (agg.shares.length < N) agg.shares.push(0);

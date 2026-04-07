@@ -245,8 +245,9 @@ export function analyzeGearIssues(
     }
 
     // Check for empty gem sockets (gems array exists but has id=0 entries)
+    // Filter out non-gem items (id < 20000) that WCL sometimes includes
     if (item.gems && item.gems.length > 0) {
-      const emptyGems = item.gems.filter((g) => g.id === 0);
+      const emptyGems = item.gems.filter((g) => g.id === 0 || g.id < 20000);
       if (emptyGems.length > 0) {
         issues.push({
           slotIndex: index,
@@ -330,7 +331,7 @@ export function buildGearSnapshot(
     const detailItem = detailMap.get(item.id);
     // Merge gem info: use detail gems (which may have names) when available
     const detailGems = detailItem?.gems;
-    const eventGems = item.gems?.filter((g) => g.id !== 0) ?? [];
+    const eventGems = item.gems?.filter((g) => g.id >= 20000) ?? [];
 
     slots.push({
       slotIndex: index,
@@ -479,7 +480,7 @@ function analyzeGemMismatches(
     const itemName = detailItem?.name ?? `Item #${item.id}`;
 
     for (const gem of item.gems) {
-      if (gem.id === 0) continue;
+      if (gem.id === 0 || gem.id < 20000) continue;
       const gemInfo = GEM_STAT_DB.get(gem.id);
       if (!gemInfo || gemInfo.badForRoles.length === 0) continue;
       if (!gemInfo.badForRoles.includes(role)) continue;
