@@ -38,6 +38,10 @@ yarn-error.log*
 .claude/
 CLAUDE.md
 
+# bot
+bot/node_modules
+bot/dist
+
 # vercel
 .vercel
 
