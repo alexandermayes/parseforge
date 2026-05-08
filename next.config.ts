@@ -13,6 +13,47 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // 301 redirect old domains to parseforge.gg to consolidate SEO authority
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.getlootlist.com" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "getlootlist.com" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.lootlistplus.com" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "lootlistplus.com" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.lootlistplus.dev" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "lootlistplus.dev" }],
+        destination: "https://parseforge.gg/:path*",
+        permanent: true,
+      },
+    ];
+  },
   skipTrailingSlashRedirect: true,
 };
 

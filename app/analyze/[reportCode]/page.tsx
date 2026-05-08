@@ -2,6 +2,7 @@
 
 import { useState, useCallback, use } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Link2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -95,15 +96,26 @@ export default function AnalyzePage({
     [switchTab, updateUrlParam, player.clear]
   );
 
+  const [copied, setCopied] = useState(false);
+
+  const handleShareLink = useCallback(() => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      posthog.capture("share_link_copied", { report_code: reportCode, url });
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [reportCode]);
+
   return (
     <main className="py-6 space-y-6">
       {/* Report header */}
-      <div>
-        <h1 className="text-heading-lg truncate">
-          {reportLoading ? (
-            <Skeleton className="h-7 w-64" />
-          ) : report ? (
-            <>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-heading-lg truncate">
+            {reportLoading ? (
+              <Skeleton className="h-7 w-64" />
+            ) : report ? (
               <a
                 href={`https://classic.warcraftlogs.com/reports/${reportCode}`}
                 target="_blank"
@@ -112,15 +124,35 @@ export default function AnalyzePage({
               >
                 {report.title}
               </a>
-            </>
-          ) : (
-            `Report: ${reportCode}`
+            ) : (
+              `Report: ${reportCode}`
+            )}
+          </h1>
+          {report && (
+            <p className="text-caption mt-1">
+              by {report.owner} &middot; {report.zone}
+            </p>
           )}
-        </h1>
+        </div>
         {report && (
-          <p className="text-caption mt-1">
-            by {report.owner} &middot; {report.zone}
-          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleShareLink}
+            className="shrink-0"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5 text-emerald-400" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Link2 className="size-3.5" />
+                Share
+              </>
+            )}
+          </Button>
         )}
       </div>
 
