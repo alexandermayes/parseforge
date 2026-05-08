@@ -131,6 +131,8 @@ export function LandingHero() {
             <a href="/guides/how-to-analyze-wow-classic-logs" className="text-gold-from hover:underline">How to Analyze Logs</a>
             <a href="/guides/improve-dps-wow-classic" className="text-gold-from hover:underline">Improve Your DPS</a>
             <a href="/guides/raid-preparation-checklist" className="text-gold-from hover:underline">Raid Prep Checklist</a>
+            <a href="/guides/wow-classic-loot-council-tools" className="text-gold-from hover:underline">Loot Council Tools</a>
+            <a href="/guides/warcraft-logs-vs-parseforge" className="text-gold-from hover:underline">WCL vs ParseForge</a>
           </div>
         </div>
       </BlurFade>

@@ -348,6 +348,17 @@ export default function AnalyzePage({
           )}
         </>
       )}
+      {/* Guide links — cross-link to SEO content */}
+      {(player.result || raid.result || cla.result) && (
+        <div className="border-t border-white/[0.06] pt-6 mt-8">
+          <p className="text-xs text-muted-foreground mb-2">Improve your performance</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            <a href="/guides/how-to-analyze-wow-classic-logs" className="text-gold-from hover:underline">How to Analyze Logs</a>
+            <a href="/guides/improve-dps-wow-classic" className="text-gold-from hover:underline">Improve Your DPS</a>
+            <a href="/guides/raid-preparation-checklist" className="text-gold-from hover:underline">Raid Prep Checklist</a>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

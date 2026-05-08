@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, TrendingUp, Shield } from "lucide-react";
+import { BookOpen, TrendingUp, Shield, Crown, GitCompareArrows } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "WoW Classic Guides",
@@ -38,6 +38,20 @@ const guides = [
     title: "WoW Classic Raid Preparation Checklist",
     description:
       "Everything you need before pulling the first boss — consumables, enchants, talents, world buffs, and how to verify it all with ParseForge.",
+  },
+  {
+    href: "/guides/wow-classic-loot-council-tools",
+    icon: Crown,
+    title: "Best Loot Council Tools for WoW Classic",
+    description:
+      "Compare loot council tools for WoW Classic guilds and learn how to combine them with log analysis for fairer loot decisions.",
+  },
+  {
+    href: "/guides/warcraft-logs-vs-parseforge",
+    icon: GitCompareArrows,
+    title: "Warcraft Logs vs ParseForge",
+    description:
+      "Warcraft Logs stores your raid data. ParseForge analyzes it. Learn how they complement each other and when to use which.",
   },
 ];
 

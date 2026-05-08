@@ -33,16 +33,47 @@ export default function Home() {
       />
       <LandingHero />
 
-      {/* Server-rendered SEO content — hidden visually, crawlable by search engines */}
-      <section className="sr-only" aria-hidden="false">
-        <h2>ParseForge — WoW Classic Raid Log Analyzer</h2>
-        <p>ParseForge analyzes your Warcraft Logs reports and compares your performance against top-ranked players on every boss fight. Paste any WoW Classic, TBC, WotLK, or Season of Discovery report URL to get started.</p>
-        <h3>How It Works</h3>
-        <p>1. Paste a Warcraft Logs report URL. 2. Select a boss fight and your character. 3. Get a full performance breakdown — DPS percentile, gear audit, consumable tracking, buff uptime, talent comparison, and cast efficiency. 4. Review personalized improvement suggestions ranked by impact.</p>
-        <h3>Features</h3>
-        <p>DPS and HPS percentile analysis. Gear and enchant auditing. Consumable and buff uptime tracking. Raid-wide performance overview. Talent build comparison. Personal improvement tracking across raids.</p>
-        <h3>Supported Versions</h3>
-        <p>Classic Era, Season of Discovery, The Burning Crusade, Wrath of the Lich King, Cataclysm Classic, and Anniversary realms.</p>
+      {/* Below-fold SEO content — visible, crawlable */}
+      <section className="w-full max-w-3xl mt-16 space-y-8 text-left border-t border-white/[0.06] pt-12">
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            What is ParseForge?
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            ParseForge analyzes your Warcraft Logs reports and compares your
+            performance against top-ranked players on every boss fight. Paste any
+            WoW Classic report URL to get a full performance breakdown — DPS
+            percentile, gear audit, consumable tracking, buff uptime, talent
+            comparison, and cast efficiency.
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">
+            How It Works
+          </h2>
+          <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside leading-relaxed">
+            <li>Paste a Warcraft Logs report URL</li>
+            <li>Select a boss fight and your character</li>
+            <li>
+              Get a full performance breakdown with percentile rankings, gear
+              audits, and buff tracking
+            </li>
+            <li>
+              Review personalized improvement suggestions ranked by impact
+            </li>
+          </ol>
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">
+            Supported Versions
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Classic Era, Season of Discovery, The Burning Crusade, Wrath of the
+            Lich King, Cataclysm Classic, and Anniversary realms.
+          </p>
+        </div>
       </section>
     </main>
   );
