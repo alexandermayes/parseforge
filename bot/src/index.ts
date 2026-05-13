@@ -1,5 +1,6 @@
 import "dotenv/config";
 import {
+  ActivityType,
   Client,
   GatewayIntentBits,
   REST,
@@ -75,6 +76,7 @@ const client = new Client({
 
 client.once("ready", (c) => {
   console.log(`Logged in as ${c.user.tag}`);
+  c.user.setActivity("getlootlist.com", { type: ActivityType.Playing });
 });
 
 client.on("interactionCreate", async (interaction: Interaction) => {
