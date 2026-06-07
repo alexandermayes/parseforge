@@ -1,5 +1,7 @@
 "use client";
 
+import { toWowheadDomain } from "@/lib/constants";
+
 /**
  * Build a map of guid → display name, appending "(Rank N)" when
  * multiple abilities share the same base name but have different guids.
@@ -50,7 +52,7 @@ export default function SpellLink({
       href={`#spell-${guid}`}
       onClick={(e) => e.preventDefault()}
       className={`no-underline ${className}`}
-      data-wowhead={`spell=${guid}&domain=${domain}`}
+      data-wowhead={`spell=${guid}&domain=${toWowheadDomain(domain)}`}
     >
       <span className="pointer-events-none">{name}</span>
     </a>

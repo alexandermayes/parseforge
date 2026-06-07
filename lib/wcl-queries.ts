@@ -6,7 +6,7 @@ export const REPORT_META_QUERY = `
         owner { name }
         startTime
         endTime
-        zone { id name }
+        zone { id name expansion { id } }
         fights(translate: true) {
           id
           name
@@ -265,7 +265,7 @@ export const ENCOUNTER_META_QUERY = `
   query GetEncounterID($code: String!, $fightIDs: [Int!]!) {
     reportData {
       report(code: $code) {
-        zone { id name }
+        zone { id name expansion { id } }
         fights(fightIDs: $fightIDs) {
           id
           encounterID

@@ -28,6 +28,7 @@ export async function GET(
       title: report.title,
       owner: report.owner?.name ?? "Unknown",
       zone: report.zone?.name ?? "Unknown",
+      zoneExpansionId: report.zone?.expansion?.id,
       fights: report.fights
         .filter((f) => f.encounterID > 0)
         .map((f) => ({

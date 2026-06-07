@@ -18,6 +18,7 @@ import {
   FLASK_BUFF_IDS,
   FOOD_BUFF_IDS,
   WEAPON_ENHANCEMENT_IDS,
+  toWowheadDomain,
 } from "./constants";
 import {
   CONSUMABLE_DB,
@@ -349,7 +350,7 @@ export function buildGearSnapshot(
         const gemNameEntry = GEM_NAME_DB.get(g.id);
         return { id: g.id, itemLevel: dg?.itemLevel ?? g.itemLevel, name: dg?.name ?? gemDbEntry?.name ?? gemNameEntry };
       }),
-      wowheadUrl: `https://www.wowhead.com/${wowheadDomain}/item=${item.id}`,
+      wowheadUrl: `https://www.wowhead.com/${toWowheadDomain(wowheadDomain)}/item=${item.id}`,
     });
   }
 

@@ -165,23 +165,29 @@ export async function POST(request: NextRequest) {
     // Use client-provided encounter data when available (avoids extra WCL query)
     let encounterID = body.encounterID;
     let encounterName = body.encounterName;
-    let wowheadDomain = body.zoneName ? getWowheadDomain(body.zoneName) : undefined;
+    // Prefer the WCL expansion id (authoritative) over the abbreviated zone name,
+    // which can't be matched reliably (e.g. "SSC / TK" → would fall back to classic).
+    let wowheadDomain =
+      body.zoneExpansionId != null || body.zoneName
+        ? getWowheadDomain(body.zoneName, body.zoneExpansionId)
+        : undefined;
 
     if (!encounterID || !encounterName || !wowheadDomain) {
-      // Fallback: fetch from WCL if client didn't provide encounter data
+      // Fallback: fetch from WCL if client didn't provide encounter/zone data
       const reportMetaData = await wclQuery<{
         reportData: {
           report: {
-            zone: { id: number; name: string };
+            zone: { id: number; name: string; expansion?: { id: number } };
             fights: Array<{ id: number; encounterID: number; name: string }>;
           };
         };
       }>(ENCOUNTER_META_QUERY, { code: reportCode, fightIDs: [fightId] });
 
+      const reportZone = reportMetaData.reportData.report.zone;
       const fightMeta = reportMetaData.reportData.report.fights[0];
       encounterID = fightMeta?.encounterID;
       encounterName = fightMeta?.name;
-      wowheadDomain = getWowheadDomain(reportMetaData.reportData.report.zone?.name);
+      wowheadDomain = getWowheadDomain(reportZone?.name, reportZone?.expansion?.id);
     }
 
     if (!encounterID) {

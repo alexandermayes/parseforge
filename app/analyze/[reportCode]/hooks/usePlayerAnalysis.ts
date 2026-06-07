@@ -41,6 +41,7 @@ export function usePlayerAnalysis(
           encounterID: fight?.encounterID,
           encounterName: fight?.name,
           zoneName: report?.zone,
+          zoneExpansionId: report?.zoneExpansionId,
         }),
       });
 

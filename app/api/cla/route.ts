@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     });
     const report = metaData.reportData.report;
     const zoneName = report.zone?.name;
-    const wowheadDomain = getWowheadDomain(zoneName);
+    const wowheadDomain = getWowheadDomain(zoneName, report.zone?.expansion?.id);
 
     // Filter to requested fights
     const selectedFights = report.fights.filter((f) => fightIds.includes(f.id));

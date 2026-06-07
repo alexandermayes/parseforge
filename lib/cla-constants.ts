@@ -357,6 +357,7 @@ export const ENCHANT_NAME_DB = new Map<number, string>([
   [3150, "Exceptional Resilience (+15 Resilience)"],
 
   // ─── TBC Cloak ────────────────────────────────────────────────────
+  [368, "Greater Agility (+12 Agi)"],
   [2621, "Subtlety (-2% Threat)"],
   [2622, "Dodge (+12 Dodge Rating)"],
   [2662, "Major Resistance (+7 All Resist)"],
@@ -384,6 +385,7 @@ export const ENCHANT_NAME_DB = new Map<number, string>([
   // ─── TBC Legs ─────────────────────────────────────────────────────
   [2743, "Clefthide Leg Armor (+30 Stam, +10 Agi)"],
   [2744, "Nethercleft Leg Armor (+40 Stam, +12 Agi)"],
+  [3013, "Nethercleft Leg Armor (+40 Stam, +12 Agi)"], // alternate enchant id reported by WCL
   [2745, "Runic Spellthread (+35 SP, +20 Stam)"],
   [2746, "Mystic Spellthread (+25 SP, +15 Stam)"],
   [2747, "Nethercobra Leg Armor (+50 AP, +12 Crit)"],

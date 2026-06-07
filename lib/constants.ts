@@ -344,7 +344,28 @@ export const CLASS_TALENT_TREES: Record<string, string[]> = {
   Monk: ["Brewmaster", "Mistweaver", "Windwalker"],
 };
 
-export function getWowheadDomain(zoneName?: string): WowheadDomain {
+// WCL Classic expansion IDs → internal domain label. This is authoritative and
+// immune to abbreviated zone names: WCL's report-level zone.name is a combined
+// label like "SSC / TK" that does NOT contain matchable full zone names, so name
+// matching alone silently falls through to "classic" (the bug that made TBC gear
+// resolve against the Classic DB). Prefer the expansion id whenever available.
+// (1000 Classic, 1001 TBC, 1002 Wrath, 1003 Cata, 1004 Mists — from WCL worldData.)
+const EXPANSION_ID_TO_DOMAIN: Record<number, WowheadDomain> = {
+  1000: "classic",
+  1001: "tbc",
+  1002: "wrath",
+  1003: "cata",
+  1004: "mists",
+};
+
+export function getWowheadDomain(
+  zoneName?: string,
+  expansionId?: number,
+): WowheadDomain {
+  // Authoritative: map by WCL expansion id when we have it.
+  if (expansionId != null && EXPANSION_ID_TO_DOMAIN[expansionId]) {
+    return EXPANSION_ID_TO_DOMAIN[expansionId];
+  }
   if (!zoneName) return "classic";
   const lower = zoneName.toLowerCase();
   if (MOP_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "mists";
@@ -354,4 +375,19 @@ export function getWowheadDomain(zoneName?: string): WowheadDomain {
   if (CLASSIC_ZONE_NAMES.some((z) => lower.includes(z.toLowerCase()))) return "classic";
   // Default to classic for unrecognized zones
   return "classic";
+}
+
+// Internal expansion labels ("wrath", "mists") differ from the domain strings
+// Wowhead's tooltips.js / URLs actually expect ("wotlk", "mop-classic"). Using
+// the wrong string makes Wowhead fail to resolve items/spells/gems, so links
+// never get a tooltip, icon, or rename. Map to the real Wowhead domain only at
+// the point we build a wowhead.com URL or data-wowhead attribute — internal
+// feature gating keeps using the labels above.
+const WOWHEAD_URL_DOMAIN: Record<string, string> = {
+  wrath: "wotlk",
+  mists: "mop-classic",
+};
+
+export function toWowheadDomain(domain: string): string {
+  return WOWHEAD_URL_DOMAIN[domain] ?? domain;
 }

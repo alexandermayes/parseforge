@@ -26,7 +26,7 @@ export interface WCLReportData {
   owner: { name: string };
   startTime: number;
   endTime: number;
-  zone: { id: number; name: string };
+  zone: { id: number; name: string; expansion?: { id: number } };
   fights: WCLFight[];
   masterData: {
     actors: WCLActor[];
@@ -464,6 +464,7 @@ export interface AnalyzeRequest {
   encounterID?: number;
   encounterName?: string;
   zoneName?: string;
+  zoneExpansionId?: number;
 }
 
 export interface ParsedWCLUrl {
@@ -476,6 +477,7 @@ export interface ReportMeta {
   title: string;
   owner: string;
   zone: string;
+  zoneExpansionId?: number;
   fights: Array<{
     id: number;
     name: string;

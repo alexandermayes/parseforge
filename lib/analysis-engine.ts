@@ -184,7 +184,7 @@ export function analyzeGear(
     const playerEnchant = hasPlayerEnchant
       ? (playerItem!.permanentEnchantName
         ?? ENCHANT_NAME_DB.get(playerItem!.permanentEnchant!)
-        ?? `Enchant #${playerItem!.permanentEnchant}`)
+        ?? "Enchanted")
       : null;
     // Rankings gear doesn't include enchant info
     const topEnchant: string | null = null;

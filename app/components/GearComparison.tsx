@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GearAnalysis, GearPopularityAnalysis } from "@/lib/wcl-types";
 import { useWowheadTooltips } from "@/lib/use-wowhead";
+import { toWowheadDomain } from "@/lib/constants";
 
 function wowheadItemUrl(itemId: number, domain: string): string {
   return `https://www.wowhead.com/${domain}/item=${itemId}`;
@@ -94,7 +95,7 @@ export default function GearComparison({
   popularity?: GearPopularityAnalysis;
 }) {
   useWowheadTooltips([data, popularity]);
-  const domain = data.wowheadDomain || "tbc";
+  const domain = toWowheadDomain(data.wowheadDomain || "tbc");
   const interestingSlots = data.slots.filter(
     (s) => s.playerItem || s.topItem
   );
@@ -155,21 +156,13 @@ export default function GearComparison({
                           </span>
                         )}
                         {slot.playerEnchant && (
-                          slot.playerEnchantId ? (
-                            <a
-                              href={`https://www.wowhead.com/${domain}/spell=${slot.playerEnchantId}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-status-good hover:underline"
-                              data-wowhead={`spell=${slot.playerEnchantId}&domain=${domain}`}
-                            >
-                              {slot.playerEnchant}
-                            </a>
-                          ) : (
-                            <span className="text-xs text-status-good">
-                              {slot.playerEnchant}
-                            </span>
-                          )
+                          // permanentEnchant is a SpellItemEnchantment ID, NOT a
+                          // spell ID — linking it as spell=ID makes Wowhead's
+                          // renameLinks rewrite the text to an unrelated spell.
+                          // Render the curated enchant name as plain text instead.
+                          <span className="text-xs text-status-good">
+                            {slot.playerEnchant}
+                          </span>
                         )}
                         {slot.playerItem.gems && slot.playerItem.gems.length > 0 && (
                           <span className="text-xs text-purple-400 flex gap-1">

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { CLAPlayerResult, CLAGearIssue, GearIssueSeverity } from "@/lib/cla-types";
 import { useWowheadTooltips } from "@/lib/use-wowhead";
+import { toWowheadDomain } from "@/lib/constants";
 import PlayerAccordionRow from "./PlayerAccordionRow";
 
 function severityLabel(severity: GearIssueSeverity): string {
@@ -49,6 +50,7 @@ interface GearIssuesProps {
 export function CLAGearIssuesView({ players, wowheadDomain }: GearIssuesProps) {
   const [expandedPlayer, setExpandedPlayer] = useState<number | null>(null);
   useWowheadTooltips([players, expandedPlayer]);
+  const domain = toWowheadDomain(wowheadDomain);
 
   const playersWithIssues = useMemo(() => {
     return players
@@ -125,11 +127,11 @@ export function CLAGearIssuesView({ players, wowheadDomain }: GearIssuesProps) {
                       </span>
                       {issue.itemId > 0 && (
                         <a
-                          href={wowheadItemUrl(issue.itemId, wowheadDomain)}
+                          href={wowheadItemUrl(issue.itemId, domain)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-blue-400 hover:underline"
-                          data-wowhead={`item=${issue.itemId}&domain=${wowheadDomain}`}
+                          data-wowhead={`item=${issue.itemId}&domain=${domain}`}
                         >
                           {issue.itemName}
                         </a>
@@ -157,6 +159,7 @@ interface GearListingProps {
 export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
   const [expandedPlayer, setExpandedPlayer] = useState<number | null>(null);
   useWowheadTooltips([expandedPlayer]);
+  const domain = toWowheadDomain(wowheadDomain);
 
   return (
     <div className="space-y-4">
@@ -191,11 +194,11 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                     </span>
                     <div className="min-w-0 flex-1">
                       <a
-                        href={slot.wowheadUrl}
+                        href={wowheadItemUrl(slot.itemId, domain)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-400 hover:underline"
-                        data-wowhead={`item=${slot.itemId}&domain=${wowheadDomain}`}
+                        data-wowhead={`item=${slot.itemId}&domain=${domain}`}
                       >
                         {slot.itemName}
                       </a>
@@ -206,26 +209,23 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                           </span>
                         )}
                         {slot.enchantId > 0 && (
-                          <a
-                            href={`https://www.wowhead.com/${wowheadDomain}/spell=${slot.enchantId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-status-good hover:underline"
-                            data-wowhead={`spell=${slot.enchantId}&domain=${wowheadDomain}`}
-                          >
+                          // enchantId is a SpellItemEnchantment ID, not a spell
+                          // ID — linking spell=ID lets Wowhead's renameLinks
+                          // rewrite the text to an unrelated spell. Plain text.
+                          <span className="text-status-good">
                             {slot.enchantName || "Enchanted"}
-                          </a>
+                          </span>
                         )}
                         {slot.gems.length > 0 && (
                           <span className="text-purple-400 flex gap-1">
                             {slot.gems.map((gem, gi) => (
                               <a
                                 key={gi}
-                                href={`https://www.wowhead.com/${wowheadDomain}/item=${gem.id}`}
+                                href={wowheadItemUrl(gem.id, domain)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="hover:underline"
-                                data-wowhead={`item=${gem.id}&domain=${wowheadDomain}`}
+                                data-wowhead={`item=${gem.id}&domain=${domain}`}
                               >
                                 {gem.name || `Gem${slot.gems.length > 1 ? ` ${gi + 1}` : ""}`}
                               </a>
