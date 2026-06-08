@@ -11,7 +11,7 @@ export async function cachedApiHandler<T>(
   cacheKey: string,
   handler: () => Promise<T | NextResponse>,
 ): Promise<NextResponse> {
-  const cached = getCached<T>(cacheKey);
+  const cached = await getCached<T>(cacheKey);
   if (cached) {
     return NextResponse.json(cached);
   }
@@ -24,7 +24,7 @@ export async function cachedApiHandler<T>(
       return result;
     }
 
-    setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
+    await setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

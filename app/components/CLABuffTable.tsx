@@ -210,13 +210,13 @@ export default function CLABuffTable({ players, selectedFightId, wowheadDomain }
               className="sticky left-0 bg-surface-2 z-10 min-w-[140px]"
             />
             <SortableTableHead label="Role" sortKey="role" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Flask" sortKey="flask" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Battle Elixir" sortKey="battleElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Guard Elixir" sortKey="guardianElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Food" sortKey="food" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            {hasWeaponEnhancements && <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />}
-            <SortableTableHead label="Scrolls" sortKey="scrolls" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-            <SortableTableHead label="Avg %" sortKey="averageUptime" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+            <SortableTableHead label="Flask" sortKey="flask" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+            <SortableTableHead label="Battle Elixir" sortKey="battleElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+            <SortableTableHead label="Guard Elixir" sortKey="guardianElixir" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+            <SortableTableHead label="Food" sortKey="food" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+            {hasWeaponEnhancements && <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />}
+            <SortableTableHead label="Scrolls" sortKey="scrolls" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+            <SortableTableHead label="Avg %" sortKey="averageUptime" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
           </tr>
         </thead>
         <tbody>

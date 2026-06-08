@@ -162,24 +162,7 @@ export async function wclQuery<T>(
   throw lastError ?? new Error("WCL query failed after retries");
 }
 
-// Result-level cache (analysis results, raid overviews, CLA results)
-const RESULT_CACHE_MAX_SIZE = 200;
-const analysisCache = new Map<string, { data: unknown; expiresAt: number }>();
-
-export function getCached<T>(key: string): T | null {
-  const entry = analysisCache.get(key);
-  if (!entry) return null;
-  if (Date.now() > entry.expiresAt) {
-    analysisCache.delete(key);
-    return null;
-  }
-  return entry.data as T;
-}
-
-export function setCache(key: string, data: unknown, ttlMs: number): void {
-  if (analysisCache.size >= RESULT_CACHE_MAX_SIZE) {
-    const firstKey = analysisCache.keys().next().value;
-    if (firstKey !== undefined) analysisCache.delete(firstKey);
-  }
-  analysisCache.set(key, { data, expiresAt: Date.now() + ttlMs });
-}
+// Result-level cache (analysis results, raid overviews, CLA results).
+// Backed by a shared store (Upstash Redis on Vercel) when configured, falling
+// back to a per-instance Map otherwise — see lib/kv-cache.ts.
+export { cacheGet as getCached, cacheSet as setCache } from "./kv-cache";

@@ -206,15 +206,15 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
                 className="sticky left-0 bg-surface-2 z-10 min-w-[140px]"
               />
               <SortableTableHead label="Role" sortKey="role" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="DPS/HPS" sortKey="throughput" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Deaths" sortKey="deaths" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Dmg Taken" sortKey="avoidableDamage" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Activity" sortKey="activityPercent" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Flask" sortKey="flask" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Food" sortKey="food" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="Enchants" sortKey="missingEnchants" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
-              <SortableTableHead label="iLvl" sortKey="avgItemLevel" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+              <SortableTableHead label="DPS/HPS" sortKey="throughput" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="right" />
+              <SortableTableHead label="Deaths" sortKey="deaths" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+              <SortableTableHead label="Dmg Taken" sortKey="avoidableDamage" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="right" />
+              <SortableTableHead label="Activity" sortKey="activityPercent" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="right" />
+              <SortableTableHead label="Flask" sortKey="flask" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+              <SortableTableHead label="Food" sortKey="food" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+              <SortableTableHead label="Wep Enh" sortKey="weaponEnhancement" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+              <SortableTableHead label="Enchants" sortKey="missingEnchants" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="center" />
+              <SortableTableHead label="iLvl" sortKey="avgItemLevel" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} align="right" />
             </tr>
           </thead>
           <tbody>
