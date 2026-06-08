@@ -8,8 +8,9 @@ import {
 import { buildCLAResult, type CLAEngineInput } from "@/lib/cla-engine";
 import { getWowheadDomain } from "@/lib/constants";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
+import { mapPool } from "@/lib/async-pool";
 import { cachedApiHandler, parseBody } from "@/lib/api-utils";
-import type { CLAResult, CLAFightMeta } from "@/lib/cla-types";
+import type { CLAFightMeta } from "@/lib/cla-types";
 import type {
   WCLPlayerDetails,
   WCLCombatantInfoEvent,
@@ -19,6 +20,7 @@ import type {
 } from "@/lib/wcl-types";
 
 const BATCH_SIZE = 12; // max players per buff query
+const FIGHT_CONCURRENCY = 3; // max fights fetched at once (caps WCL fan-out)
 
 interface ReportMetaResponse {
   reportData: {
@@ -53,7 +55,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No fights specified" }, { status: 400 });
   }
 
-  return cachedApiHandler(`cla-${reportCode}-${fightIds.sort().join(",")}`, async () => {
+  // Sort a copy numerically — sort() is in-place and lexicographic, which would
+  // mutate the caller's array and order [2,10] as "10,2".
+  const cacheFightIds = [...fightIds].sort((a, b) => a - b);
+  return cachedApiHandler(`cla-${reportCode}-${cacheFightIds.join(",")}`, async () => {
     // Step 1: Fetch report metadata (fights + players)
     const metaData = await wclQuery<ReportMetaResponse>(REPORT_META_QUERY, {
       code: reportCode,
@@ -114,15 +119,16 @@ export async function POST(request: NextRequest) {
       { code: reportCode, fightIDs: fightIds }
     );
 
-    // Per-fight: buff queries (batched) + combatant info
-    const fightPromises = selectedFights.map(async (fight) => {
-      // Batch source IDs into groups of BATCH_SIZE
-      const batches: number[][] = [];
-      for (let i = 0; i < sourceIds.length; i += BATCH_SIZE) {
-        batches.push(sourceIds.slice(i, i + BATCH_SIZE));
-      }
+    // Batch source IDs into groups of BATCH_SIZE (same for every fight)
+    const batches: number[][] = [];
+    for (let i = 0; i < sourceIds.length; i += BATCH_SIZE) {
+      batches.push(sourceIds.slice(i, i + BATCH_SIZE));
+    }
 
-      // Buff queries (one per batch) + combatant info query
+    // Per-fight: buff queries (batched) + combatant info. Capped at
+    // FIGHT_CONCURRENCY fights in flight so a multi-boss audit doesn't fire
+    // fights × (batches + 1) WCL queries simultaneously (~30+ for a full clear).
+    const processFight = async (fight: WCLFight) => {
       const buffPromises = batches.map((batch) =>
         wclQuery<BuffBatchResponse>(buildCLABuffUptimeQuery(batch), {
           code: reportCode,
@@ -154,11 +160,11 @@ export async function POST(request: NextRequest) {
       buffData[fight.id] = fightBuffs;
       combatantData[fight.id] =
         combatantResult.reportData.report.combatantInfo?.data ?? [];
-    });
+    };
 
     const [playerDetailsResult] = await Promise.all([
       playerDetailsPromise,
-      ...fightPromises,
+      mapPool(selectedFights, FIGHT_CONCURRENCY, processFight),
     ]);
 
     const allPlayers = flattenPlayerDetails(

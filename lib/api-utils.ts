@@ -48,7 +48,10 @@ export async function parseBody<T>(
   }
 
   for (const field of requiredFields) {
-    if (!body[field]) {
+    // Reject only genuinely-missing values. A plain `!value` check wrongly
+    // rejects 0, which is a valid WCL fightId/sourceId (slots are 0-indexed).
+    const value = body[field];
+    if (value == null || value === "") {
       return {
         error: NextResponse.json(
           { error: `Missing required field: ${String(field)}` },
