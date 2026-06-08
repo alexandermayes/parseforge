@@ -2,7 +2,7 @@
 
 import { useState, useCallback, use } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Link2, Check } from "lucide-react";
+import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -233,25 +233,36 @@ export default function AnalyzePage({
             </div>
           )}
 
-          <Button
-            onClick={
-              activeTab === "player" ? player.run :
-              activeTab === "cla" ? cla.run :
-              raid.run
-            }
-            disabled={
-              activeTab === "player" ? (!selectedFight || !selectedSource || player.loading) :
+          {/* Every tab auto-runs on selection, so this is a secondary
+              refresh/retry control — not a primary action the user must click
+              (the old "Analyze/Load/Run Audit" CTA implied a manual step that
+              didn't exist and drove header rageclicks). */}
+          {(() => {
+            const activeLoading =
+              activeTab === "player" ? player.loading :
               activeTab === "cla" ? cla.loading :
-              (!selectedFight || raid.loading)
-            }
-            size="default"
-          >
-            {activeTab === "player"
-              ? (player.loading ? "Analyzing..." : "Analyze")
-              : activeTab === "cla"
-                ? (cla.loading ? "Running Audit..." : "Run Audit")
-                : (raid.loading ? "Loading..." : "Load Raid Overview")}
-          </Button>
+              raid.loading;
+            return (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={
+                  activeTab === "player" ? player.run :
+                  activeTab === "cla" ? cla.run :
+                  raid.run
+                }
+                disabled={
+                  activeTab === "player" ? (!selectedFight || !selectedSource || player.loading) :
+                  activeTab === "cla" ? cla.loading :
+                  (!selectedFight || raid.loading)
+                }
+                title="Re-fetch this view from Warcraft Logs"
+              >
+                <RefreshCw className={activeLoading ? "animate-spin" : ""} />
+                {activeLoading ? "Refreshing…" : "Refresh"}
+              </Button>
+            );
+          })()}
         </div>
       )}
 
