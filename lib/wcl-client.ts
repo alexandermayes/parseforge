@@ -1,5 +1,70 @@
 import { WCL_API_URL, WCL_TOKEN_URL, TOKEN_EXPIRY_BUFFER } from "./constants";
 
+// ─── Typed errors ────────────────────────────────────────────────────
+// wclQuery throws WCLError so routes can map failures to clean, actionable
+// messages + correct HTTP status instead of leaking raw WCL/GraphQL strings
+// in a 500. `detail` is for server logs only — never send it to the client.
+
+export type WCLErrorKind =
+  | "not_found"
+  | "private"
+  | "rate_limited"
+  | "timeout"
+  | "upstream";
+
+const WCL_ERROR_INFO: Record<WCLErrorKind, { status: number; message: string }> = {
+  not_found: {
+    status: 404,
+    message: "That report doesn't exist. Double-check the Warcraft Logs URL.",
+  },
+  private: {
+    status: 403,
+    message:
+      "This log looks private. Open the report on Warcraft Logs, set its visibility to Public or Unlisted, then try again.",
+  },
+  rate_limited: {
+    status: 429,
+    message: "Warcraft Logs is rate-limiting requests right now — please try again in a moment.",
+  },
+  timeout: {
+    status: 504,
+    message: "Warcraft Logs took too long to respond. Please try again.",
+  },
+  upstream: {
+    status: 502,
+    message: "Couldn't reach Warcraft Logs. Please try again shortly.",
+  },
+};
+
+export class WCLError extends Error {
+  readonly kind: WCLErrorKind;
+  readonly status: number;
+  readonly userMessage: string;
+  constructor(kind: WCLErrorKind, detail?: string) {
+    const info = WCL_ERROR_INFO[kind];
+    super(detail ?? info.message);
+    this.name = "WCLError";
+    this.kind = kind;
+    this.status = info.status;
+    this.userMessage = info.message;
+  }
+}
+
+function classifyGraphQLError(message: string): WCLErrorKind {
+  const m = message.toLowerCase();
+  if (m.includes("does not exist") || m.includes("not found") || m.includes("no such report"))
+    return "not_found";
+  if (
+    m.includes("permission") ||
+    m.includes("private") ||
+    m.includes("not authorized") ||
+    m.includes("do not have") ||
+    m.includes("access")
+  )
+    return "private";
+  return "upstream";
+}
+
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
@@ -122,20 +187,22 @@ export async function wclQuery<T>(
 
       if (!res.ok) {
         const text = await res.text();
-        lastError = new Error(`WCL API request failed (${res.status}): ${text}`);
         if (isRetryable(res.status) && attempt < MAX_RETRIES - 1) {
+          lastError = new Error(`WCL ${res.status}`);
           await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
           continue;
         }
-        throw lastError;
+        throw new WCLError(
+          res.status === 429 ? "rate_limited" : "upstream",
+          `HTTP ${res.status}: ${text}`,
+        );
       }
 
       const json = await res.json();
 
       if (json.errors && json.errors.length > 0) {
-        throw new Error(
-          `WCL GraphQL errors: ${json.errors.map((e: { message: string }) => e.message).join(", ")}`
-        );
+        const detail = json.errors.map((e: { message: string }) => e.message).join(", ");
+        throw new WCLError(classifyGraphQLError(detail), `GraphQL: ${detail}`);
       }
 
       const result = json.data as T;
@@ -146,20 +213,22 @@ export async function wclQuery<T>(
 
       // AbortController timeout
       if (err instanceof DOMException && err.name === "AbortError") {
-        lastError = new Error(`WCL API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
         if (attempt < MAX_RETRIES - 1) {
+          lastError = new Error("WCL timeout");
           await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
           continue;
         }
-        throw lastError;
+        throw new WCLError("timeout", `timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
       }
 
-      // Non-retryable errors (network failures, GraphQL errors) — don't retry
-      throw err;
+      // Already-classified (GraphQL/HTTP) errors pass through; wrap the rest
+      // (network failures, etc.) so nothing raw escapes to the client.
+      if (err instanceof WCLError) throw err;
+      throw new WCLError("upstream", err instanceof Error ? err.message : String(err));
     }
   }
 
-  throw lastError ?? new Error("WCL query failed after retries");
+  throw new WCLError("upstream", lastError?.message ?? "failed after retries");
 }
 
 // Result-level cache (analysis results, raid overviews, CLA results).

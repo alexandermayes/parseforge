@@ -1,6 +1,28 @@
 import { NextResponse } from "next/server";
-import { getCached, setCache } from "./wcl-client";
+import { getCached, setCache, WCLError } from "./wcl-client";
 import { ANALYSIS_CACHE_TTL } from "./constants";
+
+/**
+ * Map any caught error to a clean client response. WCLError carries an
+ * actionable user message + correct status; everything else becomes a generic
+ * 500 so raw WCL/GraphQL/internal strings never leak to the browser. The real
+ * error is always logged server-side.
+ */
+export function errorResponse(error: unknown, context: string): NextResponse {
+  if (error instanceof WCLError) {
+    console.error(`[${context}] WCLError(${error.kind}): ${error.message}`);
+    return NextResponse.json(
+      { error: error.userMessage, kind: error.kind },
+      { status: error.status },
+    );
+  }
+  const detail = error instanceof Error ? error.message : String(error);
+  console.error(`[${context}] Unexpected error: ${detail}`);
+  return NextResponse.json(
+    { error: "Something went wrong analyzing this log. Please try again." },
+    { status: 500 },
+  );
+}
 
 /**
  * Wraps an API route handler with cache check and error handling.
@@ -27,9 +49,7 @@ export async function cachedApiHandler<T>(
     await setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error(`API error [${cacheKey}]:`, message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return errorResponse(error, cacheKey);
   }
 }
 

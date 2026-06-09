@@ -155,8 +155,16 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
       {reportError && (
         <Alert variant="destructive">
           <AlertDescription>
-            Failed to load report. Check the report code and try again.
-            {reportError.message && `: ${reportError.message}`}
+            {reportError.message ||
+              "Couldn't load this report. Check the Warcraft Logs URL and try again."}{" "}
+            <a
+              href={`https://www.warcraftlogs.com/reports/${reportCode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-medium whitespace-nowrap"
+            >
+              Open on Warcraft Logs ↗
+            </a>
           </AlertDescription>
         </Alert>
       )}

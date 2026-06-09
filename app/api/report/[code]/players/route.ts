@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { wclQuery } from "@/lib/wcl-client";
+import { errorResponse } from "@/lib/api-utils";
 import type { WCLPlayerDetails } from "@/lib/wcl-types";
 
 interface PlayerDetailsResponse {
@@ -57,7 +58,6 @@ export async function GET(
 
     return NextResponse.json({ players });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return errorResponse(error, `players-${code}`);
   }
 }

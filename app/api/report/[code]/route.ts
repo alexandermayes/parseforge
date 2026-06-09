@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { wclQuery } from "@/lib/wcl-client";
+import { wclQuery, WCLError } from "@/lib/wcl-client";
 import { REPORT_META_QUERY } from "@/lib/wcl-queries";
+import { errorResponse } from "@/lib/api-utils";
 import { WCLReportData, ReportMeta } from "@/lib/wcl-types";
 
 export async function GET(
@@ -21,7 +22,9 @@ export async function GET(
 
     const report = data.reportData.report;
     if (!report) {
-      return NextResponse.json({ error: "Report not found" }, { status: 404 });
+      // Defensive: WCL normally returns a GraphQL error (thrown in wclQuery)
+      // rather than a null report, but handle it cleanly just in case.
+      throw new WCLError("not_found");
     }
 
     const meta: ReportMeta = {
@@ -53,8 +56,6 @@ export async function GET(
 
     return NextResponse.json(meta);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("Report fetch error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return errorResponse(error, `report-${code}`);
   }
 }
