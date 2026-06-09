@@ -10,6 +10,7 @@ import { GRADE_COLORS, PerformanceGrade } from "@/lib/constants";
 import { Copy, Check } from "lucide-react";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import posthog from "posthog-js";
 
 const priorityStyles: Record<string, string> = {
   high: "badge-bad",
@@ -180,6 +181,13 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
     const text = formatForDiscord(data);
     await navigator.clipboard.writeText(text);
     setCopied(true);
+    posthog.capture("discord_copied", {
+      player_name: data.playerName,
+      player_class: data.playerClass,
+      encounter: data.encounterName,
+      percentile: data.dps.percentile,
+      overall_grade: data.metricPercentiles?.overallGrade,
+    });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -210,18 +218,18 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Player Scorecard</CardTitle>
           <Button
-            variant="ghost"
+            variant="default"
             size="sm"
             onClick={handleCopyDiscord}
-            className="text-xs gap-1.5"
+            className="gap-1.5"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5" /> Copied!
+                <Check className="w-4 h-4" /> Copied!
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" /> Copy for Discord
+                <Copy className="w-4 h-4" /> Copy for Discord
               </>
             )}
           </Button>

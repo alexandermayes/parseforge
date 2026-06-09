@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnalysisResult } from "@/lib/wcl-types";
 import { AnalysisSnapshot } from "@/lib/analysis-history";
 import { CLASS_COLORS } from "@/lib/constants";
+import { useUrlTabState } from "@/lib/use-url-tab-state";
 import DpsComparison from "./DpsComparison";
 import GearComparison from "./GearComparison";
 import TalentComparison from "./TalentComparison";
@@ -45,6 +46,16 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
 
   const wowheadDomain = data.gear.wowheadDomain || "tbc";
 
+  // Deep-linked sub-tab so shared scorecard links land on the right section.
+  const [tab, setTab] = useUrlTabState("ptab", "dps", [
+    "dps",
+    "abilities",
+    "gear",
+    "talents",
+    "buffs",
+    "casts",
+  ]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -72,7 +83,7 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
       <ComparisonSummary data={data} previousSnapshot={previousSnapshot} />
 
       {/* Tabbed analysis sections */}
-      <Tabs defaultValue="dps" className="w-full">
+      <Tabs value={tab} onValueChange={setTab} className="w-full">
         <TabsList className="flex flex-wrap h-auto gap-1 bg-transparent">
           <TabsTrigger value="dps">{data.playerRole === "healer" ? "HPS" : "DPS"}</TabsTrigger>
           <TabsTrigger value="abilities">Abilities</TabsTrigger>

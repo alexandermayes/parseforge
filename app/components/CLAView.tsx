@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import type { CLAResult } from "@/lib/cla-types";
+import { useUrlTabState } from "@/lib/use-url-tab-state";
 import CLABuffTable from "./CLABuffTable";
 import { CLAGearIssuesView, CLAGearListing } from "./CLAGearIssues";
 import CLAClassBuffs from "./CLAClassBuffs";
@@ -23,8 +23,17 @@ export function CLALoading() {
   );
 }
 
+const CLA_SUB_TABS: readonly CLASubTab[] = [
+  "buffs",
+  "gear-issues",
+  "gear-listing",
+  "class-buffs",
+  "buff-comparison",
+];
+
 export default function CLAView({ data, selectedFightId }: Props) {
-  const [subTab, setSubTab] = useState<CLASubTab>("buffs");
+  // Deep-linked sub-tab (shared links land on the right CLA section).
+  const [subTab, setSubTab] = useUrlTabState("clatab", "buffs", CLA_SUB_TABS);
 
   return (
     <div className="space-y-4 animate-fade-in">
