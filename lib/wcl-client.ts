@@ -1,4 +1,5 @@
 import { WCL_API_URL, WCL_TOKEN_URL, TOKEN_EXPIRY_BUFFER } from "./constants";
+import { logEvent } from "./observability";
 
 // ─── Typed errors ────────────────────────────────────────────────────
 // wclQuery throws WCLError so routes can map failures to clean, actionable
@@ -188,6 +189,8 @@ export async function wclQuery<T>(
       if (!res.ok) {
         const text = await res.text();
         if (isRetryable(res.status) && attempt < MAX_RETRIES - 1) {
+          // Rare by design — a spike here signals WCL rate-limit/budget pressure.
+          logEvent("wcl_retry", { status: res.status, attempt: attempt + 1 });
           lastError = new Error(`WCL ${res.status}`);
           await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
           continue;
@@ -214,6 +217,7 @@ export async function wclQuery<T>(
       // AbortController timeout
       if (err instanceof DOMException && err.name === "AbortError") {
         if (attempt < MAX_RETRIES - 1) {
+          logEvent("wcl_retry", { status: "timeout", attempt: attempt + 1 });
           lastError = new Error("WCL timeout");
           await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS[attempt]));
           continue;

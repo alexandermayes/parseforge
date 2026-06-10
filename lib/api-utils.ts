@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCached, setCache, WCLError } from "./wcl-client";
 import { ANALYSIS_CACHE_TTL } from "./constants";
+import { logEvent, routeFromCacheKey } from "./observability";
 
 /**
  * Map any caught error to a clean client response. WCLError carries an
@@ -33,8 +34,12 @@ export async function cachedApiHandler<T>(
   cacheKey: string,
   handler: () => Promise<T | NextResponse>,
 ): Promise<NextResponse> {
+  const route = routeFromCacheKey(cacheKey);
+  const start = Date.now();
+
   const cached = await getCached<T>(cacheKey);
   if (cached) {
+    logEvent("api_request", { route, cache: "hit", outcome: "ok", ms: Date.now() - start });
     return NextResponse.json(cached);
   }
 
@@ -43,12 +48,27 @@ export async function cachedApiHandler<T>(
 
     // If handler returned a NextResponse directly (e.g. 404), pass it through
     if (result instanceof NextResponse) {
+      logEvent("api_request", {
+        route,
+        cache: "miss",
+        outcome: "early_return",
+        status: result.status,
+        ms: Date.now() - start,
+      });
       return result;
     }
 
     await setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
+    logEvent("api_request", { route, cache: "miss", outcome: "ok", ms: Date.now() - start });
     return NextResponse.json(result);
   } catch (error) {
+    logEvent("api_request", {
+      route,
+      cache: "miss",
+      outcome: "error",
+      kind: error instanceof WCLError ? error.kind : "unknown",
+      ms: Date.now() - start,
+    });
     return errorResponse(error, cacheKey);
   }
 }
