@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -102,6 +102,18 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
     });
   }, [reportCode]);
 
+  // A report that passes URL validation but fails to load (most often a
+  // private/permission-gated log) was previously a silent drop-off. Capture it
+  // so the leak is measurable.
+  useEffect(() => {
+    if (reportError) {
+      posthog.capture("report_load_failed", {
+        report_code: reportCode,
+        error: reportError.message,
+      });
+    }
+  }, [reportError, reportCode]);
+
   return (
     <main className="py-6 space-y-6">
       {/* Report header */}
@@ -157,6 +169,8 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           <AlertDescription>
             {reportError.message ||
               "Couldn't load this report. Check the Warcraft Logs URL and try again."}{" "}
+            If this is a private log, set its visibility to Public (or Unlisted)
+            on Warcraft Logs, then reload.{" "}
             <a
               href={`https://www.warcraftlogs.com/reports/${reportCode}`}
               target="_blank"
