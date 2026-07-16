@@ -1,6 +1,25 @@
 import { CLASS_COLORS } from "@/lib/constants";
 import type { ReportMeta } from "@/lib/wcl-types";
 
+function formatDuration(ms: number): string {
+  const totalMin = Math.round(ms / 60_000);
+  if (totalMin < 60) return `${totalMin}m`;
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="surface-card rounded-lg px-4 py-2.5 min-w-[92px]">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
+      <div className="text-lg font-semibold text-foreground">{value}</div>
+    </div>
+  );
+}
+
 // Server-rendered summary of a public report. This is the crawlable content
 // that makes analyze pages indexable — real boss/player/zone entities in the
 // HTML rather than a fully client-rendered shell. Rendered below the
@@ -14,6 +33,7 @@ export default function ReportSummary({
 }) {
   const bosses = meta.fights;
   const kills = bosses.filter((f) => f.kill).length;
+  const combatMs = bosses.reduce((sum, f) => sum + (f.duration || 0), 0);
   const rawTitle = meta.title?.trim();
   const hasTitle = !!rawTitle && !/^[?\s.]+$/.test(rawTitle);
   const headline = hasTitle ? rawTitle! : meta.zone;
@@ -38,6 +58,13 @@ export default function ReportSummary({
           against the top-ranked parses and generates specific improvement
           suggestions.
         </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Stat label="Encounters" value={String(bosses.length)} />
+        <Stat label="Kills" value={`${kills}/${bosses.length}`} />
+        <Stat label="Raiders" value={String(meta.players.length)} />
+        {combatMs > 0 && <Stat label="Combat" value={formatDuration(combatMs)} />}
       </div>
 
       {bosses.length > 0 && (

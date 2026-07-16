@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { wclQuery, WCLError } from "@/lib/wcl-client";
 import { REPORT_META_QUERY } from "@/lib/wcl-queries";
+import { recordRecentReport } from "@/lib/kv-cache";
 import type { WCLReportData, ReportMeta } from "@/lib/wcl-types";
 
 /**
@@ -61,6 +62,8 @@ export const getReportMeta = cache(
       );
       const report = data.reportData.report;
       if (!report) return { status: "not_found" };
+      // Record this public report so the sitemap can surface it for crawling.
+      await recordRecentReport(code, Date.now());
       return { status: "ok", meta: mapReportMeta(report) };
     } catch (err) {
       if (err instanceof WCLError) {
