@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { wclQuery, WCLError } from "@/lib/wcl-client";
 import { REPORT_META_QUERY } from "@/lib/wcl-queries";
 import { errorResponse } from "@/lib/api-utils";
-import { WCLReportData, ReportMeta } from "@/lib/wcl-types";
+import { mapReportMeta } from "@/lib/report-meta";
+import { WCLReportData } from "@/lib/wcl-types";
 
 export async function GET(
   _request: NextRequest,
@@ -27,34 +28,7 @@ export async function GET(
       throw new WCLError("not_found");
     }
 
-    const meta: ReportMeta = {
-      title: report.title,
-      owner: report.owner?.name ?? "Unknown",
-      zone: report.zone?.name ?? "Unknown",
-      zoneExpansionId: report.zone?.expansion?.id,
-      fights: report.fights
-        .filter((f) => f.encounterID > 0)
-        .map((f) => ({
-          id: f.id,
-          name: f.name,
-          encounterID: f.encounterID,
-          kill: f.kill,
-          difficulty: f.difficulty,
-          bossPercentage: f.bossPercentage,
-          duration: f.endTime - f.startTime,
-        })),
-      players: report.masterData.actors
-        .filter((a) => a.type === "Player")
-        .map((a) => ({
-          id: a.id,
-          name: a.name,
-          type: a.subType,
-          subType: a.subType,
-          icon: a.icon ?? a.subType,
-        })),
-    };
-
-    return NextResponse.json(meta);
+    return NextResponse.json(mapReportMeta(report));
   } catch (error) {
     return errorResponse(error, `report-${code}`);
   }
