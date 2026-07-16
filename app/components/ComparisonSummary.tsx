@@ -123,7 +123,7 @@ function PerformanceBreakdown({ data, previousSnapshot }: { data: MetricPercenti
   );
 }
 
-function formatForDiscord(data: AnalysisResult): string {
+function formatForDiscord(data: AnalysisResult, shareUrl?: string): string {
   const metricLabel = data.playerRole === "healer" ? "HPS" : "DPS";
   const dpsVal = data.dps.playerDps.toLocaleString();
   const pct = `${data.dps.percentile}th`;
@@ -156,8 +156,12 @@ function formatForDiscord(data: AnalysisResult): string {
     metricsLine = `\n**Performance:** ${data.metricPercentiles.overallGrade}(${data.metricPercentiles.overallScore}%) — ${scores}`;
   }
 
+  // Link back to the full interactive analysis so shares drive traffic and
+  // Discord unfurls the report's OG scorecard image.
+  const linkLine = shareUrl ? `\n\nFull breakdown → ${shareUrl}` : "";
+
   if (data.suggestions.length === 0) {
-    return scorecard + metricsLine;
+    return scorecard + metricsLine + linkLine;
   }
 
   const priorityMarker: Record<string, string> = {
@@ -171,14 +175,16 @@ function formatForDiscord(data: AnalysisResult): string {
     return `${marker} **[${(categoryLabels[s.category] ?? s.category).toUpperCase()}]** ${s.title}\n> ${s.description}${s.estimatedImpact ? `\n> _${s.estimatedImpact}_` : ""}`;
   });
 
-  return `${scorecard}${metricsLine}\n\n**Suggestions**\n${lines.join("\n\n")}`;
+  return `${scorecard}${metricsLine}\n\n**Suggestions**\n${lines.join("\n\n")}${linkLine}`;
 }
 
 export default function ComparisonSummary({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyDiscord = async () => {
-    const text = formatForDiscord(data);
+    const shareUrl =
+      typeof window !== "undefined" ? window.location.href : undefined;
+    const text = formatForDiscord(data, shareUrl);
     await navigator.clipboard.writeText(text);
     setCopied(true);
     posthog.capture("discord_copied", {
@@ -187,6 +193,7 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
       encounter: data.encounterName,
       percentile: data.dps.percentile,
       overall_grade: data.metricPercentiles?.overallGrade,
+      has_link: !!shareUrl,
     });
     setTimeout(() => setCopied(false), 2000);
   };
