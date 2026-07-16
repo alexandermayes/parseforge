@@ -131,7 +131,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
         </div>
         {report && (
           <Button
-            variant="outline"
+            variant="default"
             size="sm"
             onClick={handleShareLink}
             className="shrink-0"
@@ -362,6 +362,34 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
         </>
       )}
+      {/* Share CTA — surface sharing on every tab where users finish reading,
+          not just the player scorecard's "Copy for Discord". */}
+      {(player.result || raid.result || cla.result) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg glass px-4 py-3">
+          <p className="text-sm text-muted-foreground">
+            Found this useful? Share it with your guild.
+          </p>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleShareLink}
+            className="shrink-0"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5 text-emerald-400" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Link2 className="size-3.5" />
+                Share link
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
       {/* Guide links — cross-link to SEO content */}
       {(player.result || raid.result || cla.result) && (
         <div className="border-t border-white/[0.06] pt-6 mt-8">
