@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { parseWCLUrl } from "@/lib/url-parser";
+import { DEMO_REPORT, demoReportPath } from "@/lib/demo-report";
 import posthog from "posthog-js";
 
 export default function ReportUrlForm() {
@@ -43,6 +44,12 @@ export default function ReportUrlForm() {
     router.push(path);
   };
 
+  const handleDemo = () => {
+    posthog.capture("demo_report_clicked", { report_code: DEMO_REPORT.code });
+    setLoading(true);
+    router.push(demoReportPath());
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
       <div className="flex gap-2">
@@ -71,6 +78,17 @@ export default function ReportUrlForm() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+      <p className="text-caption">
+        Don&apos;t have a log handy?{" "}
+        <button
+          type="button"
+          onClick={handleDemo}
+          disabled={loading}
+          className="font-medium text-gold-from hover:underline disabled:opacity-50 disabled:pointer-events-none"
+        >
+          See a live example &rarr;
+        </button>
+      </p>
       <p className="text-caption">
         Supports Classic and Season of Discovery reports. Example:{" "}
         <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">

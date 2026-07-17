@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -102,6 +102,18 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
     });
   }, [reportCode]);
 
+  // A report that passes URL validation but fails to load (most often a
+  // private/permission-gated log) was previously a silent drop-off. Capture it
+  // so the leak is measurable.
+  useEffect(() => {
+    if (reportError) {
+      posthog.capture("report_load_failed", {
+        report_code: reportCode,
+        error: reportError.message,
+      });
+    }
+  }, [reportError, reportCode]);
+
   return (
     <main className="py-6 space-y-6">
       {/* Report header */}
@@ -131,7 +143,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
         </div>
         {report && (
           <Button
-            variant="outline"
+            variant="default"
             size="sm"
             onClick={handleShareLink}
             className="shrink-0"
@@ -157,6 +169,8 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           <AlertDescription>
             {reportError.message ||
               "Couldn't load this report. Check the Warcraft Logs URL and try again."}{" "}
+            If this is a private log, set its visibility to Public (or Unlisted)
+            on Warcraft Logs, then reload.{" "}
             <a
               href={`https://www.warcraftlogs.com/reports/${reportCode}`}
               target="_blank"
@@ -362,6 +376,34 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
         </>
       )}
+      {/* Share CTA — surface sharing on every tab where users finish reading,
+          not just the player scorecard's "Copy for Discord". */}
+      {(player.result || raid.result || cla.result) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg glass px-4 py-3">
+          <p className="text-sm text-muted-foreground">
+            Found this useful? Share it with your guild.
+          </p>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleShareLink}
+            className="shrink-0"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5 text-emerald-400" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Link2 className="size-3.5" />
+                Share link
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
       {/* Guide links — cross-link to SEO content */}
       {(player.result || raid.result || cla.result) && (
         <div className="border-t border-white/[0.06] pt-6 mt-8">
