@@ -1,4 +1,22 @@
+import Link from "next/link";
 import { LandingHero } from "./components/LandingHero";
+import FeaturedReports from "./components/FeaturedReports";
+
+// ISR: regenerate hourly so the server-rendered report links below stay fresh
+// without a redeploy, and so the WCL meta fan-out in FeaturedReports runs at most
+// once per hour rather than per request.
+export const revalidate = 3600;
+
+// Direct homepage → guide-article links. The Navbar only links the /guides hub;
+// linking each article from the site's highest-authority page passes authority
+// straight to the individual guides so the thinner ones get indexed.
+const GUIDES = [
+  { href: "/guides/how-to-analyze-wow-classic-logs", title: "How to Analyze WoW Classic Logs" },
+  { href: "/guides/improve-dps-wow-classic", title: "How to Improve Your DPS in WoW Classic" },
+  { href: "/guides/raid-preparation-checklist", title: "WoW Classic Raid Preparation Checklist" },
+  { href: "/guides/wow-classic-loot-council-tools", title: "Best Loot Council Tools for WoW Classic" },
+  { href: "/guides/warcraft-logs-vs-parseforge", title: "Warcraft Logs vs ParseForge" },
+];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -73,6 +91,29 @@ export default function Home() {
             Classic Era, Season of Discovery, The Burning Crusade, Wrath of the
             Lich King, Cataclysm Classic, and Anniversary realms.
           </p>
+        </div>
+
+        <FeaturedReports />
+
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">Guides</h2>
+          <ul className="space-y-2 text-sm leading-relaxed">
+            {GUIDES.map((g) => (
+              <li key={g.href}>
+                <Link
+                  href={g.href}
+                  className="text-gold-from hover:underline"
+                >
+                  {g.title}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/guides" className="text-muted-foreground hover:text-foreground">
+                All guides &rarr;
+              </Link>
+            </li>
+          </ul>
         </div>
       </section>
     </main>
