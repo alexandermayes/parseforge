@@ -86,3 +86,44 @@ export async function cacheSet(key: string, value: unknown, ttlMs: number): Prom
   }
   memSet(key, value, ttlMs);
 }
+
+// ─── Recently-indexed reports (feeds the sitemap) ────────────────────
+// A sorted set of report codes scored by last-seen timestamp, written each
+// time a public report is server-rendered. Only active when shared Redis is
+// configured; without it the sitemap simply omits report URLs (local dev).
+const RECENT_REPORTS_KEY = "pf:recent_reports";
+
+/** Record a public report as recently rendered. Best-effort; never throws. */
+export async function recordRecentReport(code: string, ts: number): Promise<void> {
+  if (!usingSharedCache) return;
+  try {
+    await redisCmd(["ZADD", RECENT_REPORTS_KEY, ts, code]);
+  } catch (err) {
+    console.error(`[kv-cache] recordRecentReport ${code} failed: ${(err as Error).message}`);
+  }
+}
+
+/** Most-recently-rendered public report codes, newest first. */
+export async function getRecentReports(
+  limit: number,
+): Promise<{ code: string; ts: number }[]> {
+  if (!usingSharedCache) return [];
+  try {
+    const { result } = await redisCmd([
+      "ZREVRANGE",
+      RECENT_REPORTS_KEY,
+      0,
+      limit - 1,
+      "WITHSCORES",
+    ]);
+    if (!Array.isArray(result)) return [];
+    const out: { code: string; ts: number }[] = [];
+    for (let i = 0; i < result.length; i += 2) {
+      out.push({ code: String(result[i]), ts: Number(result[i + 1]) });
+    }
+    return out;
+  } catch (err) {
+    console.error(`[kv-cache] getRecentReports failed: ${(err as Error).message}`);
+    return [];
+  }
+}
