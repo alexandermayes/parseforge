@@ -20,11 +20,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://parseforge.gg"),
   title: {
-    default: "ParseForge — WoW Classic Log Analyzer",
+    default: "Free WoW Classic & TBC Log Analyzer — ParseForge",
     template: "%s | ParseForge",
   },
   description:
-    "Analyze your WoW Classic raid logs against top-ranked players. Get DPS comparisons, gear audits, consumable tracking, buff uptime analysis, and improvement suggestions — all from a single Warcraft Logs URL.",
+    "Free WoW Classic & TBC log analyzer — paste a Warcraft Logs URL to compare your raid DPS against top players, audit gear and buffs, and get improvement tips.",
   keywords: [
     "WoW Classic",
     "Warcraft Logs",
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://parseforge.gg",
     siteName: "ParseForge",
-    title: "ParseForge — WoW Classic Log Analyzer",
+    title: "ParseForge — Free WoW Classic & TBC Log Analyzer",
     description:
-      "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and actionable improvement suggestions.",
+      "Free WoW Classic & TBC log analyzer — paste a Warcraft Logs URL to compare your raid DPS against top players, audit gear and buffs, and get improvement tips.",
     images: [
       {
         url: "https://parseforge.gg/opengraph-image",
@@ -65,9 +65,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ParseForge — WoW Classic Log Analyzer",
+    title: "ParseForge — Free WoW Classic & TBC Log Analyzer",
     description:
-      "Analyze your WoW Classic raid logs against top-ranked players. DPS comparisons, gear audits, buff tracking, and improvement suggestions.",
+      "Free WoW Classic & TBC log analyzer — paste a Warcraft Logs URL to compare your raid DPS against top players, audit gear and buffs, and get improvement tips.",
     images: ["https://parseforge.gg/opengraph-image"],
   },
 };

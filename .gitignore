@@ -45,6 +45,10 @@ bot/dist
 # vercel
 .vercel
 
+# vercel marketplace agent skills (installed by the CLI, not app code)
+.agents/
+skills-lock.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
