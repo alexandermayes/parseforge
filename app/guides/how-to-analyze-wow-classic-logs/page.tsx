@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How to Analyze WoW Classic Logs",
+  title: "How to Analyze WoW Classic & TBC Logs",
   description:
-    "Learn how to read Warcraft Logs reports and use ParseForge to compare your WoW Classic raid performance against top-ranked players. Step-by-step guide.",
+    "Step-by-step guide to reading your Warcraft Logs reports for WoW Classic and TBC — turn raw parses into DPS, gear, and buff improvements with ParseForge.",
   alternates: {
     canonical:
       "https://parseforge.gg/guides/how-to-analyze-wow-classic-logs",
   },
   openGraph: {
-    title: "How to Analyze WoW Classic Logs | ParseForge",
+    title: "How to Analyze WoW Classic & TBC Logs | ParseForge",
     description:
-      "Step-by-step guide to reading Warcraft Logs reports and turning raw data into actionable raid improvements.",
+      "Step-by-step guide to reading Warcraft Logs reports for Classic & TBC and turning raw parses into actionable raid improvements.",
     url: "https://parseforge.gg/guides/how-to-analyze-wow-classic-logs",
   },
 };
