@@ -10,6 +10,7 @@ import { getWowheadDomain } from "@/lib/constants";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 import { mapPool } from "@/lib/async-pool";
 import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { CLAFightMeta } from "@/lib/cla-types";
 import type {
   WCLPlayerDetails,
@@ -50,6 +51,9 @@ export async function POST(request: NextRequest) {
   );
   if ("error" in parsed) return parsed.error;
   const { reportCode, fightIds } = parsed.body;
+
+  const limited = await checkRateLimit(request, "cla");
+  if (limited) return limited;
 
   if (fightIds.length === 0) {
     return NextResponse.json({ error: "No fights specified" }, { status: 400 });

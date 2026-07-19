@@ -86,6 +86,21 @@ export const TOKEN_EXPIRY_BUFFER = 60; // seconds before expiry to refresh
 
 export const TOP_PLAYERS_TO_FETCH = 3;
 
+// ─── Rate limiting (per-IP, sliding window) ──────────────────────────
+// Requests allowed per IP per RATE_LIMIT_WINDOW, tuned per route by cost —
+// `/api/cla` fans out the most so it's the tightest. Enforced only when Redis
+// is configured; a no-op in local dev (see lib/rate-limit.ts). Keys are the
+// bucket strings passed to checkRateLimit(); the two report routes get their
+// own buckets so a cheap GET never starves the other.
+export const RATE_LIMIT_WINDOW = "60 s"; // Upstash duration string
+export const RATE_LIMITS: Record<string, number> = {
+  analyze: 30,
+  "raid-overview": 30,
+  cla: 10,
+  report: 60,
+  "report-players": 60,
+};
+
 export const HEALER_SPECS = new Set([
   "Restoration",
   "Holy",

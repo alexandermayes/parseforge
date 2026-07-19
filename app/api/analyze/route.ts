@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { wclQuery } from "@/lib/wcl-client";
 import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   PLAYER_FULL_DATA_QUERY,
   PLAYER_FULL_DATA_QUERY_HEALING,
@@ -59,6 +60,9 @@ export async function POST(request: NextRequest) {
   if ("error" in parsed) return parsed.error;
   const body = parsed.body;
   const { reportCode, fightId, sourceId } = body;
+
+  const limited = await checkRateLimit(request, "analyze");
+  if (limited) return limited;
 
   return cachedApiHandler(`analyze-${reportCode}-${fightId}-${sourceId}`, async () => {
     // Step 1: We need player details first to detect role, so fetch with DPS query initially

@@ -8,6 +8,7 @@ import {
 import { buildRaidOverview } from "@/lib/raid-overview-engine";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type {
   WCLPlayerDetails,
   WCLCombatantInfoEvent,
@@ -112,6 +113,9 @@ export async function POST(request: NextRequest) {
   );
   if ("error" in parsed) return parsed.error;
   const { reportCode, fightId } = parsed.body;
+
+  const limited = await checkRateLimit(request, "raid-overview");
+  if (limited) return limited;
 
   return cachedApiHandler(`rpb-${reportCode}-${fightId}`, async () => {
     const [overviewData, combatantData, deathEventsData] = await Promise.all([
