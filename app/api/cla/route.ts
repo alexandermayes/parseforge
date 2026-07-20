@@ -6,10 +6,10 @@ import {
   buildCLABuffUptimeQuery,
 } from "@/lib/wcl-queries";
 import { buildCLAResult, type CLAEngineInput } from "@/lib/cla-engine";
-import { getWowheadDomain } from "@/lib/constants";
+import { getWowheadDomain, MAX_CLA_FIGHTS } from "@/lib/constants";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 import { mapPool } from "@/lib/async-pool";
-import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { cachedApiHandler, parseBody, isValidReportCode, badRequest } from "@/lib/api-utils";
 import { checkRateLimit } from "@/lib/rate-limit";
 import type { CLAFightMeta } from "@/lib/cla-types";
 import type {
@@ -55,13 +55,28 @@ export async function POST(request: NextRequest) {
   const limited = await checkRateLimit(request, "cla");
   if (limited) return limited;
 
-  if (fightIds.length === 0) {
+  // Validate BEFORE any use. A non-array `fightIds` (e.g. "abc") would otherwise
+  // throw on .length/.filter → unhandled 500; non-integer or unbounded lists
+  // pollute the cache key and can fan out into the shared WCL budget.
+  if (!isValidReportCode(reportCode)) return badRequest("Invalid report code.");
+  if (!Array.isArray(fightIds) || fightIds.length === 0) {
     return NextResponse.json({ error: "No fights specified" }, { status: 400 });
+  }
+  if (!fightIds.every((id) => Number.isInteger(id))) {
+    return badRequest("Invalid fight id — expected integers.");
+  }
+  // Dedupe (collapses accidental repeats) then cap: each fight fans out to
+  // multiple WCL queries, so an unbounded list could drain the daily budget.
+  const uniqueFightIds = [...new Set(fightIds)];
+  if (uniqueFightIds.length > MAX_CLA_FIGHTS) {
+    return badRequest(
+      `Too many fights selected — please select ${MAX_CLA_FIGHTS} or fewer.`,
+    );
   }
 
   // Sort a copy numerically — sort() is in-place and lexicographic, which would
   // mutate the caller's array and order [2,10] as "10,2".
-  const cacheFightIds = [...fightIds].sort((a, b) => a - b);
+  const cacheFightIds = [...uniqueFightIds].sort((a, b) => a - b);
   return cachedApiHandler(`cla-${reportCode}-${cacheFightIds.join(",")}`, async () => {
     // Step 1: Fetch report metadata (fights + players)
     const metaData = await wclQuery<ReportMetaResponse>(REPORT_META_QUERY, {
@@ -71,8 +86,8 @@ export async function POST(request: NextRequest) {
     const zoneName = report.zone?.name;
     const wowheadDomain = getWowheadDomain(zoneName, report.zone?.expansion?.id);
 
-    // Filter to requested fights
-    const selectedFights = report.fights.filter((f) => fightIds.includes(f.id));
+    // Filter to requested fights (deduped + capped set)
+    const selectedFights = report.fights.filter((f) => uniqueFightIds.includes(f.id));
     if (selectedFights.length === 0) {
       return NextResponse.json({ error: "No matching fights found" }, { status: 404 });
     }
@@ -120,7 +135,7 @@ export async function POST(request: NextRequest) {
     // Fetch player details using all fight IDs
     const playerDetailsPromise = wclQuery<PlayerDetailsResponse>(
       playerDetailsQuery,
-      { code: reportCode, fightIDs: fightIds }
+      { code: reportCode, fightIDs: uniqueFightIds }
     );
 
     // Batch source IDs into groups of BATCH_SIZE (same for every fight)

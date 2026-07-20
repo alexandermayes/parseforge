@@ -25,6 +25,19 @@ export function errorResponse(error: unknown, context: string): NextResponse {
   );
 }
 
+/** WCL report codes are 10–20 alphanumeric chars. Shared by every route that
+ * accepts a code so validation (and cache-key hygiene) stays consistent — bad
+ * codes must never reach a WCL query or pollute a cache key. */
+export const REPORT_CODE_RE = /^[a-zA-Z0-9]{10,20}$/;
+export function isValidReportCode(code: unknown): code is string {
+  return typeof code === "string" && REPORT_CODE_RE.test(code);
+}
+
+/** 400 with a clean client-facing message. */
+export function badRequest(message: string): NextResponse {
+  return NextResponse.json({ error: message }, { status: 400 });
+}
+
 /**
  * Wraps an API route handler with cache check and error handling.
  * Returns cached result if available, otherwise runs the handler,

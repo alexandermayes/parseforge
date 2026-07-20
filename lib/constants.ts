@@ -101,6 +101,11 @@ export const RATE_LIMITS: Record<string, number> = {
   "report-players": 60,
 };
 
+// Cap on fights per /api/cla request. Each selected fight fans out to multiple
+// WCL queries (buff batches + combatant info), so this bounds the worst-case
+// WCL spend a single request can trigger.
+export const MAX_CLA_FIGHTS = 15;
+
 export const HEALER_SPECS = new Set([
   "Restoration",
   "Holy",

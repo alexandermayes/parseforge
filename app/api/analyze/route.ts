@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { wclQuery } from "@/lib/wcl-client";
-import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { cachedApiHandler, parseBody, isValidReportCode, badRequest } from "@/lib/api-utils";
 import { checkRateLimit } from "@/lib/rate-limit";
 import {
   PLAYER_FULL_DATA_QUERY,
@@ -63,6 +63,13 @@ export async function POST(request: NextRequest) {
 
   const limited = await checkRateLimit(request, "analyze");
   if (limited) return limited;
+
+  // Validate before building the cache key / querying WCL. Number.isInteger
+  // rejects non-numbers too, and 0 stays valid (fight/source slots are 0-indexed).
+  if (!isValidReportCode(reportCode)) return badRequest("Invalid report code.");
+  if (!Number.isInteger(fightId) || !Number.isInteger(sourceId)) {
+    return badRequest("Invalid fight or source id — expected integers.");
+  }
 
   return cachedApiHandler(`analyze-${reportCode}-${fightId}-${sourceId}`, async () => {
     // Step 1: We need player details first to detect role, so fetch with DPS query initially
