@@ -199,7 +199,7 @@ The product **is** the numbers produced by `lib/analysis-engine.ts` (~1,300 line
 
 ## Definition of done
 
-- [ ] All Phase 1 tasks complete — this is the launch-blocking set
+- [x] All Phase 1 tasks complete — this is the launch-blocking set
 - [ ] Phase 2 complete
 - [ ] Phase 3 complete
 - [ ] Phase 4: parser/pool/parseBody tests exist and run in CI; engine tests started
