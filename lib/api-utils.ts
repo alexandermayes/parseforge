@@ -1,7 +1,26 @@
 import { NextResponse } from "next/server";
 import { getCached, setCache, WCLError } from "./wcl-client";
+import { usingSharedCache, cacheLock, cacheUnlock } from "./kv-cache";
 import { ANALYSIS_CACHE_TTL } from "./constants";
 import { logEvent, routeFromCacheKey } from "./observability";
+
+// Single-flight wait tuning: a request that lost the lock polls the cache this
+// long before giving up and computing itself, checking this often.
+const CACHE_WAIT_MS = 15_000;
+const CACHE_POLL_MS = 500;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Poll the shared cache until it fills or we exhaust the wait budget. */
+async function waitForCache<T>(cacheKey: string): Promise<T | null> {
+  const deadline = Date.now() + CACHE_WAIT_MS;
+  while (Date.now() < deadline) {
+    await sleep(CACHE_POLL_MS);
+    const cached = await getCached<T>(cacheKey);
+    if (cached) return cached;
+  }
+  return null;
+}
 
 /**
  * Map any caught error to a clean client response. WCLError carries an
@@ -56,33 +75,64 @@ export async function cachedApiHandler<T>(
     return NextResponse.json(cached);
   }
 
-  try {
-    const result = await handler();
+  // The original miss path — run the handler, cache the result, return it.
+  // Extracted so the single-flight branch below can reuse it.
+  const runAndCache = async (): Promise<NextResponse> => {
+    try {
+      const result = await handler();
 
-    // If handler returned a NextResponse directly (e.g. 404), pass it through
-    if (result instanceof NextResponse) {
+      // If handler returned a NextResponse directly (e.g. 404), pass it through
+      // (and don't cache it).
+      if (result instanceof NextResponse) {
+        logEvent("api_request", {
+          route,
+          cache: "miss",
+          outcome: "early_return",
+          status: result.status,
+          ms: Date.now() - start,
+        });
+        return result;
+      }
+
+      await setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
+      logEvent("api_request", { route, cache: "miss", outcome: "ok", ms: Date.now() - start });
+      return NextResponse.json(result);
+    } catch (error) {
       logEvent("api_request", {
         route,
         cache: "miss",
-        outcome: "early_return",
-        status: result.status,
+        outcome: "error",
+        kind: error instanceof WCLError ? error.kind : "unknown",
         ms: Date.now() - start,
       });
-      return result;
+      return errorResponse(error, cacheKey);
     }
+  };
 
-    await setCache(cacheKey, result, ANALYSIS_CACHE_TTL);
-    logEvent("api_request", { route, cache: "miss", outcome: "ok", ms: Date.now() - start });
-    return NextResponse.json(result);
-  } catch (error) {
-    logEvent("api_request", {
-      route,
-      cache: "miss",
-      outcome: "error",
-      kind: error instanceof WCLError ? error.kind : "unknown",
-      ms: Date.now() - start,
-    });
-    return errorResponse(error, cacheKey);
+  // Without shared Redis there's nothing to coordinate across instances — run
+  // directly, exactly as before.
+  if (!usingSharedCache) return runAndCache();
+
+  // Single-flight: only the lock holder fans out to WCL for this key. Everyone
+  // else waits for the cache to fill, collapsing a stampede (50 people opening
+  // the same freshly-shared report at once) into one upstream computation.
+  const acquired = await cacheLock(cacheKey);
+  if (!acquired) {
+    const waited = await waitForCache<T>(cacheKey);
+    if (waited) {
+      logEvent("api_request", { route, cache: "wait_hit", outcome: "ok", ms: Date.now() - start });
+      return NextResponse.json(waited);
+    }
+    // The holder never filled the cache (slow, errored, or returned an early
+    // 404). Compute ourselves rather than dead-ending the user.
+    return runAndCache();
+  }
+
+  try {
+    return await runAndCache();
+  } finally {
+    // Release promptly so waiters proceed; the lock's EX TTL backstops a crash.
+    await cacheUnlock(cacheKey);
   }
 }
 

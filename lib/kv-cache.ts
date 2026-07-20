@@ -87,6 +87,47 @@ export async function cacheSet(key: string, value: unknown, ttlMs: number): Prom
   memSet(key, value, ttlMs);
 }
 
+// ─── Single-flight locks (cache-stampede protection) ────────────────
+// A short-lived Redis lock so that when many requests miss the cache for the
+// same key at once, only the lock holder fans out to WCL; the rest wait for the
+// cache to fill (see cachedApiHandler). Only meaningful with shared Redis — a
+// per-instance lock can't coordinate across serverless instances — so these
+// no-op without it. The EX TTL is the safety net: if the holder's instance dies
+// mid-computation the lock auto-expires instead of wedging the key forever.
+const LOCK_TTL_SEC = 20;
+
+/** Try to acquire the lock for `key`. Returns true only if we got it. */
+export async function cacheLock(key: string): Promise<boolean> {
+  if (!usingSharedCache) return false;
+  try {
+    const { result } = await redisCmd([
+      "SET",
+      `lock:${key}`,
+      "1",
+      "NX",
+      "EX",
+      LOCK_TTL_SEC,
+    ]);
+    // SET ... NX returns "OK" when the key was set, null when it already exists.
+    return result === "OK";
+  } catch (err) {
+    // On error, report "not acquired" so the caller waits/falls through rather
+    // than wrongly assuming exclusive ownership.
+    console.error(`[kv-cache] cacheLock ${key} failed: ${(err as Error).message}`);
+    return false;
+  }
+}
+
+/** Release a lock acquired via cacheLock. Best-effort; the TTL backstops it. */
+export async function cacheUnlock(key: string): Promise<void> {
+  if (!usingSharedCache) return;
+  try {
+    await redisCmd(["DEL", `lock:${key}`]);
+  } catch (err) {
+    console.error(`[kv-cache] cacheUnlock ${key} failed: ${(err as Error).message}`);
+  }
+}
+
 // ─── Recently-indexed reports (feeds the sitemap) ────────────────────
 // A sorted set of report codes scored by last-seen timestamp, written each
 // time a public report is server-rendered. Only active when shared Redis is
