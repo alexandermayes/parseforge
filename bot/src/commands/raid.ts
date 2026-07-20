@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { parseWCLUrl } from "../util/parse-url.js";
-import { fetchReportMeta, fetchRaidOverview } from "../api.js";
+import { fetchReportMeta, fetchRaidOverview, describeApiError } from "../api.js";
 import { buildRaidEmbed } from "../embeds/raid-embed.js";
 
 export async function handleRaid(
@@ -34,7 +34,6 @@ export async function handleRaid(
     const reply = buildRaidEmbed(result, parsed.code, fightId);
     await interaction.editReply(reply);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    await interaction.editReply(`Failed to fetch raid data: ${message}`);
+    await interaction.editReply(describeApiError(err));
   }
 }

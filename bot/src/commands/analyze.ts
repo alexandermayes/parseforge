@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { parseWCLUrl } from "../util/parse-url.js";
-import { fetchReportMeta, fetchRaidOverview, fetchAnalysis } from "../api.js";
+import { fetchReportMeta, fetchRaidOverview, fetchAnalysis, describeApiError } from "../api.js";
 import { buildAnalyzeEmbed } from "../embeds/analyze-embed.js";
 import { buildRaidEmbed } from "../embeds/raid-embed.js";
 
@@ -57,7 +57,6 @@ export async function handleAnalyze(
       ...reply,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    await interaction.editReply(`Failed to fetch analysis: ${message}`);
+    await interaction.editReply(describeApiError(err));
   }
 }
