@@ -1,3 +1,6 @@
+// Deliberate duplicate: the Discord bot keeps a byte-for-byte-identical copy at
+// `bot/src/util/parse-url.ts` (separate package, can't import from here). Port
+// any change to both.
 import { ParsedWCLUrl } from "./wcl-types";
 
 /**
