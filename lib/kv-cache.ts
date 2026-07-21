@@ -87,6 +87,19 @@ export async function cacheSet(key: string, value: unknown, ttlMs: number): Prom
   memSet(key, value, ttlMs);
 }
 
+/** Delete a key from the shared cache (and the memory fallback). Best-effort. */
+export async function cacheDelete(key: string): Promise<void> {
+  if (usingSharedCache) {
+    try {
+      await redisCmd(["DEL", key]);
+      return;
+    } catch (err) {
+      console.error(`[kv-cache] DEL ${key} failed, using memory: ${(err as Error).message}`);
+    }
+  }
+  mem.delete(key);
+}
+
 // ─── Single-flight locks (cache-stampede protection) ────────────────
 // A short-lived Redis lock so that when many requests miss the cache for the
 // same key at once, only the lock holder fans out to WCL; the rest wait for the
