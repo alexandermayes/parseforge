@@ -37,6 +37,10 @@ export const Meteors = ({
         Math.floor(Math.random() * (maxDuration - minDuration) + minDuration) +
         "s",
     }))
+    // Client-only: styles depend on window.innerWidth + Math.random(), so they
+    // must be computed after mount (not during SSR/render). The one extra render
+    // is fine for a decorative effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only compute-after-mount
     setMeteorStyles(styles)
   }, [number, minDelay, maxDelay, minDuration, maxDuration, angle])
 

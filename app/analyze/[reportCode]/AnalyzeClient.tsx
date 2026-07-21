@@ -82,6 +82,10 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
 
   // Player quick-jump handler: switch to player tab + select player
   const handlePlayerClick = useCallback(
+    // The React Compiler can't preserve this manual memoization because a dep is
+    // a method read off the `player` hook result; the useCallback is intentional
+    // and behavior-correct.
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional manual memo
     (sourceId: number) => {
       player.clear();
       setSelectedSource(sourceId);

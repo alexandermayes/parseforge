@@ -165,7 +165,7 @@ export function analyzeGear(
   const topGearBySlot = normalizeRankingGear(topRankingGear);
 
   let missingEnchants = 0;
-  let missingGems = 0;
+  const missingGems = 0;
   const slots: GearSlotComparison[] = [];
 
   // Slots where enchants are reliably reported by WCL

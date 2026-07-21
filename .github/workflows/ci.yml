@@ -22,12 +22,7 @@ jobs:
       # calls degrade gracefully when the env is absent (see FeaturedReports /
       # kv-cache), so CI needs no secrets.
       - run: npm run build
-      # Lint is non-blocking for now: the repo has pre-existing lint errors
-      # (components/ui/meteors.tsx, lib/analysis-engine.ts, …) unrelated to CI.
-      # Flip continue-on-error off once that debt is cleared.
-      - name: Lint (non-blocking)
-        run: npm run lint
-        continue-on-error: true
+      - run: npm run lint
 
   bot:
     name: Bot (build)
