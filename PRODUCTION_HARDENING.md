@@ -200,7 +200,7 @@ The product **is** the numbers produced by `lib/analysis-engine.ts` (~1,300 line
 ## Definition of done
 
 - [x] All Phase 1 tasks complete — this is the launch-blocking set
-- [ ] Phase 2 complete
+- [x] Phase 2 complete
 - [ ] Phase 3 complete
 - [ ] Phase 4: parser/pool/parseBody tests exist and run in CI; engine tests started
 - [ ] `npm run build`, `npx tsc --noEmit`, `npm run lint`, and `npm test` all pass; bot builds
