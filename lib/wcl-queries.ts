@@ -302,6 +302,12 @@ export const REPORT_ACTORS_QUERY = `
  */
 export function buildCLABuffUptimeQuery(sourceIds: number[]): string {
   const aliases = sourceIds
+    // These ids come from WCL's own actor list (safe), but this is the only place
+    // a value reaches a query body as a raw string. Coerce to a non-negative
+    // integer and drop anything else — one-line insurance against a future caller
+    // passing unvalidated data into the interpolated query.
+    .map((id) => Number(id))
+    .filter((id) => Number.isInteger(id) && id >= 0)
     .map(
       (id) =>
         `buffs_${id}: table(dataType: Buffs, fightIDs: $fightIDs, sourceID: ${id})`

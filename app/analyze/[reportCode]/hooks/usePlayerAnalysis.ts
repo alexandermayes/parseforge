@@ -79,6 +79,9 @@ export function usePlayerAnalysis(
     if (activeTab === "player" && selectedFight && selectedSource && !loading) {
       run();
     }
+    // `loading` is a start guard only — depending on it would re-trigger this
+    // effect when a run finishes. Intentionally omitted.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSource, selectedFight, activeTab, run]);
 
   const clear = useCallback(() => {

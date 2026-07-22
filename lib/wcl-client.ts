@@ -1,5 +1,6 @@
 import { WCL_API_URL, WCL_TOKEN_URL, TOKEN_EXPIRY_BUFFER } from "./constants";
 import { logEvent } from "./observability";
+import { cacheGet, cacheSet, cacheDelete } from "./kv-cache";
 
 // ─── Typed errors ────────────────────────────────────────────────────
 // wclQuery throws WCLError so routes can map failures to clean, actionable
@@ -66,16 +67,44 @@ function classifyGraphQLError(message: string): WCLErrorKind {
   return "upstream";
 }
 
+// The WCL OAuth token is cached at two levels: module scope (fastest, per
+// serverless instance) and shared Redis (so a cold instance reuses a token
+// another instance already minted instead of spending a fresh token request —
+// every mint counts against the same client). Without Redis, only the module
+// cache is used, exactly as before.
+const TOKEN_CACHE_KEY = "wcl:token";
+interface CachedWclToken {
+  token: string;
+  expiresAt: number; // epoch seconds
+}
+
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
+
+/** Drop the cached token from BOTH module scope and Redis (used on a 401). */
+async function clearAccessToken(): Promise<void> {
+  cachedToken = null;
+  tokenExpiresAt = 0;
+  await cacheDelete(TOKEN_CACHE_KEY);
+}
 
 async function getAccessToken(): Promise<string> {
   const now = Date.now() / 1000;
 
+  // 1. Module scope — fastest, no network.
   if (cachedToken && tokenExpiresAt > now + TOKEN_EXPIRY_BUFFER) {
     return cachedToken;
   }
 
+  // 2. Shared Redis — reuse a token another instance already minted if valid.
+  const shared = await cacheGet<CachedWclToken>(TOKEN_CACHE_KEY);
+  if (shared && shared.expiresAt > now + TOKEN_EXPIRY_BUFFER) {
+    cachedToken = shared.token;
+    tokenExpiresAt = shared.expiresAt;
+    return shared.token;
+  }
+
+  // 3. Mint a fresh token from WCL and write it back to both layers.
   const clientId = process.env.WCL_CLIENT_ID;
   const clientSecret = process.env.WCL_CLIENT_SECRET;
 
@@ -101,10 +130,22 @@ async function getAccessToken(): Promise<string> {
   }
 
   const data = await res.json();
-  cachedToken = data.access_token;
+  const token: string = data.access_token;
+  cachedToken = token;
   tokenExpiresAt = now + data.expires_in;
 
-  return cachedToken!;
+  // Cache in Redis just short of expiry (minus the refresh buffer) so it's never
+  // served stale. Best-effort — cacheSet never throws.
+  const ttlMs = Math.max(0, data.expires_in - TOKEN_EXPIRY_BUFFER) * 1000;
+  if (ttlMs > 0) {
+    await cacheSet(
+      TOKEN_CACHE_KEY,
+      { token, expiresAt: tokenExpiresAt } satisfies CachedWclToken,
+      ttlMs,
+    );
+  }
+
+  return token;
 }
 
 const MAX_RETRIES = 3;
@@ -178,10 +219,10 @@ export async function wclQuery<T>(
 
       clearTimeout(timeout);
 
-      // 401 = token expired between cache check and use — refresh and retry
+      // 401 = token expired between cache check and use — clear BOTH the module
+      // and Redis copies so the next attempt mints a fresh one, then retry.
       if (res.status === 401) {
-        cachedToken = null;
-        tokenExpiresAt = 0;
+        await clearAccessToken();
         lastError = new Error("WCL token expired, retrying");
         continue;
       }

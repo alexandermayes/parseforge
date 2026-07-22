@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CLASS_COLORS } from "@/lib/constants";
+import { isValidReportCode } from "@/lib/api-utils";
 import type { AnalysisResult, ReportMeta } from "@/lib/wcl-types";
 
 // Dynamic Open Graph image for shared analyze links. Only hit by link unfurlers
@@ -184,24 +185,32 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const reportCode = searchParams.get("report");
-    const fight = searchParams.get("fight");
-    const source = searchParams.get("source");
-    const origin = new URL(request.url).origin;
+    const fightRaw = searchParams.get("fight");
+    const sourceRaw = searchParams.get("source");
+    // Fetch our own API by an absolute origin. Pin to the canonical host in
+    // production (an attacker can't steer us via a spoofed Host/origin), and
+    // only fall back to the request origin in local dev.
+    const origin =
+      process.env.NODE_ENV === "production"
+        ? "https://parseforge.gg"
+        : new URL(request.url).origin;
 
-    if (!reportCode) {
+    // Invalid/absent code → branded fallback, never fetch.
+    if (!isValidReportCode(reportCode)) {
       return new ImageResponse(<ReportCard meta={null} reportCode="" />, { ...size, headers });
     }
 
-    // Player scorecard when we have a specific fight + player.
-    if (fight && source) {
+    // Player scorecard only when fight + source are valid non-negative integers.
+    const fightId = fightRaw != null ? Number.parseInt(fightRaw, 10) : NaN;
+    const sourceId = sourceRaw != null ? Number.parseInt(sourceRaw, 10) : NaN;
+    if (
+      Number.isInteger(fightId) && fightId >= 0 &&
+      Number.isInteger(sourceId) && sourceId >= 0
+    ) {
       const data = await fetchJson<AnalysisResult>(`${origin}/api/analyze`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          reportCode,
-          fightId: Number(fight),
-          sourceId: Number(source),
-        }),
+        body: JSON.stringify({ reportCode, fightId, sourceId }),
       });
       if (data?.playerName) {
         return new ImageResponse(<PlayerCard data={data} />, { ...size, headers });

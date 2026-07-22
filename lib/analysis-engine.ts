@@ -8,7 +8,7 @@ import {
   CLASS_TALENT_TREES,
   getPerformanceGrade,
 } from "./constants";
-import { ENCHANT_NAME_DB, GEM_NAME_DB, GEM_STAT_DB } from "./cla-constants";
+import { ENCHANT_NAME_DB } from "./cla-constants";
 import {
   AnalysisResult,
   ConsumableStatus,
@@ -165,7 +165,7 @@ export function analyzeGear(
   const topGearBySlot = normalizeRankingGear(topRankingGear);
 
   let missingEnchants = 0;
-  let missingGems = 0;
+  const missingGems = 0;
   const slots: GearSlotComparison[] = [];
 
   // Slots where enchants are reliably reported by WCL

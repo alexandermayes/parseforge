@@ -99,7 +99,7 @@ export function LandingHero() {
       {/* Feature cards */}
       <BlurFade delay={0.3} inView>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-          {features.map((f, i) => (
+          {features.map((f) => (
             <MagicCard
               key={f.title}
               className="rounded-xl p-4 cursor-default"

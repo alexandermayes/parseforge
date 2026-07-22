@@ -15,7 +15,6 @@ import {
 import { handleRaid } from "./commands/raid.js";
 import { handleAnalyze } from "./commands/analyze.js";
 import { parseWCLUrl } from "./util/parse-url.js";
-import { PARSEFORGE_GOLD } from "./util/constants.js";
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
@@ -76,25 +75,63 @@ const client = new Client({
 
 client.once("ready", (c) => {
   console.log(`Logged in as ${c.user.tag}`);
-  c.user.setActivity("getlootlist.com", { type: ActivityType.Playing });
+  c.user.setActivity("parseforge.gg", { type: ActivityType.Playing });
 });
+
+// ─── Cooldowns (in-memory, best-effort) ──────────────────────────────
+// These blunt spam/amplification, not authoritative rate limits — a bot restart
+// resets them, which is fine. Per-channel for passive link replies; per-user for
+// slash commands so one user can't hammer the API through /raid or /analyze.
+const CHANNEL_COOLDOWN_MS = 30_000;
+const USER_COMMAND_COOLDOWN_MS = 10_000;
+const channelCooldowns = new Map<string, number>();
+const userCooldowns = new Map<string, number>();
+
+/** True if `key` is still cooling down; otherwise stamps `now` and returns false. */
+function onCooldown(map: Map<string, number>, key: string, windowMs: number): boolean {
+  const now = Date.now();
+  const last = map.get(key);
+  if (last !== undefined && now - last < windowMs) return true;
+  map.set(key, now);
+  return false;
+}
 
 client.on("interactionCreate", async (interaction: Interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
-  switch (interaction.commandName) {
-    case "raid":
-      await handleRaid(interaction);
-      break;
-    case "analyze":
-      await handleAnalyze(interaction);
-      break;
-    default:
-      if (interaction.replied || interaction.deferred) {
-        await interaction.editReply("Unknown command.");
-      } else {
-        await interaction.reply({ content: "Unknown command.", ephemeral: true });
-      }
+  // Per-user cooldown — a single user can't hammer the API through commands.
+  if (onCooldown(userCooldowns, interaction.user.id, USER_COMMAND_COOLDOWN_MS)) {
+    await interaction
+      .reply({ content: "Give it a few seconds between commands and try again.", ephemeral: true })
+      .catch(() => {});
+    return;
+  }
+
+  // A handler that rejects (e.g. a Discord permission/API error) would otherwise
+  // surface as an unhandled rejection and crash the process on Node 20.
+  try {
+    switch (interaction.commandName) {
+      case "raid":
+        await handleRaid(interaction);
+        break;
+      case "analyze":
+        await handleAnalyze(interaction);
+        break;
+      default:
+        if (interaction.replied || interaction.deferred) {
+          await interaction.editReply("Unknown command.");
+        } else {
+          await interaction.reply({ content: "Unknown command.", ephemeral: true });
+        }
+    }
+  } catch (err) {
+    console.error(`Command "${interaction.commandName}" failed:`, err);
+    const msg = "Something went wrong handling that command.";
+    if (interaction.replied || interaction.deferred) {
+      await interaction.editReply(msg).catch(() => {});
+    } else {
+      await interaction.reply({ content: msg, ephemeral: true }).catch(() => {});
+    }
   }
 });
 
@@ -112,8 +149,15 @@ client.on("messageCreate", async (message: Message) => {
   const parsed = parseWCLUrl(match[0]);
   if (!parsed) return;
 
+  // Only auto-reply to links that point at a specific fight — a bare report link
+  // pasted in chat shouldn't trigger the bot.
+  if (parsed.fightId === undefined) return;
+
+  // Per-channel cooldown so a flurry of pasted links doesn't spam a channel.
+  if (onCooldown(channelCooldowns, message.channelId, CHANNEL_COOLDOWN_MS)) return;
+
   const pfUrl = new URL(`https://parseforge.gg/analyze/${parsed.code}`);
-  if (parsed.fightId !== undefined) pfUrl.searchParams.set("fight", String(parsed.fightId));
+  pfUrl.searchParams.set("fight", String(parsed.fightId));
   if (parsed.sourceId !== undefined) pfUrl.searchParams.set("source", String(parsed.sourceId));
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -123,10 +167,16 @@ client.on("messageCreate", async (message: Message) => {
       .setURL(pfUrl.toString()),
   );
 
-  await message.reply({
-    components: [row],
-    allowedMentions: { repliedUser: false },
-  });
+  // Catch reply failures (e.g. missing Send Messages permission) so they don't
+  // bubble up as an unhandled rejection and crash the bot on Node 20.
+  try {
+    await message.reply({
+      components: [row],
+      allowedMentions: { repliedUser: false },
+    });
+  } catch (err) {
+    console.warn(`Failed to reply in channel ${message.channelId}:`, err);
+  }
 });
 
 async function main(): Promise<void> {

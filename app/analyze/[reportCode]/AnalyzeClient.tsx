@@ -88,6 +88,9 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
       updateUrlParam("source", String(sourceId));
       switchTab("player");
     },
+    // player.clear is stable; depending on the whole `player` object would
+    // re-create this callback on every analysis-state change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [switchTab, updateUrlParam, player.clear]
   );
 

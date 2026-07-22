@@ -1,43 +1,84 @@
+// Deliberate duplicate of the web app's `lib/url-parser.ts`. The bot is a
+// separate package and can't import from the Next app, so the two copies are
+// kept byte-for-byte identical in behavior — port any change to both.
+
 export interface ParsedWCLUrl {
   code: string;
   fightId?: number;
   sourceId?: number;
 }
 
+/**
+ * Pull fight/source out of a raw fragment/query blob. Handles both the
+ * hash style (`#fight=5&source=12`) and the query style (`?fight=5&source=12`)
+ * that Warcraft Logs uses interchangeably.
+ */
+function extractFightSource(...parts: string[]): {
+  fightId?: number;
+  sourceId?: number;
+} {
+  const blob = parts.filter(Boolean).join("&");
+  const out: { fightId?: number; sourceId?: number } = {};
+
+  const fight = blob.match(/(?:^|[#&?])fight=([^&\s]+)/);
+  if (fight && fight[1] !== "last") {
+    const n = parseInt(fight[1], 10);
+    if (!Number.isNaN(n)) out.fightId = n;
+  }
+
+  const source = blob.match(/(?:^|[#&?])source=(\d+)/);
+  if (source) {
+    const n = parseInt(source[1], 10);
+    if (!Number.isNaN(n)) out.sourceId = n;
+  }
+
+  return out;
+}
+
+/**
+ * Parse a Warcraft Logs URL into its components.
+ * Supports:
+ *   https://classic.warcraftlogs.com/reports/ABC123#fight=5&source=12
+ *   https://www.warcraftlogs.com/reports/ABC123?fight=5&source=12
+ *   https://www.warcraftlogs.com/reports/ABC123
+ *   ABC123 (just the report code)
+ *   Pasted text with a report URL somewhere inside it (e.g. shared from a
+ *   phone or Discord: "check this out https://.../reports/ABC123 gg")
+ */
 export function parseWCLUrl(input: string): ParsedWCLUrl | null {
   const trimmed = input.trim();
 
+  // Try as a plain report code (alphanumeric, 16 chars typical)
   if (/^[a-zA-Z0-9]{10,20}$/.test(trimmed)) {
     return { code: trimmed };
   }
 
+  // Try as a well-formed URL first — most reliable for fragment/query params.
   try {
     const urlStr = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
     const url = new URL(urlStr);
 
-    const pathMatch = url.pathname.match(/\/reports\/([a-zA-Z0-9]+)/);
-    if (!pathMatch) return null;
-
-    const code = pathMatch[1];
-    const result: ParsedWCLUrl = { code };
-
-    if (url.hash) {
-      const hashParams = new URLSearchParams(url.hash.slice(1));
-      const fight = hashParams.get("fight");
-      const source = hashParams.get("source");
-
-      if (fight && fight !== "last") {
-        result.fightId = parseInt(fight, 10);
-      }
-      if (source) {
-        result.sourceId = parseInt(source, 10);
-      }
+    const pathMatch = url.pathname.match(/\/reports\/([a-zA-Z0-9]{10,20})/);
+    if (pathMatch) {
+      return {
+        code: pathMatch[1],
+        ...extractFightSource(url.hash, url.search),
+      };
     }
-
-    return result;
   } catch {
-    return null;
+    // Not a parseable URL on its own — fall through to a loose scan.
   }
+
+  // Loose fallback: extract a /reports/<code> from text that may include
+  // surrounding words (common when sharing from a mobile app or Discord),
+  // where the input isn't a bare URL and `new URL()` above fails.
+  const loose = trimmed.match(/\/reports\/([a-zA-Z0-9]{10,20})/);
+  if (loose) {
+    const rest = trimmed.slice(trimmed.indexOf(loose[0]) + loose[0].length);
+    return { code: loose[1], ...extractFightSource(rest) };
+  }
+
+  return null;
 }
 
 export function buildWCLUrl(

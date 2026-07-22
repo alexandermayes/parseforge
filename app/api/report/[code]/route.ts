@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { wclQuery, WCLError } from "@/lib/wcl-client";
 import { REPORT_META_QUERY } from "@/lib/wcl-queries";
 import { errorResponse } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { mapReportMeta } from "@/lib/report-meta";
 import { WCLReportData } from "@/lib/wcl-types";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
@@ -14,6 +15,9 @@ export async function GET(
   if (!code || !/^[a-zA-Z0-9]{10,20}$/.test(code)) {
     return NextResponse.json({ error: "Invalid report code" }, { status: 400 });
   }
+
+  const limited = await checkRateLimit(request, "report");
+  if (limited) return limited;
 
   try {
     const data = await wclQuery<{ reportData: { report: WCLReportData } }>(

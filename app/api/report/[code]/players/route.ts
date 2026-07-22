@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { wclQuery } from "@/lib/wcl-client";
 import { errorResponse } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { WCLPlayerDetails } from "@/lib/wcl-types";
 
 interface PlayerDetailsResponse {
@@ -38,6 +39,9 @@ export async function GET(
   if (!fightId) {
     return NextResponse.json({ error: "Missing fightId" }, { status: 400 });
   }
+
+  const limited = await checkRateLimit(request, "report-players");
+  if (limited) return limited;
 
   try {
     const data = await wclQuery<PlayerDetailsResponse>(QUERY, {

@@ -7,7 +7,8 @@ import {
 } from "@/lib/wcl-queries";
 import { buildRaidOverview } from "@/lib/raid-overview-engine";
 import { flattenPlayerDetails } from "@/lib/wcl-helpers";
-import { cachedApiHandler, parseBody } from "@/lib/api-utils";
+import { cachedApiHandler, parseBody, isValidReportCode, badRequest } from "@/lib/api-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type {
   WCLPlayerDetails,
   WCLCombatantInfoEvent,
@@ -112,6 +113,14 @@ export async function POST(request: NextRequest) {
   );
   if ("error" in parsed) return parsed.error;
   const { reportCode, fightId } = parsed.body;
+
+  const limited = await checkRateLimit(request, "raid-overview");
+  if (limited) return limited;
+
+  if (!isValidReportCode(reportCode)) return badRequest("Invalid report code.");
+  if (!Number.isInteger(fightId)) {
+    return badRequest("Invalid fight id — expected an integer.");
+  }
 
   return cachedApiHandler(`rpb-${reportCode}-${fightId}`, async () => {
     const [overviewData, combatantData, deathEventsData] = await Promise.all([

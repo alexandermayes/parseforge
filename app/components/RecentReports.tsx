@@ -19,6 +19,9 @@ export default function RecentReports() {
   const [reports, setReports] = useState<RecentReport[]>([]);
 
   useEffect(() => {
+    // Client-only: localStorage is unavailable during SSR, so recent reports are
+    // read after mount (renders null until then; not SSR-critical).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only read-after-mount
     setReports(getRecentReports());
   }, []);
 

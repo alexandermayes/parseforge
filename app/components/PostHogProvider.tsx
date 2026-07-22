@@ -35,16 +35,16 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       // Session replay
       disable_session_recording: false,
       session_recording: {
-        maskAllInputs: false,
-        maskInputFn: (text, element) => {
-          // Only mask actual sensitive fields, not the report URL input
-          const el = element as HTMLInputElement | null;
-          if (el?.type === "password") return "*".repeat(text.length);
-          return text;
-        },
+        // Mask all inputs by default. This masks the report-URL input too, which
+        // is an acceptable trade for a privacy-safe default (vs. the previous
+        // un-masking that could capture whatever a user typed).
+        maskAllInputs: true,
       },
-      // Console log capture
-      enable_recording_console_log: true,
+      // Don't capture console logs into replays — they can hoover up anything
+      // logged client-side.
+      enable_recording_console_log: false,
+      // TODO: serving EU users with session replay ultimately needs a consent
+      // banner — that's a product decision, out of scope here.
       // Autocapture clicks, inputs, form submits
       autocapture: true,
       loaded: (ph) => {
