@@ -15,7 +15,6 @@ import {
 import { handleRaid } from "./commands/raid.js";
 import { handleAnalyze } from "./commands/analyze.js";
 import { parseWCLUrl } from "./util/parse-url.js";
-import { PARSEFORGE_GOLD } from "./util/constants.js";
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;

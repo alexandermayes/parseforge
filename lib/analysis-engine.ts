@@ -8,7 +8,7 @@ import {
   CLASS_TALENT_TREES,
   getPerformanceGrade,
 } from "./constants";
-import { ENCHANT_NAME_DB, GEM_NAME_DB, GEM_STAT_DB } from "./cla-constants";
+import { ENCHANT_NAME_DB } from "./cla-constants";
 import {
   AnalysisResult,
   ConsumableStatus,

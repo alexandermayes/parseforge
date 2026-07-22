@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 import type { ReportMeta } from "@/lib/wcl-types";
 import { saveRecentReport } from "@/lib/recent-reports";

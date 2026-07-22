@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import type { CLAPlayerResult, CLAConsumableRow, CLAConsumableDetail } from "@/lib/cla-types";
-import type { RaidRole } from "@/lib/wcl-types";
 import { CLASS_COLORS, ROLE_SORT_ORDER } from "@/lib/constants";
 import { AlertTriangle } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";

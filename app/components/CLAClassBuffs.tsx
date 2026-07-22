@@ -43,7 +43,7 @@ interface Props {
   wowheadDomain: string;
 }
 
-export default function CLAClassBuffs({ players, wowheadDomain }: Props) {
+export default function CLAClassBuffs({ players }: Props) {
   const [expandedPlayer, setExpandedPlayer] = useState<number | null>(null);
 
   const playersWithBuffData = useMemo(() => {

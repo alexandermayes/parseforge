@@ -15,7 +15,6 @@ import { GEM_STAT_DB, GEM_NAME_DB } from "@/lib/cla-constants";
 import { flattenPlayerDetails, parsePlayerSpec } from "@/lib/wcl-helpers";
 import {
   AnalyzeRequest,
-  AnalysisResult,
   WCLRankingsData,
   WCLPlayerDetails,
   WCLDamageEntry,

@@ -27,6 +27,9 @@ export function useCLA(
     if (activeTab === "cla" && error) {
       setError(null);
     }
+    // Depends only on activeTab by design — re-running when `error` changes
+    // would clear errors the moment they appear.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const run = useCallback(async () => {
