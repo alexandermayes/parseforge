@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How to Analyze WoW Classic & TBC Logs",
+  title: "How to Read Your WoW Classic & TBC Logs",
   description:
-    "Step-by-step guide to reading your Warcraft Logs reports for WoW Classic and TBC — turn raw parses into DPS, gear, and buff improvements with ParseForge.",
+    "Confused by your Warcraft Logs report? A 7-step walkthrough: read your DPS and HPS parses, then audit gear, enchants, gems, consumables, and raid buffs.",
   alternates: {
     canonical:
       "https://parseforge.gg/guides/how-to-analyze-wow-classic-logs",

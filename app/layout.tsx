@@ -20,11 +20,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://parseforge.gg"),
   title: {
-    default: "Free WoW Classic & TBC Log Analyzer — ParseForge",
+    // "Audit" is deliberate: `tbc audit` is our largest non-navigational
+    // query (~3.3k impressions at position ~4.9) and the word was missing
+    // from the title. "Log Analyzer" stays — those queries convert at 30%+.
+    default: "Free WoW TBC Log Analyzer & Raid Audit — ParseForge",
     template: "%s | ParseForge",
   },
   description:
-    "Free WoW Classic & TBC log analyzer — paste a Warcraft Logs URL to compare your raid DPS against top players, audit gear and buffs, and get improvement tips.",
+    "Paste a Warcraft Logs URL to audit your TBC or Classic raid in seconds — compare DPS and HPS against top parses, and catch missing gear, gems, enchants, buffs, and consumables.",
   keywords: [
     "WoW Classic",
     "Warcraft Logs",
@@ -33,6 +36,9 @@ export const metadata: Metadata = {
     "raid analysis",
     "WoW Classic TBC",
     "WoW Classic WotLK",
+    "TBC audit",
+    "raid audit",
+    "TBC Anniversary logs",
     "gear audit",
     "buff tracking",
     "consumable tracking",
