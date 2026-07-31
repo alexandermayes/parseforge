@@ -90,7 +90,8 @@ export default function ReportUrlForm() {
         </button>
       </p>
       <p className="text-caption">
-        Supports Classic and Season of Discovery reports. Example:{" "}
+        Supports Classic Era, Season of Discovery, TBC, Wrath, Cataclysm, and
+        Anniversary reports. Example:{" "}
         <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">
           https://classic.warcraftlogs.com/reports/ABC123#fight=5&source=12
         </code>

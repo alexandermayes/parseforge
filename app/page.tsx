@@ -85,6 +85,21 @@ export default function Home() {
 
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-foreground">
+            TBC Raid Audit
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Running The Burning Crusade? The{" "}
+            <Link href="/tbc-audit" className="text-gold-from hover:underline">
+              TBC raid audit
+            </Link>{" "}
+            checks every raider for missing enchants, empty gem sockets, flasks,
+            food buffs, weapon oils, raid buffs, and unspent talent points — the
+            whole raid in one pass.
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">
             Supported Versions
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
