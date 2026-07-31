@@ -10,6 +10,7 @@ export const revalidate = 3600;
 
 const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: BASE, changeFrequency: "weekly", priority: 1 },
+  { url: `${BASE}/tbc-audit`, changeFrequency: "monthly", priority: 0.9 },
   { url: `${BASE}/guides`, changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE}/guides/how-to-analyze-wow-classic-logs`, changeFrequency: "monthly", priority: 0.7 },
   { url: `${BASE}/guides/improve-dps-wow-classic`, changeFrequency: "monthly", priority: 0.7 },
