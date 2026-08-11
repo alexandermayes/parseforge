@@ -20,10 +20,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://parseforge.gg"),
   title: {
-    // "Audit" is deliberate: `tbc audit` is our largest non-navigational
-    // query (~3.3k impressions at position ~4.9) and the word was missing
-    // from the title. "Log Analyzer" stays — those queries convert at 30%+.
-    default: "Free WoW TBC Log Analyzer & Raid Audit — ParseForge",
+    // Reverted from "Free WoW TBC Log Analyzer & Raid Audit". `tbc audit`
+    // looked like generic tool intent, but it's navigational for the
+    // competitor tbc-audit.com: 0.58% CTR at position 4.7, ~10x below what
+    // that position should yield, while every qualified variant
+    // (`wow tbc audit`, `raid audit tbc`) converts 5-20x better. Chasing it
+    // cost the title length that "Classic" needs — `wow classic log
+    // analyzer` converts at 33%. Audit intent lives on /tbc-audit instead.
+    default: "Free WoW Classic & TBC Log Analyzer — ParseForge",
     template: "%s | ParseForge",
   },
   description:

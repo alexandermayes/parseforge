@@ -81,6 +81,18 @@ export default function Navbar() {
               </Link>
             )}
 
+            {/* Site-wide link so /tbc-audit has a crawlable path that isn't
+                the sitemap. GSC's URL inspection listed sitemap.xml as the
+                only referring URL for it — the lone homepage body link was
+                buried below the fold and never picked up, so Google kept
+                serving `/` for the qualified audit queries the page targets. */}
+            <Link
+              href="/tbc-audit"
+              className="text-xs text-muted-foreground hover:text-gold-from transition-interactive"
+            >
+              TBC Audit
+            </Link>
+
             <Link
               href="/guides"
               className="text-xs text-muted-foreground hover:text-gold-from transition-interactive"
