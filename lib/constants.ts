@@ -209,7 +209,7 @@ export const ROLE_COLORS: Record<RaidRole, string> = {
 // These are well-known buff GUIDs; we check if any aura matches
 export const FLASK_BUFF_IDS = new Set([
   // WotLK Flasks
-  53758, 53755, 53760, 54212, 62380,
+  53758, 53755, 53760, 54212, 62380, 53752,
   // Cata Flasks
   79469, 79470, 79471, 79472, 94160,
   // TBC Flasks
@@ -238,13 +238,13 @@ export const ELIXIR_BUFF_IDS = new Set([
   3593,  // Elixir of Fortitude (+120 HP)
   11371, // Gift of Arthas (+10 shadow resist)
   // TBC Battle Elixirs
-  28497, 28490, 28491, 28493, 28501, 28503, 33720, 33721, 33726, 38954, 54452,
+  28497, 28490, 28491, 28493, 28501, 28503, 33720, 33721, 33726, 38954,
   // TBC Guardian Elixirs
   28502, 28509, 28514, 39625, 39627, 39628,
   // WotLK Battle Elixirs
   53746, 53748, 53749, 60340, 60341, 60344, 60345, 60346,
-  // WotLK Guardian Elixirs
-  53747, 53751, 53752, 53763, 53764, 60343, 60347,
+  // WotLK Guardian Elixirs (53752 moved to flasks — it's Lesser Flask of Toughness)
+  53747, 53751, 53763, 53764, 60343, 60347,
   // Cata Elixirs
   79474, 79468, 79481, 79632, 79477, 79480, 79631,
   // MoP Battle Elixirs
@@ -259,12 +259,10 @@ export const FOOD_BUFF_IDS = new Set([
   // TBC food buffs
   33254, 33256, 33257, 33259, 33261, 33263, 33265, 33268,
   35272, 43764, 43722, 43730, 24799, 24870, 44106, 46687,
-  // WotLK specific food buffs
-  57325, 57327, 57329, 57332, 57334, 57356, 57358, 57360, 57362, 57365, 57367, 57371, 57373,
+  // WotLK specific food buffs (57362/58067 removed — those are mage Refreshment, not food)
+  57325, 57327, 57329, 57332, 57334, 57356, 57358, 57360, 57365, 57367, 57371, 57373,
   // Cata food buffs
   87545, 87546, 87547, 87548, 87549, 87550, 87551, 87552, 87554, 87555, 87556, 87557,
-  // Fish Feast / Great Feast
-  58067,
   // MoP food buffs (300/275/250 stat tiers)
   104272, 104275, 104277, 104280, 104283, // 300 tier (Str/Agi/Int/Spirit/Stam)
   104271, 104274, 104276, 104279, 104282, // 275 tier
@@ -290,8 +288,7 @@ export const WEAPON_ENHANCEMENT_IDS = new Set([
   34340, // Adamantite Weightstone
   29452, // Fel Sharpening Stone
   // WotLK
-  28093, // Lightning Speed
-  28095, // Deathfrost
+  // (28093/28095 removed — Mongoose/enchant proc buffs, not oils/stones)
   55836, // Titanium Weapon Chain
   // Cata
   96264, 96294,
