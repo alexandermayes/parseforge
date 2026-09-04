@@ -86,6 +86,7 @@ export const PLAYER_FULL_DATA_QUERY_HEALING = `
     reportData {
       report(code: $code) {
         playerDetails(fightIDs: $fightIDs)
+        rankings(fightIDs: $fightIDs)
         healing: table(
           dataType: Healing
           fightIDs: $fightIDs
@@ -225,6 +226,7 @@ export const PLAYER_FULL_DATA_QUERY = `
     reportData {
       report(code: $code) {
         playerDetails(fightIDs: $fightIDs)
+        rankings(fightIDs: $fightIDs)
         damage: table(
           dataType: DamageDone
           fightIDs: $fightIDs

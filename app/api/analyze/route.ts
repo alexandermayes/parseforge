@@ -33,6 +33,8 @@ interface PlayerFullDataResponse {
           playerDetails: Record<string, WCLPlayerDetails[]>;
         };
       };
+      // WCL report rankings blob — only `partition` is consumed (phase scoping)
+      rankings?: { data?: Array<{ fightID?: number; partition?: number }> };
       damage?: { data: { entries: WCLDamageEntry[] } };
       healing?: { data: { entries: WCLDamageEntry[] } };
       buffs: { data: { auras: WCLBuffEntry[] } };
@@ -207,6 +209,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Scope rankings to the report's own partition (raid phase). Without it,
+    // WCL falls back to the zone's default partition, which can compare an
+    // earlier-phase log against later-phase-geared top parses (inflated DPS).
+    const fightPartition = report.rankings?.data?.find(
+      (r) => r.fightID === fightId
+    )?.partition ?? report.rankings?.data?.[0]?.partition;
+
     let rankingsData: WCLRankingsData;
     try {
       const rankingsResponse = await wclQuery<RankingsResponse>(
@@ -216,6 +225,7 @@ export async function POST(request: NextRequest) {
           className: playerClass,
           specName: playerSpec,
           metric: playerRole === "healer" ? "hps" : "dps",
+          partition: typeof fightPartition === "number" ? fightPartition : null,
         }
       );
       rankingsData = rankingsResponse.worldData.encounter.characterRankings;
