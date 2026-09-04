@@ -73,6 +73,7 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - **Brownfield**: codebase mapped at `.planning/codebase/` (ARCHITECTURE, STACK, CONVENTIONS, CONCERNS, etc.)
 - **Stack**: Next.js 16 App Router · React 19 · TypeScript · Tailwind v4 · shadcn/Radix · Upstash Redis · PostHog · Vercel (team `loot-list-plus`)
 - **Measurement**: GSC via MCP `gscServer` (service account); PostHog via MCP. A Sept 8, 2026 scheduled check-in reviews `/tbc-audit` + PR #10 outcomes — don't re-diagnose before then
+- **LootList+**: live, actively-developed sister product with repo locally at `/Users/alexander.mayes/Code/loot-list-plus` (Next.js + Supabase, deployed on Railway — NOT Vercel; separate GitHub repo `alexandermayes/loot-list-plus`). Already ships a `discord-bot/`, companion app, and in-game addon — reusable knowledge for ParseForge's Discord bot work. Cross-promo can be implemented directly in both repos
 - **Hard-won SEO lessons (do not relearn):**
   - Segment ANY keyword cluster by intent before proposing a page: "logs"/"warcraft logs" in query = navigational (unwinnable); "analyzer"/"parse"/"audit" qualified = tool intent (10–36% CTR)
   - Site-wide CTR is structurally misleading (navigational impressions dominate) — never treat it as a health metric; segment first
