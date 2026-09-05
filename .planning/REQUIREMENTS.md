@@ -87,13 +87,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated by roadmap creation) | | |
+| SEO-01 | Phase 6 | Pending |
+| SEO-02 | Phase 6 | Pending |
+| SEO-03 | Phase 6 | Pending |
+| SEO-04 | Phase 6 | Pending |
+| SEO-05 | Phase 7 | Pending |
+| SHARE-01 | Phase 3 | Pending |
+| SHARE-02 | Phase 3 | Pending |
+| SHARE-03 | Phase 3 | Pending |
+| SHARE-04 | Phase 5 | Pending |
+| DSGN-01 | Phase 1 | Pending |
+| DSGN-02 | Phase 7 | Pending |
+| DSGN-03 | Phase 1 | Pending |
+| DSGN-04 | Phase 7 | Pending |
+| MONY-01 | Phase 1 | Pending |
+| MONY-02 | Phase 4 | Pending |
+| MONY-03 | Phase 4 | Pending |
+| ACC-01 | Phase 2 | Pending |
+| ACC-02 | Phase 2 | Pending |
+| ACC-03 | Phase 2 | Pending |
+| ACC-04 | Phase 2 | Pending |
+| COMM-01 | Phase 5 | Pending |
+| COMM-02 | Phase 5 | Pending |
+| OPS-01 | Phase 1 | Pending (enforced as a ship gate in every phase) |
+| OPS-02 | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24 ⚠️ (pending roadmap)
+- Mapped to phases: 24 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-09-04*
-*Last updated: 2026-09-04 after initial definition*
+*Last updated: 2026-09-04 after roadmap creation (7 phases, 100% coverage)*
