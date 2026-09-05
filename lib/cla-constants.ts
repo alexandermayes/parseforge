@@ -43,6 +43,14 @@ export const CONSUMABLE_DB = new Map<number, ConsumableInfo>([
   [28521, { name: "Flask of Blinding Light", category: "flask", isSuboptimal: false }],
   [28540, { name: "Flask of Pure Death", category: "flask", isSuboptimal: false }],
 
+  // ─── TBC Flasks (Illidari marks) ───────────────────────────────────
+  [41607, {name: "Shattrath Flask of Fortification", category: "flask", isSuboptimal: false}],
+  [41605, {name: "Shattrath Flask of Mighty Restoration", category: "flask", isSuboptimal: false}],
+  [41604, {name: "Shattrath Flask of Supreme Power", category: "flask", isSuboptimal: false}],
+  [41606, {name: "Shattrath Flask of Relentless Assault", category: "flask", isSuboptimal: false}],
+  [46838, {name: "Shattrath Flask of Pure Death", category: "flask", isSuboptimal: false}],
+  [46840, {name: "Shattrath Flask of Blinding Light", category: "flask", isSuboptimal: false}],
+
   // ─── Classic Flasks ────────────────────────────────────────────────
   [13510, { name: "Flask of the Titans (Classic)", category: "flask", isSuboptimal: false }],
   [13511, { name: "Flask of Distilled Wisdom (Classic)", category: "flask", isSuboptimal: false }],

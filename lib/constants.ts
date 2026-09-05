@@ -214,6 +214,8 @@ export const FLASK_BUFF_IDS = new Set([
   79469, 79470, 79471, 79472, 94160,
   // TBC Flasks
   17626, 17627, 17628, 17629, 28518, 28519, 28520, 28521, 28540,
+  // TBC Flasks (Illidari mark)
+  41607, 41605, 41604, 41606, 46838, 46840,
   // Classic Flasks
   13510, 13511, 13512, 13513,
   // MoP Flasks
