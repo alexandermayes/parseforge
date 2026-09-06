@@ -2,6 +2,7 @@
 created: 2026-09-06
 source: phase-01 plan 01-02 (AdSense CMP setup)
 resolves_phase:
+resolved: 260906-kzw
 ---
 
 # Ship a /privacy page and link it in the AdSense CMP message
