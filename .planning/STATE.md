@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
 current_phase: 01
-current_phase_name: foundation-themes-consent
+current_phase_name: Foundation — Themes & Consent
 status: executing
-stopped_at: Phase 1 UI-SPEC approved
-last_updated: "2026-09-06T02:41:50.601Z"
-last_activity: 2026-09-04
-last_activity_desc: Roadmap created (7 phases, 24/24 requirements mapped)
-state_head: d80fe48d9faa572f79bacc4fc3c0046d1828d637
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-09-06T06:13:51.788Z"
+last_activity: 2026-09-05
+last_activity_desc: Phase 01 execution started
+state_head: 9b8e5168b3989e833d951165e57ddc8be677842a
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 9
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 1 — Foundation: Themes & Consent
+**Current focus:** Phase 01 — Foundation — Themes & Consent
 
 ## Current Position
 
-Phase: 01 (foundation-themes-consent) — READY TO EXECUTE
-Plan: 0 of TBD in current phase
+Phase: 01 (Foundation — Themes & Consent) — EXECUTING
+Plan: 2 of 9
 Status: Ready to execute
-Last activity: 2026-09-04 — Roadmap created (7 phases, 24/24 requirements mapped)
+Last activity: 2026-09-05 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -54,6 +54,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | 25 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -67,6 +72,7 @@ Recent decisions affecting current work:
 - [Roadmap]: Consent layer (Phase 1) ships before any ad script, closing the pre-existing PostHog EU-consent gap at the same time.
 - [Roadmap]: Redesign is last (Phase 7) so it designs around real ad slots and real content, behind a per-route SEO-preservation gate.
 - [Roadmap]: OPS-01 (PostHog + GSC verification) is the final success criterion of every phase, not a standalone phase.
+- [Phase 01]: next-themes wired end-to-end for Phase 1's theme toggle; shadcn CLI's cn-package regression and a set-state-in-effect lint rule both auto-fixed during 01-01 — Establishes the class-attribute theming architecture (next-themes, resolved pre-paint) every later Phase 1 UI plan builds on
 
 ### Pending Todos
 
@@ -92,6 +98,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T00:59:48.926Z
-Stopped at: Phase 1 UI-SPEC approved
-Resume file: /Users/alexander.mayes/Code/parseforge/.planning/phases/01-foundation-themes-consent/01-UI-SPEC.md
+Last session: 2026-09-06T06:13:51.775Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: None
