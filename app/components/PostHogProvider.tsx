@@ -4,7 +4,7 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { deriveConsentAction } from "@/lib/consent";
+import { startConsentListener } from "@/lib/consent";
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "";
 
@@ -27,6 +27,8 @@ function PostHogPageView() {
 export default function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!POSTHOG_KEY) return;
+    let disposeConsentListener: (() => void) | undefined;
+
     posthog.init(POSTHOG_KEY, {
       api_host: "/ingest",
       ui_host: "https://us.i.posthog.com",
@@ -55,21 +57,46 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       loaded: (ph) => {
         if (process.env.NODE_ENV === "development") ph.debug();
         // Google Privacy & Messaging (the certified TCF v2.2 CMP, D-01)
-        // exposes __tcfapi once its script loads. Translate its resolved
-        // payload into a PostHog action via the pure decision function in
-        // lib/consent.ts. Task 2 completes the "cookieless" / "pending"
-        // branches and adds consent_resolved/consent_unavailable telemetry;
-        // this wiring only handles the accept path so far.
-        window.__tcfapi?.("addEventListener", 2, (tcData, success) => {
-          if (!success) return;
-          const action = deriveConsentAction(tcData);
-          if (action === "opt-in-full") {
-            ph.opt_in_capturing();
-            ph.startSessionRecording();
+        // exposes __tcfapi once its script loads. lib/consent.ts's
+        // startConsentListener translates its resolved payload into one of
+        // the four ConsentAction branches below (D-05, D-06, D-07).
+        disposeConsentListener = startConsentListener((action) => {
+          switch (action) {
+            case "opt-in-full":
+              ph.opt_in_capturing();
+              ph.startSessionRecording();
+              ph.capture("consent_resolved", { accepted: true, gdpr_applies: true });
+              break;
+            case "cookieless":
+              // cookieless_mode: "on_reject" + disable_session_recording
+              // above already give D-05/D-06's memory-only persistence and
+              // no replay — no further SDK call needed.
+              ph.capture("consent_resolved", { accepted: false, gdpr_applies: true });
+              break;
+            case "opt-in-non-eea":
+              // Restore today's default-on behavior for everyone outside
+              // the EEA/UK (D-07) — without this, the global
+              // cookieless_mode above would silently cookie-block a visitor
+              // who was never shown a dialog (01-RESEARCH.md Pitfall 1).
+              ph.opt_in_capturing();
+              ph.startSessionRecording();
+              break;
+            case "pending":
+              // Only reached via lib/consent.ts's CMP_TIMEOUT_MS fail-closed
+              // path — a live "dialog still open" event never invokes this
+              // callback. The visitor stays cookieless with no replay
+              // indefinitely (deliberate: no home-rolled banner fallback);
+              // this event is what makes that silence measurable.
+              ph.capture("consent_unavailable", { reason: "tcfapi_timeout" });
+              break;
           }
         });
       },
     });
+
+    return () => {
+      disposeConsentListener?.();
+    };
   }, []);
 
   return (
