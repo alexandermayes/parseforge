@@ -177,6 +177,29 @@
   --status-warn: oklch(0.5 0.13 75);
   --status-bad: oklch(0.5 0.2 25);
   --status-info: oklch(0.5 0.15 250);
+
+  /* WoW class & role colors (D-12) — light-mode tuned variants. Each keeps
+     its class's recognizable hue while clearing WCAG AA 4.5:1 against the
+     light --background; measured with the same OKLab->linear-sRGB method as
+     01-04-SUMMARY.md's contrast table — see 01-05-SUMMARY.md for the full
+     per-class ratio table. */
+  --class-warrior: #8A6A44;
+  --class-paladin: #C93376;
+  --class-hunter: #4F7C20;
+  --class-rogue: #7E7000;
+  --class-priest: #5A5A6E;
+  --class-shaman: #0057AB;
+  --class-mage: #14789D;
+  --class-warlock: #6350A0;
+  --class-druid: #B35400;
+  --class-deathknight: #A0142C;
+  --class-monk: #00805A;
+  --class-default: #4A4A57;
+
+  --role-tank: #1D5FBF;
+  --role-healer: #158043;
+  --role-caster: #7A34C4;
+  --role-physical: #956700;
 }
 
 .dark {
@@ -227,6 +250,28 @@
   --status-warn: oklch(0.75 0.18 75);
   --status-bad: oklch(0.65 0.2 25);
   --status-info: oklch(0.7 0.15 250);
+
+  /* WoW class & role colors (D-12) — exact hex values CLASS_COLORS/
+     ROLE_COLORS ship today (lib/constants.ts), verbatim, so the dark
+     rendering stays bit-identical to pre-tokenization. The default token is
+     the white fallback components used before classColor() existed. */
+  --class-warrior: #C79C6E;
+  --class-paladin: #F58CBA;
+  --class-hunter: #ABD473;
+  --class-rogue: #FFF569;
+  --class-priest: #FFFFFF;
+  --class-shaman: #0070DE;
+  --class-mage: #69CCF0;
+  --class-warlock: #9482C9;
+  --class-druid: #FF7D0A;
+  --class-deathknight: #C41E3A;
+  --class-monk: #00FF96;
+  --class-default: #FFFFFF;
+
+  --role-tank: #60A5FA;
+  --role-healer: #4ADE80;
+  --role-caster: #C084FC;
+  --role-physical: #FBBF24;
 }
 
 @layer base {

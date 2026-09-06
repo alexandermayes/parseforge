@@ -76,6 +76,20 @@ const THEME_DIVERGENT = [
   "--status-warn",
   "--status-bad",
   "--status-info",
+  // D-12 — WoW class/role colors. Only the tokens whose dark value is
+  // demonstrably unusable on light are required to diverge (01-05-PLAN.md
+  // Task 1); the remaining class tokens legitimately read well in both
+  // themes and are intentionally left off this list.
+  "--role-tank",
+  "--role-healer",
+  "--role-caster",
+  "--role-physical",
+  "--class-priest",
+  "--class-rogue",
+  "--class-paladin",
+  "--class-hunter",
+  "--class-monk",
+  "--class-default",
 ];
 
 /**
