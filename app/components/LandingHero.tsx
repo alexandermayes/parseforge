@@ -1,6 +1,7 @@
 "use client";
 
 import { Hammer, Shield, TrendingUp, Sparkles, Heart } from "lucide-react";
+import Link from "next/link";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { MagicCard } from "@/components/ui/magic-card";
 import { SparklesText } from "@/components/ui/sparkles-text";
@@ -155,6 +156,11 @@ export function LandingHero() {
           <p>Supports Classic Era, Season of Discovery, and Anniversary</p>
           <p>Built with <Heart className="inline w-3 h-3 text-status-bad fill-status-bad -mt-0.5" /> by <a href="https://discord.gg/bigyikes" target="_blank" rel="noopener noreferrer" className="text-gold-from hover:underline">Big Yikes</a> for the WoW community.</p>
           <p><a href="https://github.com/alexandermayes/parseforge" target="_blank" rel="noopener noreferrer" className="text-gold-from hover:underline">GitHub</a></p>
+          <p>
+            <Link href="/privacy" className="text-gold-from hover:underline">Privacy</Link>
+            {" · "}
+            <Link href="/terms" className="text-gold-from hover:underline">Terms</Link>
+          </p>
         </footer>
       </BlurFade>
     </div>

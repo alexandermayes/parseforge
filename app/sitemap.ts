@@ -17,6 +17,8 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
   { url: `${BASE}/guides/raid-preparation-checklist`, changeFrequency: "monthly", priority: 0.7 },
   { url: `${BASE}/guides/wow-classic-loot-council-tools`, changeFrequency: "monthly", priority: 0.7 },
   { url: `${BASE}/guides/warcraft-logs-vs-parseforge`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${BASE}/privacy`, changeFrequency: "yearly", priority: 0.3 },
+  { url: `${BASE}/terms`, changeFrequency: "yearly", priority: 0.3 },
   // The landing-page "See a live example" report. Hardcoded so at least one
   // real, indexable report page is always crawlable even when the recent-reports
   // pipeline below is empty (e.g. Redis unconfigured, or no public report
