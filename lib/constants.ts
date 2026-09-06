@@ -256,6 +256,16 @@ export const ROLE_COLORS_HEX: Record<RaidRole, string> = {
 };
 
 /**
+ * Resolve a raid role to its themed CSS custom-property reference. Mirrors
+ * `classColor()` — components read the role's solid color through this
+ * accessor rather than indexing `ROLE_COLORS` directly, keeping the map an
+ * internal implementation detail.
+ */
+export function roleColor(role: RaidRole): string {
+  return ROLE_COLORS[role];
+}
+
+/**
  * Translucent tint for role badges: a `color-mix` expression over the role's
  * token. Replaces the previous alpha-suffix string concatenation
  * (`ROLE_COLORS[role] + "20"`), which silently produces an invalid CSS color

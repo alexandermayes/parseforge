@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { CLASS_COLORS } from "@/lib/constants";
+import { classColor } from "@/lib/constants";
 import { ChevronRight } from "lucide-react";
 
 interface PlayerAccordionRowProps {
@@ -23,7 +23,7 @@ export default function PlayerAccordionRow({
   badges,
   children,
 }: PlayerAccordionRowProps) {
-  const classColor = CLASS_COLORS[className] ?? "#FFFFFF";
+  const playerColor = classColor(className);
 
   return (
     <div className="rounded-lg glass overflow-hidden">
@@ -35,7 +35,7 @@ export default function PlayerAccordionRow({
           <ChevronRight
             className={`w-4 h-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-90" : ""}`}
           />
-          <span className="font-medium" style={{ color: classColor }}>
+          <span className="font-medium" style={{ color: playerColor }}>
             {name}
           </span>
           <span className="text-xs text-muted-foreground">

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import type { CLAPlayerResult, CLAFightMeta, CLAConsumableRow } from "@/lib/cla-types";
-import { CLASS_COLORS, ROLE_SORT_ORDER } from "@/lib/constants";
+import { classColor, ROLE_SORT_ORDER } from "@/lib/constants";
 
 function uptimeColor(pct: number): string {
   if (pct >= 95) return "bg-status-good/20 text-status-good";
@@ -65,7 +65,7 @@ export default function CLABuffComparison({ players, fights }: Props) {
           </thead>
           <tbody>
             {sortedPlayers.map((player) => {
-              const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
+              const playerColor = classColor(player.className);
               // Calculate overall average across all fights
               const overallAvg = player.fightData.length > 0
                 ? player.fightData.reduce((s, fd) => s + fd.consumables.averageUptime, 0) / player.fightData.length
@@ -74,7 +74,7 @@ export default function CLABuffComparison({ players, fights }: Props) {
               return (
                 <tr key={player.sourceId} className="border-t border-border/50 hover:bg-surface-3 transition-interactive">
                   <td className="px-3 py-1.5 sticky left-0 bg-surface-0 z-10">
-                    <span className="font-medium text-sm" style={{ color: classColor }}>
+                    <span className="font-medium text-sm" style={{ color: playerColor }}>
                       {player.name}
                     </span>
                   </td>

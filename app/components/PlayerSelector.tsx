@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CLASS_COLORS } from "@/lib/constants";
+import { classColor } from "@/lib/constants";
 
 interface PlayerEntry {
   id: number;
@@ -38,10 +38,10 @@ export default function PlayerSelector({ players, selectedSourceId, onSelect }: 
               <span
                 className="h-2 w-2 rounded-full"
                 style={{
-                  backgroundColor: CLASS_COLORS[p.type] ?? "#888",
+                  backgroundColor: classColor(p.type),
                 }}
               />
-              <span style={{ color: CLASS_COLORS[p.type] ?? undefined }}>
+              <span style={{ color: classColor(p.type) }}>
                 {p.name}
               </span>
               <span className="text-xs text-muted-foreground">{p.type}</span>

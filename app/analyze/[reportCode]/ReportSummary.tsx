@@ -1,4 +1,4 @@
-import { CLASS_COLORS } from "@/lib/constants";
+import { classColor } from "@/lib/constants";
 import type { ReportMeta } from "@/lib/wcl-types";
 
 function formatDuration(ms: number): string {
@@ -93,7 +93,7 @@ export default function ReportSummary({
           <h3 className="text-heading-sm text-muted-foreground">Roster</h3>
           <ul className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
             {meta.players.map((p) => (
-              <li key={p.id} style={{ color: CLASS_COLORS[p.type] ?? undefined }}>
+              <li key={p.id} style={{ color: classColor(p.type) }}>
                 {p.name}
               </li>
             ))}

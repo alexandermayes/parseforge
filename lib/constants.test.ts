@@ -5,6 +5,7 @@ import {
   ROLE_COLORS,
   ROLE_COLORS_HEX,
   classColor,
+  roleColor,
   roleColorAlpha,
 } from "./constants";
 
@@ -20,6 +21,12 @@ describe("classColor", () => {
     const result = classColor("Bard");
     expect(result).toBe("var(--class-default)");
     expect(result).not.toMatch(HEX_RE);
+  });
+});
+
+describe("roleColor", () => {
+  it("resolves a role to its themed custom-property reference, mirroring classColor", () => {
+    expect(roleColor("Tank")).toBe("var(--role-tank)");
   });
 });
 

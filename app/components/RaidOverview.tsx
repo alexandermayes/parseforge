@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage, HealerMetrics } from "@/lib/wcl-types";
-import { CLASS_COLORS, ROLE_COLORS } from "@/lib/constants";
+import { roleColor, roleColorAlpha, classColor } from "@/lib/constants";
 import { Check, X } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
 import RoleBadge from "./RoleBadge";
@@ -165,8 +165,8 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
                   key={role}
                   className="text-xs px-2 py-1 rounded"
                   style={{
-                    color: ROLE_COLORS[role],
-                    backgroundColor: ROLE_COLORS[role] + "15",
+                    color: roleColor(role),
+                    backgroundColor: roleColorAlpha(role, 15),
                   }}
                 >
                   {roleCounts[role]} {role}
@@ -243,11 +243,11 @@ function HealerPanel({ healers }: { healers: HealerMetrics[] }) {
       <h3 className="text-heading-sm">Healer Breakdown</h3>
       <div className="space-y-1.5">
         {healers.map((h) => {
-          const classColor = CLASS_COLORS[h.className] ?? "#FFFFFF";
+          const playerColor = classColor(h.className);
           const barWidth = topHps > 0 ? (h.hps / topHps) * 100 : 0;
           return (
             <div key={h.sourceId} className="flex items-center gap-3">
-              <span className="font-medium text-sm w-28 shrink-0 truncate" style={{ color: classColor }}>
+              <span className="font-medium text-sm w-28 shrink-0 truncate" style={{ color: playerColor }}>
                 {h.name}
               </span>
               <span className="text-xs text-muted-foreground w-16 shrink-0">
@@ -358,13 +358,13 @@ function DeathTimeline({ deaths, fightDuration }: { deaths: DeathDetail[]; fight
       {/* Death entries */}
       <div className="space-y-0.5">
         {displayed.map((d, i) => {
-          const classColor = CLASS_COLORS[d.playerClass] ?? "#FFFFFF";
+          const playerColor = classColor(d.playerClass);
           return (
             <div key={`${d.sourceId}-${i}`} className="flex items-center gap-3 text-sm py-0.5">
               <span className="font-mono text-xs text-muted-foreground w-10 shrink-0 text-right">
                 {formatFightTime(d.fightTimeMs)}
               </span>
-              <span className="font-medium" style={{ color: classColor }}>
+              <span className="font-medium" style={{ color: playerColor }}>
                 {d.playerName}
               </span>
               {i === 0 && (
@@ -390,7 +390,7 @@ function DeathTimeline({ deaths, fightDuration }: { deaths: DeathDetail[]; fight
 }
 
 function PlayerRow({ player, onPlayerClick }: { player: RaidPlayerMetrics; onPlayerClick?: (sourceId: number) => void }) {
-  const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
+  const playerColor = classColor(player.className);
   const isHealer = player.role === "Healer";
 
   return (
@@ -401,12 +401,12 @@ function PlayerRow({ player, onPlayerClick }: { player: RaidPlayerMetrics; onPla
           <button
             onClick={() => onPlayerClick(player.sourceId)}
             className="font-medium hover:underline cursor-pointer"
-            style={{ color: classColor }}
+            style={{ color: playerColor }}
           >
             {player.name}
           </button>
         ) : (
-          <span className="font-medium" style={{ color: classColor }}>
+          <span className="font-medium" style={{ color: playerColor }}>
             {player.name}
           </span>
         )}

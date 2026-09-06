@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnalysisResult } from "@/lib/wcl-types";
 import { AnalysisSnapshot } from "@/lib/analysis-history";
-import { CLASS_COLORS } from "@/lib/constants";
+import { classColor } from "@/lib/constants";
 import { useUrlTabState } from "@/lib/use-url-tab-state";
 import DpsComparison from "./DpsComparison";
 import GearComparison from "./GearComparison";
@@ -34,7 +34,7 @@ export function AnalysisLoading() {
 }
 
 export default function AnalysisView({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
-  const classColor = CLASS_COLORS[data.playerClass] ?? "#888";
+  const playerColor = classColor(data.playerClass);
 
   // Build comparison label
   const comparisonLabel =
@@ -62,11 +62,11 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
       <div className="sticky top-16 z-40 py-3 px-4 surface-card flex flex-wrap items-center gap-3">
         <h2
           className="text-heading-lg"
-          style={{ color: classColor }}
+          style={{ color: playerColor }}
         >
           {data.playerName}
         </h2>
-        <Badge variant="outline" style={{ borderColor: classColor, color: classColor }}>
+        <Badge variant="outline" style={{ borderColor: playerColor, color: playerColor }}>
           {data.playerSpec} {data.playerClass}
         </Badge>
         <span className="text-muted-foreground">vs</span>

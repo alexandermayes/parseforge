@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { CLAPlayerResult, CLAConsumableRow, CLAConsumableDetail } from "@/lib/cla-types";
-import { CLASS_COLORS, ROLE_SORT_ORDER } from "@/lib/constants";
+import { classColor, ROLE_SORT_ORDER } from "@/lib/constants";
 import { AlertTriangle } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
 import RoleBadge from "./RoleBadge";
@@ -220,14 +220,14 @@ export default function CLABuffTable({ players, selectedFightId, wowheadDomain }
         </thead>
         <tbody>
           {sortedPlayers.map(({ player, consumables }) => {
-            const classColor = CLASS_COLORS[player.className] ?? "#FFFFFF";
+            const playerColor = classColor(player.className);
             return (
               <tr
                 key={player.sourceId}
                 className={`border-t border-border/50 hover:bg-surface-3 transition-interactive ${uptimeBg(consumables.averageUptime)}`}
               >
                 <td className="px-3 py-2 sticky left-0 bg-surface-0 z-10">
-                  <span className="font-medium" style={{ color: classColor }}>
+                  <span className="font-medium" style={{ color: playerColor }}>
                     {player.name}
                   </span>
                   <span className="text-xs text-muted-foreground ml-1">

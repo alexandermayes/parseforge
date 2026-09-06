@@ -1,7 +1,7 @@
 "use client";
 
 import { RaidPlayerMetrics } from "@/lib/wcl-types";
-import { CLASS_COLORS, ROLE_SORT_ORDER } from "@/lib/constants";
+import { classColor, ROLE_SORT_ORDER } from "@/lib/constants";
 import { Check, X } from "lucide-react";
 
 function ConsumableIcon({ value }: { value: boolean }) {
@@ -32,7 +32,7 @@ export default function PlayerQuickGrid({
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {sorted.map((p) => {
-          const classColor = CLASS_COLORS[p.className] ?? "#888";
+          const playerColor = classColor(p.className);
           const metricLabel = p.role === "Healer" ? "HPS" : "DPS";
           const enchantOk = p.missingEnchants === 0;
 
@@ -45,7 +45,7 @@ export default function PlayerQuickGrid({
               {/* Class color bar */}
               <div
                 className="w-1 h-8 rounded-full shrink-0"
-                style={{ backgroundColor: classColor }}
+                style={{ backgroundColor: playerColor }}
               />
 
               {/* Name + spec */}
@@ -53,7 +53,7 @@ export default function PlayerQuickGrid({
                 <div className="flex items-center gap-1.5">
                   <span
                     className="font-medium text-sm truncate group-hover:underline"
-                    style={{ color: classColor }}
+                    style={{ color: playerColor }}
                   >
                     {p.name}
                   </span>
