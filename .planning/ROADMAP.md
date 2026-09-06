@@ -38,8 +38,19 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Any visitor can toggle dark/light theme from site chrome, the choice persists across page loads and routes, and no route renders unreadable or unstyled content in either theme.
   3. A token audit report shows shipped UI resolving color, spacing, motion, and elevation from Tailwind v4 `@theme` tokens — hardcoded values consolidated, missing token categories added.
   4. Consent choice and theme toggle emit PostHog events, and a GSC pass confirms no indexing/metadata regression — establishing the OPS-01 ship gate that every later phase repeats.
-**Plans**: TBD
+**Plans**: 9 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 01-01-PLAN.md — Theme tracer: OS-preference default + 3-state navbar Light/Dark/System toggle, end to end
+- [ ] 01-02-PLAN.md — AdSense account + Google Privacy & Messaging EEA/UK consent message
+- [ ] 01-03-PLAN.md — Consent tracer: TCF `__tcfapi` signal wired to PostHog gating, CMP script, CSP
+- [ ] 01-04-PLAN.md — Designed ParseForge light palette + spacing/motion/elevation `@theme` categories
+- [ ] 01-05-PLAN.md — Per-theme WoW class and role colour tokens; Satori raw-hex exception preserved
+- [ ] 01-06-PLAN.md — Token-audit gate, performance-tier tokens, and the shared colour helpers
+- [ ] 01-07-PLAN.md — Hardcoded palette-class sweep + generated token audit report
+- [ ] 01-08-PLAN.md — OPS-01 ship gate: both-theme route sweep, SEO-invariant diff, gate document
+- [ ] 01-09-PLAN.md — Production deploy (approval-gated) + Search Console and PostHog close-out
 
 **Notes**: Consent is deliberately built before any ad script (MONY-01 → MONY-02 sequencing) and simultaneously closes the pre-existing PostHog EU-consent debt in CONCERNS.md. Theme toggle is re-validated per route during Phase 7.
 
