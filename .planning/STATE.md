@@ -30,9 +30,9 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 Phase: 01 (Foundation — Themes & Consent) — EXECUTING
 Plan: 3 of 9
 Status: Ready to execute
-Last activity: 2026-09-06 — Phase 01 execution started
+Last activity: 2026-09-06 - Completed quick task 260906-kzw: Add /privacy and /terms pages, footer links, sitemap entries
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [████░░░░░░] 44%
 
 ## Performance Metrics
 
@@ -84,7 +84,7 @@ Recent decisions affecting current work:
 
 [From .planning/todos/pending/ — ideas captured during sessions]
 
-- privacy-policy-page.md — ship /privacy and link it in the AdSense CMP message (message currently shows a "missing privacy policy" warning)
+None. (privacy-policy-page.md resolved by quick task 260906-kzw — one manual follow-up remains: after the 01-09 prod deploy, paste https://parseforge.gg/privacy into AdSense → Privacy & messaging → European regulations → message → site settings.)
 
 ### Blockers/Concerns
 
@@ -93,6 +93,12 @@ Recent decisions affecting current work:
 - Phase 5 open question: dedicated ParseForge Discord vs. channel in existing LootList+ server (empty-room risk). Phase touches a second repo at /Users/alexander.mayes/Code/loot-list-plus (Railway deploy).
 - Phase 6 research flag: define the per-page uniqueness rubric before scaling programmatic pages past the 10–15 pilot set (scaled-content-abuse risk).
 - Scheduled check-in 2026-09-08 reviews /tbc-audit + PR #10 outcomes — do not re-diagnose those before then.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260906-kzw | Add /privacy and /terms pages, footer links, sitemap entries | 2026-09-06 | 8dc7673 | [260906-kzw-add-privacy-and-terms-pages-footer-links](./quick/260906-kzw-add-privacy-and-terms-pages-footer-links/) |
 
 ## Deferred Items
 
