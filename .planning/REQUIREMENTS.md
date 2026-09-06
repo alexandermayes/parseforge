@@ -26,7 +26,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [ ] **DSGN-01**: Design-token audit complete — hardcoded values consolidated into the existing Tailwind v4 `@theme` tokens; spacing/motion/elevation categories added
 - [ ] **DSGN-02**: Site-wide route-by-route visual redesign shipped (reference: top ~3 closest-matching styles from styles.refero.design; must stay recognizably ParseForge; low-traffic routes first)
-- [ ] **DSGN-03**: Site supports dark + light themes with a toggle (both validated across redesigned routes)
+- [x] **DSGN-03**: Site supports dark + light themes with a toggle (both validated across redesigned routes)
 - [ ] **DSGN-04**: Every page passes a UX audit — SEO-accumulated bloat removed or restructured without deleting ranking content (gated by SEO-05)
 
 ### Monetization
@@ -98,7 +98,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHARE-04 | Phase 5 | Pending |
 | DSGN-01 | Phase 1 | Pending |
 | DSGN-02 | Phase 7 | Pending |
-| DSGN-03 | Phase 1 | Pending |
+| DSGN-03 | Phase 1 | Complete |
 | DSGN-04 | Phase 7 | Pending |
 | MONY-01 | Phase 1 | Complete |
 | MONY-02 | Phase 4 | Pending |
