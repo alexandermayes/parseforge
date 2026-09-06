@@ -1,7 +1,7 @@
 ---
 phase: "1"
 slug: "foundation-themes-consent"
-status: draft
+status: approved
 shadcn_initialized: true
 preset: "style=new-york, baseColor=neutral, cssVariables=true, iconLibrary=lucide, tailwind=v4 (CSS-first, no config file)"
 created: "2026-09-05"
@@ -213,16 +213,43 @@ mostly N/A by design — filled honestly below rather than inventing copy that d
 
 ## UI Considerations
 
-Applicable state considerations resolved: 3 covered, 1 backstop, 2 unresolved.
+Probe run 2026-09-05 (`ui-consideration-probe.cjs`) over 3 elements: E1 theme toggle, E2 consent
+dialog, E3 light-palette route surfaces. E2 element kinds confirmed with user: detected
+`static-content` + added `interactive-control` (async load/error — the classifier's text-only cue
+missed the CMP's async nature). Coverage: 20 applicable — 4 resolved (explicit), 1 resolved
+(backstop), 2 unresolved (planner assumptions), 13 dismissed with reasons.
 
-| Category | Element(s) | Status | Resolution / Reason |
-|----------|------------|--------|---------------------|
-| loading | Initial page load, pre-hydration theme resolution | ✅ covered | `next-themes`' blocking inline script sets the `class` attribute on `<html>` before first paint (`attribute="class"`, `suppressHydrationWarning` on `<html>` per Pitfall 4) — no flash-of-wrong-theme, no visible loading state needed |
-| empty | Consent dialog interstitial before `__tcfapi` resolves (CMP script loading) | 🧪 backstop | No ParseForge-authored placeholder/skeleton is shown while the CMP script loads — visitor sees the normal page with no prompt until Google's dialog renders; verify no half-rendered dialog shell or layout shift occurs during this window |
-| error | CMP script blocked (CSP violation or ad-blocker) — `__tcfapi` never fires | ⚠ unresolved | No documented fallback UI exists; visitor silently gets no consent prompt and PostHog stays fail-closed indefinitely (see Copywriting Contract "Error state" row). Planner should explicitly decide whether this silent fail-closed behavior is accepted as final or needs a fallback, rather than it being an implicit gap |
-| populated | Theme toggle's 3 states (Light/Dark/System), each showing the correct icon + active-item indicator in the open menu | ✅ covered | `next-themes`' `theme`/`resolvedTheme` values drive both the trigger icon and the menu's active-item styling (D-10) |
-| zero-one-many / overflow | Every existing route rendering for the first time against the new, real light palette (D-09) — many components have only ever been visually checked against the hardcoded-dark default | ⚠ unresolved | No automated visual-regression harness exists (RESEARCH.md Open Question 3 — only node-env Vitest, no jsdom/RTL/Playwright). Full-route light-mode readability is a manual UAT sweep, not an automated check — planner should schedule this explicitly rather than assume the token swap alone guarantees it |
-| long-text / edge legibility | WoW class-name colors at the extremes (Priest=white, Rogue=yellow, Paladin=pink) rendered against a light background | ✅ covered | D-12 locks tuned per-theme token pairs (see Color section) — resolves the specific classes most likely to disappear on a light surface |
+### Resolved — explicit (lift each as a truth)
+
+| Element · Category | Acceptance criterion (verification: explicit) |
+|---|---|
+| E1 · loading | Initial paint shows the persisted theme with no flash-of-wrong-theme: `next-themes`' blocking inline script sets the `class` attribute on `<html>` before first paint (`attribute="class"`, `suppressHydrationWarning` on `<html>` per Pitfall 4) |
+| E1 · populated | The open theme menu shows exactly three items — "Light", "Dark", "System" — with an active-item indicator, and the trigger icon tracks `resolvedTheme` (D-10) |
+| E3 · populated | Every shipped route resolves color, spacing, motion, and elevation from Tailwind v4 `@theme` tokens in BOTH themes — the DSGN-01 token audit report demonstrates it |
+| E3 · edge legibility | WoW class/role colors are per-theme CSS custom-property pairs (D-12); Priest, Rogue, and Paladin remain legible on the light surface (tuned variants, not raw `#FFFFFF`/`#FFF569`) |
+
+### Resolved — backstop (structured marker for the planner lift)
+
+- { statement: "During the CMP script load window the visitor sees the normal page — no half-rendered consent dialog shell and no layout shift attributable to the CMP", verification: backstop }
+
+### Unresolved — ⚠ planner must treat as assumption
+
+| Element · Category | Open decision |
+|---|---|
+| E2 · error | CMP script blocked (CSP violation or ad-blocker): `__tcfapi` never fires, the visitor silently never sees a consent prompt, and PostHog stays fail-closed (cookieless, no replay) indefinitely. Planner must explicitly decide whether silent fail-closed is accepted as final or a fallback is needed — not leave it as an implicit gap |
+| E3 · zero-one-many | Full-route light-mode readability has NO automated visual-regression harness (node-env Vitest only — RESEARCH.md Open Question 3). Planner must schedule an explicit manual UAT sweep of every route in light mode; the token swap alone does not guarantee legibility |
+
+### Dismissed (with reasons)
+
+| Element · Category | Reason |
+|---|---|
+| E1 · empty, partial, zero-one-many | Static control — menu always has exactly 3 fixed items; no data-driven content |
+| E1 · error | No async load/submit path; storage-unavailable falls back to next-themes' default (system) |
+| E1 · overflow, long-text | Fixed icon trigger + three fixed one-word labels; nothing dynamic to overflow or truncate |
+| E2 · overflow, long-text | Google owns the CMP dialog's layout, scroll behavior, and copy entirely (D-04) — not a ParseForge-authored surface |
+| E3 · empty, error, partial | Pre-existing per-route states, unchanged this phase — only the tokens they resolve change; swept by the manual light-mode UAT above |
+| E3 · loading | Theme-resolution loading is covered by E1 · loading; route-level loading states pre-exist unchanged |
+| E3 · overflow | Token swap changes no box dimensions or layout — overflow behavior identical to shipped UI |
 
 ---
 
@@ -240,12 +267,12 @@ No new third-party registry is introduced this phase.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
-- [ ] Dimension 7 Inventory Provenance: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: FLAG (non-blocking — 6 pre-existing sizes / 3 weights exceed the ideal 4/2 cap; correctly out of DSGN-01 scope, consolidate in a future phase)
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
+- [x] Dimension 7 Inventory Provenance: PASS
 
-**Approval:** pending
+**Approval:** APPROVED — gsd-ui-checker, 2026-09-05 (1 non-blocking FLAG)
