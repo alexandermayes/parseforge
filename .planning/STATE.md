@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Foundation — Themes & Consent
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-09-06T22:02:22.703Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-09-06T22:34:49.831Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 01 execution started
-state_head: 8dc3e7b462ef94a13c3e4c6814b65af46ddebae1
+state_head: 4d8f53cc15fefe1f4d9396a1a202439e1b90fab5
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 9
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 01 (Foundation — Themes & Consent) — EXECUTING
-Plan: 3 of 9
+Plan: 4 of 9
 Status: Ready to execute
 Last activity: 2026-09-06 - Completed quick task 260906-kzw: Add /privacy and /terms pages, footer links, sitemap entries
 
-Progress: [████░░░░░░] 44%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [████░░░░░░] 44%
 | Phase 01 P02 | — (split across sessions) | 2 tasks | 1 file |
 | Phase 01 P03 | 20min | 2 tasks | 5 files |
 | Phase 01 P04 | 20min | 3 tasks | 3 files |
+| Phase 01 P05 | 35min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,7 @@ Recent decisions affecting current work:
 - [Phase 01 / 01-02]: AdSense account + EEA/UK-only full-screen GDPR consent message published (Google Privacy & Messaging as CMP, per D-01–D-04); consent message ships without a privacy-policy URL for now — /privacy page tracked as pending todo, to be linked in the message site settings when shipped
 - [Phase 01]: [Phase 01 / 01-03]: TCF v2.2 consent signal wired end-to-end into PostHog via a pure lib/consent.ts decision module; EEA/UK session replay now gates on real consent (opt-in-full/cookieless/opt-in-non-eea/pending), a CMP_TIMEOUT_MS fail-closed timer makes a blocked/absent CMP measurable via consent_unavailable, and getConsentState() is the readable signal Phase 4's ad loader will consult
 - [Phase 01]: [Phase 01 / 01-04]: Designed a genuine ParseForge light palette (:root) in the same 270 hue family as .dark, added a scripts/theme-parity.mjs standing gate proving parity+divergence, and extended @theme with spacing/motion/elevation categories — every shipped utility class now resolves color from a token in both themes
+- [Phase 01]: [Phase 01 / 01-05] Tokenized the 11 WoW class colours and 4 role colours as paired --class-*/--role-* light/dark CSS custom properties (D-12); retuned 6 of the plan's proposed starting hex values via an HSL-lightness binary search after measuring they fell short of WCAG AA 4.5:1; split lib/constants.ts into token maps (var() refs) and a documented Satori-only hex mirror (CLASS_COLORS_HEX/ROLE_COLORS_HEX) with classColor()/roleColor()/roleColorAlpha() resolution helpers replacing direct map indexing across 9 DOM consumers
 
 ### Pending Todos
 
@@ -110,6 +112,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T22:02:22.636Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-09-06T22:34:49.816Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None
