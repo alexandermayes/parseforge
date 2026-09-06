@@ -390,31 +390,37 @@ export function getPerformanceGrade(percentile: number): PerformanceGrade {
   return "D";
 }
 
+// Performance tiers (DSGN-01) map directly onto the WoW item-quality scale
+// these grades/percentiles already evoke — S/99th = artifact (gold), down to
+// D/lowest = common. Values name --tier-* tokens (app/globals.css), never a
+// Tailwind palette family + shade, so a caller can't reintroduce a raw
+// palette color by copying an existing return value. See lib/constants.test.ts
+// for the invariant that enforces this.
 export const GRADE_COLORS: Record<PerformanceGrade, string> = {
-  S: "text-amber-400 bg-amber-400/20 border-amber-400/30",
-  A: "text-purple-400 bg-purple-400/20 border-purple-400/30",
-  B: "text-blue-400 bg-blue-400/20 border-blue-400/30",
-  C: "text-green-400 bg-green-400/20 border-green-400/30",
-  D: "text-gray-400 bg-gray-400/20 border-gray-400/30",
+  S: "text-tier-artifact bg-tier-artifact/20 border-tier-artifact/30",
+  A: "text-tier-epic bg-tier-epic/20 border-tier-epic/30",
+  B: "text-tier-rare bg-tier-rare/20 border-tier-rare/30",
+  C: "text-tier-uncommon bg-tier-uncommon/20 border-tier-uncommon/30",
+  D: "text-tier-common bg-tier-common/20 border-tier-common/30",
 };
 
 // Shared percentile-based color utility
 export function percentileColor(p: number): string {
-  if (p >= 99) return "text-amber-400";
-  if (p >= 95) return "text-orange-400";
-  if (p >= 75) return "text-purple-400";
-  if (p >= 50) return "text-blue-400";
-  if (p >= 25) return "text-green-400";
-  return "text-gray-400";
+  if (p >= 99) return "text-tier-artifact";
+  if (p >= 95) return "text-tier-legendary";
+  if (p >= 75) return "text-tier-epic";
+  if (p >= 50) return "text-tier-rare";
+  if (p >= 25) return "text-tier-uncommon";
+  return "text-tier-common";
 }
 
 export function percentileBg(p: number): string {
-  if (p >= 99) return "bg-amber-400/20 text-amber-400 border-amber-400/30";
-  if (p >= 95) return "bg-orange-400/20 text-orange-400 border-orange-400/30";
-  if (p >= 75) return "bg-purple-400/20 text-purple-400 border-purple-400/30";
-  if (p >= 50) return "bg-blue-400/20 text-blue-400 border-blue-400/30";
-  if (p >= 25) return "bg-green-400/20 text-green-400 border-green-400/30";
-  return "bg-gray-400/20 text-gray-400 border-gray-400/30";
+  if (p >= 99) return "bg-tier-artifact/20 text-tier-artifact border-tier-artifact/30";
+  if (p >= 95) return "bg-tier-legendary/20 text-tier-legendary border-tier-legendary/30";
+  if (p >= 75) return "bg-tier-epic/20 text-tier-epic border-tier-epic/30";
+  if (p >= 50) return "bg-tier-rare/20 text-tier-rare border-tier-rare/30";
+  if (p >= 25) return "bg-tier-uncommon/20 text-tier-uncommon border-tier-uncommon/30";
+  return "bg-tier-common/20 text-tier-common border-tier-common/30";
 }
 
 // TBC/Classic talent tree names per class (order matches CombatantInfo talents array)
