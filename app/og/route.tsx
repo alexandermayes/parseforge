@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
-import { CLASS_COLORS } from "@/lib/constants";
+import { CLASS_COLORS_HEX } from "@/lib/constants";
 import { isValidReportCode } from "@/lib/api-utils";
 import type { AnalysisResult, ReportMeta } from "@/lib/wcl-types";
 
@@ -14,6 +14,8 @@ const MUTED = "#a1a1aa";
 const FAINT = "#52525b";
 
 // Hex equivalents of GRADE_COLORS (Tailwind -400 shades) for the canvas.
+// Same documented Satori exception as CLASS_COLORS_HEX above: this renderer
+// has no CSS engine, so it can't resolve a custom property either.
 const GRADE_HEX: Record<string, string> = {
   S: "#fbbf24",
   A: "#a78bfa",
@@ -89,7 +91,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 }
 
 function PlayerCard({ data }: { data: AnalysisResult }) {
-  const classColor = CLASS_COLORS[data.playerClass] ?? "#FFFFFF";
+  const classColor = CLASS_COLORS_HEX[data.playerClass] ?? "#FFFFFF";
   const grade = data.metricPercentiles?.overallGrade ?? "—";
   const gradeColor = GRADE_HEX[grade] ?? MUTED;
   const score = data.metricPercentiles?.overallScore ?? 0;

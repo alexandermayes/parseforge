@@ -1,4 +1,29 @@
+// D-12: values are CSS custom-property references, not raw hex — the browser
+// resolves the active theme's tuned variant (app/globals.css :root/.dark)
+// at paint time. Consumers read via classColor() below, which also owns the
+// unknown-class fallback.
 export const CLASS_COLORS: Record<string, string> = {
+  Warrior: "var(--class-warrior)",
+  Paladin: "var(--class-paladin)",
+  Hunter: "var(--class-hunter)",
+  Rogue: "var(--class-rogue)",
+  Priest: "var(--class-priest)",
+  Shaman: "var(--class-shaman)",
+  Mage: "var(--class-mage)",
+  Warlock: "var(--class-warlock)",
+  Druid: "var(--class-druid)",
+  DeathKnight: "var(--class-deathknight)",
+  Monk: "var(--class-monk)",
+};
+
+/**
+ * Raw hex mirror of `CLASS_COLORS`, for `next/og` image generation only.
+ * Satori (`next/og`'s `ImageResponse`) is a static image renderer with no
+ * CSS engine — it cannot resolve a CSS custom property — so `app/og/route.tsx`
+ * reads colors from here instead. Nothing rendered into the DOM may import
+ * this map; use `classColor()` there.
+ */
+export const CLASS_COLORS_HEX: Record<string, string> = {
   Warrior: "#C79C6E",
   Paladin: "#F58CBA",
   Hunter: "#ABD473",
@@ -11,6 +36,17 @@ export const CLASS_COLORS: Record<string, string> = {
   DeathKnight: "#C41E3A",
   Monk: "#00FF96",
 };
+
+/**
+ * Resolve a WCL class name to its themed CSS custom-property reference.
+ * An unrecognized class name (e.g. a class WCL adds later) resolves to the
+ * `--class-default` token rather than a bare literal, so it stays legible
+ * in both themes instead of silently defaulting to a color that's wrong on
+ * one of them.
+ */
+export function classColor(className: string): string {
+  return CLASS_COLORS[className] ?? "var(--class-default)";
+}
 
 // WCL CombatantInfo gear array follows WoW's INVSLOT enum (1-indexed), offset by -1.
 // Index 3 is Shirt (INVSLOT_BODY=4), usually empty.
@@ -198,12 +234,37 @@ export const ROLE_SORT_ORDER: Record<RaidRole, number> = {
   Physical: 3,
 };
 
+// D-12: values are CSS custom-property references — see CLASS_COLORS' comment
+// above for why. `roleColorAlpha()` below is the translucent-tint helper.
 export const ROLE_COLORS: Record<RaidRole, string> = {
+  Tank: "var(--role-tank)",
+  Healer: "var(--role-healer)",
+  Caster: "var(--role-caster)",
+  Physical: "var(--role-physical)",
+};
+
+/**
+ * Raw hex mirror of `ROLE_COLORS`, for `next/og` image generation only —
+ * see `CLASS_COLORS_HEX`'s JSDoc for why. Nothing rendered into the DOM may
+ * import this map.
+ */
+export const ROLE_COLORS_HEX: Record<RaidRole, string> = {
   Tank: "#60A5FA",   // blue-400
   Healer: "#4ADE80", // green-400
   Caster: "#C084FC",  // purple-400
   Physical: "#FBBF24", // amber-400
 };
+
+/**
+ * Translucent tint for role badges: a `color-mix` expression over the role's
+ * token. Replaces the previous alpha-suffix string concatenation
+ * (`ROLE_COLORS[role] + "20"`), which silently produces an invalid CSS color
+ * the moment the value is a custom-property reference instead of a hex
+ * literal.
+ */
+export function roleColorAlpha(role: RaidRole, percent: number): string {
+  return `color-mix(in oklch, ${ROLE_COLORS[role]} ${percent}%, transparent)`;
+}
 
 // Consumable buff spell IDs for WotLK/Cata detection from CombatantInfo auras
 // These are well-known buff GUIDs; we check if any aura matches
