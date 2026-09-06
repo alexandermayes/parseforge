@@ -90,6 +90,16 @@ const THEME_DIVERGENT = [
   "--class-hunter",
   "--class-monk",
   "--class-default",
+  // DSGN-01 — performance-tier tokens (lib/constants.ts GRADE_COLORS /
+  // percentileColor / percentileBg). All six diverge: :root is a light-mode
+  // WCAG AA tuning pass, .dark keeps the original Tailwind 400-shade values
+  // (01-06-PLAN.md Task 2).
+  "--tier-artifact",
+  "--tier-legendary",
+  "--tier-epic",
+  "--tier-rare",
+  "--tier-uncommon",
+  "--tier-common",
 ];
 
 /**

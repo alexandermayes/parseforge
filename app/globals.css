@@ -78,6 +78,16 @@
   --color-status-warn: var(--status-warn);
   --color-status-bad: var(--status-bad);
   --color-status-info: var(--status-info);
+
+  /* Performance-tier colors (DSGN-01) — the WoW item-quality ladder that
+     GRADE_COLORS / percentileColor / percentileBg (lib/constants.ts) name
+     their return values after. */
+  --color-tier-artifact: var(--tier-artifact);
+  --color-tier-legendary: var(--tier-legendary);
+  --color-tier-epic: var(--tier-epic);
+  --color-tier-rare: var(--tier-rare);
+  --color-tier-uncommon: var(--tier-uncommon);
+  --color-tier-common: var(--tier-common);
   --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
   @keyframes shimmer-slide {
@@ -200,6 +210,20 @@
   --role-healer: #158043;
   --role-caster: #7A34C4;
   --role-physical: #956700;
+
+  /* Performance tiers (DSGN-01) — light-mode tuning pass, same hue as .dark,
+     lightness dropped until each clears WCAG AA 4.5:1 against light
+     background. See 01-06-SUMMARY.md for the measured ratio table.
+     The artifact tier's lightness is retuned from the plan's proposed
+     oklch(0.58 0.15 85) (measured 4.07:1, below the 4.5:1 floor) via an
+     L-only binary search holding hue/chroma fixed, mirroring 01-05's
+     class/role retuning pattern — see 01-06-SUMMARY.md Decisions. */
+  --tier-artifact: oklch(0.545 0.15 85);
+  --tier-legendary: oklch(0.55 0.17 56);
+  --tier-epic: oklch(0.48 0.2 305);
+  --tier-rare: oklch(0.5 0.16 255);
+  --tier-uncommon: oklch(0.5 0.15 152);
+  --tier-common: oklch(0.45 0.02 261);
 }
 
 .dark {
@@ -272,6 +296,16 @@
   --role-healer: #4ADE80;
   --role-caster: #C084FC;
   --role-physical: #FBBF24;
+
+  /* Performance tiers (DSGN-01) — exact Tailwind 400-level shades
+     GRADE_COLORS/percentileColor/percentileBg emit today (lib/constants.ts),
+     so dark rendering stays bit-identical to pre-tokenization. */
+  --tier-artifact: oklch(0.828 0.189 84.429);
+  --tier-legendary: oklch(0.75 0.183 55.934);
+  --tier-epic: oklch(0.714 0.203 305.504);
+  --tier-rare: oklch(0.707 0.165 254.624);
+  --tier-uncommon: oklch(0.792 0.209 151.711);
+  --tier-common: oklch(0.707 0.022 261.325);
 }
 
 @layer base {
