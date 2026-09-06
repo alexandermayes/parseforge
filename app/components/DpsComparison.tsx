@@ -13,12 +13,14 @@ function formatDps(dps: number): string {
   return dps.toFixed(0);
 }
 
+// Mirrors GRADE_COLORS' S/A/B/C/D -> artifact/epic/rare/uncommon/common tier
+// mapping (lib/constants.ts) so the beam and the grade badge always agree.
 const GRADE_BEAM_COLORS: Record<string, { from: string; to: string }> = {
-  S: { from: "#F59E0B", to: "#D97706" },
-  A: { from: "#A855F7", to: "#7C3AED" },
-  B: { from: "#3B82F6", to: "#2563EB" },
-  C: { from: "#22C55E", to: "#16A34A" },
-  D: { from: "#6B7280", to: "#4B5563" },
+  S: { from: "var(--tier-artifact)", to: "var(--tier-artifact)" },
+  A: { from: "var(--tier-epic)", to: "var(--tier-epic)" },
+  B: { from: "var(--tier-rare)", to: "var(--tier-rare)" },
+  C: { from: "var(--tier-uncommon)", to: "var(--tier-uncommon)" },
+  D: { from: "var(--tier-common)", to: "var(--tier-common)" },
 };
 
 export default function DpsComparison({ data, role = "dps", previousSnapshot }: { data: DpsData; role?: "dps" | "healer"; previousSnapshot?: AnalysisSnapshot | null }) {
@@ -68,7 +70,7 @@ export default function DpsComparison({ data, role = "dps", previousSnapshot }: 
                 />{" "}
                 {metricLabel}
                 {previousSnapshot && (
-                  <span className={`ml-1.5 text-xs font-medium ${data.playerDps >= prevDps ? "text-emerald-400" : "text-red-400"}`}>
+                  <span className={`ml-1.5 text-xs font-medium ${data.playerDps >= prevDps ? "text-status-good" : "text-status-bad"}`}>
                     ({data.playerDps >= prevDps ? "+" : ""}{Math.round(data.playerDps - prevDps)} from last)
                   </span>
                 )}
@@ -93,7 +95,7 @@ export default function DpsComparison({ data, role = "dps", previousSnapshot }: 
               </div>
               <div className="h-2.5 w-full rounded-full bg-surface-2">
                 <div
-                  className="h-full rounded-full bg-indigo-500/50 transition-all"
+                  className="h-full rounded-full bg-arcane-from/50 transition-all"
                   style={{ width: barWidth(prevDps) }}
                 />
               </div>
@@ -110,7 +112,7 @@ export default function DpsComparison({ data, role = "dps", previousSnapshot }: 
             </div>
             <div className="h-2.5 w-full rounded-full bg-surface-2">
               <div
-                className="h-full rounded-full bg-gray-500 transition-all"
+                className="h-full rounded-full bg-surface-3 transition-all"
                 style={{ width: barWidth(data.medianDps) }}
               />
             </div>

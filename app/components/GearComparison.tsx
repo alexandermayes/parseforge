@@ -68,7 +68,7 @@ function GearPopularity({
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`hover:underline truncate ${
-                          isPlayerItem ? "text-blue-400" : "text-muted-foreground"
+                          isPlayerItem ? "text-status-info" : "text-muted-foreground"
                         }`}
                         data-wowhead={`item=${item.id}&domain=${domain}`}
                       >
@@ -144,7 +144,7 @@ export default function GearComparison({
                         href={wowheadItemUrl(slot.playerItem.id, domain)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:underline truncate block text-blue-400"
+                        className="hover:underline truncate block text-status-info"
                         data-wowhead={`item=${slot.playerItem.id}&domain=${domain}`}
                       >
                         {itemLabel(slot.playerItem)}
@@ -165,7 +165,7 @@ export default function GearComparison({
                           </span>
                         )}
                         {slot.playerItem.gems && slot.playerItem.gems.length > 0 && (
-                          <span className="text-xs text-purple-400 flex gap-1">
+                          <span className="text-xs text-arcane-from flex gap-1">
                             {slot.playerItem.gems.map((gem, gi) => (
                               <a
                                 key={gi}

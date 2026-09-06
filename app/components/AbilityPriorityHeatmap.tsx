@@ -96,7 +96,7 @@ export default function AbilityPriorityHeatmap({
                 <span className="text-right font-mono text-gold-from text-xs">
                   {entry.avgTopShare}%
                 </span>
-                <span className="text-right font-mono text-blue-400 text-xs">
+                <span className="text-right font-mono text-status-info text-xs">
                   {entry.playerShare}%
                 </span>
                 <span className={`text-right font-mono text-xs ${diffColor}`}>

@@ -37,7 +37,7 @@ function TalentConsensus({ data }: { data: TalentConsensusAnalysis }) {
               <div
                 key={t.id}
                 className={`grid grid-cols-[1fr_120px_50px] gap-2 text-sm py-1 items-center ${
-                  isConsensusMissing ? "bg-red-500/5 rounded px-1" : ""
+                  isConsensusMissing ? "bg-status-bad/5 rounded px-1" : ""
                 }`}
               >
                 <span className="truncate">{t.name}</span>
@@ -46,10 +46,10 @@ function TalentConsensus({ data }: { data: TalentConsensusAnalysis }) {
                     <div
                       className={`h-full rounded-full ${
                         t.percentage >= 80
-                          ? "bg-amber-400"
+                          ? "bg-gold-from"
                           : t.percentage >= 50
-                            ? "bg-amber-400/60"
-                            : "bg-zinc-500/40"
+                            ? "bg-gold-from/60"
+                            : "bg-surface-3/40"
                       }`}
                       style={{ width: `${t.percentage}%` }}
                     />
@@ -139,14 +139,14 @@ function TreeComparison({ data, treeSummary }: { data: TalentAnalysis; treeSumma
                 <div className="flex gap-1 items-center">
                   <div className="flex-1 bar-sm rounded-full bg-surface-2 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-amber-400"
+                      className="h-full rounded-full bg-gold-from"
                       style={{ width: `${(player / maxPts) * 100}%` }}
                     />
                   </div>
                   {hasTopComparison && (
                     <div className="flex-1 bar-sm rounded-full bg-surface-2 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-purple-400"
+                        className="h-full rounded-full bg-arcane-from"
                         style={{ width: `${(top / maxPts) * 100}%` }}
                       />
                     </div>
@@ -159,11 +159,11 @@ function TreeComparison({ data, treeSummary }: { data: TalentAnalysis; treeSumma
 
         <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block" /> You ({data.playerSpec})
+            <span className="w-2.5 h-2.5 rounded-sm bg-gold-from inline-block" /> You ({data.playerSpec})
           </span>
           {hasTopComparison && (
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-sm bg-purple-400 inline-block" /> Top ({data.topSpec})
+              <span className="w-2.5 h-2.5 rounded-sm bg-arcane-from inline-block" /> Top ({data.topSpec})
             </span>
           )}
         </div>

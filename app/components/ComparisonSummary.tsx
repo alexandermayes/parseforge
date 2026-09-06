@@ -59,7 +59,7 @@ function DeltaBadge({ value, suffix = "", invert = false }: { value: number; suf
   const positive = invert ? value < 0 : value > 0;
   const sign = value > 0 ? "+" : "";
   return (
-    <span className={`text-[11px] font-medium ${positive ? "text-emerald-400" : "text-red-400"}`}>
+    <span className={`text-[11px] font-medium ${positive ? "text-status-good" : "text-status-bad"}`}>
       {sign}{value}{suffix}
     </span>
   );
@@ -91,7 +91,7 @@ function PerformanceBreakdown({ data, previousSnapshot }: { data: MetricPercenti
               ? "progress-gradient-gold"
               : m.percentile >= 50
                 ? "progress-gradient-blue"
-                : "bg-red-500/60";
+                : "bg-status-bad/60";
           const prevMetric = previousSnapshot?.metrics.find((pm) => pm.metric === m.metric);
 
           return (
@@ -217,7 +217,7 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
   return (
     <Card className="relative overflow-hidden">
       <ShineBorder
-        shineColor={["#D4A843", "#7C5CFC"]}
+        shineColor={["var(--gold-from)", "var(--arcane-from)"]}
         borderWidth={1}
         duration={12}
       />

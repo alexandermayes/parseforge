@@ -130,7 +130,7 @@ export function CLAGearIssuesView({ players, wowheadDomain }: GearIssuesProps) {
                           href={wowheadItemUrl(issue.itemId, domain)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-blue-400 hover:underline"
+                          className="text-sm text-status-info hover:underline"
                           data-wowhead={`item=${issue.itemId}&domain=${domain}`}
                         >
                           {issue.itemName}
@@ -197,7 +197,7 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                         href={wowheadItemUrl(slot.itemId, domain)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:underline"
+                        className="text-status-info hover:underline"
                         data-wowhead={`item=${slot.itemId}&domain=${domain}`}
                       >
                         {slot.itemName}
@@ -217,7 +217,7 @@ export function CLAGearListing({ players, wowheadDomain }: GearListingProps) {
                           </span>
                         )}
                         {slot.gems.length > 0 && (
-                          <span className="text-purple-400 flex gap-1">
+                          <span className="text-arcane-from flex gap-1">
                             {slot.gems.map((gem, gi) => (
                               <a
                                 key={gi}

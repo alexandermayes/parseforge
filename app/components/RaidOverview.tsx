@@ -256,7 +256,7 @@ function HealerPanel({ healers }: { healers: HealerMetrics[] }) {
               <div className="flex-1 flex items-center gap-2">
                 <div className="flex-1 h-3 bg-surface-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-emerald-500/60"
+                    className="h-full rounded-full bg-status-good/60"
                     style={{ width: `${barWidth}%` }}
                   />
                 </div>
