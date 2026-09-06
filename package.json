@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "theme-parity": "node scripts/theme-parity.mjs"
+    "theme-parity": "node scripts/theme-parity.mjs",
+    "token-audit": "node scripts/token-audit.mjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
