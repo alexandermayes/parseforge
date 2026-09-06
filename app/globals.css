@@ -46,6 +46,21 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  /* Spacing (DSGN-01) — declared explicitly so the audit points at a real
+     token rather than Tailwind v4's implicit default base unit. */
+  --spacing: 0.25rem;
+
+  /* Motion (DSGN-01) */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 350ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Elevation (DSGN-01) — migrates .surface-card/.surface-card-elevated's
+     previously hand-written shadow values into a single source of truth. */
+  --shadow-card: 0 1px 3px oklch(0 0 0 / 12%), 0 1px 2px oklch(0 0 0 / 8%);
+  --shadow-elevated: 0 4px 6px oklch(0 0 0 / 15%), 0 2px 4px oklch(0 0 0 / 10%);
+
   /* WoW gold + arcane palette */
   --color-gold-from: var(--gold-from);
   --color-gold-to: var(--gold-to);
@@ -305,9 +320,9 @@
 }
 
 .badge-neutral {
-  background: oklch(1 0 0 / 3%);
-  color: oklch(0.8 0 0);
-  border: 1px solid oklch(1 0 0 / 8%);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
 }
 
 /* ─── Progress Bar Utilities ───────────────────────────────────────── */
@@ -334,41 +349,41 @@
 /* ─── Surface Card Classes ─────────────────────────────────────────── */
 
 .surface-card {
-  background: oklch(0.17 0.015 270 / 70%);
+  background: color-mix(in oklch, var(--surface-1) 70%, transparent);
   backdrop-filter: blur(20px);
-  border: 1px solid oklch(1 0 0 / 6%);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 12%), 0 1px 2px oklch(0 0 0 / 8%);
+  box-shadow: var(--shadow-card);
 }
 
 .surface-card-elevated {
-  background: oklch(0.17 0.015 270 / 80%);
+  background: color-mix(in oklch, var(--surface-1) 80%, transparent);
   backdrop-filter: blur(20px);
-  border: 1px solid oklch(1 0 0 / 8%);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 6px oklch(0 0 0 / 15%), 0 2px 4px oklch(0 0 0 / 10%);
+  box-shadow: var(--shadow-elevated);
 }
 
 /* ─── Transition Standard ──────────────────────────────────────────── */
 
 .transition-interactive {
   transition-property: background-color, color, border-color, box-shadow, opacity;
-  transition-duration: 200ms;
-  transition-timing-function: ease;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-standard);
 }
 
 /* ─── Glassmorphism ─────────────────────────────────────────────────── */
 
 .glass {
-  background: oklch(0.17 0.015 270 / 60%);
+  background: color-mix(in oklch, var(--surface-1) 60%, transparent);
   backdrop-filter: blur(16px);
-  border: 1px solid oklch(1 0 0 / 6%);
+  border: 1px solid var(--border);
 }
 
 .glass-strong {
-  background: oklch(0.17 0.015 270 / 95%);
+  background: color-mix(in oklch, var(--surface-1) 95%, transparent);
   backdrop-filter: blur(24px);
-  border: 1px solid oklch(1 0 0 / 10%);
+  border: 1px solid var(--border);
 }
 
 /* ─── Gradient Text ─────────────────────────────────────────────────── */
@@ -400,20 +415,20 @@
 /* ─── Glow Effects ──────────────────────────────────────────────────── */
 
 .glow-gold {
-  box-shadow: 0 0 24px var(--glow-gold), 0 0 48px oklch(0.82 0.16 85 / 15%);
+  box-shadow: 0 0 24px var(--glow-gold), 0 0 48px oklch(from var(--glow-gold) l c h / 15%);
 }
 
 .glow-gold-sm {
-  box-shadow: 0 0 12px oklch(0.82 0.16 85 / 20%);
+  box-shadow: 0 0 12px oklch(from var(--glow-gold) l c h / 20%);
 }
 
 .glow-arcane {
-  box-shadow: 0 0 24px var(--glow-arcane), 0 0 48px oklch(0.6 0.2 290 / 15%);
+  box-shadow: 0 0 24px var(--glow-arcane), 0 0 48px oklch(from var(--glow-arcane) l c h / 15%);
 }
 
 .glow-border-gold {
   border-color: var(--gold-from) !important;
-  box-shadow: 0 0 0 3px oklch(0.82 0.16 85 / 15%), 0 0 12px oklch(0.82 0.16 85 / 15%);
+  box-shadow: 0 0 0 3px oklch(from var(--gold-from) l c h / 15%), 0 0 12px oklch(from var(--gold-from) l c h / 15%);
 }
 
 /* ─── Noise Texture Overlay ─────────────────────────────────────────── */
@@ -454,7 +469,7 @@
   transform: translateX(-50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(ellipse at center, oklch(0.82 0.16 85 / 12%) 0%, oklch(0.6 0.2 290 / 6%) 40%, transparent 70%);
+  background: radial-gradient(ellipse at center, oklch(from var(--glow-gold) l c h / 12%) 0%, oklch(from var(--glow-arcane) l c h / 6%) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -479,7 +494,7 @@
   height: 2px;
   background: linear-gradient(90deg, var(--gold-from), var(--gold-to));
   border-radius: 1px;
-  box-shadow: 0 0 8px oklch(0.82 0.16 85 / 40%);
+  box-shadow: 0 0 8px var(--glow-gold);
 }
 
 /* ─── Progress Bar Gradients ────────────────────────────────────────── */
@@ -489,7 +504,7 @@
 }
 
 .progress-gradient-blue {
-  background: linear-gradient(90deg, oklch(0.55 0.2 260), oklch(0.65 0.18 240));
+  background: linear-gradient(90deg, oklch(from var(--status-info) calc(l - 0.05) c h), oklch(from var(--status-info) calc(l + 0.05) c h));
 }
 
 .progress-gradient-arcane {
@@ -525,10 +540,10 @@
 
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 12px oklch(0.82 0.16 85 / 20%);
+    box-shadow: 0 0 12px oklch(from var(--glow-gold) l c h / 20%);
   }
   50% {
-    box-shadow: 0 0 24px oklch(0.82 0.16 85 / 40%);
+    box-shadow: 0 0 24px oklch(from var(--glow-gold) l c h / 40%);
   }
 }
 
@@ -545,9 +560,9 @@
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    oklch(0.21 0.015 270) 25%,
-    oklch(0.25 0.015 270) 50%,
-    oklch(0.21 0.015 270) 75%
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
