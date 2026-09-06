@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "./ThemeToggle";
 
 const features = [
   {
@@ -171,6 +172,8 @@ export default function Navbar() {
                 </div>
               </DialogContent>
             </Dialog>
+
+            <ThemeToggle />
           </div>
         </div>
       </div>
