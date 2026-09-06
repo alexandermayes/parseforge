@@ -64,7 +64,7 @@ export default function ReportUrlForm() {
         <ShimmerButton
           type="submit"
           disabled={loading || !url.trim()}
-          shimmerColor="#D4A843"
+          shimmerColor="var(--gold-from)"
           shimmerSize="0.05em"
           background="linear-gradient(135deg, oklch(0.82 0.16 85), oklch(0.72 0.14 60))"
           borderRadius="8px"

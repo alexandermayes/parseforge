@@ -153,7 +153,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           >
             {copied ? (
               <>
-                <Check className="size-3.5 text-emerald-400" />
+                <Check className="size-3.5 text-status-good" />
                 Copied!
               </>
             ) : (
@@ -190,7 +190,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
       {report && (
         <div className="relative glass flex gap-1 p-1 rounded-lg w-fit">
           <ShineBorder
-            shineColor={["#D4A843", "#7C5CFC"]}
+            shineColor={["var(--gold-from)", "var(--arcane-from)"]}
             borderWidth={1}
             duration={10}
           />
@@ -394,7 +394,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           >
             {copied ? (
               <>
-                <Check className="size-3.5 text-emerald-400" />
+                <Check className="size-3.5 text-status-good" />
                 Copied!
               </>
             ) : (

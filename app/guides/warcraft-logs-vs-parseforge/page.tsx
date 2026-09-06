@@ -144,49 +144,49 @@ export default function WCLvsParseForgeGuide() {
               <tbody className="text-muted-foreground">
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Log hosting &amp; upload</td>
-                  <td className="px-4 py-2 text-emerald-400">Yes</td>
+                  <td className="px-4 py-2 text-status-good">Yes</td>
                   <td className="px-4 py-2">No (uses WCL data)</td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Raw event timeline</td>
-                  <td className="px-4 py-2 text-emerald-400">Yes</td>
+                  <td className="px-4 py-2 text-status-good">Yes</td>
                   <td className="px-4 py-2">No</td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Global rankings</td>
-                  <td className="px-4 py-2 text-emerald-400">Yes</td>
+                  <td className="px-4 py-2 text-status-good">Yes</td>
                   <td className="px-4 py-2">Uses WCL rankings</td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Gear &amp; enchant audit</td>
                   <td className="px-4 py-2">Basic</td>
-                  <td className="px-4 py-2 text-emerald-400">
+                  <td className="px-4 py-2 text-status-good">
                     Detailed + comparison
                   </td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Consumable uptime</td>
                   <td className="px-4 py-2">Manual lookup</td>
-                  <td className="px-4 py-2 text-emerald-400">Automatic</td>
+                  <td className="px-4 py-2 text-status-good">Automatic</td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Talent comparison</td>
                   <td className="px-4 py-2">No</td>
-                  <td className="px-4 py-2 text-emerald-400">
+                  <td className="px-4 py-2 text-status-good">
                     vs. top players
                   </td>
                 </tr>
                 <tr className="border-b border-white/[0.04]">
                   <td className="px-4 py-2">Raid-wide overview</td>
                   <td className="px-4 py-2">Separate tabs</td>
-                  <td className="px-4 py-2 text-emerald-400">
+                  <td className="px-4 py-2 text-status-good">
                     Single screen
                   </td>
                 </tr>
                 <tr>
                   <td className="px-4 py-2">Improvement suggestions</td>
                   <td className="px-4 py-2">No</td>
-                  <td className="px-4 py-2 text-emerald-400">
+                  <td className="px-4 py-2 text-status-good">
                     Ranked by impact
                   </td>
                 </tr>

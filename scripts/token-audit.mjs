@@ -72,6 +72,22 @@ const RAW_HEX_RE = /#[0-9a-fA-F]{6}\b/g;
 // ─── Allowlist ───────────────────────────────────────────────────────────
 // Every entry MUST carry a non-empty `reason`. Validated at startup below.
 
+// Vendored magicui-style effect components (not pulled from a live registry
+// this phase — see 01-UI-SPEC.md "Registry Safety"). Every call site in this
+// codebase that renders one of these overrides its color-valued default
+// props explicitly (LandingHero.tsx, DpsComparison.tsx, ReportUrlForm.tsx,
+// ComparisonSummary.tsx, AnalyzeClient.tsx) — the hex literals below are
+// unreachable fallback values, left as shipped to avoid touching third-party-
+// sourced files, matching the meteors.tsx precedent (CLAUDE.md).
+const VENDORED_EFFECT_FILES = new Set([
+  "components/ui/border-beam.tsx",
+  "components/ui/magic-card.tsx",
+  "components/ui/particles.tsx",
+  "components/ui/shimmer-button.tsx",
+  "components/ui/shine-border.tsx",
+  "components/ui/sparkles-text.tsx",
+]);
+
 const ALLOWLIST = [
   {
     id: "og-route-whole-file",
@@ -91,6 +107,56 @@ const ALLOWLIST = [
       "Satori-only raw-hex mirrors of the token-backed maps, introduced so " +
       "app/og/route.tsx (which cannot resolve custom properties) has a value " +
       "to read — same reason as the og-route-whole-file exception.",
+  },
+  {
+    id: "opengraph-image-whole-file",
+    appliesTo: (relPath) => relPath === "app/opengraph-image.tsx",
+    label: "app/opengraph-image.tsx (whole file)",
+    reason:
+      "Satori (next/og's ImageResponse) is a static image renderer with no CSS " +
+      "engine and cannot resolve a CSS custom property — same reason as the " +
+      "og-route-whole-file exception.",
+  },
+  {
+    id: "manifest-whole-file",
+    appliesTo: (relPath) => relPath === "app/manifest.ts",
+    label: "app/manifest.ts (whole file)",
+    reason:
+      "The Web App Manifest spec's background_color/theme_color fields are " +
+      "read by the browser directly from the manifest JSON before any " +
+      "stylesheet loads — there is no CSS engine or custom-property cascade " +
+      "available at manifest-parse time.",
+  },
+  {
+    id: "vendored-effect-component-defaults",
+    appliesTo: (relPath) => VENDORED_EFFECT_FILES.has(relPath),
+    label:
+      "components/ui/{border-beam,magic-card,particles,shimmer-button,shine-border,sparkles-text}.tsx " +
+      "(default prop values)",
+    reason:
+      "Vendored magicui-style effect components; their hex-valued default " +
+      "parameters are unreachable fallback values — every call site in this " +
+      "codebase supplies an explicit color/gradient override (see " +
+      "app/components/LandingHero.tsx, DpsComparison.tsx, ReportUrlForm.tsx, " +
+      "ComparisonSummary.tsx, and AnalyzeClient.tsx). Left as shipped, " +
+      "matching the meteors.tsx precedent (CLAUDE.md) of not touching " +
+      "vendored effect-component internals beyond what a call site needs. " +
+      "Particles additionally requires a literal hex string for its own " +
+      "hexToRgb() canvas-color parsing — a canvas 2D context fillStyle cannot " +
+      "resolve a CSS custom property.",
+  },
+  {
+    id: "landing-hero-particles-color",
+    appliesTo: (relPath, _declName, lineText) =>
+      relPath === "app/components/LandingHero.tsx" &&
+      /\bcolor="#[0-9a-fA-F]{6}"/.test(lineText ?? ""),
+    label: "app/components/LandingHero.tsx (Particles color prop)",
+    reason:
+      "Particles renders to a <canvas> 2D context and parses this prop via " +
+      "hexToRgb() for per-frame alpha compositing — canvas fillStyle cannot " +
+      "resolve a CSS custom property (var()), so this one call site must pass " +
+      "a literal hex value. See the vendored-effect-component-defaults entry " +
+      "for the same constraint inside particles.tsx itself.",
   },
 ];
 
@@ -156,19 +222,19 @@ function scanFile(absPath) {
     let match;
     PALETTE_CLASS_RE.lastIndex = 0;
     while ((match = PALETTE_CLASS_RE.exec(line)) !== null) {
-      findings.push(makeFinding(relPath, idx + 1, "palette-class", match[0], currentDecl));
+      findings.push(makeFinding(relPath, idx + 1, "palette-class", match[0], currentDecl, line));
     }
     RAW_HEX_RE.lastIndex = 0;
     while ((match = RAW_HEX_RE.exec(line)) !== null) {
-      findings.push(makeFinding(relPath, idx + 1, "raw-hex", match[0], currentDecl));
+      findings.push(makeFinding(relPath, idx + 1, "raw-hex", match[0], currentDecl, line));
     }
   });
 
   return findings;
 }
 
-function makeFinding(relPath, line, kind, text, declName) {
-  const allowlistEntry = ALLOWLIST.find((entry) => entry.appliesTo(relPath, declName));
+function makeFinding(relPath, line, kind, text, declName, lineText) {
+  const allowlistEntry = ALLOWLIST.find((entry) => entry.appliesTo(relPath, declName, lineText));
   return {
     relPath,
     line,

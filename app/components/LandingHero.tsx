@@ -45,6 +45,10 @@ export function LandingHero() {
       <Particles
         className="absolute inset-0 -z-10"
         quantity={25}
+        // Particles renders to a <canvas> 2D context and parses this value via
+        // hexToRgb() for per-frame alpha compositing — canvas fillStyle cannot
+        // resolve a CSS custom property, so this stays a literal hex (allowlisted
+        // in scripts/token-audit.mjs). Kept in sync with --gold-from by eye.
         color="#D4A843"
         size={0.3}
         staticity={80}
@@ -54,7 +58,7 @@ export function LandingHero() {
       <BlurFade delay={0} inView>
         <SparklesText
           className="text-display sm:text-5xl text-gold-from"
-          colors={{ first: "#D4A843", second: "#7C5CFC" }}
+          colors={{ first: "var(--gold-from)", second: "var(--arcane-from)" }}
           sparklesCount={8}
         >
           ParseForge
@@ -84,8 +88,8 @@ export function LandingHero() {
           <BorderBeam
             size={120}
             duration={8}
-            colorFrom="#D4A843"
-            colorTo="#7C5CFC"
+            colorFrom="var(--gold-from)"
+            colorTo="var(--arcane-from)"
             borderWidth={1}
           />
           <ReportUrlForm />
@@ -105,8 +109,8 @@ export function LandingHero() {
               key={f.title}
               className="rounded-xl p-4 cursor-default"
               gradientColor="oklch(0.21 0.015 270)"
-              gradientFrom="#D4A843"
-              gradientTo="#7C5CFC"
+              gradientFrom="var(--gold-from)"
+              gradientTo="var(--arcane-from)"
               gradientOpacity={0.15}
               gradientSize={250}
             >
