@@ -7,13 +7,21 @@ import type { NextConfig } from "next";
 // Wowhead config script in layout.tsx; 'unsafe-eval'/worker-src cover PostHog
 // session replay; wow.zamimg.com serves Wowhead's tooltips.js + icons. PostHog
 // ingestion is same-origin via the /ingest rewrite, so it needs no extra host.
+// fundingchoicesmessages.google.com is Google Privacy & Messaging (the
+// certified TCF v2.2 CMP, D-01) — it loads a script, opens network connections
+// for the resolved consent state, and renders its dialog in an iframe, hence
+// the script-src/connect-src/frame-src entries below. Google explicitly
+// declines to publish a fixed CMP domain list (01-RESEARCH.md Pitfall 2), so
+// any further hosts the dialog needs are to be discovered from report-only
+// violation reports post-deploy, not guessed at in advance.
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com https://fundingchoicesmessages.google.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com",
+  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com https://fundingchoicesmessages.google.com",
+  "frame-src 'self' https://fundingchoicesmessages.google.com",
   "worker-src 'self' blob:",
   "frame-ancestors 'self'",
   "base-uri 'self'",

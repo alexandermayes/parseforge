@@ -83,6 +83,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GOOGLE_CMP_PUB_ID = process.env.NEXT_PUBLIC_GOOGLE_CMP_PUB_ID ?? "";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -98,6 +100,14 @@ export default function RootLayout({
           src="https://wow.zamimg.com/js/tooltips.js"
           strategy="afterInteractive"
         />
+        {GOOGLE_CMP_PUB_ID && (
+          <Script
+            id="google-cmp"
+            src={`https://fundingchoicesmessages.google.com/i/${GOOGLE_CMP_PUB_ID}?ers=1`}
+            strategy="afterInteractive"
+            async
+          />
+        )}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background bg-noise`}
