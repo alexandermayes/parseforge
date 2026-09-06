@@ -31,7 +31,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Monetization
 
-- [ ] **MONY-01**: Consent-management layer live (Google-certified TCF CMP) gating both ad scripts and PostHog session replay for EEA/UK visitors — closes the existing PostHog EU-consent gap
+- [x] **MONY-01**: Consent-management layer live (Google-certified TCF CMP) gating both ad scripts and PostHog session replay for EEA/UK visitors — closes the existing PostHog EU-consent gap
 - [ ] **MONY-02**: AdSense ads live via reserved-space AdSlot components + consent-gated script loader + per-route placement whitelist; ads never block or crowd the core paste-and-analyze flow or analysis tables
 - [ ] **MONY-03**: CWV baseline (LCP/INP/CLS on `/`, `/analyze/*`, `/tbc-audit`) captured before ad code ships; post-ship monitoring with defined rollback criteria
 
@@ -100,7 +100,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-02 | Phase 7 | Pending |
 | DSGN-03 | Phase 1 | Pending |
 | DSGN-04 | Phase 7 | Pending |
-| MONY-01 | Phase 1 | Pending |
+| MONY-01 | Phase 1 | Complete |
 | MONY-02 | Phase 4 | Pending |
 | MONY-03 | Phase 4 | Pending |
 | ACC-01 | Phase 2 | Pending |
@@ -113,6 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-02 | Phase 7 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 24 total
 - Mapped to phases: 24 ✓
 - Unmapped: 0
