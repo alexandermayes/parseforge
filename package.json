@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "theme-parity": "node scripts/theme-parity.mjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
