@@ -281,6 +281,16 @@ function buildReport(findings, categories) {
 
   lines.push("# token-audit report");
   lines.push("");
+  lines.push(
+    "This report is generated, never hand-written, by `scripts/token-audit.mjs` — " +
+      "it walks `app/`, `components/` and `lib/` for hardcoded Tailwind palette " +
+      "classes (`palette-class`) and six-digit hex colour literals (`raw-hex`), " +
+      "checks each against a reasoned allowlist (below), and inventories " +
+      "`app/globals.css`'s `@theme` categories. Regenerate it with " +
+      "`npm run token-audit -- --markdown docs/TOKEN-AUDIT.md` — never edit this " +
+      "file by hand, or it will silently drift from the codebase it describes.",
+  );
+  lines.push("");
   lines.push("## Findings");
   lines.push("");
   if (findings.length === 0) {
