@@ -1,7 +1,7 @@
 ---
 phase: "2"
 slug: "accuracy-analysis-depth"
-status: draft
+status: approved
 shadcn_initialized: true
 preset: "style=new-york, baseColor=neutral, cssVariables=true, iconLibrary=lucide, tailwind=v4 (CSS-first, no config file)"
 created: "2026-09-07"
@@ -234,6 +234,11 @@ must never show a blank flash**, and the filter-chip count in each chip label mu
 *unfiltered* total (so hiding an ability doesn't make its own count vanish before you can re-select
 it).
 
+**Truncation notice:** if the `/api/timeline` route hits its `MAX_PAGES` cap it must return
+`truncated: true`, and the log then renders a final full-width 40px row in `.text-caption
+text-status-warn` reading `Log truncated — showing first {N} casts`, so a capped log is never
+mistaken for a complete one that shows no problems late in the fight.
+
 **Loading state:** three stacked `Skeleton` blocks matching the row height (`h-10 w-full`), same
 idiom as `AnalysisLoading()`'s existing skeletons — this is the state shown while the lazy fetch
 (D-01: only on tab open) is in flight.
@@ -321,6 +326,7 @@ implementation the player-page rows above must visually match, not the other way
 | Empty state (Timeline) | `"No casts recorded for this player in this fight."` — matches `CastEfficiency.tsx`'s existing `"No cast data available."` tone exactly |
 | Error state (Timeline) | Server-provided message via `<Alert variant="destructive"><AlertDescription>` (identical idiom to `player.error`); fallback if the route omits a message: `"Couldn't load the cast timeline. Try again."` |
 | Idle-gap label | `"⏸ Idle {N.N}s"` (rendered via Lucide `Pause` icon, not the literal ⏸ glyph, `size-3` `text-status-warn`) |
+| Truncation notice (Timeline) | `"Log truncated — showing first {N} casts"` — final row, `.text-caption text-status-warn`, only when the route reports `truncated: true` |
 | Death-row label | `"Died"` next to a Lucide `Skull` icon, `size-3.5`, `text-status-bad`, full-row `badge-bad` band |
 | Filter chip labels | `"All"` (reset chip) then `"{Ability Name} ({count})"` per ability, sentence case, no truncation abbreviations |
 | Healer Overheal/Uptime row labels | `"Overheal"`, `"Uptime"` — one word each, matching the existing `"Median"`/`"Top"` row label convention in `DpsComparison.tsx` |
@@ -331,25 +337,69 @@ implementation the player-page rows above must visually match, not the other way
 
 ## UI Considerations
 
-Probe not re-run this phase (narrow, extension-only scope over three already-probed surfaces from
-Phase 1's design system). Coverage below is reasoned directly from D-01–D-08 and the codebase reads
-above, following the same empty/loading/error/populated/partial/overflow/zero-one-many/long-text
-shape used by the probe.
+Probe run 2026-09-07 via `ui-consideration-probe.cjs` over 8 authored elements (heuristic kinds
+were corrected by hand — prose cues like "rows"/"tabs" over-matched `list-collection`/`nav`).
+Coverage: **41 applicable, 41 resolved** (40 explicit, 1 backstop, 0 unresolved).
+Empty/error copy lives in the Copywriting Contract above; rows below reference it rather than restate it.
 
-Applicable state considerations resolved: 7 covered, 1 backstop, 2 unresolved.
+### Elements
 
-| Category | Element(s) | Status | Resolution / Reason |
-|----------|------------|--------|---------------------|
-| empty | Timeline log | ✅ covered | Empty state copy defined above (`"No casts recorded..."`), matches `CastEfficiency.tsx` convention |
-| loading | Timeline log | ✅ covered | Three `h-10` `Skeleton` rows, same idiom as `AnalysisLoading()` |
-| error | Timeline log | ✅ covered | `Alert variant="destructive"` idiom, identical to `player.error`/`raid.error`/`cla.error` |
-| zero-one-many | Idle-gap dividers | ✅ covered | Zero dividers renders nothing extra (perfect play); one or many render identically, each independently computed from the relative threshold — no special-casing for "many gaps" needed since the list is already virtualised |
-| zero-one-many | Death markers | ✅ covered | A player can die 0 or 1 times per fight-scoped timeline (a dead player stops casting); no multi-death case exists within a single player's single-fight log |
-| long-text | Ability names / target names | ✅ covered | `truncate` on both the ability-name and target columns, consistent with `PlayerRow`'s existing `truncate` handling of long player names in `RaidOverview.tsx` |
-| overflow | Filter chip row | ✅ covered | `flex flex-wrap gap-1.5` — wraps to multiple lines rather than horizontal-scrolling or clipping, same wrap behavior as `AnalysisView.tsx`'s existing `TabsList` (`flex flex-wrap h-auto gap-1`) |
-| partial | Healer suggestions when only some D-07 rules fire | 🧪 backstop | `{ statement: "A healer whose overheal is high but whose uptime and effective-HPS gap are both normal sees exactly one suggestion card (the overheal rule), not three cards with two saying nothing is wrong", verification: backstop }` |
-| overflow | Timeline virtualised scroll on a very long fight (Wave 0 page-cap risk) | ⚠ unresolved | RESEARCH.md's `MAX_PAGES` cap (Claude's Discretion) means a pathologically long fight's log could be silently truncated before the UI ever sees the missing tail. This spec's row/chip/divider treatment assumes a complete list; if the API caps pages, the Timeline tab needs a visible "log truncated" notice so a raider doesn't mistake a capped log for a complete one showing no problems late in the fight — planner must decide whether to add this notice or accept the (documented) truncation risk |
-| populated | Ability icon load failure at CDN (`wow.zamimg.com` unreachable/rate-limited) | ⚠ unresolved | The graceful `onError` fallback square (specified above) covers a single broken icon, but if the CDN is down entirely, every row falls back — acceptable degradation, not a blocker, but not explicitly load-tested this phase; flagged so it isn't silently assumed to always render icons |
+| Id | Element | Kinds |
+|----|---------|-------|
+| E1 | Timeline cast log | list-collection |
+| E2 | Per-ability filter chips | interactive-control, list-collection |
+| E3 | Inline ability icon | media |
+| E4 | Idle-gap / death marker rows | static-content |
+| E5 | Timeline tab trigger | nav |
+| E6 | Healer Overheal/Uptime rows | static-content |
+| E7 | Healer suggestion cards | list-collection |
+| E8 | Healer Breakdown panel (raid overview) | list-collection |
+
+### Resolutions
+
+| Element | Category | Status | Resolution |
+|---------|----------|--------|------------|
+| E1 Timeline cast log | empty | ✅ resolved | Timeline tab renders exactly the text 'No casts recorded for this player in this fight.' when the filtered cast list is empty; no chips row and no skeletons are shown. |
+| E1 Timeline cast log | loading | ✅ resolved | While the lazy /api/timeline fetch is in flight the tab shows three stacked h-10 Skeleton rows and nothing else; the fetch starts only on first tab open (D-01). |
+| E1 Timeline cast log | error | ✅ resolved | A failed fetch renders <Alert variant="destructive"> with the server message, falling back to 'Couldn't load the cast timeline. Try again.'; reopening the tab retries. |
+| E1 Timeline cast log | populated | ✅ resolved | Typical fight (200–800 casts) renders chronological 40px rows [mm:ss \| icon \| ability \| target] inside the same Card shell as the Casts tab; only rows within viewport+buffer are mounted behind a full-height spacer. |
+| E1 Timeline cast log | partial | ✅ resolved | Rows whose WCL event has no target show '—' in the target column; rows with no abilityIcon show the muted placeholder square; a row is never dropped for missing optional fields. |
+| E1 Timeline cast log | overflow | ✅ resolved | If the timeline route hits its MAX_PAGES cap and returns truncated:true, the log renders a final full-width .text-caption text-status-warn row 'Log truncated — showing first {N} casts' so a capped log is never mistaken for a complete one; vertical overflow scrolls inside the virtualised container, the page never scrolls horizontally. |
+| E1 Timeline cast log | zero-one-many | ✅ resolved | 0 casts → empty state; 1 cast → a single row with no idle-gap divider (gaps need two casts); many → identical row treatment, idle-gap dividers only between consecutive casts exceeding the relative threshold, at most one death-marker row per fight. |
+| E2 Per-ability filter chips | empty | ✅ resolved | When the cast list is empty the chip row is not rendered at all (no lone 'All' chip). |
+| E2 Per-ability filter chips | loading | ✅ resolved | Chips are derived client-side from the loaded cast list; during loading no chip row is rendered (skeleton rows only). |
+| E2 Per-ability filter chips | error | ✅ resolved | Chips never fail independently — they have no fetch; on timeline error the chip row is absent and only the Alert renders. |
+| E2 Per-ability filter chips | populated | ✅ resolved | One chip per distinct non-junk ability plus a leading 'All' chip, all selected on first render (nothing hidden by default, D-04), sorted by cast count descending. |
+| E2 Per-ability filter chips | partial | ✅ resolved | With some abilities toggled off, 'All' shows the unselected style; each chip's '({count})' remains the unfiltered total so a hidden ability's count never disappears. |
+| E2 Per-ability filter chips | overflow | ✅ resolved | flex flex-wrap gap-1.5 — a spec with 25+ abilities wraps to additional lines; no horizontal scroll, no clipping, no 'show more' collapse. |
+| E2 Per-ability filter chips | zero-one-many | ✅ resolved | 0 abilities → no chip row; 1 ability → 'All' plus one chip (toggling it off shows the empty-state copy inline); many → wrap as above. |
+| E2 Per-ability filter chips | long-text | ✅ resolved | Chip labels render the full ability name without truncation (D-04 copy rule); a long name simply makes a wider chip that wraps to its own line. |
+| E3 Inline ability icon | empty | ✅ resolved | A row whose ability has no icon filename renders the 24px muted placeholder square (bg-surface-2 rounded-[3px]) so column alignment is preserved. |
+| E3 Inline ability icon | loading | ✅ resolved | loading="lazy" with the placeholder square as the background of the fixed 24px box, so rows keep their layout while the image decodes — no layout shift. |
+| E3 Inline ability icon | error | ✅ resolved | onError swaps the <img> for the placeholder square; if wow.zamimg.com is fully unreachable every row degrades to placeholders and the log stays fully readable via ability-name text and alt text — no retry, no error banner. |
+| E3 Inline ability icon | populated | ✅ resolved | 24px square, rounded-[3px], border border-border/50, alt={abilityName}, src https://wow.zamimg.com/images/wow/icons/medium/{icon}. |
+| E4 Idle-gap / death marker rows | overflow | ✅ resolved | Divider and death rows are fixed 40px full-width bands; their centred label never exceeds one line ('Idle 12.3s' / 'Died'), so no clipping is possible. |
+| E4 Idle-gap / death marker rows | long-text | ✅ resolved | Labels are fixed short strings with a numeric slot formatted to one decimal (max ~'Idle 999.9s'); no free text flows into these rows. |
+| E5 Timeline tab trigger | loading | ✅ resolved | The Timeline TabsTrigger is always enabled and never shows a spinner; loading is expressed inside the tab panel, matching the existing Casts/Gear triggers. |
+| E5 Timeline tab trigger | error | ✅ resolved | A timeline fetch error does not alter the trigger; the tab stays selectable and the error Alert lives in the panel. |
+| E5 Timeline tab trigger | overflow | ✅ resolved | Adding a fourth trigger keeps the existing TabsList 'flex flex-wrap h-auto gap-1' behaviour — on narrow mobile the list wraps to a second line rather than clipping. |
+| E5 Timeline tab trigger | long-text | ✅ resolved | Trigger label is the single word 'Timeline'; no dynamic text. |
+| E6 Healer Overheal/Uptime rows | overflow | ✅ resolved | Two 'flex justify-between text-sm' rows; on the narrowest supported width (320px) label + 'You: 100% · Top: 100%' fits on one line with font-mono text-sm — verified by the row shape already used for Median/Top labels. |
+| E6 Healer Overheal/Uptime rows | long-text | ✅ resolved | Values are bounded percentages (0–100%, integer) and labels are fixed one-word strings; no long-text case exists. |
+| E7 Healer suggestion cards | empty | ✅ resolved | When no healer rule fires, ComparisonSummary renders its existing 'no suggestions' state unchanged — no empty healer-specific card is added. |
+| E7 Healer suggestion cards | loading | ✅ resolved | Suggestions arrive with the /api/analyze payload; the existing AnalysisLoading() skeleton covers them — no separate loading state. |
+| E7 Healer suggestion cards | error | ✅ resolved | Covered by the existing player.error Alert in AnalyzeClient; suggestions never render on error. |
+| E7 Healer suggestion cards | populated | ✅ resolved | Each fired healer rule renders one existing suggestion card with a 'Healing' category badge (new categoryLabels entry) and the D-07 copy shape; DPS-shaped cards (ABC/CPM) never appear when role === 'healer'. |
+| E7 Healer suggestion cards | partial | 🧪 backstop | `{ statement: "A healer whose overheal is high but whose uptime and effective-HPS gap are both in line sees exactly one suggestion card (the overheal rule), not three cards with two saying nothing is wrong — assert in the shared healer-helper unit tests with the demo-report fixture.", verification: backstop }` |
+| E7 Healer suggestion cards | overflow | ✅ resolved | At most three healer rules exist, so the list is bounded; the card list stacks vertically as today. |
+| E7 Healer suggestion cards | zero-one-many | ✅ resolved | 0 → existing no-suggestions state; 1 → single card; up to 3 → stacked cards ordered by priority, identical to the DPS path. |
+| E8 Healer Breakdown panel (raid overview) | empty | ✅ resolved | Existing HealerPanel empty behaviour unchanged (panel hidden when the fight has no healers). |
+| E8 Healer Breakdown panel (raid overview) | loading | ✅ resolved | Unchanged — covered by the raid overview's existing loading skeleton. |
+| E8 Healer Breakdown panel (raid overview) | error | ✅ resolved | Unchanged — covered by raid.error Alert. |
+| E8 Healer Breakdown panel (raid overview) | populated | ✅ resolved | Visual structure unchanged; overheal and uptime values and their colors come from computeHealerMetrics + the shared overhealColor/activityColor helpers so they equal the player page's values for the same healer+fight. |
+| E8 Healer Breakdown panel (raid overview) | partial | ✅ resolved | A healer with zero healing events (e.g. dead at pull) shows 0 HPS, '—' for overheal, and 0% uptime rather than NaN — the shared helper must guard divide-by-zero. |
+| E8 Healer Breakdown panel (raid overview) | overflow | ✅ resolved | Unchanged — the panel already lists every healer vertically; 25-man raids with 7–8 healers stack without truncation. |
+| E8 Healer Breakdown panel (raid overview) | zero-one-many | ✅ resolved | Unchanged existing behaviour for 0/1/many healers; only the data source changes. |
 
 ---
 
@@ -367,12 +417,12 @@ No new third-party registry is introduced this phase.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
-- [ ] Dimension 7 Inventory Provenance: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
+- [x] Dimension 7 Inventory Provenance: PASS
 
-**Approval:** pending
+**Approval:** APPROVED — gsd-ui-checker 2026-09-07, 7/7 PASS, no recommendations
