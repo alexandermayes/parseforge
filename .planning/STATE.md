@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Foundation — Themes & Consent
 status: executing
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-09-06T23:03:18.836Z"
-last_activity: 2026-09-06
+stopped_at: Completed 01-08-PLAN.md
+last_updated: "2026-09-07T04:30:07.666Z"
+last_activity: 2026-09-07
 last_activity_desc: Phase 01 execution started
-state_head: c8c1c706db0ad2f1b6b24c8de6651f72b9156da3
+state_head: f2bb14b792415d3b4e11b8695be76a9a9063a964
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 01 (Foundation — Themes & Consent) — EXECUTING
-Plan: 6 of 9
-Status: Ready to execute
-Last activity: 2026-09-06 - Completed quick task 260906-kzw: Add /privacy and /terms pages, footer links, sitemap entries
+Plan: 8 of 9
+Status: 01-08 complete, ready for 01-09 (final plan — deploy)
+Last activity: 2026-09-07 - Completed 01-08-PLAN.md: seo-invariants gate + docs/OPS-01-SHIP-GATE.md
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P05 | 35min | 3 tasks | 13 files |
 | Phase 01 P06 | 7min | 3 tasks | 6 files |
 | Phase 01 P07 | 35min | 3 tasks | 15 files |
+| Phase 01 P08 | 55min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,7 @@ Recent decisions affecting current work:
 - [Phase 01]: [Phase 01 / 01-05] Tokenized the 11 WoW class colours and 4 role colours as paired --class-*/--role-* light/dark CSS custom properties (D-12); retuned 6 of the plan's proposed starting hex values via an HSL-lightness binary search after measuring they fell short of WCAG AA 4.5:1; split lib/constants.ts into token maps (var() refs) and a documented Satori-only hex mirror (CLASS_COLORS_HEX/ROLE_COLORS_HEX) with classColor()/roleColor()/roleColorAlpha() resolution helpers replacing direct map indexing across 9 DOM consumers
 - [Phase 01]: Phase 01 / 01-06: Built scripts/token-audit.mjs (fail-first-proven, reasoned allowlist for the Satori raw-hex exception) and moved GRADE_COLORS/percentileColor/percentileBg onto six paired --tier-* performance tokens; retuned the artifact tier's light lightness (oklch 0.545 0.15 85) after the plan's proposed value measured 4.07:1, below WCAG AA 4.5:1
 - [Phase 01]: [Phase 01 / 01-07]: Closed DSGN-01's remaining token-audit worklist to zero (npm run token-audit exits 0 for the first time this phase) by migrating 9 components to semantic tokens and extending the audit's reasoned allowlist to cover manifest.ts, opengraph-image.tsx, and six vendored magicui-style effect components' unreachable default props; generated docs/TOKEN-AUDIT.md as the standing proof artifact.
+- [Phase 01]: Phase 01 / 01-08: Built scripts/seo-invariants.mjs (local-vs-production head-tag + JSON-LD diff) and docs/OPS-01-SHIP-GATE.md as the repeatable OPS-01 gate every later phase runs; expanded the route set from the plan's stale 9 to the live 11 (adding /privacy and /terms) and corrected a stale consent_resolved instrumentation-count assumption against 01-03's already-correct two-branch implementation; the 11-route theme sweep is deferred to end-of-phase UAT.
 
 ### Pending Todos
 
@@ -116,6 +118,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T23:03:18.823Z
-Stopped at: Completed 01-07-PLAN.md
+Last session: 2026-09-07T04:30:07.648Z
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None
