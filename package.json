@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "theme-parity": "node scripts/theme-parity.mjs",
-    "token-audit": "node scripts/token-audit.mjs"
+    "token-audit": "node scripts/token-audit.mjs",
+    "seo-invariants": "node scripts/seo-invariants.mjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
