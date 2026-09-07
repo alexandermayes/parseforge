@@ -19,7 +19,7 @@ ParseForge is a live product with real organic traffic, so this milestone ships 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation — Themes & Consent** - Token audit unlocks a dark/light toggle; consent layer gates ads and PostHog replay
+- [x] **Phase 1: Foundation — Themes & Consent** - Token audit unlocks a dark/light toggle; consent layer gates ads and PostHog replay (completed 2026-09-06)
 - [ ] **Phase 2: Accuracy & Analysis Depth** - Verified game data, tested engines, cast timeline, healer metrics
 - [ ] **Phase 3: Share Loop** - Roast/award cards, per-player permalinks, share CTA that survives later phases
 - [ ] **Phase 4: Ads Live** - AdSense in reserved, consent-gated slots that never crowd the core flow
@@ -198,7 +198,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Themes & Consent | 9/9 | In Progress|  |
+| 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 0/TBD | Not started | - |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |

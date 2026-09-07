@@ -29,6 +29,10 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - ✓ Viral loop v1: Discord copy backlink + OG unfurl, demo report, share buttons — existing (share rate only ~2.8%, needs work)
 - ✓ PostHog analytics + structured observability; rate limiting; CSP (report-only) — existing
 - ✓ Verified game-data ID databases (wago.tools regeneration workflow) — existing
+- ✓ Light/Dark/System theme toggle with a genuine ParseForge light palette; class/role/tier colours and every utility colour resolved from paired tokens, enforced by `theme-parity` + `token-audit` gates (DSGN-01, DSGN-03) — Phase 1
+- ✓ GDPR consent layer: Google Privacy & Messaging (TCF v2.2) gates PostHog capture and session replay for EEA/UK visitors; non-EEA unaffected (MONY-01) — Phase 1
+- ✓ `/privacy` and `/terms` pages (individual operator, California law, contact info@lootlistplus.com) — Phase 1 (quick task 260906-kzw)
+- ✓ OPS-01 ship gate as a repeatable document (`docs/OPS-01-SHIP-GATE.md`) with `seo-invariants` local-vs-prod diff; Phase 1 gate closed with GSC + PostHog evidence — Phase 1
 
 ### Active
 
@@ -79,7 +83,8 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
   - Site-wide CTR is structurally misleading (navigational impressions dominate) — never treat it as a health metric; segment first
   - Title template appends " | ParseForge" (13 chars) — child page titles must stay under ~47 chars; always render pages to verify, don't eyeball metadata
 - **Next keyword candidate**: `wow log analyzer` (392 impr/28d, pos 3.5, tool intent) — segment before building
-- **Known concerns** (from CONCERNS.md): CSP still report-only; PostHog session replay lacks EU consent flow; core engines (cla, raid-overview, wcl-client) largely untested
+- **Known concerns** (from CONCERNS.md): CSP still report-only; core engines (cla, raid-overview, wcl-client) largely untested. *(Resolved Phase 1: PostHog EU consent flow now gated by the Google CMP.)* Deferred from Phase 1: formal ASVS security review — gsd security tooling not installed; per-plan STRIDE registers exist
+- **Manual follow-ups after Phase 1**: paste `https://parseforge.gg/privacy` into AdSense → Privacy & messaging → message site settings; re-check PostHog event definitions (`theme_changed`, `consent_resolved`) at the Phase 2 gate; `git push origin main` (unpushed phase forces sequential execution)
 - **Feedback source today**: owner's personal Discord (uncomfortable) — motivates the community requirement
 
 ## Constraints
@@ -102,7 +107,11 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 | Full design overhaul, identity preserved | Site "messy/bloated" after SEO additions; refero.design as reference | — Pending |
 | Ads as first monetization | Easiest path to revenue now; alternatives evaluated first | — Pending |
 | Dedicated community channel (Discord) | Feedback currently in owner's personal Discord | — Pending |
-| GSC + PostHog instrumentation as standing invariant | Measurement must track every change | — Pending |
+| GSC + PostHog instrumentation as standing invariant | Measurement must track every change | ✓ Phase 1 gate closed via `docs/OPS-01-SHIP-GATE.md`; re-run every phase |
+| Google Privacy & Messaging as the CMP; EEA/UK-only full-screen message; consent shipped before any ad script | Certified TCF v2.2 CMP inside the AdSense account Phase 4 needs anyway; US traffic and Googlebot never see an interstitial | ✓ Live 2026-09-06 (Phase 1) |
+| Class-attribute theming via next-themes, tokens enforced by `theme-parity` + `token-audit` scripts | Machine-checkable DSGN-01 so the Phase 7 redesign can't regress hardcoded colours | ✓ Good (Phase 1) |
+| Preview deploy before every prod deploy when no real-browser pass happened | Agents can't drive a browser; a preview lets the developer eyeball before visitors do | ✓ Good (Phase 1) |
+| Defer the formal ASVS security review for Phase 1 | Security tooling absent from this gsd-core profile; STRIDE registers exist per plan | — Pending (install tooling, run `/gsd-secure-phase 01`) |
 
 ## Evolution
 
@@ -122,4 +131,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-04 after initialization*
+*Last updated: 2026-09-07 after Phase 1*

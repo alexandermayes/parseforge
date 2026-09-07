@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-current_phase: 01
-current_phase_name: Foundation — Themes & Consent
-status: executing
-stopped_at: Completed 01-09-PLAN.md — all 9 plans executed; phase verification pending
-last_updated: "2026-09-07T05:00:00.000Z"
+current_phase: 2
+current_phase_name: Accuracy & Analysis Depth
+status: planning
+stopped_at: Phase 01 complete, ready to plan Phase 2
+last_updated: "2026-09-07T05:58:37.203Z"
 last_activity: 2026-09-07
-last_activity_desc: 01-09 complete — Phase 1 deployed to parseforge.gg, OPS-01 gate closed
-state_head: 8418387
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
+state_head: c90ce928b3cde18a2357206203a2d1c361588c9d
 progress:
   total_phases: 7
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 9
   completed_plans: 9
   percent: 14
@@ -20,17 +20,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-04)
+See: .planning/PROJECT.md (updated 2026-09-07 after Phase 1)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 01 — Foundation — Themes & Consent
+**Current focus:** Phase 2 — Accuracy & Analysis Depth (raiders get verifiably correct analysis plus per-fight depth)
 
 ## Current Position
 
-Phase: 01 (Foundation — Themes & Consent) — ALL PLANS EXECUTED, verification pending
-Plan: 9 of 9
-Status: Deployed to production (parseforge-424ibrxax → parseforge.gg); OPS-01 gate closed; awaiting phase verification + end-of-phase UAT sweep
-Last activity: 2026-09-07 - Completed 01-09-PLAN.md: preview → deploy-now → prod live; GSC 9× PASS (pre-deploy crawls) + 2× no-data; PostHog defs no-data
+Phase: 2 — Accuracy & Analysis Depth
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-07 — Phase 01 complete (UAT 5/5, verification passed, deployed to parseforge.gg), transitioned to Phase 2
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -38,7 +38,7 @@ Progress: [█░░░░░░░░░] 14%
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 9
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -46,7 +46,7 @@ Progress: [█░░░░░░░░░] 14%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 9 | - | - |
 
 **Recent Trend:**
 
@@ -98,7 +98,9 @@ None. Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → Eur
 
 ### Blockers/Concerns
 
-- Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time.
+- Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time. Phase 1 established preview-before-prod when no real-browser pass happened.
+- [Phase 1 carry-forward] Security ASVS review deferred (tooling not installed — see Deferred Items); CSP still report-only; `main` unpushed (59+ commits ahead of origin → sequential execution until pushed).
+- [Phase 1 carry-forward] Build-time `[kv-cache] getRecentReports failed: Dynamic server usage` noise during prerender of `/` and `/sitemap.xml` — pre-existing, harmless at runtime; small cleanup candidate.
 - Phase 4 research flag: verify current ad-network eligibility thresholds directly at signup (Ezoic source contradiction unresolved); model revenue vs. CWV/UX cost before committing.
 - Phase 5 open question: dedicated ParseForge Discord vs. channel in existing LootList+ server (empty-room risk). Phase touches a second repo at /Users/alexander.mayes/Code/loot-list-plus (Railway deploy).
 - Phase 6 research flag: define the per-page uniqueness rubric before scaling programmatic pages past the 10–15 pilot set (scaled-content-abuse risk).
@@ -116,10 +118,10 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
-| *(none)* | | | | |
+| Security | Formal ASVS L1 security review of Phase 1 (`01-SECURITY.md`) — gsd security tooling (gsd-secure-phase skill, gsd-security-auditor agent) not installed in this profile; per-plan STRIDE registers exist. Close via full-profile install + `/gsd-secure-phase 01` | Deferred | 2026-09-07 (Phase 1 close) | v1 growth |
 
 ## Session Continuity
 
 Last session: 2026-09-07 (deploy session)
-Stopped at: Completed 01-09-PLAN.md — all 9 Phase 1 plans executed; gsd-verifier running for 01-VERIFICATION.md; end-of-phase UAT sweep to follow
+Stopped at: Phase 01 complete, ready to plan Phase 2
 Resume file: None

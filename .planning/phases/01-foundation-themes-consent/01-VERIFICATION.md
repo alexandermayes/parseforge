@@ -276,3 +276,11 @@ the phase's own designed checkpoint, not an unplanned blocker.
 
 _Verified: 2026-09-06_
 _Verifier: Claude (gsd-verifier)_
+
+## UAT Result (2026-09-07)
+
+All 5 human-verification items passed in `01-UAT.md` (theme toggle, EEA/UK vs US consent dialog on the live CMP, 11-route light-mode sweep, OG unfurl class colours, phone spot check). Status canonicalized `human_needed` → `passed`.
+
+## Acknowledged Gaps
+
+- **Security review (ASVS L1) deferred.** `workflow.security_enforcement` is enabled, but this GSD install (standard profile) lacks the `gsd-secure-phase` skill and `gsd-security-auditor` agent, so `01-SECURITY.md` could not be produced. Developer chose to proceed and defer (2026-09-07). Mitigation already in place: every Phase 1 PLAN.md carries a STRIDE threat register (T-01-01 … T-01-30, T-01-SC) with dispositions; CSP remains report-only (pre-existing concern). To close: install the full gsd-core profile, run `/gsd-secure-phase 01`.
