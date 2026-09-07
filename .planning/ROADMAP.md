@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A token audit report shows shipped UI resolving color, spacing, motion, and elevation from Tailwind v4 `@theme` tokens — hardcoded values consolidated, missing token categories added.
   4. Consent choice and theme toggle emit PostHog events, and a GSC pass confirms no indexing/metadata regression — establishing the OPS-01 ship gate that every later phase repeats.
 
-**Plans**: 8/9 plans executed
+**Plans**: 9/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -74,7 +74,7 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
-- [ ] 01-09-PLAN.md — Production deploy (approval-gated) + Search Console and PostHog close-out
+- [x] 01-09-PLAN.md — Production deploy (approval-gated) + Search Console and PostHog close-out
 
 **Notes**: Consent is deliberately built before any ad script (MONY-01 → MONY-02 sequencing) and simultaneously closes the pre-existing PostHog EU-consent debt in CONCERNS.md. Theme toggle is re-validated per route during Phase 7.
 
@@ -198,7 +198,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Themes & Consent | 8/9 | In Progress|  |
+| 1. Foundation — Themes & Consent | 9/9 | In Progress|  |
 | 2. Accuracy & Analysis Depth | 0/TBD | Not started | - |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
