@@ -106,19 +106,19 @@ $ npm run token-audit
 One row per route, lexicographic order by path. Both columns are recorded on the same row per
 the Part 1 recording rules — a second check on a route extends this row, it never duplicates it.
 
-| Route | Theme sweep (Light / Dark) | SEO-invariant diff vs production |
-|---|---|---|
-| `/` | Deferred — end-of-phase UAT (`workflow.human_verify_mode=end-of-phase`; no automated visual-regression harness exists for this project) | same — canonical/robots/structured-data match; non-failing: `og:image` host differs (`localhost:3987` vs `parseforge.gg`, expected — `metadataBase` resolves per host) |
-| `/analyze/ZjKgNYxVcAqR8pGJ` (demo report, all 3 tabs) | Deferred — end-of-phase UAT | same *(with caveat)* — canonical/robots differ locally only because this dev server has no `WCL_CLIENT_ID`/`SECRET` (Vercel-only secret, CLAUDE.md) and so cannot fetch the real report; `generateMetadata`'s index-when-public branching is unchanged by this phase. Structured-data `@type` list matches (empty on both — this route emits no JSON-LD). Non-failing: title/description/`og:title` differ (generic-fallback copy locally vs real report copy in prod, same root cause) |
-| `/guides` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/guides/how-to-analyze-wow-classic-logs` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/guides/improve-dps-wow-classic` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/guides/raid-preparation-checklist` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/guides/warcraft-logs-vs-parseforge` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/guides/wow-classic-loot-council-tools` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/privacy` | Deferred — end-of-phase UAT | `no-data` — production returned 404 (not yet deployed; ships in plan 01-09) |
-| `/tbc-audit` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production |
-| `/terms` | Deferred — end-of-phase UAT | `no-data` — production returned 404 (not yet deployed; ships in plan 01-09) |
+| Route | Theme sweep (Light / Dark) | SEO-invariant diff vs production | Live after deploy (01-09, 2026-09-06) | Search Console (URL inspection, 2026-09-06 post-deploy) |
+|---|---|---|---|---|
+| `/` | Deferred — end-of-phase UAT (`workflow.human_verify_mode=end-of-phase`; no automated visual-regression harness exists for this project) | same — canonical/robots/structured-data match; non-failing: `og:image` host differs (`localhost:3987` vs `parseforge.gg`, expected — `metadataBase` resolves per host) | 200; CMP script host `fundingchoicesmessages.google.com` present in HTML (publisher ID reached the build); 5 recent-report links rendered | PASS — "Submitted and indexed"; last crawled 2026-09-05 (**pre-deploy crawl** — post-deploy re-crawl not yet observed); rich results: none |
+| `/analyze/ZjKgNYxVcAqR8pGJ` (demo report, all 3 tabs) | Deferred — end-of-phase UAT | same *(with caveat)* — canonical/robots differ locally only because this dev server has no `WCL_CLIENT_ID`/`SECRET` (Vercel-only secret, CLAUDE.md) and so cannot fetch the real report; `generateMetadata`'s index-when-public branching is unchanged by this phase. Structured-data `@type` list matches (empty on both — this route emits no JSON-LD). Non-failing: title/description/`og:title` differ (generic-fallback copy locally vs real report copy in prod, same root cause) | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-26 (pre-deploy crawl); rich results: none |
+| `/guides` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-07-29 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/guides/how-to-analyze-wow-classic-logs` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-30 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/guides/improve-dps-wow-classic` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-21 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/guides/raid-preparation-checklist` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-17 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/guides/warcraft-logs-vs-parseforge` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-21 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/guides/wow-classic-loot-council-tools` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-21 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/privacy` | Deferred — end-of-phase UAT | `no-data` pre-deploy (production returned 404) → post-deploy: live with param-free canonical `https://parseforge.gg/privacy`, indexable, listed in `/sitemap.xml` | 200 | `no-data` — NEUTRAL, "URL is unknown to Google", never crawled (page went live with this deploy; now in sitemap — re-inspect at next gate) |
+| `/tbc-audit` | Deferred — end-of-phase UAT | same — canonical/robots/structured-data match production | 200 | PASS — "Submitted and indexed"; last crawled 2026-08-25 (pre-deploy crawl); rich results: Breadcrumbs |
+| `/terms` | Deferred — end-of-phase UAT | `no-data` pre-deploy (production returned 404) → post-deploy: live with param-free canonical `https://parseforge.gg/terms`, indexable, listed in `/sitemap.xml` | 200 | `no-data` — NEUTRAL, "URL is unknown to Google", never crawled (page went live with this deploy; now in sitemap — re-inspect at next gate) |
 
 Full per-field diff detail: `npm run seo-invariants -- --report` (verbatim command output below).
 
@@ -186,22 +186,77 @@ lib/report-meta.ts app/sitemap.ts`, whose most recent hit before this plan is qu
 `app/sitemap.ts` — a pure addition that doesn't touch the `getRecentReports`/`DEMO_REPORT`
 pipeline (verified in `260906-kzw-SUMMARY.md` D4 and re-confirmed by the grep checks above).
 
-### Pending post-deploy
+### Production deploy (plan 01-09, 2026-09-06)
 
-These two rows genuinely cannot be filled until plan 01-09 ships this phase's code to
-production — recorded here as explicitly deferred, not assumed:
+Developer approval: a Vercel **preview** deployment was created first
+(`parseforge-bpny2a7d1-loot-list-plus.vercel.app`, behind team SSO) and offered for a visual
+pass; the developer then replied `deploy-now` at the 01-09 decision checkpoint.
 
-1. **PostHog event-definition check** — after deploy, confirm `theme_changed`, `consent_resolved`,
-   and `consent_unavailable` appear in the PostHog project's (337485, org LootList+) event
-   definitions once real traffic generates them. Pre-deploy grep evidence above proves the call
-   sites exist; this step proves they actually reach PostHog in production.
-2. **Search Console inspection** — after deploy, URL-inspect all eleven routes (twelve once
-   `/privacy` and `/terms` are live) via GSC (MCP `gscServer`) and confirm indexability and
-   metadata match what this gate recorded. A route GSC hasn't crawled yet is recorded `no-data`,
-   never a pass.
-3. **Manual AdSense follow-up** (not part of this gate, tracked separately per
-   `260906-kzw-SUMMARY.md`): after deploy, paste `https://parseforge.gg/privacy` into AdSense →
-   Privacy & messaging → European regulations → message → site settings.
+```
+$ vercel deploy --prod --scope loot-list-plus --yes
+Production  https://parseforge-424ibrxax-loot-list-plus.vercel.app
+Aliased     https://parseforge.gg
+readyState  READY
+```
+
+Build-log note: `[kv-cache] getRecentReports failed: Dynamic server usage` lines appear during
+the static prerender of `/` and `/sitemap.xml`. This is pre-existing (`lib/kv-cache.ts` is
+untouched by Phase 1 — its `cache: "no-store"` fetch dates from commit `a4aaf75`) and harmless
+at runtime: the live sitemap and homepage below both carry recent-report data.
+
+Live verification (all from `https://parseforge.gg`, immediately post-alias):
+
+```
+all 13 paths 200: / /guides /guides/* (5) /tbc-audit /privacy /terms
+                  /analyze/ZjKgNYxVcAqR8pGJ /sitemap.xml /robots.txt
+CMP script host present in / HTML: fundingchoicesmessages.google.com   ← MONY-01 live
+sitemap.xml: 4837 <loc> entries, 4827 /analyze/ report URLs, /privacy + /terms listed
+homepage: 5 distinct /analyze/ recent-report links
+/privacy canonical: https://parseforge.gg/privacy (param-free)
+```
+
+### Search Console (post-deploy, 2026-09-06, MCP `gscServer`, property `sc-domain:parseforge.gg`)
+
+Per-route verdicts are recorded in the route table above (fifth column). Summary: 9/11 routes
+PASS "Submitted and indexed" with rich results unchanged (Breadcrumbs on guides + tbc-audit,
+none on `/` and the analyze route — matching the pre-deploy baseline in 01-08-SUMMARY.md).
+**All nine `last_crawled` dates predate this deploy** (newest 2026-09-05), so these confirm the
+routes entered the deploy indexed; they do not yet confirm Google's view of the *new* build.
+`/privacy` and `/terms` are `no-data` (unknown to Google, never crawled). Re-inspect all eleven
+at the next phase gate; a route that regresses to non-PASS then is a Phase 1 defect.
+
+### PostHog event definitions (post-deploy, 2026-09-06 ~21:45 PDT)
+
+| Event | Result | Evidence / reason |
+|---|---|---|
+| `theme_changed` | `no-data` | PostHog MCP (`posthog`) OAuth was completed by the developer but the MCP server disconnected before exposing its tools this session, so the event-definition query could not be run. Independently: the event only materialises after a real visitor uses the navbar toggle; the deploy was minutes old at check time. Call site verified pre-deploy (grep above). |
+| `consent_resolved` | `no-data` | Same connection reason. Additionally fires only for EEA/UK visitors (`opt-in-full` / `cookieless` branches), so no-data is the expected value until EEA traffic arrives. Call site verified pre-deploy. |
+| `consent_unavailable` | `no-data` | Same connection reason. Fires only when a visitor's CMP is blocked/absent past `CMP_TIMEOUT_MS`; expected to stay absent in a healthy deployment. |
+
+Re-check at the next phase gate via PostHog → Data management → Events (project 337485) or
+the PostHog MCP `event-definition` command once the connection is stable. A row here flips to
+**present** only with the listing that proves it.
+
+### Manual follow-up (outside this gate)
+
+- **AdSense privacy-policy URL** (tracked per `260906-kzw-SUMMARY.md`): paste
+  `https://parseforge.gg/privacy` into AdSense → Privacy & messaging → European regulations →
+  message → site settings. The page is live as of this deploy.
+
+### Sign-off — Phase 1 (2026-09-06)
+
+| Gate step | Result | Evidence |
+|---|---|---|
+| 1. Local gate | **pass** | tsc / lint / 59 tests / theme-parity / token-audit output above |
+| 2. Both-theme route sweep | **deferred → end-of-phase UAT** | `.planning/WINDOWS.md` entries 1–3; `human_verify_mode=end-of-phase` |
+| 3. SEO invariants | **pass** | `seo-invariants` exit 0 (11 routes; re-run independently by the orchestrator against a fresh dev server on port 3971 with identical results) |
+| 4. PostHog instrumentation | pre-deploy **pass** / post-deploy **no-data** | grep counts above / table above |
+| 5. Search Console | **pass (pre-deploy crawl)** ×9 / **no-data** ×2 | route table, fifth column |
+| 6. Manual prod deploy | **pass** | `deploy-now` given at the 01-09 checkpoint after a preview; deployment `parseforge-424ibrxax` aliased to parseforge.gg; CMP script host present in prod HTML |
+
+Nothing in this table is marked passing without the output that produced it. The two
+`no-data` families (PostHog definitions, GSC for the two new routes) are recorded, not assumed,
+and are the first items to re-inspect at the Phase 2 gate.
 
 Regenerate this report's SEO-invariant section with `npm run seo-invariants -- --markdown
 docs/OPS-01-SHIP-GATE.md` (appends a fresh route table) or re-run `npm run token-audit --
