@@ -92,8 +92,33 @@ Plans:
   4. `cla-engine`, `raid-overview-engine`, and `wcl-client` have automated tests that fail when analysis output changes — a regression safety net in place before the redesign touches anything.
   5. New timeline and healer surfaces ship with PostHog events and pass the GSC verification pass (OPS-01 gate).
 
-**Plans**: TBD
+**Plans**: 9 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Wave 0: record real WCL fixtures, then the query, type and rate-limit contracts the phase builds on
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Cast timeline tracer: open the Timeline tab and read your casts in order, end to end
+- [ ] 02-03-PLAN.md — wago.tools regeneration pipeline: script, overrides layer, three generated era modules
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-04-PLAN.md — Healer metrics: effective HPS, overheal and uptime from one shared helper on both surfaces
+- [ ] 02-05-PLAN.md — Timeline depth: idle gaps, death marker, filter chips, virtualisation, truncation notice
+- [ ] 02-06-PLAN.md — Cut cla-constants over to generated data and emit docs/GAME-DATA-AUDIT.md
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-07-PLAN.md — Healer-specific suggestions relative to top-healer values; DPS-shaped rules gated off
+- [ ] 02-08-PLAN.md — Engine regression tests for cla-engine, raid-overview-engine and wcl-client
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 02-09-PLAN.md — OPS-01 gate close-out and approval-gated production deploy
 
 **Notes**: Accuracy is the project's stated core value ("a wrong recommendation is worse than no recommendation"), so it precedes monetization and redesign. The engine tests here are what make Phase 7's redesign safe to attempt.
 
@@ -199,7 +224,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
-| 2. Accuracy & Analysis Depth | 0/TBD | Not started | - |
+| 2. Accuracy & Analysis Depth | 0/9 | Planned      | - |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
