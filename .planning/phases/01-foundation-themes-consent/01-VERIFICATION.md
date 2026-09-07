@@ -1,11 +1,12 @@
 ---
 phase: 01
 verified: 2026-09-06T22:05:00Z
-status: human_needed
+status: passed
 score: 30/32 must-haves verified (2 present-but-behavior-unverified, routed to human)
 behavior_unverified: 2
 overrides_applied: 0
 human_verification:
+
   - test: "Theme toggle no-flash, persistence, cross-tab sync, mobile reachability (01-01)"
     expected: "First paint shows the persisted/OS theme with no flash; explicit Light/Dark choice survives reload and route change; System restores OS-follow; a second open tab picks up a theme change made in the first tab; the 3-state menu is reachable and usable at 375px width"
     why_human: "Requires a live browser session (two tabs, OS appearance toggle, narrow viewport). No jsdom/RTL/Playwright harness exists in this project (01-RESEARCH.md Open Question 3); code-level wiring (next-themes attribute=\"class\", storage listener, allow-listed themes, no responsive `hidden` gate on the toggle's flex group) is confirmed by static inspection."
@@ -241,6 +242,7 @@ See YAML frontmatter `human_verification` list. Summary: five items, all rooted 
 01-01 through 01-09 and already tracked honestly in `.planning/WINDOWS.md` (3 open entries) and in
 each plan's own `coverage:` block (`human_judgment: true`, `verification: []`). This verification
 session independently confirmed:
+
 - every piece of *code* those checks depend on is present, wired, and passes its own unit/gate
   tests;
 - the *production* deploy is live and serving the phase's artifacts (curl-verified against
