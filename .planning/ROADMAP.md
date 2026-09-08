@@ -114,7 +114,7 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 02-07-PLAN.md — Healer-specific suggestions relative to top-healer values; DPS-shaped rules gated off
-- [ ] 02-08-PLAN.md — Engine regression tests for cla-engine, raid-overview-engine and wcl-client
+- [x] 02-08-PLAN.md — Engine regression tests for cla-engine, raid-overview-engine and wcl-client
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
