@@ -108,7 +108,7 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 02-04-PLAN.md — Healer metrics: effective HPS, overheal and uptime from one shared helper on both surfaces
-- [ ] 02-05-PLAN.md — Timeline depth: idle gaps, death marker, filter chips, virtualisation, truncation notice
+- [x] 02-05-PLAN.md — Timeline depth: idle gaps, death marker, filter chips, virtualisation, truncation notice
 - [ ] 02-06-PLAN.md — Cut cla-constants over to generated data and emit docs/GAME-DATA-AUDIT.md
 
 **Wave 4** *(blocked on Wave 3 completion)*
