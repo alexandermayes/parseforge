@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { CastTimelineResult } from "@/lib/wcl-types";
+import posthog from "posthog-js";
 
 const FALLBACK_ERROR = "Couldn't load the cast timeline. Try again.";
 
@@ -35,6 +36,14 @@ export function useTimeline(
     setError(null);
     setResult(null);
 
+    // Captured across both the "failed response" and "thrown request" paths
+    // so the analytics call below stays a single site per outcome rather than
+    // one per branch — matching the ship gate's one-event-per-interaction
+    // rule (docs/OPS-01-SHIP-GATE.md step 4) while still following useCLA's
+    // success/error branch structure.
+    let capturedResult: CastTimelineResult | null = null;
+    let capturedError: string | null = null;
+
     try {
       const res = await fetch("/api/timeline", {
         method: "POST",
@@ -44,14 +53,34 @@ export function useTimeline(
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? FALLBACK_ERROR);
+        capturedError = data.error ?? FALLBACK_ERROR;
+        setError(capturedError);
       } else {
+        capturedResult = data;
         setResult(data);
       }
     } catch (err) {
+      capturedError = err instanceof Error ? err.message : "unknown";
       setError(err instanceof Error ? err.message : FALLBACK_ERROR);
     } finally {
       setLoading(false);
+    }
+
+    if (capturedResult) {
+      posthog.capture("timeline_viewed", {
+        report_code: reportCode,
+        fight_id: fightId,
+        source_id: sourceId,
+        cast_count: capturedResult.castCount,
+        truncated: capturedResult.truncated,
+      });
+    } else if (capturedError) {
+      posthog.capture("timeline_error", {
+        report_code: reportCode,
+        fight_id: fightId,
+        source_id: sourceId,
+        error: capturedError,
+      });
     }
   }, [reportCode, fightId, sourceId]);
 

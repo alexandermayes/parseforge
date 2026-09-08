@@ -72,7 +72,12 @@ export default function CastTimeline({
         )}
 
         {!loading && !error && result && result.castCount > 0 && (
-          <div>
+          // Bounded height + vertical-only scroll so a long log scrolls inside
+          // the card instead of stretching the page. Only the ability-name
+          // column flexes (truncate absorbs a long name); the timestamp, icon
+          // and target columns are all fixed-width, so the row never needs
+          // horizontal scroll.
+          <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
             {result.rows.map((row, i) => (
               <div
                 key={`${row.abilityGameID}-${row.fightTimeMs}-${i}`}
@@ -82,7 +87,7 @@ export default function CastTimeline({
                   {formatFightTime(row.fightTimeMs)}
                 </span>
                 <AbilityIcon icon={row.abilityIcon} name={row.abilityName ?? ""} />
-                <span className="flex-1 truncate text-body-sm">
+                <span className="flex-1 min-w-0 truncate text-body-sm">
                   <SpellLink
                     name={row.abilityName ?? ""}
                     guid={row.abilityGameID ?? 0}
