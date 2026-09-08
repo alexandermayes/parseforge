@@ -465,5 +465,19 @@ not placeholders — but are worth carrying forward as a follow-up verification 
 | `docs/GAME-DATA-AUDIT.md` read, unverified-override and changed-value counts recorded | ✅ above (133 / 0) |
 | No Phase 1 row rewritten, no route row duplicated | ✅ — Part 2 untouched; the Phase 2 route table for the both-theme sweep and Search Console (step 2, step 5) is added by Task 3, extending rows by route path rather than duplicating them |
 
-Task 2 (the deploy-route decision) and Task 3 (deploy execution, both-theme sweep, PostHog
-post-deploy confirmation, Search Console, and the dated sign-off) continue this section below.
+### Task 2 — deploy-route decision (2026-09-08)
+
+Developer decision recorded: **`preview-first`** — run a preview deploy, do the both-theme route
+sweep, the mobile Timeline pass, and the real-gear game-data name check against it, then return
+for the production deploy.
+
+**Also-decide (push + PR):** push + PR first, already done ahead of this task by the orchestrator.
+`origin/main` was fast-forwarded to `55d2010` (Phase 1 + Phase 2 planning docs); branch
+`growth/phase-2-accuracy-depth` (= `main` HEAD `58242be`, the Phase 2 commits) was pushed and
+**PR #15** opened: https://github.com/alexandermayes/parseforge/pull/15. No further push or PR
+action is taken by this plan — local `main` remains the working branch for the rest of Task 3;
+the orchestrator syncs the branch/PR afterward.
+
+Task 3 (deploy execution, both-theme sweep, PostHog post-deploy confirmation, Search Console, and
+the dated sign-off) continues this section below. **This dispatch runs the PREVIEW half of Task 3
+only** — no `--prod` command runs until a further explicit developer approval.
