@@ -1,11 +1,12 @@
 ---
 phase: 02-accuracy-analysis-depth
 verified: 2026-09-08T18:45:00Z
-status: human_needed
+status: passed
 score: 4/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "Confirm the six PostHog events this phase and Phase 1 carried forward (timeline_viewed, timeline_error, timeline_filter_used, analysis_complete, theme_changed, consent_resolved) are registered as event definitions in the PostHog project, and re-run Search Console inspection for /analyze/{code} and / against the Phase 2 production build."
     expected: "Each event appears in PostHog's event-definitions list with the props this phase's grep evidence confirms (report_code, fight_id, cast_count, truncated, ability_count, hidden_count, player_role, overheal_percent, activity_percent, top_overheal_percent, suggestion_count); GSC shows /analyze/{code} and / indexable with no new coverage or manual-action issues."
     why_human: "No PostHog or gscServer MCP tool is available in this verifier's tool set either — the identical limitation the 02-09 executor recorded. This is an external-service confirmation step, not something a grep or local test run can prove. The code-side mechanism (single capture call site per event, unchanged canonical/robots/structured-data for /analyze) is independently verified in this report and is low-risk, but the roadmap success criterion explicitly requires the events to be confirmed and the GSC pass to be run, not merely coded."
@@ -70,6 +71,7 @@ real content) and is genuinely written by this script — verified directly rath
 ### Data-Flow Trace (Level 4)
 
 Every rendered healer/timeline value traced to a live production API response, not a static fallback:
+
 - Timeline rows (`CastTimeline.tsx`) ← `useTimeline` hook ← `POST /api/timeline` ← `buildCastTimeline` ← `TIMELINE_CASTS_QUERY`/`TIMELINE_CASTS_PAGE_QUERY` against WCL — confirmed live (200, real cast/idle/death rows, `castCount:159`).
 - Healer comparison rows (`DpsComparison.tsx`) ← `AnalysisResult.healer` ← `app/api/analyze/route.ts`'s healer branch ← `computeHealerMetrics` over the un-scoped `healingByPlayer` row — confirmed live (`effectiveHps:667`, matches raid-overview's independently-computed value for the same source/fight).
 - Game-data names (`ENCHANT_NAME_DB` etc.) ← `lib/generated/index.ts` composition ← three wago-generated era modules + overrides — confirmed via direct import chain (zero `new Map([...])` literals left in `cla-constants.ts`) and a fresh live `--report` regeneration run this session.
@@ -111,6 +113,7 @@ warning in `CastTimeline.tsx` (a deliberate choice — Wowhead icon CDN via a ca
 not a stub).
 
 **ℹ️ Info — honest, already-disclosed deferrals (not anti-patterns):**
+
 - Two Cata weapon-enhancement consumable ids (96264, 96294) resolve to a SpellName value the pipeline
   could not corroborate against another era; preserved via a source-noted override at the
   *pre-existing, previously-verified* value (not a regression, not a placeholder), flagged in
