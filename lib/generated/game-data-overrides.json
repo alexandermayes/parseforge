@@ -2,15 +2,35 @@
   "statTypeBadForRoles": {
     "spell_hit": [],
     "melee_hit": [],
-    "spell_power": ["Physical"],
+    "spell_power": [
+      "Physical"
+    ],
     "attack_power": [],
-    "strength": ["Caster", "Healer"],
-    "agility": ["Caster", "Healer"],
+    "strength": [
+      "Caster",
+      "Healer"
+    ],
+    "agility": [
+      "Caster",
+      "Healer"
+    ],
     "intellect": [],
     "spirit": [],
-    "defense": ["Physical", "Caster", "Healer"],
-    "dodge": ["Physical", "Caster", "Healer"],
-    "parry": ["Physical", "Caster", "Healer"],
+    "defense": [
+      "Physical",
+      "Caster",
+      "Healer"
+    ],
+    "dodge": [
+      "Physical",
+      "Caster",
+      "Healer"
+    ],
+    "parry": [
+      "Physical",
+      "Caster",
+      "Healer"
+    ],
     "stamina": [],
     "haste": [],
     "crit": [],
@@ -24,14 +44,1089 @@
       "value": "Unidentified Enchantment (ID 88)",
       "source": "SpellItemEnchantment id 88 carries no Name_lang and is not referenced by any Enchant-effect (SpellEffect Effect 53/54) spell in any of the three regenerated client builds (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) — verified empty across all three by inspecting the raw CSV export during the 2026-09 regeneration. Appears to be a deprecated pre-release placeholder row with no recoverable in-game name."
     },
-    "2566": {
-      "value": "Healing Power (+24 Healing and +8 Spell Damage)",
-      "source": "Every SpellEffect row (Effect 53/54) referencing SpellItemEnchantment id 2566 in the classic-tbc/wotlk/cata client dumps points to an internal QA/test spell (name prefixed \"QAEnchant\"), so no player-facing spell name is derivable from client data. The friendly label \"Healing Power\" is preserved from the pre-regeneration hand-verified lib/cla-constants.ts entry; the parenthetical stat text (\"+24 Healing and +8 Spell Damage\") is still wago-derived, reproduced verbatim from SpellItemEnchantment.Name_lang."
-    },
     "2343": {
       "value": "Major Healing (+81 Healing Spells and +27 Damage Spells)",
       "source": "Every SpellEffect row (Effect 53/54) referencing SpellItemEnchantment id 2343 in the classic-tbc/wotlk/cata client dumps points to an internal QA/test spell (name prefixed \"QAEnchant\"), so no player-facing spell name is derivable from client data. The friendly label \"Major Healing\" is preserved from the pre-regeneration hand-verified lib/cla-constants.ts entry; the parenthetical stat text is still wago-derived, reproduced verbatim from SpellItemEnchantment.Name_lang."
+    },
+    "2566": {
+      "value": "Healing Power (+24 Healing and +8 Spell Damage)",
+      "source": "Every SpellEffect row (Effect 53/54) referencing SpellItemEnchantment id 2566 in the classic-tbc/wotlk/cata client dumps points to an internal QA/test spell (name prefixed \"QAEnchant\"), so no player-facing spell name is derivable from client data. The friendly label \"Healing Power\" is preserved from the pre-regeneration hand-verified lib/cla-constants.ts entry; the parenthetical stat text (\"+24 Healing and +8 Spell Damage\") is still wago-derived, reproduced verbatim from SpellItemEnchantment.Name_lang."
     }
   },
-  "gemNames": {}
+  "gemNames": {},
+  "consumables": {
+    "3593": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11334": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11348": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11371": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11396": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11405": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11406": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "11474": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "13510": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "13511": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "13512": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "13513": {
+      "category": "flask",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Flask of the Titans or Supreme Power"
+    },
+    "16138": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Adamantite Sharpening Stone"
+    },
+    "16622": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Adamantite Weightstone"
+    },
+    "17535": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17537": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17538": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17626": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17627": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17628": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "17629": {
+      "category": "flask",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Flask of the Titans or Supreme Power"
+    },
+    "21920": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "22756": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "24799": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Stat-specific food"
+    },
+    "24870": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Stat-specific food"
+    },
+    "25120": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Superior Mana Oil"
+    },
+    "25122": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Superior Wizard Oil"
+    },
+    "25123": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Superior Mana Oil"
+    },
+    "25661": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "26276": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28013": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28017": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28490": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28491": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28493": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28497": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28501": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28502": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28503": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28509": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28514": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28518": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28519": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28520": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28521": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28540": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "28898": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "29452": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "29453": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33077": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33078": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33079": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33080": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33081": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33082": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33254": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33256": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33257": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33259": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33261": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33263": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33265": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33268": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33720": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33721": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "33726": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "34340": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "35272": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "38954": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "39625": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "39627": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "39628": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43194": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43195": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43196": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43197": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43198": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43199": {
+      "category": "scroll",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43722": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43730": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "43764": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "44106": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "46687": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53746": {
+      "category": "battle_elixir",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Elixir of Mighty Agility/Accuracy"
+    },
+    "53747": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53748": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53749": {
+      "category": "battle_elixir",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Elixir of Mighty Strength or Accuracy"
+    },
+    "53751": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53752": {
+      "category": "flask",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Flask of Stoneblood or Frost Wyrm"
+    },
+    "53755": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53758": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53760": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53763": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "53764": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "54212": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "55836": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57294": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57325": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57327": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57329": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57332": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57334": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57356": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57358": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57360": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57365": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57367": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "57371": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Higher-stat food (e.g. Fish Feast)"
+    },
+    "57373": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Higher-stat food (e.g. Fish Feast)"
+    },
+    "57399": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60340": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60341": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60343": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60344": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60345": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60346": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "60347": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "62380": {
+      "category": "flask",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Flask of Stoneblood or Frost Wyrm"
+    },
+    "79468": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79469": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79470": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79471": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79472": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79474": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79477": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79480": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79481": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79631": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "79632": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87545": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87546": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87547": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87548": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87549": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87550": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87551": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87552": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87554": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87555": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87556": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "87557": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "94160": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "96264": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "96294": {
+      "category": "weapon_enhancement",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "104264": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104267": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104271": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104272": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "104273": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104274": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104275": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "104276": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104277": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "104278": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104279": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104280": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "104281": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104282": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "104283": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105617": {
+      "category": "flask",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "Stat-specific flask"
+    },
+    "105681": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105682": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105683": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105684": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105685": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105686": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105687": {
+      "category": "guardian_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105688": {
+      "category": "battle_elixir",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105689": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105691": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105693": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105694": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "105696": {
+      "category": "flask",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "125104": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "125106": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "125108": {
+      "category": "food",
+      "isSuboptimal": true,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang.",
+      "betterAlternative": "300-stat food"
+    },
+    "125113": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    },
+    "125115": {
+      "category": "food",
+      "isSuboptimal": false,
+      "source": "Carried forward from the pre-regeneration curated CONSUMABLE_DB in lib/cla-constants.ts — the category, isSuboptimal and betterAlternative judgment are retained as explicit human curation (no client dump carries these); the display name field is dropped here because scripts/regen-game-data.mjs now resolves it per era from SpellName.Name_lang."
+    }
+  },
+  "consumableNames": {
+    "13510": {
+      "value": "Flask of the Titans (Classic)",
+      "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "13511": {
+      "value": "Flask of Distilled Wisdom (Classic)",
+      "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "13512": {
+      "value": "Flask of Supreme Power (Classic)",
+      "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "13513": {
+      "value": "Flask of Chromatic Resistance (Classic)",
+      "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104264": {
+      "value": "Well Fed (+250 Int)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104267": {
+      "value": "Well Fed (+250 Str)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104271": {
+      "value": "Well Fed (+275 Str)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104272": {
+      "value": "Well Fed (+300 Str)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104273": {
+      "value": "Well Fed (+250 Agi)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104274": {
+      "value": "Well Fed (+275 Agi)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104275": {
+      "value": "Well Fed (+300 Agi)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104276": {
+      "value": "Well Fed (+275 Int)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104277": {
+      "value": "Well Fed (+300 Int)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104278": {
+      "value": "Well Fed (+250 Spirit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104279": {
+      "value": "Well Fed (+275 Spirit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104280": {
+      "value": "Well Fed (+300 Spirit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104281": {
+      "value": "Well Fed (+375 Stam)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104282": {
+      "value": "Well Fed (+415 Stam)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "104283": {
+      "value": "Well Fed (+450 Stam)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105617": {
+      "value": "Alchemist's Flask",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105681": {
+      "value": "Mantid Elixir",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105682": {
+      "value": "Mad Hozen Elixir",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105683": {
+      "value": "Elixir of Weaponry",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105684": {
+      "value": "Elixir of the Rapids",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105685": {
+      "value": "Elixir of Peace",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105686": {
+      "value": "Elixir of Perfection",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105687": {
+      "value": "Elixir of Mirrors",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105688": {
+      "value": "Monk's Elixir",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105689": {
+      "value": "Flask of Spring Blossoms",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105691": {
+      "value": "Flask of the Warm Sun",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105693": {
+      "value": "Flask of Falling Leaves",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105694": {
+      "value": "Flask of the Earth",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "105696": {
+      "value": "Flask of Winter's Bite",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "125104": {
+      "value": "Well Fed (+250 Hit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "125106": {
+      "value": "Well Fed (+275 Hit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "125108": {
+      "value": "Well Fed (+275 Expertise)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "125113": {
+      "value": "Well Fed (+300 Hit)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "125115": {
+      "value": "Well Fed (+300 Expertise)",
+      "source": "MoP is deliberately out of scope for this regeneration pipeline (D-10) -- scripts/regen-game-data.mjs only resolves Classic+TBC, WotLK and Cata client data, so no era this pipeline fetches can supply a name for this MoP-only consumable id. The pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    }
+  }
 }

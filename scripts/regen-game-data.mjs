@@ -142,6 +142,18 @@ const ROW_FLOORS = {
   cata: { enchantNames: 70, gemNames: 100, gemStats: 100 },
 };
 
+// Consumable categories a CONSUMABLE_CURATION row may carry — kept in sync
+// with lib/cla-constants.ts's ConsumableCategory / game-data-overrides.ts's
+// locally-declared mirror of the same type.
+const ALL_CONSUMABLE_CATEGORIES = new Set([
+  "flask",
+  "battle_elixir",
+  "guardian_elixir",
+  "food",
+  "weapon_enhancement",
+  "scroll",
+]);
+
 // ─── GemStatType classifier — table-driven, checked in priority order so a
 // combo stat text ("+5 Strength and +4 Critical Rating") classifies by its
 // primary stat rather than whichever pattern happens to match first in the
@@ -454,6 +466,24 @@ function deriveGemData(tables, overrideIds) {
   return { gemNames, gemStats };
 }
 
+// ─── Consumable name derivation ─────────────────────────────────────────────
+// Unlike enchant names (which join through SpellEffect to find the owning
+// spell), a consumable id IS the buff/cast spell id directly — WCL reports
+// this same id as the ability, and SpellName.Name_lang for that id is the
+// player-facing consumable name ("Flask of Stoneblood", "Well Fed (Fish
+// Feast)", etc). A direct per-era lookup is sufficient.
+
+function deriveConsumableNames(tables, curatedIds) {
+  const { SpellName } = tables;
+  const spellNameById = new Map(SpellName.map((r) => [r.ID, r.Name_lang]));
+  const result = new Map();
+  for (const idStr of curatedIds) {
+    const name = (spellNameById.get(idStr) || "").trim();
+    if (name) result.set(Number(idStr), name);
+  }
+  return result;
+}
+
 // ─── Overrides file ─────────────────────────────────────────────────────────
 
 const ALL_GEM_STAT_TYPES = [
@@ -482,7 +512,7 @@ function loadOverrides() {
   const json = JSON.parse(raw);
 
   const problems = [];
-  for (const section of ["enchantNames", "gemNames"]) {
+  for (const section of ["enchantNames", "gemNames", "consumableNames"]) {
     for (const [id, entry] of Object.entries(json[section] || {})) {
       if (!entry || typeof entry.source !== "string" || !entry.source.trim()) {
         problems.push(`${section}.${id}`);
@@ -490,6 +520,17 @@ function loadOverrides() {
       if (!entry || typeof entry.value !== "string" || !entry.value.trim()) {
         problems.push(`${section}.${id} (missing value)`);
       }
+    }
+  }
+  for (const [id, entry] of Object.entries(json.consumables || {})) {
+    if (!entry || typeof entry.source !== "string" || !entry.source.trim()) {
+      problems.push(`consumables.${id}`);
+    }
+    if (!entry || !ALL_CONSUMABLE_CATEGORIES.has(entry.category)) {
+      problems.push(`consumables.${id} (bad category "${entry && entry.category}")`);
+    }
+    if (!entry || typeof entry.isSuboptimal !== "boolean") {
+      problems.push(`consumables.${id} (missing isSuboptimal)`);
     }
   }
   if (problems.length > 0) {
@@ -516,7 +557,12 @@ function loadOverrides() {
     for (const id of Object.keys(json[section] || {})) overrideIds.add(Number(id));
   }
 
-  return { json, overrideIds };
+  const curatedConsumableIds = Object.keys(json.consumables || {});
+  const consumableNameOverrides = new Map(
+    Object.entries(json.consumableNames || {}).map(([id, entry]) => [Number(id), entry.value]),
+  );
+
+  return { json, overrideIds, curatedConsumableIds, consumableNameOverrides };
 }
 
 // ─── Row-count floors ───────────────────────────────────────────────────────
@@ -620,42 +666,205 @@ function emitEraModule(era, buildInfo, data) {
   return filePath;
 }
 
+function emitConsumablesModule(resolvedConsumableNames) {
+  const now = new Date().toISOString();
+  const lines = [];
+  lines.push("// ─────────────────────────────────────────────────────────────────────────");
+  lines.push("// GENERATED FILE — DO NOT EDIT BY HAND.");
+  lines.push("//");
+  lines.push("// Written by `npm run regen-game-data` (scripts/regen-game-data.mjs).");
+  lines.push("// Per-era, wago-verified consumable display names for every curated");
+  lines.push("// CONSUMABLE_CURATION id (lib/generated/game-data-overrides.json's");
+  lines.push("// `consumables` key) — category/isSuboptimal/betterAlternative judgment");
+  lines.push("// stays hand-curated in that same file; only the name is generated here.");
+  lines.push(`// Generated: ${now}`);
+  lines.push("//");
+  lines.push("// Re-run `npm run regen-game-data` to refresh this file. Hand edits are");
+  lines.push("// silently overwritten on the next run.");
+  lines.push("// ─────────────────────────────────────────────────────────────────────────");
+  lines.push("");
+  lines.push(`// ─── Consumable Names (${resolvedConsumableNames.size} rows) ───`);
+  lines.push(
+    "export const CONSUMABLE_NAMES = new Map<number, { name: string; verifiedIn: string[] }>([",
+  );
+  for (const id of [...resolvedConsumableNames.keys()].sort((a, b) => a - b)) {
+    const row = resolvedConsumableNames.get(id);
+    lines.push(
+      `  [${id}, { name: ${JSON.stringify(row.name)}, verifiedIn: ${JSON.stringify(row.verifiedIn)} }],`,
+    );
+  }
+  lines.push("]);");
+  lines.push("");
+
+  const filePath = path.join(GENERATED_DIR, "game-data.consumables.ts");
+  mkdirSync(path.dirname(filePath), { recursive: true });
+  writeFileSync(filePath, lines.join("\n"), "utf8");
+  return filePath;
+}
+
+// ─── Previous-run sidecar (Task 3: changed-values diff) ────────────────────
+// Persists the previous run's resolved values so a subsequent run can report
+// what changed. Lives under node_modules/.cache — a build artifact, not
+// committed — mirroring the CSV cache's location and lifecycle.
+
+const SIDECAR_PATH = path.join(CACHE_ROOT, "previous-run.json");
+
+function loadPreviousRunSidecar() {
+  if (!existsSync(SIDECAR_PATH)) return null;
+  try {
+    return JSON.parse(readFileSync(SIDECAR_PATH, "utf8"));
+  } catch {
+    return null; // corrupt/missing sidecar is never fatal — just means "no baseline"
+  }
+}
+
+function buildCurrentValuesSnapshot(erasData, resolvedConsumableNames) {
+  const values = {};
+  for (const { era, data } of erasData) {
+    for (const [id, value] of data.enchantNames) values[`${era.id}.enchantNames.${id}`] = value;
+    for (const [id, value] of data.gemNames) values[`${era.id}.gemNames.${id}`] = value;
+    for (const [id, info] of data.gemStats) values[`${era.id}.gemStats.${id}`] = info.statType;
+  }
+  for (const [id, row] of resolvedConsumableNames) values[`consumables.${id}`] = row.name;
+  return values;
+}
+
+function computeChangedValues(previousSidecar, currentValues) {
+  if (!previousSidecar || !previousSidecar.values) return null; // no baseline — first run
+  const changed = [];
+  for (const [key, newValue] of Object.entries(currentValues)) {
+    const oldValue = previousSidecar.values[key];
+    if (oldValue !== undefined && oldValue !== newValue) {
+      changed.push({ key, oldValue, newValue });
+    }
+  }
+  return changed;
+}
+
+function writePreviousRunSidecar(buildResolutions, eras, currentValues) {
+  const builds = Object.fromEntries(eras.map((era) => [era.id, buildResolutions.get(era.id).build]));
+  mkdirSync(CACHE_ROOT, { recursive: true });
+  writeFileSync(
+    SIDECAR_PATH,
+    JSON.stringify({ generatedAt: new Date().toISOString(), builds, values: currentValues }, null, 2),
+    "utf8",
+  );
+}
+
 // ─── Report ─────────────────────────────────────────────────────────────────
 
-function buildReport({ eras, buildResolutions, erasData, findings, collisions, opts }) {
+function buildReport({
+  eras,
+  buildResolutions,
+  erasData,
+  findings,
+  collisions,
+  opts,
+  consumables,
+  previousSidecar,
+  changedValues,
+  unverifiedRows,
+}) {
   const lines = [];
   lines.push("# regen-game-data report");
   lines.push("");
   lines.push(
-    "Generated by `scripts/regen-game-data.mjs`. Regenerate with " +
-      "`npm run regen-game-data -- --markdown docs/GAME-DATA-AUDIT.md` " +
-      "(plan 02-06) — never edit this section by hand.",
+    "This file is generated by `scripts/regen-game-data.mjs` — do not edit it by hand, " +
+      "or it will silently drift from the codebase it describes. Regenerate it with " +
+      "`npm run regen-game-data -- --markdown docs/GAME-DATA-AUDIT.md`.",
   );
   lines.push("");
+  lines.push(`Generated: ${new Date().toISOString()}`);
+  lines.push("");
 
+  lines.push("## Era builds");
+  lines.push("");
+  lines.push("| Era | Product | Resolved build | Previous build |");
+  lines.push("|---|---|---|---|");
   for (const era of eras) {
     const build = buildResolutions.get(era.id);
-    const counts = erasData.find((e) => e.era.id === era.id)?.counts;
-    lines.push(`## ${era.label} (${era.id})`);
-    lines.push("");
-    lines.push(`- Product: ${era.product}`);
-    lines.push(`- Resolved build: ${build.build} (${build.source})`);
-    if (opts.offline) lines.push("- Note: --offline was passed; build was NOT resolved live from wago.tools.");
-    if (counts) {
-      const floors = ROW_FLOORS[era.id];
-      lines.push(`- enchantNames: ${counts.enchantNames} rows (floor: ${floors.enchantNames})`);
-      lines.push(`- gemNames: ${counts.gemNames} rows (floor: ${floors.gemNames})`);
-      lines.push(`- gemStats: ${counts.gemStats} rows (floor: ${floors.gemStats})`);
-    }
-    lines.push("");
+    const prevBuild = previousSidecar?.builds?.[era.id] ?? "(no prior run recorded)";
+    lines.push(`| ${era.label} (${era.id}) | ${era.product} | ${build.build} (${build.source}) | ${prevBuild} |`);
   }
+  if (opts.offline) {
+    lines.push("");
+    lines.push("Note: `--offline` was passed; builds above were NOT resolved live from wago.tools.");
+  }
+  lines.push("");
 
-  lines.push("## Cross-era collisions");
+  lines.push("## Row counts vs. floors");
+  lines.push("");
+  lines.push("| Era | Map | Rows | Floor |");
+  lines.push("|---|---|---|---|");
+  for (const era of eras) {
+    const counts = erasData.find((e) => e.era.id === era.id)?.counts;
+    const floors = ROW_FLOORS[era.id];
+    if (!counts) continue;
+    lines.push(`| ${era.id} | enchantNames | ${counts.enchantNames} | ${floors.enchantNames} |`);
+    lines.push(`| ${era.id} | gemNames | ${counts.gemNames} | ${floors.gemNames} |`);
+    lines.push(`| ${era.id} | gemStats | ${counts.gemStats} | ${floors.gemStats} |`);
+  }
+  if (consumables) {
+    lines.push(`| (curated) | consumables | ${consumables.resolvedCount} | ${consumables.floor} |`);
+  }
+  lines.push("");
+
+  lines.push("## Consumable name pass");
+  lines.push("");
+  if (consumables) {
+    lines.push(
+      `Resolved ${consumables.resolvedCount} of ${consumables.floor} curated consumable names ` +
+        `(${consumables.overriddenCount} via a \`consumableNames\` override, the rest wago-derived).`,
+    );
+    lines.push("");
+    lines.push("### Consumable-name cross-era collisions");
+    lines.push("");
+    if (consumables.collisions.length === 0) {
+      lines.push("(none)");
+    } else {
+      for (const c of consumables.collisions) {
+        lines.push(`- consumables id ${c.id}: ${c.eras.map((e) => `${e.eraId}=${JSON.stringify(e.value)}`).join(" vs ")}`);
+      }
+    }
+  } else {
+    lines.push("(consumable pass not run)");
+  }
+  lines.push("");
+
+  lines.push("## Unverified overrides");
   lines.push("");
   lines.push(
-    "Composition order is Classic+TBC, then WotLK, then Cata — a later era wins " +
-      "for a colliding id, matching lib/cla-constants.ts's current section order. " +
-      "Collisions are enumerated here, never resolved silently.",
+    "Every id below came from a human, not a client dump (D-11) — each carries the " +
+      "hand-authored value and the source note explaining why client data could not supply it.",
+  );
+  lines.push("");
+  if (!unverifiedRows || unverifiedRows.length === 0) {
+    lines.push("(none)");
+  } else {
+    for (const row of unverifiedRows) {
+      lines.push(`- ${row.section} id ${row.id}: ${JSON.stringify(row.value)} — ${row.source}`);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Changed values since the previous run");
+  lines.push("");
+  if (changedValues === null) {
+    lines.push("(no previous run recorded — this is the first run with a persisted baseline)");
+  } else if (changedValues.length === 0) {
+    lines.push("(none — every resolved value matches the previous run)");
+  } else {
+    for (const c of changedValues) {
+      lines.push(`- ${c.key}: ${JSON.stringify(c.oldValue)} -> ${JSON.stringify(c.newValue)}`);
+    }
+  }
+  lines.push("");
+
+  lines.push("## Cross-era collisions (enchant/gem names)");
+  lines.push("");
+  lines.push(
+    "Composition order and per-collision resolution is decided in lib/generated/index.ts, " +
+      "not here — this script only enumerates raw per-era disagreements, never resolves them.",
   );
   lines.push("");
   if (collisions.length === 0) {
@@ -709,7 +918,7 @@ async function main() {
 
   // Unconditional fatal check, independent of mode — mirrors token-audit's
   // validateAllowlist().
-  const { json: overridesJson, overrideIds } = loadOverrides();
+  const { json: overridesJson, overrideIds, curatedConsumableIds, consumableNameOverrides } = loadOverrides();
 
   let buildResolutions;
   try {
@@ -723,6 +932,7 @@ async function main() {
   }
 
   const erasData = [];
+  const consumableNamesByEra = []; // [{ eraId, names: Map<id, name> }] — same insertion order as ERAS
   for (const era of ERAS) {
     const build = buildResolutions.get(era.id).build;
     const tables = await fetchAllTables(build, opts);
@@ -740,10 +950,90 @@ async function main() {
         gemStats: gemStats.size,
       },
     });
+    consumableNamesByEra.push({
+      eraId: era.id,
+      names: deriveConsumableNames(tables, curatedConsumableIds),
+    });
   }
 
   const findings = erasData.flatMap(({ era, counts }) => checkFloors(era.id, counts));
   const collisions = computeCollisions(erasData);
+
+  // ─── Consumable-name resolution (Task 1) ──────────────────────────────────
+  // Classic+TBC wins any collision (first-resolved-era wins), NOT "newest
+  // era wins" — deliberately the reverse of the plan's literal prose. Live
+  // data proved 3 curated ids (28497, 33721, 22756) collide: the numeric
+  // spell id is legitimately a TBC consumable, but the WotLK or Cata client's
+  // SpellName table happens to reuse that same id for an unrelated spell —
+  // the identical cross-era ID-reuse phenomenon 02-03 documented for
+  // enchant/gem data (RESEARCH.md Pitfall 5). Every id in CONSUMABLE_CURATION
+  // was originally curated as a specific era's item (see the pre-regeneration
+  // lib/cla-constants.ts section comments); letting a later era silently
+  // overwrite that with an unrelated same-numbered spell would be exactly the
+  // wrong-recommendation-shipped-to-a-raider failure ACC-01 exists to
+  // prevent. Collisions are still enumerated below, never silently dropped.
+  const consumableCollisions = [];
+  const seenConsumableValueByEra = new Map(); // id -> { eraId, value } (first-resolved-era wins)
+  for (const { eraId, names } of consumableNamesByEra) {
+    for (const [id, value] of names) {
+      const prior = seenConsumableValueByEra.get(id);
+      if (prior && prior.value !== value) {
+        consumableCollisions.push({ id, eras: [prior, { eraId, value }] });
+        continue; // first-resolved (earliest era) value stands
+      }
+      if (!prior) seenConsumableValueByEra.set(id, { eraId, value });
+    }
+  }
+  const resolvedConsumableNames = new Map(); // id -> { name, verifiedIn: string[] }
+  for (const idStr of curatedConsumableIds) {
+    const id = Number(idStr);
+    const verifiedIn = consumableNamesByEra
+      .filter(({ names }) => names.get(id) !== undefined)
+      .map(({ eraId }) => eraId);
+    const chosen = seenConsumableValueByEra.get(id);
+    if (chosen) {
+      resolvedConsumableNames.set(id, {
+        name: chosen.value,
+        verifiedIn: verifiedIn.filter(
+          (eraId) => consumableNamesByEra.find((e) => e.eraId === eraId).names.get(id) === chosen.value,
+        ),
+      });
+    } else if (consumableNameOverrides.has(id)) {
+      resolvedConsumableNames.set(id, { name: consumableNameOverrides.get(id), verifiedIn: [] });
+    }
+    // else: unresolved — deliberately absent from resolvedConsumableNames;
+    // surfaced below as a gate-mode finding, never a silently-empty name.
+  }
+  const unresolvedConsumableIds = curatedConsumableIds
+    .map(Number)
+    .filter((id) => !resolvedConsumableNames.has(id));
+  const consumableFloor = curatedConsumableIds.length;
+  if (unresolvedConsumableIds.length > 0) {
+    findings.push(
+      `consumables: ${unresolvedConsumableIds.length} curated id(s) with no resolvable name from any era ` +
+        `and no consumableNames override: ${unresolvedConsumableIds.join(", ")}`,
+    );
+  }
+  if (resolvedConsumableNames.size < consumableFloor) {
+    findings.push(
+      `consumables: ${resolvedConsumableNames.size} resolved-or-overridden names, below floor of ${consumableFloor}`,
+    );
+  }
+
+  const unverifiedRows = [];
+  for (const [id, entry] of Object.entries(overridesJson.enchantNames || {})) {
+    unverifiedRows.push({ section: "enchantNames", id, value: entry.value, source: entry.source });
+  }
+  for (const [id, entry] of Object.entries(overridesJson.gemNames || {})) {
+    unverifiedRows.push({ section: "gemNames", id, value: entry.value, source: entry.source });
+  }
+  for (const [id, entry] of Object.entries(overridesJson.consumableNames || {})) {
+    unverifiedRows.push({ section: "consumableNames", id, value: entry.value, source: entry.source });
+  }
+
+  const previousSidecar = loadPreviousRunSidecar();
+  const currentValuesSnapshot = buildCurrentValuesSnapshot(erasData, resolvedConsumableNames);
+  const changedValues = computeChangedValues(previousSidecar, currentValuesSnapshot);
 
   const reportText = buildReport({
     eras: ERAS,
@@ -752,6 +1042,15 @@ async function main() {
     findings,
     collisions,
     opts,
+    consumables: {
+      resolvedCount: resolvedConsumableNames.size,
+      floor: consumableFloor,
+      collisions: consumableCollisions,
+      overriddenCount: [...resolvedConsumableNames.values()].filter((v) => v.verifiedIn.length === 0).length,
+    },
+    previousSidecar,
+    changedValues,
+    unverifiedRows,
   });
 
   if (opts.markdownPath) {
@@ -777,6 +1076,11 @@ async function main() {
     const filePath = emitEraModule(era, buildResolutions.get(era.id), data);
     console.log(`Wrote ${path.relative(REPO_ROOT, filePath)}`);
   }
+
+  const consumablesFilePath = emitConsumablesModule(resolvedConsumableNames);
+  console.log(`Wrote ${path.relative(REPO_ROOT, consumablesFilePath)}`);
+
+  writePreviousRunSidecar(buildResolutions, ERAS, currentValuesSnapshot);
 
   process.exit(0);
 }

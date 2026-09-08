@@ -48,8 +48,29 @@ export interface GeneratedGemInfo {
   badForRoles: RaidRole[];
 }
 
+/**
+ * A consumable's category, as curated by a human — no client dump carries
+ * this classification. Locally declared (mirrors GemStatType/GeneratedGemInfo
+ * above) rather than imported from lib/cla-constants.ts, which imports FROM
+ * this module post-cutover — a two-way import would be circular.
+ */
+export type ConsumableCategory =
+  | "flask"
+  | "battle_elixir"
+  | "guardian_elixir"
+  | "food"
+  | "weapon_enhancement"
+  | "scroll";
+
 interface OverrideEntry {
   value: string;
+  source: string;
+}
+
+interface ConsumableCurationEntry {
+  category: ConsumableCategory;
+  isSuboptimal: boolean;
+  betterAlternative?: string;
   source: string;
 }
 
@@ -57,6 +78,8 @@ interface OverridesJsonShape {
   statTypeBadForRoles: Record<GemStatType, RaidRole[]>;
   enchantNames: Record<string, OverrideEntry>;
   gemNames: Record<string, OverrideEntry>;
+  consumables: Record<string, ConsumableCurationEntry>;
+  consumableNames: Record<string, OverrideEntry>;
 }
 
 const overrides = overridesJson as unknown as OverridesJsonShape;
@@ -77,12 +100,45 @@ export const GEM_NAME_OVERRIDES: Map<number, string> = new Map(
 );
 
 /**
- * Every id present in either override section — the registry of every value
+ * Hand-authored consumable curation — category, suboptimality and
+ * better-alternative judgment, keyed by consumable spell id. These are
+ * product judgments no client dump contains (D-11); the display `name` is
+ * NOT here — it is generated per-era from SpellName.Name_lang and joined in
+ * by lib/generated/index.ts.
+ */
+export const CONSUMABLE_CURATION: Map<
+  number,
+  { category: ConsumableCategory; isSuboptimal: boolean; betterAlternative?: string }
+> = new Map(
+  Object.entries(overrides.consumables).map(([id, entry]) => [
+    Number(id),
+    {
+      category: entry.category,
+      isSuboptimal: entry.isSuboptimal,
+      ...(entry.betterAlternative !== undefined ? { betterAlternative: entry.betterAlternative } : {}),
+    },
+  ]),
+);
+
+/** Hand-authored consumable-name overrides, keyed by consumable spell id —
+ * used only when no era's client data resolves a name for a curated id. */
+export const CONSUMABLE_NAME_OVERRIDES: Map<number, string> = new Map(
+  Object.entries(overrides.consumableNames).map(([id, entry]) => [Number(id), entry.value]),
+);
+
+/**
+ * Every id present in any override section — the registry of every value
  * that came from a human rather than a client dump. No id in this set may
  * appear inside a generated era module (scripts/regen-game-data.mjs excludes
  * these ids when deriving; lib/generated/game-data.test.ts asserts it).
+ * CONSUMABLE_CURATION ids are deliberately excluded here — curation (category/
+ * isSuboptimal/betterAlternative) is ALWAYS human-authored by design, not a
+ * fallback for missing client data, so including all 178 would misrepresent
+ * every consumable as "unverified" in the audit doc. Only consumableNames ids
+ * (a name that could not be derived) belong in this registry.
  */
 export const UNVERIFIED_OVERRIDE_IDS: Set<number> = new Set([
   ...Object.keys(overrides.enchantNames).map(Number),
   ...Object.keys(overrides.gemNames).map(Number),
+  ...Object.keys(overrides.consumableNames).map(Number),
 ]);
