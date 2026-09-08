@@ -169,6 +169,56 @@ export interface WCLRankingsData {
   rankings: WCLRanking[];
 }
 
+// ─── Cast Timeline Types ─────────────────────────────────────────────
+// Field names match the recorded response in
+// lib/__fixtures__/demo-timeline-casts.json (README.md A1/A2) — not a guess.
+
+/** A single cast event, exactly as WCL's events(dataType: Casts) returns it. */
+export interface WCLCastEvent {
+  timestamp: number;
+  type: string;
+  sourceID: number;
+  targetID?: number;
+  abilityGameID: number;
+}
+
+export type TimelineRowKind = "cast" | "idle" | "death";
+
+export interface TimelineRow {
+  kind: TimelineRowKind;
+  /** Milliseconds relative to the fight's own start (never report start). */
+  fightTimeMs: number;
+  abilityGameID?: number;
+  abilityName?: string;
+  abilityIcon?: string;
+  targetName?: string;
+  idleMs?: number;
+}
+
+export interface TimelineAbilityCount {
+  abilityGameID: number;
+  abilityName: string;
+  abilityIcon?: string;
+  count?: number;
+}
+
+export interface CastTimelineResult {
+  encounterName: string;
+  fightDuration: number;
+  playerName: string;
+  rows: TimelineRow[];
+  abilityCounts: TimelineAbilityCount[];
+  idleThresholdMs: number;
+  truncated: boolean;
+  castCount: number;
+}
+
+export interface TimelineRequest {
+  reportCode: string;
+  fightId: number;
+  sourceId: number;
+}
+
 // ─── Top N Player Types ─────────────────────────────────────────────
 
 export interface TopPlayerFullData {
@@ -178,6 +228,8 @@ export interface TopPlayerFullData {
   throughputEntries: WCLDamageEntry[];
   buffEntries: WCLBuffEntry[];
   castEntries: WCLCastEntry[];
+  /** Populated only on the healer fetch path — WCLRanking carries no overheal/uptime fields (RESEARCH.md Pitfall 2). */
+  healerRow?: HealerTableRow;
 }
 
 export interface TalentConsensusEntry {
@@ -382,6 +434,8 @@ export interface AnalysisResult {
   gearPopularity: GearPopularityAnalysis;
   abilityPriority: AbilityPriorityEntry[];
   metricPercentiles: MetricPercentileAnalysis;
+  /** Set only when playerRole is "healer" — effective HPS, overheal and uptime vs top healers. */
+  healer?: HealerComparison;
 }
 
 // ─── Raid Overview (RPB) Types ───────────────────────────────────────
@@ -453,6 +507,36 @@ export interface RaidOverviewResult {
   raidBuffCoverage: RaidBuffCoverage[];
   /** Healer-specific metrics */
   healerMetrics: HealerMetrics[];
+}
+
+// ─── Healer Metrics Types ─────────────────────────────────────────────
+// HealerTableRow narrows the un-scoped per-player Healing row (`healingByPlayer`
+// in lib/wcl-queries.ts) to what the shared healer helper reads — the scoped
+// table lacks activeTime (README.md A3).
+
+export interface HealerTableRow {
+  id: number;
+  name?: string;
+  total: number;
+  overheal?: number;
+  activeTime: number;
+}
+
+export interface HealerMetricsComputed {
+  effectiveHps: number;
+  overhealPercent: number;
+  activityPercent: number;
+  /** False when the player recorded no healing — render an em dash, not a zero that looks measured. */
+  hasHealing: boolean;
+}
+
+export interface HealerComparison {
+  effectiveHps: number;
+  overhealPercent: number;
+  activityPercent: number;
+  topOverhealPercent: number;
+  topActivityPercent: number;
+  topSampleCount: number;
 }
 
 // ─── Request / Response Types ────────────────────────────────────────

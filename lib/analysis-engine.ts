@@ -44,15 +44,17 @@ import {
 
 // ─── Junk / internal spell filter ────────────────────────────────────
 // Spell IDs that are internal WoW spells, deprecated abilities, or logging
-// artefacts that should never appear in player-facing analysis.
-const JUNK_SPELL_IDS = new Set([
+// artefacts that should never appear in player-facing analysis. Also read by
+// the cast timeline (plan 02-02), which reuses this exact exclusion set
+// rather than declaring a second copy of the same spell ids (D-04).
+export const JUNK_SPELL_IDS = new Set([
   1,   // Word of Recall (OLD) — internal hearthstone
   2,   // Word of Recall (OLD) — rank 2 variant
   3,   // Word of Recall (OLD) — rank 3 variant
 ]);
 
 /** Returns true if a damage entry is a junk/internal spell that should be hidden. */
-function isJunkSpell(entry: { guid: number; name: string }): boolean {
+export function isJunkSpell(entry: { guid: number; name: string }): boolean {
   return JUNK_SPELL_IDS.has(entry.guid) || entry.name.includes("(OLD)");
 }
 

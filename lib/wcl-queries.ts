@@ -92,6 +92,15 @@ export const PLAYER_FULL_DATA_QUERY_HEALING = `
           fightIDs: $fightIDs
           sourceID: $sourceID
         )
+        # The sourceID-scoped table above carries a per-ability breakdown
+        # (each entry's own overheal), but not activeTime — that field only
+        # appears on the un-scoped per-player row (README.md A3). Fetch it
+        # here with sourceID omitted so player-level overheal and active
+        # time are available with no second round trip.
+        healingByPlayer: table(
+          dataType: Healing
+          fightIDs: $fightIDs
+        )
         buffs: table(
           dataType: Buffs
           fightIDs: $fightIDs
@@ -129,6 +138,12 @@ export const TOP_PLAYER_DATA_QUERY_HEALING = `
           dataType: Healing
           fightIDs: $fightIDs
           sourceID: $sourceID
+        )
+        # Same reasoning as PLAYER_FULL_DATA_QUERY_HEALING above: the scoped
+        # table lacks activeTime, which only appears on the un-scoped row.
+        healingByPlayer: table(
+          dataType: Healing
+          fightIDs: $fightIDs
         )
         buffs: table(
           dataType: Buffs
@@ -214,6 +229,82 @@ export const RAID_COMBATANT_INFO_QUERY = `
           limit: 50
         ) {
           data
+        }
+      }
+    }
+  }
+`;
+
+// ─── Timeline Queries ─────────────────────────────────────────────────
+
+// First page of a player's cast timeline plus everything else the timeline
+// needs, fetched exactly once: the aggregated casts table (guid -> name/icon
+// resolution), a small death-event probe for the death marker, the full
+// actor list (cast targets include NPCs, not just players) and fight bounds
+// for the fight-relative timestamp baseline. Field names match the recorded
+// response in lib/__fixtures__/demo-timeline-casts.json (README.md A1/A2).
+export const TIMELINE_CASTS_QUERY = `
+  query TimelineCasts($code: String!, $fightIDs: [Int!]!, $sourceID: Int!, $startTime: Float) {
+    reportData {
+      report(code: $code) {
+        castEvents: events(
+          fightIDs: $fightIDs
+          sourceID: $sourceID
+          dataType: Casts
+          startTime: $startTime
+          limit: 300
+        ) {
+          data
+          nextPageTimestamp
+        }
+        castTable: table(
+          dataType: Casts
+          fightIDs: $fightIDs
+          sourceID: $sourceID
+        )
+        deathEvents: events(
+          fightIDs: $fightIDs
+          sourceID: $sourceID
+          dataType: Deaths
+          limit: 10
+        ) {
+          data
+        }
+        masterData {
+          actors {
+            id
+            name
+            type
+            subType
+          }
+        }
+        fights(fightIDs: $fightIDs) {
+          id
+          name
+          startTime
+          endTime
+        }
+      }
+    }
+  }
+`;
+
+// Subsequent pages of the same cast timeline. Splitting this from
+// TIMELINE_CASTS_QUERY avoids re-fetching the actor list, the casts table and
+// the fight bounds on every page of a long fight.
+export const TIMELINE_CASTS_PAGE_QUERY = `
+  query TimelineCastsPage($code: String!, $fightIDs: [Int!]!, $sourceID: Int!, $startTime: Float!) {
+    reportData {
+      report(code: $code) {
+        castEvents: events(
+          fightIDs: $fightIDs
+          sourceID: $sourceID
+          dataType: Casts
+          startTime: $startTime
+          limit: 300
+        ) {
+          data
+          nextPageTimestamp
         }
       }
     }
