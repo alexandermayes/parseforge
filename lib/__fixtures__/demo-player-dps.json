@@ -1,0 +1,2301 @@
+{
+  "reportData": {
+    "report": {
+      "playerDetails": {
+        "data": {
+          "playerDetails": {
+            "healers": [
+              {
+                "name": "Zulakeyah",
+                "id": 32,
+                "guid": 51413210,
+                "type": "Shaman",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Shaman-Restoration",
+                "specs": [
+                  {
+                    "spec": "Restoration",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 123,
+                "maxItemLevel": 123,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Warark",
+                "id": 11,
+                "guid": 55294760,
+                "type": "Priest",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Priest-Holy",
+                "specs": [
+                  {
+                    "spec": "Holy",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 117,
+                "maxItemLevel": 117,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Ricoshams",
+                "id": 15,
+                "guid": 79265016,
+                "type": "Shaman",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Shaman-Restoration",
+                "specs": [
+                  {
+                    "spec": "Restoration",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 119,
+                "maxItemLevel": 119,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Izlaz",
+                "id": 21,
+                "guid": 54442880,
+                "type": "Priest",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Priest-Holy",
+                "specs": [
+                  {
+                    "spec": "Holy",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 114,
+                "maxItemLevel": 114,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Bullka",
+                "id": 22,
+                "guid": 54094661,
+                "type": "Shaman",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Shaman-Restoration",
+                "specs": [
+                  {
+                    "spec": "Restoration",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 123,
+                "maxItemLevel": 123,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              }
+            ],
+            "tanks": [
+              {
+                "name": "Ileria",
+                "id": 7,
+                "guid": 73653992,
+                "type": "Paladin",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Paladin-Justicar",
+                "specs": [
+                  {
+                    "spec": "Justicar",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 120,
+                "maxItemLevel": 120,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Thalaroka",
+                "id": 24,
+                "guid": 43380331,
+                "type": "Warrior",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Warrior-Protection",
+                "specs": [
+                  {
+                    "spec": "Protection",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 121,
+                "maxItemLevel": 121,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              }
+            ],
+            "dps": [
+              {
+                "name": "Naalsuul",
+                "id": 19,
+                "guid": 64248022,
+                "type": "Warlock",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Warlock-Destruction",
+                "specs": [
+                  {
+                    "spec": "Destruction",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 119,
+                "maxItemLevel": 119,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Ninthstalker",
+                "id": 1,
+                "guid": 82974932,
+                "type": "Hunter",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Hunter-BeastMastery",
+                "specs": [
+                  {
+                    "spec": "BeastMastery",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 115,
+                "maxItemLevel": 115,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Lightstank",
+                "id": 33,
+                "guid": 74595949,
+                "type": "Priest",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Priest-Shadow",
+                "specs": [
+                  {
+                    "spec": "Shadow",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 111,
+                "maxItemLevel": 111,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Icuqt",
+                "id": 18,
+                "guid": 48474638,
+                "type": "Shaman",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Shaman-Enhancement",
+                "specs": [
+                  {
+                    "spec": "Enhancement",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 115,
+                "maxItemLevel": 115,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Namja",
+                "id": 3,
+                "guid": 58618230,
+                "type": "Warrior",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Warrior-Fury",
+                "specs": [
+                  {
+                    "spec": "Fury",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 119,
+                "maxItemLevel": 119,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Papapooey",
+                "id": 35,
+                "guid": 64219437,
+                "type": "Warlock",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Warlock-Destruction",
+                "specs": [
+                  {
+                    "spec": "Destruction",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 111,
+                "maxItemLevel": 111,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Andelena",
+                "id": 20,
+                "guid": 64244936,
+                "type": "Mage",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Mage-Arcane",
+                "specs": [
+                  {
+                    "spec": "Arcane",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 116,
+                "maxItemLevel": 116,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Nikè",
+                "id": 63,
+                "guid": 72581935,
+                "type": "Paladin",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Paladin-Retribution",
+                "specs": [
+                  {
+                    "spec": "Retribution",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 120,
+                "maxItemLevel": 120,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Bloodhoond",
+                "id": 9,
+                "guid": 64182049,
+                "type": "Rogue",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Rogue-Combat",
+                "specs": [
+                  {
+                    "spec": "Combat",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 122,
+                "maxItemLevel": 122,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Mâyhêm",
+                "id": 17,
+                "guid": 85793926,
+                "type": "Warrior",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Warrior-Fury",
+                "specs": [
+                  {
+                    "spec": "Fury",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 109,
+                "maxItemLevel": 109,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Threadonme",
+                "id": 23,
+                "guid": 64797926,
+                "type": "Shaman",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Shaman-Elemental",
+                "specs": [
+                  {
+                    "spec": "Elemental",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 114,
+                "maxItemLevel": 114,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Mageyoublush",
+                "id": 16,
+                "guid": 56695358,
+                "type": "Mage",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Mage-Arcane",
+                "specs": [
+                  {
+                    "spec": "Arcane",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 119,
+                "maxItemLevel": 119,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Samkin",
+                "id": 12,
+                "guid": 48460541,
+                "type": "Hunter",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Hunter-BeastMastery",
+                "specs": [
+                  {
+                    "spec": "BeastMastery",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 120,
+                "maxItemLevel": 120,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Estrosmagus",
+                "id": 37,
+                "guid": 54435625,
+                "type": "Mage",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Mage-Arcane",
+                "specs": [
+                  {
+                    "spec": "Arcane",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 115,
+                "maxItemLevel": 115,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Shimshakamoo",
+                "id": 4,
+                "guid": 51412851,
+                "type": "Druid",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Druid-Feral",
+                "specs": [
+                  {
+                    "spec": "Feral",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 117,
+                "maxItemLevel": 117,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Evildew",
+                "id": 2,
+                "guid": 77180172,
+                "type": "Rogue",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Rogue-Combat",
+                "specs": [
+                  {
+                    "spec": "Combat",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 115,
+                "maxItemLevel": 115,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Effinore",
+                "id": 5,
+                "guid": 66038943,
+                "type": "Druid",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Druid-Balance",
+                "specs": [
+                  {
+                    "spec": "Balance",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 117,
+                "maxItemLevel": 117,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              },
+              {
+                "name": "Lacktoze",
+                "id": 8,
+                "guid": 61877289,
+                "type": "Druid",
+                "server": "Dreamscythe",
+                "region": "US",
+                "icon": "Druid-Feral",
+                "specs": [
+                  {
+                    "spec": "Feral",
+                    "count": 1
+                  }
+                ],
+                "minItemLevel": 114,
+                "maxItemLevel": 114,
+                "potionUse": 0,
+                "healthstoneUse": 0,
+                "combatantInfo": []
+              }
+            ]
+          }
+        }
+      },
+      "rankings": {
+        "data": [
+          {
+            "fightID": 23,
+            "partition": 2,
+            "zone": 1056,
+            "encounter": {
+              "id": 100624,
+              "name": "The Lurker Below"
+            },
+            "difficulty": 3,
+            "size": 25,
+            "kill": 1,
+            "duration": 346111,
+            "bracketData": 117,
+            "deaths": 0,
+            "damageTakenExcludingTanks": 1112760,
+            "roles": {
+              "tanks": {
+                "name": "Tanks",
+                "characters": [
+                  {
+                    "id": 108945299,
+                    "name": "Ileria",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Paladin",
+                    "spec": "Justicar",
+                    "amount": 136.82893638168,
+                    "bracketData": 120,
+                    "bracket": 0,
+                    "rank": "~19868",
+                    "best": "~18776",
+                    "totalParses": 21833,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 92981921,
+                    "name": "Thalaroka",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Protection",
+                    "amount": 299.30571406283,
+                    "bracketData": 121,
+                    "bracket": 0,
+                    "rank": "~7317",
+                    "best": "~6083",
+                    "totalParses": 8816,
+                    "rankPercent": 17
+                  }
+                ]
+              },
+              "healers": {
+                "name": "Healers",
+                "characters": [
+                  {
+                    "id": 110020970,
+                    "name": "Warark",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Holy",
+                    "amount": 4.3800977143171,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~24445",
+                    "best": "~12536",
+                    "totalParses": 31341,
+                    "rankPercent": 22
+                  },
+                  {
+                    "id": 110148012,
+                    "name": "Izlaz",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Holy",
+                    "amount": 0,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~29773",
+                    "best": "~15043",
+                    "totalParses": 31341,
+                    "rankPercent": 5
+                  },
+                  {
+                    "id": 106538766,
+                    "name": "Bullka",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 0,
+                    "bracketData": 123,
+                    "bracket": 0,
+                    "rank": "~20215",
+                    "best": "~15161",
+                    "totalParses": 33692,
+                    "rankPercent": 40
+                  },
+                  {
+                    "id": 108212056,
+                    "name": "Zulakeyah",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 0,
+                    "bracketData": 123,
+                    "bracket": 0,
+                    "rank": "~20215",
+                    "best": "~20215",
+                    "totalParses": 33692,
+                    "rankPercent": 40
+                  },
+                  {
+                    "id": 109627332,
+                    "name": "Ricoshams",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 6.2003230177602,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~13139",
+                    "best": "~13139",
+                    "totalParses": 33692,
+                    "rankPercent": 61
+                  }
+                ]
+              },
+              "dps": {
+                "name": "Damage Dealers",
+                "characters": [
+                  {
+                    "id": 108405401,
+                    "name": "Effinore",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Balance",
+                    "amount": 614.43005278653,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~14524",
+                    "best": "~10450",
+                    "totalParses": 17713,
+                    "rankPercent": 18
+                  },
+                  {
+                    "id": 108212065,
+                    "name": "Shimshakamoo",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Feral",
+                    "amount": 757.93603786069,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~14997",
+                    "best": "~8201",
+                    "totalParses": 23433,
+                    "rankPercent": 36
+                  },
+                  {
+                    "id": 108379175,
+                    "name": "Lacktoze",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Feral",
+                    "amount": 752.5273683876,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~14997",
+                    "best": "~6795",
+                    "totalParses": 23433,
+                    "rankPercent": 36
+                  },
+                  {
+                    "id": 106163834,
+                    "name": "Samkin",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Hunter",
+                    "spec": "BeastMastery",
+                    "amount": 438.6540734042,
+                    "bracketData": 120,
+                    "bracket": 0,
+                    "rank": "~41880",
+                    "best": "~39699",
+                    "totalParses": 43626,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 110325031,
+                    "name": "Ninthstalker",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Hunter",
+                    "spec": "BeastMastery",
+                    "amount": 797.83075371774,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~36645",
+                    "best": "~36645",
+                    "totalParses": 43626,
+                    "rankPercent": 16
+                  },
+                  {
+                    "id": 107039868,
+                    "name": "Estrosmagus",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 557.98862214723,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~48323",
+                    "best": "~29195",
+                    "totalParses": 50337,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 108379176,
+                    "name": "Andelena",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 633.9555807241,
+                    "bracketData": 116,
+                    "bracket": 0,
+                    "rank": "~47316",
+                    "best": "~27181",
+                    "totalParses": 50337,
+                    "rankPercent": 6
+                  },
+                  {
+                    "id": 110972022,
+                    "name": "Mageyoublush",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 727.39670221403,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~45806",
+                    "best": "~29698",
+                    "totalParses": 50337,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 110626916,
+                    "name": "Lightstank",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Shadow",
+                    "amount": 428.371245063,
+                    "bracketData": 111,
+                    "bracket": 0,
+                    "rank": "~21904",
+                    "best": "~21904",
+                    "totalParses": 22817,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 109696627,
+                    "name": "Bloodhoond",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Rogue",
+                    "spec": "Combat",
+                    "amount": 756.33250604575,
+                    "bracketData": 122,
+                    "bracket": 0,
+                    "rank": "~21850",
+                    "best": "~18766",
+                    "totalParses": 25707,
+                    "rankPercent": 15
+                  },
+                  {
+                    "id": 110033091,
+                    "name": "Evildew",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Rogue",
+                    "spec": "Combat",
+                    "amount": 671.21530376093,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~23393",
+                    "best": "~22108",
+                    "totalParses": 25707,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 110177064,
+                    "name": "Threadonme",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Elemental",
+                    "amount": 501.28427007521,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~28245",
+                    "best": "~27950",
+                    "totalParses": 29422,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 108379181,
+                    "name": "Icuqt",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Enhancement",
+                    "amount": 731.4214226072,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~26376",
+                    "best": "~17782",
+                    "totalParses": 29637,
+                    "rankPercent": 11
+                  },
+                  {
+                    "id": 108379171,
+                    "name": "Naalsuul",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warlock",
+                    "spec": "Destruction",
+                    "amount": 646.48335360621,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~43995",
+                    "best": "~30565",
+                    "totalParses": 46311,
+                    "rankPercent": 5
+                  },
+                  {
+                    "id": 110977797,
+                    "name": "Papapooey",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warlock",
+                    "spec": "Destruction",
+                    "amount": 679.30230475194,
+                    "bracketData": 111,
+                    "bracket": 0,
+                    "rank": "~43532",
+                    "best": "~43532",
+                    "totalParses": 46311,
+                    "rankPercent": 6
+                  },
+                  {
+                    "id": 107202323,
+                    "name": "Namja",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Fury",
+                    "amount": 898.90237524956,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~23575",
+                    "best": "~18922",
+                    "totalParses": 31021,
+                    "rankPercent": 24
+                  },
+                  {
+                    "id": 111138277,
+                    "name": "Mâyhêm",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Fury",
+                    "amount": 336.92948216035,
+                    "bracketData": 109,
+                    "bracket": 0,
+                    "rank": "~30090",
+                    "best": "~30090",
+                    "totalParses": 31021,
+                    "rankPercent": 3
+                  }
+                ]
+              }
+            },
+            "bracket": 0,
+            "reportsBlacklistForCharacters": [],
+            "speed": {
+              "rank": "~5449",
+              "best": "~5449",
+              "totalParses": 6055,
+              "rankPercent": 10
+            },
+            "execution": {
+              "rank": "~4299",
+              "best": "~5449",
+              "totalParses": 6055,
+              "rankPercent": 29
+            }
+          }
+        ]
+      },
+      "damage": {
+        "data": {
+          "entries": [
+            {
+              "name": "Serpent Sting",
+              "guid": 27016,
+              "actor": 12,
+              "type": 8,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 1771,
+              "abilityIcon": "ability_hunter_quickshot.jpg",
+              "uptime": 30008,
+              "uses": 2,
+              "hitCount": 0,
+              "tickCount": 10,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 1771,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 1771,
+                  "type": "Boss"
+                }
+              ],
+              "hitdetails": [
+                {
+                  "type": "Resisted Tick",
+                  "total": 262,
+                  "count": 2,
+                  "absorbOrOverheal": 0,
+                  "min": 97,
+                  "max": 165
+                },
+                {
+                  "type": "Tick",
+                  "total": 1509,
+                  "count": 8,
+                  "absorbOrOverheal": 0,
+                  "min": 183,
+                  "max": 192
+                }
+              ],
+              "multistrikedetails": [],
+              "missdetails": [],
+              "multistrikemissdetails": []
+            },
+            {
+              "name": "Auto Shot",
+              "guid": 75,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 77620,
+              "abilityIcon": "ability_whirlwind.jpg",
+              "uses": 90,
+              "hitCount": 90,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 26,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 77620,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 77620,
+                  "type": "Boss"
+                }
+              ],
+              "hitdetails": [
+                {
+                  "type": "Hit",
+                  "total": 40303,
+                  "count": 62,
+                  "absorbOrOverheal": 0,
+                  "min": 500,
+                  "max": 789
+                },
+                {
+                  "type": "Critical Hit",
+                  "total": 36179,
+                  "count": 26,
+                  "absorbOrOverheal": 0,
+                  "min": 1254,
+                  "max": 1534
+                },
+                {
+                  "type": "Blocked Hit",
+                  "total": 1138,
+                  "count": 2,
+                  "absorbOrOverheal": 0,
+                  "min": 479,
+                  "max": 659
+                }
+              ],
+              "multistrikedetails": [],
+              "missdetails": [],
+              "multistrikemissdetails": []
+            },
+            {
+              "name": "Steady Shot",
+              "guid": 34120,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 72432,
+              "abilityIcon": "ability_hunter_steadyshot.jpg",
+              "uses": 109,
+              "hitCount": 91,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 19,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 72432,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 72432,
+                  "type": "Boss"
+                }
+              ],
+              "hitdetails": [
+                {
+                  "type": "Hit",
+                  "total": 44217,
+                  "count": 69,
+                  "absorbOrOverheal": 0,
+                  "min": 496,
+                  "max": 781
+                },
+                {
+                  "type": "Critical Hit",
+                  "total": 25156,
+                  "count": 18,
+                  "absorbOrOverheal": 0,
+                  "min": 1246,
+                  "max": 1641
+                },
+                {
+                  "type": "Blocked Hit",
+                  "total": 1605,
+                  "count": 3,
+                  "absorbOrOverheal": 0,
+                  "min": 486,
+                  "max": 596
+                },
+                {
+                  "type": "Blocked Critical Hit",
+                  "total": 1454,
+                  "count": 1,
+                  "absorbOrOverheal": 0,
+                  "min": 1454,
+                  "max": 1454
+                }
+              ],
+              "multistrikedetails": [],
+              "missdetails": [],
+              "multistrikemissdetails": []
+            }
+          ],
+          "totalTime": 346111,
+          "logVersion": 17,
+          "gameVersion": 3,
+          "exploitDetails": []
+        }
+      },
+      "buffs": {
+        "data": {
+          "auras": [
+            {
+              "name": "Ancestral Fortitude",
+              "guid": 16237,
+              "type": 2,
+              "abilityIcon": "spell_nature_undyingstrength.jpg",
+              "totalUptime": 14999,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 7218587,
+                  "endTime": 7233586
+                }
+              ]
+            },
+            {
+              "name": "Lust for Battle",
+              "guid": 35166,
+              "type": 1,
+              "abilityIcon": "spell_shadow_deathpact.jpg",
+              "totalUptime": 40016,
+              "totalUses": 2,
+              "bands": [
+                {
+                  "startTime": 7171710,
+                  "endTime": 7191711
+                },
+                {
+                  "startTime": 7313531,
+                  "endTime": 7333546
+                }
+              ]
+            },
+            {
+              "name": "Greater Blessing of Salvation",
+              "guid": 25895,
+              "type": 2,
+              "abilityIcon": "spell_holy_greaterblessingofsalvation.jpg",
+              "totalUptime": 346110,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6989320,
+                  "endTime": 7335430
+                }
+              ]
+            },
+            {
+              "name": "Mighty Agility",
+              "guid": 28497,
+              "type": 1,
+              "abilityIcon": "inv_potion_162.jpg",
+              "totalUptime": 346110,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6989320,
+                  "endTime": 7335430
+                }
+              ]
+            },
+            {
+              "name": "Quick Shots",
+              "guid": 6150,
+              "type": 1,
+              "abilityIcon": "ability_warrior_innerrage.jpg",
+              "totalUptime": 96715,
+              "totalUses": 11,
+              "bands": [
+                {
+                  "startTime": 6996798,
+                  "endTime": 7013892
+                },
+                {
+                  "startTime": 7032375,
+                  "endTime": 7044372
+                },
+                {
+                  "startTime": 7074447,
+                  "endTime": 7090348
+                },
+                {
+                  "startTime": 7098767,
+                  "endTime": 7110770
+                },
+                {
+                  "startTime": 7111346,
+                  "endTime": 7123344
+                },
+                {
+                  "startTime": 7300055,
+                  "endTime": 7327777
+                }
+              ]
+            },
+            {
+              "name": "Well Fed",
+              "guid": 33261,
+              "type": 1,
+              "abilityIcon": "spell_misc_food.jpg",
+              "totalUptime": 346110,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6989320,
+                  "endTime": 7335430
+                }
+              ]
+            },
+            {
+              "name": "Arcane Brilliance",
+              "guid": 27127,
+              "type": 64,
+              "abilityIcon": "spell_holy_arcaneintellect.jpg",
+              "totalUptime": 346110,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6989320,
+                  "endTime": 7335430
+                }
+              ]
+            },
+            {
+              "name": "The Beast Within",
+              "guid": 34471,
+              "type": 1,
+              "abilityIcon": "ability_hunter_beastwithin.jpg",
+              "totalUptime": 54009,
+              "totalUses": 3,
+              "bands": [
+                {
+                  "startTime": 6999583,
+                  "endTime": 7017581
+                },
+                {
+                  "startTime": 7153136,
+                  "endTime": 7171135
+                },
+                {
+                  "startTime": 7305969,
+                  "endTime": 7323981
+                }
+              ]
+            },
+            {
+              "name": "Rage of the Unraveller",
+              "guid": 33649,
+              "type": 1,
+              "abilityIcon": "racial_orc_berserkerstrength.jpg",
+              "totalUptime": 20007,
+              "totalUses": 2,
+              "bands": [
+                {
+                  "startTime": 7015164,
+                  "endTime": 7025164
+                },
+                {
+                  "startTime": 7241670,
+                  "endTime": 7251677
+                }
+              ]
+            },
+            {
+              "name": "Rapid Fire",
+              "guid": 3045,
+              "type": 64,
+              "abilityIcon": "ability_hunter_runningshot.jpg",
+              "totalUptime": 15007,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 7223984,
+                  "endTime": 7238991
+                }
+              ]
+            },
+            {
+              "name": "Greater Blessing of Kings",
+              "guid": 25898,
+              "type": 2,
+              "abilityIcon": "spell_magic_greaterblessingofkings.jpg",
+              "totalUptime": 346110,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6989320,
+                  "endTime": 7335430
+                }
+              ]
+            },
+            {
+              "name": "Ferocious Inspiration",
+              "guid": 34456,
+              "type": 1,
+              "abilityIcon": "ability_hunter_ferociousinspiration.jpg",
+              "totalUptime": 51814,
+              "totalUses": 10,
+              "bands": [
+                {
+                  "startTime": 7093150,
+                  "endTime": 7110393
+                },
+                {
+                  "startTime": 7111823,
+                  "endTime": 7121830
+                },
+                {
+                  "startTime": 7244422,
+                  "endTime": 7256993
+                },
+                {
+                  "startTime": 7259155,
+                  "endTime": 7271148
+                }
+              ]
+            },
+            {
+              "name": "Bloodlust",
+              "guid": 2825,
+              "type": 8,
+              "abilityIcon": "spell_nature_bloodlust.jpg",
+              "totalUptime": 39999,
+              "totalUses": 1,
+              "bands": [
+                {
+                  "startTime": 6995713,
+                  "endTime": 7035712
+                }
+              ]
+            },
+            {
+              "name": "Drums of Battle",
+              "guid": 35476,
+              "type": 1,
+              "abilityIcon": "inv_misc_drum_02.jpg",
+              "totalUptime": 82381,
+              "totalUses": 3,
+              "bands": [
+                {
+                  "startTime": 7010914,
+                  "endTime": 7040932
+                },
+                {
+                  "startTime": 7169109,
+                  "endTime": 7199111
+                },
+                {
+                  "startTime": 7313069,
+                  "endTime": 7335430
+                }
+              ]
+            }
+          ],
+          "totalTime": 346111,
+          "useTargets": true,
+          "startTime": 0,
+          "endTime": 11192636,
+          "logVersion": 17,
+          "gameVersion": 3
+        }
+      },
+      "casts": {
+        "data": {
+          "entries": [
+            {
+              "name": "Serpent Sting",
+              "guid": 27016,
+              "actor": 12,
+              "type": 8,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 2,
+              "abilityIcon": "ability_hunter_quickshot.jpg",
+              "uptime": 30008,
+              "hitCount": 2,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 2,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 2,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Auto Shot",
+              "guid": 75,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 109,
+              "abilityIcon": "ability_whirlwind.jpg",
+              "uses": 109,
+              "hitCount": 109,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 109,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 91,
+                  "type": "Boss"
+                },
+                {
+                  "name": "Coilfang Ambusher",
+                  "total": 18,
+                  "type": "NPC"
+                }
+              ]
+            },
+            {
+              "name": "Kill Command",
+              "guid": 34026,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 21,
+              "abilityIcon": "ability_hunter_killcommand.jpg",
+              "hitCount": 21,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 21,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 16,
+                  "type": "Boss"
+                },
+                {
+                  "name": "Coilfang Ambusher",
+                  "total": 5,
+                  "type": "NPC"
+                }
+              ]
+            },
+            {
+              "name": "Lust for Battle",
+              "guid": 35166,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 2,
+              "abilityIcon": "spell_shadow_deathpact.jpg",
+              "uptime": 40016,
+              "hitCount": 2,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 2,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 2,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Bestial Wrath",
+              "guid": 19574,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 3,
+              "abilityIcon": "ability_druid_ferociousbite.jpg",
+              "uptime": 53999,
+              "hitCount": 3,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 3,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 3,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Intimidation",
+              "guid": 19577,
+              "actor": 12,
+              "type": 8,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 2,
+              "abilityIcon": "ability_devour.jpg",
+              "uptime": 2790,
+              "hitCount": 2,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 2,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 2,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Mend Pet",
+              "guid": 27046,
+              "actor": 12,
+              "type": 8,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 4,
+              "abilityIcon": "ability_hunter_mendpet.jpg",
+              "uptime": 41326,
+              "hitCount": 4,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 4,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 4,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Freezing Trap",
+              "guid": 14311,
+              "actor": 12,
+              "type": 16,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 2,
+              "abilityIcon": "spell_frost_chainsofice.jpg",
+              "hitCount": 2,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 2,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 2,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Rapid Fire",
+              "guid": 3045,
+              "actor": 12,
+              "type": 64,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 1,
+              "abilityIcon": "ability_hunter_runningshot.jpg",
+              "uptime": 15007,
+              "hitCount": 1,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 1,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 1,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Steady Shot",
+              "guid": 34120,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 109,
+              "abilityIcon": "ability_hunter_steadyshot.jpg",
+              "hitCount": 109,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 109,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 94,
+                  "type": "Boss"
+                },
+                {
+                  "name": "Coilfang Ambusher",
+                  "total": 15,
+                  "type": "NPC"
+                }
+              ]
+            },
+            {
+              "name": "Hunter's Mark",
+              "guid": 14325,
+              "actor": 12,
+              "type": 64,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 3,
+              "abilityIcon": "ability_hunter_snipershot.jpg",
+              "uptime": 146591,
+              "hitCount": 3,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 3,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "The Lurker Below",
+                  "total": 3,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Drums of Battle",
+              "guid": 35476,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 3,
+              "abilityIcon": "inv_misc_drum_02.jpg",
+              "uptime": 82381,
+              "hitCount": 3,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 3,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 3,
+                  "type": "Boss"
+                }
+              ]
+            },
+            {
+              "name": "Arcane Shot",
+              "guid": 27019,
+              "actor": 12,
+              "type": 64,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 3,
+              "abilityIcon": "ability_impalingbolt.jpg",
+              "hitCount": 3,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 3,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Coilfang Ambusher",
+                  "total": 3,
+                  "type": "NPC"
+                }
+              ]
+            },
+            {
+              "name": "Restore Mana",
+              "guid": 41617,
+              "actor": 12,
+              "type": 1,
+              "actorName": "Samkin",
+              "actorIcon": "Hunter",
+              "actorType": "Hunter",
+              "total": 1,
+              "abilityIcon": "trade_engineering.jpg",
+              "hitCount": 1,
+              "tickCount": 0,
+              "tickMissCount": 0,
+              "missCount": 0,
+              "multistrikeHitCount": 0,
+              "multistrikeTickCount": 0,
+              "multistrikeMissCount": 0,
+              "multistrikeTickMissCount": 0,
+              "critHitCount": 0,
+              "critTickCount": 0,
+              "sources": [
+                {
+                  "name": "Samkin",
+                  "total": 1,
+                  "type": "Hunter",
+                  "icon": "Hunter-BeastMastery"
+                }
+              ],
+              "targets": [
+                {
+                  "name": "Environment",
+                  "total": 1,
+                  "type": "Boss"
+                }
+              ]
+            }
+          ],
+          "totalTime": 346111,
+          "logVersion": 17,
+          "gameVersion": 3,
+          "exploitDetails": []
+        }
+      },
+      "combatantInfo": {
+        "data": [
+          {
+            "timestamp": 6989320,
+            "type": "combatantinfo",
+            "fight": 23,
+            "sourceID": 12,
+            "gear": [
+              {
+                "id": 28275,
+                "quality": 3,
+                "icon": "inv_helmet_19.jpg",
+                "itemLevel": 115,
+                "permanentEnchant": 3003,
+                "gems": [
+                  {
+                    "id": 24031,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_livingruby_03.jpg"
+                  },
+                  {
+                    "id": 32409,
+                    "itemLevel": 70,
+                    "icon": "inv_misc_gem_diamond_06.jpg"
+                  }
+                ],
+                "setID": 650
+              },
+              {
+                "id": 28509,
+                "quality": 4,
+                "icon": "inv_jewelry_necklace_22.jpg",
+                "itemLevel": 115
+              },
+              {
+                "id": 27801,
+                "quality": 3,
+                "icon": "inv_shoulder_23.jpg",
+                "itemLevel": 115,
+                "permanentEnchant": 2983,
+                "gems": [
+                  {
+                    "id": 34831,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_starofelune_01.jpg"
+                  },
+                  {
+                    "id": 24047,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_livingruby_03.jpg"
+                  }
+                ],
+                "setID": 650
+              },
+              {
+                "id": 127,
+                "quality": 2,
+                "icon": "inv_shirt_07.jpg",
+                "itemLevel": 1
+              },
+              {
+                "id": 28228,
+                "quality": 3,
+                "icon": "inv_chest_chain_03.jpg",
+                "itemLevel": 115,
+                "permanentEnchant": 2841,
+                "gems": [
+                  {
+                    "id": 24031,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_livingruby_03.jpg"
+                  },
+                  {
+                    "id": 24031,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_livingruby_03.jpg"
+                  },
+                  {
+                    "id": 30549,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_nightseye_03.jpg"
+                  }
+                ],
+                "setID": 650
+              },
+              {
+                "id": 28656,
+                "quality": 4,
+                "icon": "inv_belt_22.jpg",
+                "itemLevel": 115
+              },
+              {
+                "id": 29985,
+                "quality": 4,
+                "icon": "inv_pants_mail_15.jpg",
+                "itemLevel": 128,
+                "permanentEnchant": 3012,
+                "gems": [
+                  {
+                    "id": 24028,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_livingruby_03.jpg"
+                  },
+                  {
+                    "id": 24048,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_dawnstone_03.jpg"
+                  },
+                  {
+                    "id": 24033,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_starofelune_03.jpg"
+                  }
+                ]
+              },
+              {
+                "id": 30060,
+                "quality": 4,
+                "icon": "inv_boots_plate_06.jpg",
+                "itemLevel": 128
+              },
+              {
+                "id": 30091,
+                "quality": 4,
+                "icon": "inv_bracer_15.jpg",
+                "itemLevel": 128,
+                "gems": [
+                  {
+                    "id": 24048,
+                    "itemLevel": 70,
+                    "icon": "inv_jewelcrafting_dawnstone_03.jpg"
+                  }
+                ]
+              },
+              {
+                "id": 30140,
+                "quality": 4,
+                "icon": "inv_gauntlets_25.jpg",
+                "itemLevel": 133,
+                "permanentEnchant": 2564,
+                "setID": 652
+              },
+              {
+                "id": 28757,
+                "quality": 4,
+                "icon": "inv_jewelry_ring_ahnqiraj_05.jpg",
+                "itemLevel": 125
+              },
+              {
+                "id": 29283,
+                "quality": 4,
+                "icon": "inv_jewelry_ring_62.jpg",
+                "itemLevel": 130
+              },
+              {
+                "id": 28034,
+                "quality": 3,
+                "icon": "inv_gizmo_khoriumpowercore.jpg",
+                "itemLevel": 112
+              },
+              {
+                "id": 29383,
+                "quality": 4,
+                "icon": "inv_misc_monsterscales_15.jpg",
+                "itemLevel": 110
+              },
+              {
+                "id": 29382,
+                "quality": 4,
+                "icon": "inv_misc_cape_18.jpg",
+                "itemLevel": 110
+              },
+              {
+                "id": 28587,
+                "quality": 4,
+                "icon": "inv_axe_46.jpg",
+                "itemLevel": 115,
+                "permanentEnchant": 2670
+              },
+              {
+                "id": 0,
+                "quality": 1,
+                "icon": "inv_axe_02.jpg",
+                "itemLevel": 0
+              },
+              {
+                "id": 28772,
+                "quality": 4,
+                "icon": "inv_weapon_bow_18.jpg",
+                "itemLevel": 125,
+                "permanentEnchant": 2523
+              },
+              {
+                "id": 5976,
+                "quality": 2,
+                "icon": "inv_shirt_guildtabard_01.jpg",
+                "itemLevel": 1
+              }
+            ],
+            "auras": [
+              {
+                "source": 7,
+                "ability": 25895,
+                "stacks": 1,
+                "icon": "spell_holy_greaterblessingofsalvation.jpg",
+                "name": "Greater Blessing of Salvation"
+              },
+              {
+                "source": 63,
+                "ability": 25898,
+                "stacks": 1,
+                "icon": "spell_magic_greaterblessingofkings.jpg",
+                "name": "Greater Blessing of Kings"
+              },
+              {
+                "source": 16,
+                "ability": 27127,
+                "stacks": 1,
+                "icon": "spell_holy_arcaneintellect.jpg",
+                "name": "Arcane Brilliance"
+              },
+              {
+                "source": 12,
+                "ability": 28497,
+                "stacks": 1,
+                "icon": "inv_potion_162.jpg",
+                "name": "Mighty Agility"
+              },
+              {
+                "source": 12,
+                "ability": 33261,
+                "stacks": 1,
+                "icon": "spell_misc_food.jpg",
+                "name": "Well Fed"
+              }
+            ],
+            "expansion": "tbc",
+            "faction": 0,
+            "specID": 0,
+            "strength": 71,
+            "agility": 661,
+            "stamina": 646,
+            "intellect": 282,
+            "spirit": 114,
+            "dodge": 0,
+            "parry": 0,
+            "block": 0,
+            "armor": 6011,
+            "critMelee": 127,
+            "critRanged": 127,
+            "critSpell": 0,
+            "hasteMelee": 0,
+            "hasteRanged": 0,
+            "hasteSpell": 0,
+            "hitMelee": 113,
+            "hitRanged": 143,
+            "hitSpell": 0,
+            "expertise": 0,
+            "resilienceCritTaken": 0,
+            "resilienceDamageTaken": 0,
+            "talentTree": [],
+            "talents": [
+              {
+                "id": 51,
+                "icon": "inv_axe_02.jpg"
+              },
+              {
+                "id": 10,
+                "icon": "spell_frost_icestorm.jpg"
+              },
+              {
+                "id": 0,
+                "icon": "inv_axe_02.jpg"
+              }
+            ],
+            "pvpTalents": [],
+            "customPowerSet": [],
+            "secondaryCustomPowerSet": [],
+            "tertiaryCustomPowerSet": []
+          }
+        ]
+      },
+      "fights": [
+        {
+          "id": 23,
+          "startTime": 6989319,
+          "endTime": 7335430
+        }
+      ]
+    }
+  }
+}

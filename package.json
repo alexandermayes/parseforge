@@ -10,7 +10,8 @@
     "test": "vitest run",
     "theme-parity": "node scripts/theme-parity.mjs",
     "token-audit": "node scripts/token-audit.mjs",
-    "seo-invariants": "node scripts/seo-invariants.mjs"
+    "seo-invariants": "node scripts/seo-invariants.mjs",
+    "record-fixtures": "node scripts/record-wcl-fixtures.mjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
