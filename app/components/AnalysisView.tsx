@@ -15,6 +15,8 @@ import CastEfficiency from "./CastEfficiency";
 import AbilityBreakdown from "./AbilityBreakdown";
 import AbilityPriorityHeatmap from "./AbilityPriorityHeatmap";
 import ComparisonSummary from "./ComparisonSummary";
+import CastTimeline from "./CastTimeline";
+import { useTimeline } from "@/app/analyze/[reportCode]/hooks/useTimeline";
 
 export function AnalysisLoading() {
   return (
@@ -33,7 +35,19 @@ export function AnalysisLoading() {
   );
 }
 
-export default function AnalysisView({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
+export default function AnalysisView({
+  data,
+  previousSnapshot,
+  reportCode,
+  fightId,
+  sourceId,
+}: {
+  data: AnalysisResult;
+  previousSnapshot?: AnalysisSnapshot | null;
+  reportCode: string;
+  fightId: number | null;
+  sourceId: number | null;
+}) {
   const playerColor = classColor(data.playerClass);
 
   // Build comparison label
@@ -54,7 +68,10 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
     "talents",
     "buffs",
     "casts",
+    "timeline",
   ]);
+
+  const timeline = useTimeline(reportCode, fightId, sourceId, tab);
 
   return (
     <div className="space-y-6">
@@ -91,6 +108,7 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
           <TabsTrigger value="talents">Talents</TabsTrigger>
           <TabsTrigger value="buffs">Buffs</TabsTrigger>
           <TabsTrigger value="casts">Casts</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="dps" className="mt-4">
@@ -118,6 +136,15 @@ export default function AnalysisView({ data, previousSnapshot }: { data: Analysi
 
         <TabsContent value="casts" className="mt-4">
           <CastEfficiency data={data.casts} wowheadDomain={wowheadDomain} />
+        </TabsContent>
+
+        <TabsContent value="timeline" className="mt-4">
+          <CastTimeline
+            result={timeline.result}
+            loading={timeline.loading}
+            error={timeline.error}
+            wowheadDomain={wowheadDomain}
+          />
         </TabsContent>
       </Tabs>
     </div>

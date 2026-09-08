@@ -312,7 +312,13 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
               >
                 &larr; All Players
               </button>
-              <AnalysisView data={player.result} previousSnapshot={player.previousSnapshot} />
+              <AnalysisView
+                data={player.result}
+                previousSnapshot={player.previousSnapshot}
+                reportCode={reportCode}
+                fightId={selectedFight}
+                sourceId={selectedSource}
+              />
             </div>
           )}
           {!player.result && !player.loading && !player.error && raid.result && (
