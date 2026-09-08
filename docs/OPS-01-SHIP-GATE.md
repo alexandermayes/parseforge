@@ -36,6 +36,49 @@ not add a duplicate row.
    ```
    Evidence: the captured command output (exit codes + summary lines).
 
+   **A non-zero `npm test` exit blocks a production deploy — no override, no
+   "known failure" allowance.** `npm test` is already a CI step
+   (`.github/workflows/ci.yml`, before `npm run build`/`npm run lint`), and
+   this local-gate row is where that consequence is stated for a human
+   running the gate by hand: a red suite is not a row you check "passing
+   with a caveat" and move past — it stops the deploy in step 6 until it is
+   green again. The evidence for this row is the suite's summary line
+   (`Test Files N passed (N)` / `Tests N passed (N)`), captured verbatim
+   like every other row in this document.
+
+   **Test-suite reach (Phase 2 / plan 02-08).** Coverage is recorded here by
+   naming the files that carry it, not by a coverage-percentage number — a
+   percentage threshold can be reached by a shallow, assertion-free suite
+   just as easily as a meaningful one, and the actual bar this project holds
+   is that new code ships with tests anchored to real branches and real past
+   bugs (D-16). As of this phase, the suite reaches:
+   - `lib/cla-engine.test.ts` — gear/enchant/gem/class-buff audit logic
+   - `lib/raid-overview-engine.test.ts` — healer metrics, death timeline,
+     buff coverage, role sort order
+   - `lib/wcl-client.test.ts` — OAuth token refresh, retry ceiling, timeout,
+     every `WCLError` classification
+   - `lib/timeline-engine.test.ts` — cast timeline, idle gaps, death marker
+   - `lib/healer-metrics.test.ts` — effective HPS / overheal / uptime, plus
+     the raid-overview/player-page cross-surface parity guarantee (D-08)
+   - `lib/generated/game-data.test.ts` — the regenerated enchant/gem/gem-stat
+     game-data guard against the pre-regeneration pinned facts
+   - `lib/__fixtures__/fixtures.test.ts` — the recorded-fixture shape guard
+   alongside the test files that already existed before this phase
+   (`lib/api-utils.test.ts`, `lib/async-pool.test.ts`,
+   `lib/cla-constants.test.ts`, `lib/consent.test.ts`,
+   `lib/constants.test.ts`, `lib/url-parser.test.ts`, and
+   `lib/analysis-engine.test.ts`). **No coverage-percentage threshold is
+   enforced, and none is planned** — see the reasoning above.
+
+   **Snapshot discipline.** The snapshots committed under
+   `lib/__snapshots__/` (`cla-engine.test.ts.snap`,
+   `raid-overview-engine.test.ts.snap`) are updated only deliberately, with
+   the diff reviewed before committing. A snapshot refreshed by reflex when
+   it fails converts the regression net this phase built into a green light
+   that certifies nothing — worse than an honestly failing test, because it
+   looks like proof. If a snapshot fails, read what changed and why before
+   deciding whether to accept the new value.
+
 2. **Both-theme route sweep** — every route with a `page.tsx` under `app/`, checked in both
    Light and Dark (navbar theme control). There is no automated visual-regression harness for
    this project (node-env Vitest only) — this manual pass is the only coverage. Check: no
