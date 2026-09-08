@@ -29,6 +29,13 @@ export function usePlayerAnalysis(
     setError(null);
     setResult(null);
 
+    // Single call site for the error event — both the HTTP-error branch and
+    // the exception branch below route through it, so this file holds
+    // exactly one capture per interaction (one success, one error) even
+    // though the failure can originate from two different code paths.
+    const captureAnalysisError = (message: string) =>
+      posthog.capture("analysis_error", { report_code: reportCode, error: message });
+
     try {
       const fight = report?.fights.find((f) => f.id === selectedFight);
       const res = await fetch("/api/analyze", {
@@ -48,7 +55,7 @@ export function usePlayerAnalysis(
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Analysis failed");
-        posthog.capture("analysis_error", { report_code: reportCode, error: data.error });
+        captureAnalysisError(data.error);
       } else {
         const snapshot = buildSnapshot(data, reportCode);
         const history = getHistory(data.playerName, data.encounterName);
@@ -60,15 +67,27 @@ export function usePlayerAnalysis(
           player_name: data.playerName,
           player_class: data.playerClass,
           player_spec: data.playerSpec,
+          player_role: data.playerRole,
           encounter: data.encounterName,
           dps: Math.round(data.dps.playerDps),
           percentile: data.dps.percentile,
           has_previous: !!history[0],
+          // Healer-only measurement (ACC-04/OPS-01): whether the new healer
+          // surface is actually reaching healers and driving suggestions.
+          ...(data.healer
+            ? {
+                overheal_percent: Math.round(data.healer.overhealPercent),
+                activity_percent: Math.round(data.healer.activityPercent),
+                top_overheal_percent: Math.round(data.healer.topOverhealPercent),
+                suggestion_count: data.suggestions.length,
+              }
+            : {}),
         });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Analysis request failed");
-      posthog.capture("analysis_error", { report_code: reportCode, error: err instanceof Error ? err.message : "unknown" });
+      const message = err instanceof Error ? err.message : "Analysis request failed";
+      setError(message);
+      captureAnalysisError(err instanceof Error ? err.message : "unknown");
     } finally {
       setLoading(false);
     }

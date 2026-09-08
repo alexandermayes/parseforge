@@ -24,6 +24,7 @@ const categoryLabels: Record<string, string> = {
   gear: "Gear",
   consumables: "Consumables",
   casts: "Casts",
+  healing: "Healing",
 };
 
 function ScorecardCell({
