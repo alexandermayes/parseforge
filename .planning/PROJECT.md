@@ -33,6 +33,11 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - ✓ GDPR consent layer: Google Privacy & Messaging (TCF v2.2) gates PostHog capture and session replay for EEA/UK visitors; non-EEA unaffected (MONY-01) — Phase 1
 - ✓ `/privacy` and `/terms` pages (individual operator, California law, contact info@lootlistplus.com) — Phase 1 (quick task 260906-kzw)
 - ✓ OPS-01 ship gate as a repeatable document (`docs/OPS-01-SHIP-GATE.md`) with `seo-invariants` local-vs-prod diff; Phase 1 gate closed with GSC + PostHog evidence — Phase 1
+- ✓ Per-fight cast Timeline tab: ordered cast log with idle-gap rows, death marker, per-ability filter chips, windowed rendering and truncation notice, behind a paginated/rate-limited/cached `/api/timeline` (ACC-03) — Phase 2
+- ✓ Healer-relevant analysis: effective HPS / overheal % / uptime from one shared helper on both the player card and the raid Healer Breakdown, plus healer-only suggestion rules thresholded against top healers (ACC-04) — Phase 2
+- ✓ Game data as generated truth: `npm run regen-game-data` wago.tools pipeline, three era modules with Classic/TBC-first collision precedence, `lib/cla-constants.ts` a thin re-export, `docs/GAME-DATA-AUDIT.md` as the standing review artifact (ACC-01) — Phase 2
+- ✓ Regression net: recorded WCL fixtures drive tests for `cla-engine`, `raid-overview-engine`, `wcl-client`, timeline and healer engines (14 files / 135 tests); a red suite now blocks a deploy in the OPS-01 gate (ACC-02) — Phase 2
+- ✓ Phase 2 shipped to production (`dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c`) after a preview sweep; PR #15 open for review — Phase 2
 
 ### Active
 
@@ -55,7 +60,8 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - [ ] Ship first monetization — ads as default plan; evaluate low-effort alternatives before committing
 
 **Product quality:**
-- [ ] Improve analysis accuracy (top priority per user) and expand tool capabilities
+- [ ] Expand tool capabilities beyond the Phase 2 accuracy work (per-player share image bakes in the healer percentile basis — a `costly` decision to revisit in Phase 3)
+- [ ] Close the Phase 2 code-review findings: CR-01 healer suggestions fire when `hasHealing` is false (wrong recommendation, live), WR-01 timeline "player not in fight" check is report-scoped not fight-scoped, WR-02 StrictMode double-fires `timeline_filter_used`, WR-03 stale precedence comment in `game-data.test.ts` (`.planning/phases/02-accuracy-analysis-depth/02-REVIEW.md`)
 
 **Ecosystem & community:**
 - [ ] Connect LootList+ ↔ ParseForge (cross-promotion between the two sites)
@@ -83,8 +89,8 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
   - Site-wide CTR is structurally misleading (navigational impressions dominate) — never treat it as a health metric; segment first
   - Title template appends " | ParseForge" (13 chars) — child page titles must stay under ~47 chars; always render pages to verify, don't eyeball metadata
 - **Next keyword candidate**: `wow log analyzer` (392 impr/28d, pos 3.5, tool intent) — segment before building
-- **Known concerns** (from CONCERNS.md): CSP still report-only; core engines (cla, raid-overview, wcl-client) largely untested. *(Resolved Phase 1: PostHog EU consent flow now gated by the Google CMP.)* Deferred from Phase 1: formal ASVS security review — gsd security tooling not installed; per-plan STRIDE registers exist
-- **Manual follow-ups after Phase 1**: paste `https://parseforge.gg/privacy` into AdSense → Privacy & messaging → message site settings; re-check PostHog event definitions (`theme_changed`, `consent_resolved`) at the Phase 2 gate; `git push origin main` (unpushed phase forces sequential execution)
+- **Known concerns** (from CONCERNS.md): CSP still report-only. *(Resolved Phase 1: PostHog EU consent flow now gated by the Google CMP. Resolved Phase 2: core engines now under a fixture-driven regression net.)* Deferred from Phases 1 and 2: formal ASVS security review — gsd security tooling not installed in this profile; per-plan STRIDE registers exist
+- **Manual follow-ups after Phase 2**: paste `https://parseforge.gg/privacy` into AdSense → Privacy & messaging → message site settings (still open); PostHog event definitions (`timeline_viewed`, `timeline_error`, `timeline_filter_used`, `analysis_complete`, `theme_changed`, `consent_resolved`) — confirmed by the developer at the Phase 2 UAT, but the PostHog MCP connection returns `INVALID_API_KEY` and its active project is LootList+ App, so re-wire it before the Phase 3 gate; GSC shows `/` and `/analyze/*` as "Crawled – currently not indexed" with pre-deploy crawl dates — request recrawl of the Phase 2 build and watch `/` specifically; `origin/main` is at `55d2010` (pre-Phase-2) and Phase 2 lives on PR #15 (`growth/phase-2-accuracy-depth`) — merge or push to restore parallel worktree execution; two game-data ids (96264, 96294) flagged for human review in `.planning/WINDOWS.md`
 - **Feedback source today**: owner's personal Discord (uncomfortable) — motivates the community requirement
 
 ## Constraints
@@ -112,6 +118,11 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 | Class-attribute theming via next-themes, tokens enforced by `theme-parity` + `token-audit` scripts | Machine-checkable DSGN-01 so the Phase 7 redesign can't regress hardcoded colours | ✓ Good (Phase 1) |
 | Preview deploy before every prod deploy when no real-browser pass happened | Agents can't drive a browser; a preview lets the developer eyeball before visitors do | ✓ Good (Phase 1) |
 | Defer the formal ASVS security review for Phase 1 | Security tooling absent from this gsd-core profile; STRIDE registers exist per plan | — Pending (install tooling, run `/gsd-secure-phase 01`) |
+| Record real WCL responses as committed fixtures before building on assumed shapes (Phase 2 Wave 0) | RESEARCH.md carried five unverified API-shape assumptions; recording once fed both the timeline and the regression net, and corrected A3 (scoped healing table has per-ability `overheal` but no `activeTime`) | ✓ Good (Phase 2) |
+| Era precedence for generated game data is Classic/TBC-first, not later-era-wins | Client builds reuse numeric IDs across eras (806 enchant + 295 gem collisions); later-wins silently corrupted pinned pairs 3003/2667/32196 | ✓ Good (Phase 2) — 130/178 consumable names are explicit sourced overrides |
+| One healer-metrics helper feeds both the player card and the raid overview | D-08: two surfaces must never disagree; parity is asserted by test and was confirmed live in production | ✓ Good (Phase 2) |
+| Preview-first deploy plus push + PR before shipping Phase 2 | Regenerated game-data names had the least automated coverage; PR #15 makes the regen diff reviewable (D-12) | ✓ Good (Phase 2) — prod `dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c` |
+| Defer the formal ASVS security review for Phase 2 (same as Phase 1) | `gsd-secure-phase` still not installed in this profile; per-plan STRIDE registers exist | — Pending (install tooling, run `/gsd-secure-phase 02`) |
 
 ## Evolution
 
@@ -131,4 +142,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-07 after Phase 1*
+*Last updated: 2026-09-08 after Phase 2*
