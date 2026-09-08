@@ -316,3 +316,154 @@ phase's end-of-phase human-verify sweep (per `workflow.human_verify_mode=end-of-
 available. This is a `human_judgment: true` deliverable, not a silent skip: it is recorded in
 this plan's SUMMARY.md `coverage:` block and in `.planning/WINDOWS.md` so it stays visible
 through to phase close.
+
+---
+
+## Part 3 — Phase 2 evidence
+
+Phase 2 (02-accuracy-analysis-depth) shipped a cast timeline, healer-relevant metrics and
+suggestions, a regenerated wago.tools game-data pipeline, and a regression net over three
+previously-untested engines (ACC-01 through ACC-04). This section is written in two passes: Task
+1 (02-09) runs the pre-deploy half of the gate below; Task 2 is the deploy decision checkpoint;
+Task 3 completes the post-deploy half (route sweep, PostHog confirmation, Search Console, and the
+dated sign-off) once the developer's decision is executed.
+
+### Local gate output (2026-09-08, Task 1, this session)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+
+$ npm run lint
+✖ 1698 problems (1101 errors, 597 warnings)
+— unscoped run exits 1, but every error/warning line traces to the untracked .codex/
+  scaffolding directory (confirmed via a path-prefix filter over the full output: the only
+  app/lib/components/scripts finding is one pre-existing `<img>` LCP warning in
+  app/components/CastTimeline.tsx, already documented as pre-existing debt in 02-08-SUMMARY.md).
+  A scoped run over this project's own source confirms the gate-relevant result:
+  `npx eslint app lib components scripts` -> 1 problem (0 errors, 1 warning), exit 0.
+
+$ npm test
+ Test Files  14 passed (14)
+      Tests  135 passed (135)
+   Duration  571ms
+
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+
+$ npm run token-audit
+- Total findings: 57
+- Allowlisted: 57
+- Non-allowlisted (gate-relevant): 0
+- Missing required @theme categories: none
+```
+
+All five commands are green by the gate-relevant measure (`tsc` exit 0; suite 135/135; both
+audit scripts pass with zero gate-relevant findings). The unscoped `npm run lint` exit code is
+recorded honestly as non-zero rather than rounded to a pass — per this document's own recording
+rule, an unevidenced pass is a claim, not a gate, and the counter-evidence (the scoped run, and
+the path-prefix filter over the unscoped run) is recorded alongside it rather than substituted
+for it. This mirrors the Phase 1 Part 2 precedent for the identical `.codex/` noise.
+
+### SEO invariants (2026-09-08, Task 1, local dev server on port 3987)
+
+`app/analyze/[reportCode]/page.tsx` — the canonical and `robots` logic Phase 2's new Timeline
+sub-tab must not disturb — was confirmed unchanged by this phase: `git log --oneline -- 'app/analyze/[reportCode]/page.tsx'` shows its most recent commit is `a4aaf75` (a pre-Phase-1 growth PR), and no Phase 2 plan (02-01 through 02-08) lists it in `files_modified`. The canonical it emits (`https://parseforge.gg/analyze/${reportCode}`) carries no query parameters, so the Timeline tab's `?ptab=timeline` permutation folds into the same indexable URL as every other sub-tab (D-01).
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npm run seo-invariants -- --base http://localhost:3987
+/: diff-report-only — ogImage (non-failing): local="http://localhost:3987/opengraph-image?f0febbec01d0ca06" prod="https://parseforge.gg/opengraph-image?f0febbec01d0ca06"
+/analyze/ZjKgNYxVcAqR8pGJ: diff-report-only — canonical (non-failing: local dev server has no WCL_CLIENT_ID/SECRET (Vercel-only secret) — cannot fetch real report data locally, so this is a local-environment artifact, not a code regression): local="https://parseforge.gg" prod="https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ"; robots (non-failing: same caveat): local="noindex" prod="index, follow"; title (non-failing): local="Report ZjKgNYxVcAqR8pGJ | ParseForge" prod="SSC / TK — WoW Classic Raid Analysis | ParseForge"; description (non-failing): local="WoW Classic raid performance analysis — DPS percentiles, gear audits, buff tracking, and improvement suggestions." prod="Player-by-player analysis of SSC / TK in SSC / TK — DPS/HPS percentiles, gear and enchant audits, buff uptime, and improvement tips for 27 raiders."; ogTitle (non-failing): local="ParseForge raid analysis" prod="SSC / TK — WoW Classic Raid Analysis"
+/guides: same (canonical/robots/structured-data match production)
+/guides/how-to-analyze-wow-classic-logs: same (canonical/robots/structured-data match production)
+/guides/improve-dps-wow-classic: same (canonical/robots/structured-data match production)
+/guides/raid-preparation-checklist: same (canonical/robots/structured-data match production)
+/guides/warcraft-logs-vs-parseforge: same (canonical/robots/structured-data match production)
+/guides/wow-classic-loot-council-tools: same (canonical/robots/structured-data match production)
+/privacy: same (canonical/robots/structured-data match production)
+/tbc-audit: same (canonical/robots/structured-data match production)
+/terms: same (canonical/robots/structured-data match production)
+```
+
+Exit 0. Every route reports `same` or a non-failing diff already explained (the local dev
+server's missing WCL credentials, and `og:image`'s expected per-host `metadataBase`
+resolution) — no canonical, `robots`, title, description or JSON-LD regression for `/analyze` or
+any other route. This is the same pair of non-failing caveats Phase 1's Part 2 recorded for the
+identical two routes, confirming nothing about the SEO-relevant surface moved between phases.
+
+### PostHog instrumentation (pre-deploy grep evidence, 2026-09-08, Task 1)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ grep -rn 'posthog.capture("timeline_viewed"' app/ lib/
+app/analyze/[reportCode]/hooks/useTimeline.ts:70:      posthog.capture("timeline_viewed", {
+$ grep -rn 'posthog.capture("timeline_error"' app/ lib/
+app/analyze/[reportCode]/hooks/useTimeline.ts:78:      posthog.capture("timeline_error", {
+$ grep -rn 'posthog.capture("timeline_filter_used"' app/ lib/
+app/analyze/[reportCode]/hooks/useTimeline.ts:105:      posthog.capture("timeline_filter_used", {
+$ grep -rn 'posthog.capture("analysis_complete"' app/ lib/
+app/analyze/[reportCode]/hooks/usePlayerAnalysis.ts:65:        posthog.capture("analysis_complete", {
+```
+
+`timeline_viewed`, `timeline_error` and `timeline_filter_used` each have exactly one capture
+call site, all in `app/analyze/[reportCode]/hooks/useTimeline.ts`. `analysis_complete` — carried
+forward from Phase 1, now extended with healer-role properties per 02-07 — still has exactly one
+call site, in `app/analyze/[reportCode]/hooks/usePlayerAnalysis.ts` (02-07 consolidated what was
+previously multiple `analysis_error` literal call sites into one closure; `analysis_complete`
+itself was already singular).
+
+**Note on the plan's literal verify script:** `02-09-PLAN.md`'s Task 1 `<verify>` block computes
+this count via `grep -rl "$e" app/ | xargs grep -c "posthog.capture(\"$e\"" | awk -F: '{s+=$2}'`.
+When `grep -rl` matches exactly one file (true for all three timeline events — each lives in a
+single hook file), `xargs grep -c` on a single filename argument omits the `filename:` prefix
+GNU/BSD grep only adds for 2+ file arguments, so the count lands in awk's `$1`, not `$2`, and the
+script sums 0 for the exact case it's meant to confirm as passing. This is a shell-script bug in
+the plan's own verify text, not a regression in this phase's instrumentation: the count above,
+taken with a prefix-stable `grep -rn ... | wc -l` and cross-checked by direct file inspection,
+confirms all three events at exactly 1. Recorded here rather than silently worked around, per the
+deviation-documentation rule.
+
+### Game-data regeneration diff review (ACC-01, 2026-09-08, Task 1)
+
+`docs/GAME-DATA-AUDIT.md` was read in full as part of this gate, per D-12's acceptance-artifact
+requirement for ACC-01 — a phase that shipped the regeneration pipeline but never read its own
+output has not satisfied the requirement.
+
+- **Unverified overrides:** 133 entries (`enchantNames` id 88, plus two more enchant ids, plus
+  130 `consumableNames` overrides — the bulk of the list). Every entry carries a per-id source
+  note explaining why client data alone could not supply the value (buff-aura names omitting an
+  item-type prefix, generic "Well Fed" labels shared across dozens of foods, spell ids with no
+  resolvable `Name_lang` in any of the three regenerated client builds, or two Cata
+  weapon-enhancement ids — 96264, 96294 — whose resolved value could not be corroborated against
+  another era and is explicitly flagged for a future verification pass). None is presented as
+  wago-verified when it is not; 02-06-SUMMARY.md's own frontmatter records a full 178-row
+  parity check confirming every override is behaviour-preserving against the pre-regeneration,
+  previously-verified (PR #11-era) values.
+- **Changed values since the previous run:** 0 — `docs/GAME-DATA-AUDIT.md`'s "Changed values
+  since the previous run" section reads "(none — every resolved value matches the previous run)".
+  No regression was introduced between the 02-06 regeneration and this gate's review.
+- **Cross-era collisions:** enumerated separately (809 enchant, 295 gem per 02-06-SUMMARY.md),
+  never silently resolved — `lib/generated/index.ts` documents the Classic+TBC-first collision
+  precedence this project settled on (a deliberate reversal of the plan's literal "later era
+  wins" text, empirically required — see 02-06-SUMMARY.md `## Deviations from Plan`).
+
+This closes the review half of ACC-01's acceptance artifact. The two flagged-but-unresolved ids
+(96264, 96294) are not a blocker for this gate — they resolve to real, previously-verified values,
+not placeholders — but are worth carrying forward as a follow-up verification item (see
+`.planning/WINDOWS.md`).
+
+### Task 1 acceptance-criteria verification (all automated, 2026-09-08)
+
+| Criterion | Result |
+|---|---|
+| All five local-gate commands recorded verbatim | ✅ above |
+| `npm run seo-invariants` exits 0, route table recorded | ✅ above |
+| `app/analyze/[reportCode]/page.tsx` confirmed unchanged, canonical confirmed param-free | ✅ above |
+| Each of the three timeline events has exactly one `posthog.capture` call site | ✅ above (script-bug note recorded) |
+| `docs/GAME-DATA-AUDIT.md` read, unverified-override and changed-value counts recorded | ✅ above (133 / 0) |
+| No Phase 1 row rewritten, no route row duplicated | ✅ — Part 2 untouched; the Phase 2 route table for the both-theme sweep and Search Console (step 2, step 5) is added by Task 3, extending rows by route path rather than duplicating them |
+
+Task 2 (the deploy-route decision) and Task 3 (deploy execution, both-theme sweep, PostHog
+post-deploy confirmation, Search Console, and the dated sign-off) continue this section below.
