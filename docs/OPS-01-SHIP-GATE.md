@@ -481,3 +481,81 @@ the orchestrator syncs the branch/PR afterward.
 Task 3 (deploy execution, both-theme sweep, PostHog post-deploy confirmation, Search Console, and
 the dated sign-off) continues this section below. **This dispatch runs the PREVIEW half of Task 3
 only** — no `--prod` command runs until a further explicit developer approval.
+
+### Task 3 (preview half) — deploy and non-interactive checks (2026-09-08)
+
+**Precondition check.**
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel whoami
+Vercel CLI 56.3.1 (Node.js 20.20.2)
+alexandermayes
+```
+Authenticated as `alexandermayes` — precondition satisfied.
+
+**Preview deploy** (`vercel deploy --scope loot-list-plus --yes` — no `--prod`):
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel deploy --scope loot-list-plus --yes
+Deploying loot-list-plus/parseforge
+  Inspect         https://vercel.com/loot-list-plus/parseforge/7KKe2LX2zj7GYezXVuc1jRn7cEtX
+  Preview         https://parseforge-7yjzs8yw5-loot-list-plus.vercel.app
+Building… (Next.js 16.1.6, Turbopack) — Compiled successfully in 8.3s
+Route (app): all 24 routes generated (○ static ×13, ƒ dynamic ×11), matching the local build's
+route set (11 page.tsx routes plus API/asset routes) — no route added or removed by this phase
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_7KKe2LX2zj7GYezXVuc1jRn7cEtX",
+    "url": "https://parseforge-7yjzs8yw5-loot-list-plus.vercel.app",
+    "inspectorUrl": "https://vercel.com/loot-list-plus/parseforge/7KKe2LX2zj7GYezXVuc1jRn7cEtX",
+    "readyState": "READY"
+  }
+}
+```
+
+- **Preview URL:** https://parseforge-7yjzs8yw5-loot-list-plus.vercel.app
+- **Inspect URL:** https://vercel.com/loot-list-plus/parseforge/7KKe2LX2zj7GYezXVuc1jRn7cEtX
+- **Deployment id:** `dpl_7KKe2LX2zj7GYezXVuc1jRn7cEtX`
+- No `--prod` flag was used; `readyState: READY` confirms a clean preview build with no build
+  errors. The build-log `[kv-cache] ... Dynamic server usage` lines are the same pre-existing,
+  harmless prerender noise Phase 1's 01-09 recorded (untouched `cache: "no-store"` fetch in
+  `lib/kv-cache.ts`, dates to commit `a4aaf75`).
+
+**Non-interactive route check — blocked by Vercel team SSO (expected, same as Phase 1).**
+Attempted a Node-`fetch` HEAD-style status check of all 11 `page.tsx` routes plus `/sitemap.xml`
+and `/robots.txt` against the preview URL:
+
+```
+$ node -e '... fetch(base + p, { redirect: "manual" }) ...'
+302 / -> https://vercel.com/sso-api?url=...
+302 /analyze/ZjKgNYxVcAqR8pGJ -> https://vercel.com/sso-api?url=...
+302 /guides -> https://vercel.com/sso-api?url=...
+[... all 13 paths checked, all 302 to vercel.com/sso-api ...]
+```
+
+Every path 302-redirects to `vercel.com/sso-api` — this preview deployment is protected by
+Vercel's team SSO (Standard Protection), the same behaviour 01-09-SUMMARY.md recorded for its
+preview (`parseforge-bpny2a7d1-loot-list-plus.vercel.app (behind team SSO)`). This is expected,
+not a build defect: only an authenticated team member's browser session can load the preview, so
+the automated route/SEO-diff checks that ran cleanly against `localhost` in Task 1 cannot also run
+non-interactively against this URL without a Vercel Protection Bypass secret, which is not
+provisioned for this project. `npm run seo-invariants -- --base <preview-url>` was not attempted
+for the same reason — its underlying fetch would hit the identical SSO redirect. Recorded here
+rather than silently skipped, per the gate document's own evidence rule.
+
+**What this leaves for the developer's manual pass.** The developer is logged into the
+`loot-list-plus` Vercel team in their browser, so the SSO redirect resolves transparently for
+them. The both-theme route sweep, the Timeline mobile pass, and the real-gear game-data name
+check (Task 3's step 2, plus the ACC-01/ACC-03 human-check items) all run against
+https://parseforge-7yjzs8yw5-loot-list-plus.vercel.app in that authenticated session — see the
+checkpoint below for the exact steps.
+
+**PostHog / Search Console (step 4/5) not yet run.** Real user traffic and a production alias are
+required for both — the preview URL is not the production domain Search Console tracks, and no
+traffic has hit the preview yet. These remain for the post-approval production half of Task 3.
+
+**Production deploy: not run.** No `vercel deploy --prod` command has been issued in this
+dispatch. It requires a further explicit developer approval after the preview sweep below.
