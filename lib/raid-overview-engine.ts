@@ -18,6 +18,7 @@ import {
 } from "./constants";
 import { BATTLE_ELIXIR_IDS, GUARDIAN_ELIXIR_IDS } from "./cla-constants";
 import { parsePlayerSpec } from "./wcl-helpers";
+import { computeHealerMetrics } from "./healer-metrics";
 
 // ─── WCL table entry shapes (fight-wide, per-player rows) ───────────
 
@@ -309,10 +310,9 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
 
     if (isHealer) {
       const healEntry = healingById.get(player.id);
-      throughput = healEntry && durationSec > 0 ? healEntry.total / durationSec : 0;
-      activityPercent = healEntry && fightDuration > 0
-        ? Math.min(100, (healEntry.activeTime / fightDuration) * 100)
-        : 0;
+      const healerRowMetrics = computeHealerMetrics(healEntry, fightDuration);
+      throughput = healerRowMetrics.effectiveHps;
+      activityPercent = healerRowMetrics.activityPercent;
     } else {
       const dmgEntry = damageById.get(player.id);
       throughput = dmgEntry && durationSec > 0 ? dmgEntry.total / durationSec : 0;
@@ -357,26 +357,22 @@ export function buildRaidOverview(input: RaidOverviewInput): RaidOverviewResult 
     const spec = parsePlayerSpec(player);
     if (!isHealerSpec(spec)) continue;
 
+    // Emit the row even when no healing entry exists (e.g. a healer dead at
+    // the pull) rather than skipping it — computeHealerMetrics zeros out
+    // safely, and totalHealing staying 0 is what the panel reads to render
+    // an em dash instead of a measured-looking zero.
     const healEntry = healingById.get(player.id);
-    if (!healEntry) continue;
-
-    const hps = durationSec > 0 ? healEntry.total / durationSec : 0;
-    const overhealPct = healEntry.total > 0 && healEntry.overheal
-      ? (healEntry.overheal / (healEntry.total + healEntry.overheal)) * 100
-      : 0;
-    const activity = fightDuration > 0
-      ? Math.min(100, (healEntry.activeTime / fightDuration) * 100)
-      : 0;
+    const metrics = computeHealerMetrics(healEntry, fightDuration);
 
     healerMetrics.push({
       sourceId: player.id,
       name: player.name,
       className: player.type,
       spec,
-      hps: Math.round(hps),
-      totalHealing: healEntry.total,
-      overhealPercent: Math.round(overhealPct * 10) / 10,
-      activityPercent: Math.round(activity * 10) / 10,
+      hps: metrics.effectiveHps,
+      totalHealing: healEntry?.total ?? 0,
+      overhealPercent: metrics.overhealPercent,
+      activityPercent: metrics.activityPercent,
     });
   }
 

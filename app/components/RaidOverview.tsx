@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage, HealerMetrics } from "@/lib/wcl-types";
-import { roleColor, roleColorAlpha, classColor } from "@/lib/constants";
+import { roleColor, roleColorAlpha, classColor, overhealColor, activityColor } from "@/lib/constants";
+import { formatFightTime } from "@/lib/utils";
 import { Check, X } from "lucide-react";
 import SortableTableHead from "./SortableTableHead";
 import RoleBadge from "./RoleBadge";
@@ -38,12 +39,6 @@ function formatNumber(n: number): string {
 function deathColor(deaths: number): string {
   if (deaths === 0) return "text-status-good";
   if (deaths === 1) return "text-status-warn";
-  return "text-status-bad";
-}
-
-function activityColor(pct: number): string {
-  if (pct >= 95) return "text-status-good";
-  if (pct >= 80) return "text-status-warn";
   return "text-status-bad";
 }
 
@@ -228,12 +223,6 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
   );
 }
 
-function overhealColor(pct: number): string {
-  if (pct <= 20) return "text-status-good";
-  if (pct <= 40) return "text-status-warn";
-  return "text-status-bad";
-}
-
 function HealerPanel({ healers }: { healers: HealerMetrics[] }) {
   if (healers.length === 0) return null;
   const topHps = healers[0]?.hps ?? 1;
@@ -264,8 +253,12 @@ function HealerPanel({ healers }: { healers: HealerMetrics[] }) {
                   {formatNumber(h.hps)} hps
                 </span>
               </div>
-              <span className={`font-mono text-xs tabular-nums w-12 text-right shrink-0 ${overhealColor(h.overhealPercent)}`}>
-                {h.overhealPercent.toFixed(0)}% OH
+              <span
+                className={`font-mono text-xs tabular-nums w-12 text-right shrink-0 ${
+                  h.totalHealing === 0 ? "text-muted-foreground" : overhealColor(h.overhealPercent)
+                }`}
+              >
+                {h.totalHealing === 0 ? "—" : `${h.overhealPercent.toFixed(0)}% OH`}
               </span>
               <span className={`font-mono text-xs tabular-nums w-12 text-right shrink-0 ${activityColor(h.activityPercent)}`}>
                 {h.activityPercent.toFixed(0)}%
@@ -314,13 +307,6 @@ function RaidBuffBar({ buffs }: { buffs: RaidBuffCoverage[] }) {
       </div>
     </div>
   );
-}
-
-function formatFightTime(ms: number): string {
-  const totalSec = Math.max(0, Math.floor(ms / 1000));
-  const min = Math.floor(totalSec / 60);
-  const sec = totalSec % 60;
-  return `${min}:${String(sec).padStart(2, "0")}`;
 }
 
 function DeathTimeline({ deaths, fightDuration }: { deaths: DeathDetail[]; fightDuration: number }) {

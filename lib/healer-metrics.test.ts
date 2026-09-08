@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { computeHealerMetrics, averageTopHealerMetrics } from "./healer-metrics";
-import type { HealerTableRow, HealerMetricsComputed } from "./wcl-types";
+import { buildRaidOverview } from "./raid-overview-engine";
+import { flattenPlayerDetails } from "./wcl-helpers";
+import type { HealerTableRow, HealerMetricsComputed, WCLPlayerDetails } from "./wcl-types";
 import demoRaidOverview from "./__fixtures__/demo-raid-overview.json";
 
 // Recorded fight bounds (The Lurker Below, fight 23) — see
@@ -103,5 +105,77 @@ describe("averageTopHealerMetrics", () => {
     ];
     const result = averageTopHealerMetrics(rows);
     expect(result).toEqual({ overhealPercent: 0, activityPercent: 0, sampleCount: 0 });
+  });
+});
+
+// ─── Cross-surface parity (D-08) ───────────────────────────────────────
+// Proves the raid overview engine and the shared helper can never disagree
+// for the same healer + fight — the guarantee the whole extraction exists
+// to make checkable rather than aspirational.
+
+const report = demoRaidOverview.reportData.report;
+const playerDetails = flattenPlayerDetails(
+  report.playerDetails as unknown as {
+    data: { playerDetails: Record<string, WCLPlayerDetails[]> };
+  }
+);
+const fight = report.fights[0];
+
+function buildRaidOverviewFromFixture() {
+  return buildRaidOverview({
+    playerDetails,
+    damageEntries: report.damage.data.entries,
+    healingEntries: report.healing.data.entries,
+    deathEntries: report.deaths.data.entries,
+    damageTakenEntries: report.damageTaken.data.entries,
+    combatantInfoEvents: [],
+    fightDuration: fight.endTime - fight.startTime,
+    fightStartTime: fight.startTime,
+    encounterName: fight.name,
+  });
+}
+
+describe("buildRaidOverview / computeHealerMetrics cross-surface parity (D-08)", () => {
+  it("returns a healerMetrics entry field-for-field equal to what computeHealerMetrics computes independently for the same row and fight duration", () => {
+    const overview = buildRaidOverviewFromFixture();
+    const entry = overview.healerMetrics.find((h) => h.sourceId === HEALER_SOURCE_ID);
+    expect(entry).toBeTruthy();
+
+    const expected = computeHealerMetrics(zulakeyahRow, FIGHT_DURATION_MS);
+    expect(entry!.hps).toBe(expected.effectiveHps);
+    expect(entry!.overhealPercent).toBe(expected.overhealPercent);
+    expect(entry!.activityPercent).toBe(expected.activityPercent);
+  });
+
+  it("keeps a healer with a zero-total healing row in healerMetrics with 0 HPS and 0 uptime rather than dropping the row", () => {
+    const zeroHealerId = 999999;
+    const zeroHealerPlayer: WCLPlayerDetails = {
+      id: zeroHealerId,
+      name: "DeadAtPull",
+      guid: 0,
+      type: "Priest",
+      icon: "Priest-Holy",
+      specs: [{ spec: "Holy", count: 1 }],
+      minItemLevel: 0,
+      maxItemLevel: 0,
+      combatantInfo: { stats: {}, talents: [], gear: [], specIDs: [] },
+    };
+    const overview = buildRaidOverview({
+      playerDetails: [...playerDetails, zeroHealerPlayer],
+      damageEntries: report.damage.data.entries,
+      healingEntries: report.healing.data.entries,
+      deathEntries: report.deaths.data.entries,
+      damageTakenEntries: report.damageTaken.data.entries,
+      combatantInfoEvents: [],
+      fightDuration: fight.endTime - fight.startTime,
+      fightStartTime: fight.startTime,
+      encounterName: fight.name,
+    });
+
+    const entry = overview.healerMetrics.find((h) => h.sourceId === zeroHealerId);
+    expect(entry).toBeTruthy();
+    expect(entry!.hps).toBe(0);
+    expect(entry!.activityPercent).toBe(0);
+    expect(entry!.totalHealing).toBe(0);
   });
 });
