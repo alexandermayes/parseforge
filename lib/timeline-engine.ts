@@ -48,6 +48,16 @@ export interface TimelineEngineFight {
   endTime: number;
 }
 
+/**
+ * A single death event, exactly as WCL's events(dataType: Deaths) returns it
+ * (matching the shape RAID_DEATH_EVENTS_QUERY / raid-overview-engine.ts's
+ * DeathEvent already consume) — only the fields this engine needs.
+ */
+export interface TimelineDeathEvent {
+  timestamp: number;
+  sourceID: number;
+}
+
 export interface TimelineEngineInput {
   castEvents: WCLCastEvent[];
   castTable: WCLCastEntry[];
@@ -56,6 +66,8 @@ export interface TimelineEngineInput {
   playerName: string;
   sourceId: number;
   truncated: boolean;
+  /** Death events for the whole fight; filtered down to this player inside the engine. */
+  deathEvents?: TimelineDeathEvent[];
 }
 
 /**
@@ -63,14 +75,14 @@ export interface TimelineEngineInput {
  * events to an ordered cast timeline. Mirrors buildRaidOverview's shape —
  * no I/O, no fetch, just a typed input bag in, a typed result out.
  *
- * Emits only kind: "cast" rows. Plan 02-05 (wave 3, same phase) populates
- * the "idle" and "death" row kinds and computes a real idleThresholdMs;
- * the kind discriminator, idleMs and idleThresholdMs already exist in the
- * contract precisely so that addition needs no shape change here, in the
- * route, in the hook, or in the component.
+ * Emits "cast" rows for every surviving cast, plus synthesized "idle" rows
+ * (a gap between consecutive casts longer than a threshold derived from this
+ * player's own cast rhythm — never a hardcoded per-class constant, D-03) and
+ * at most one "death" row (the player's earliest death event this fight),
+ * all merged into a single chronological stream.
  */
 export function buildCastTimeline(input: TimelineEngineInput): CastTimelineResult {
-  const { castEvents, castTable, actors, fight, sourceId, truncated } = input;
+  const { castEvents, castTable, actors, fight, sourceId, truncated, deathEvents } = input;
 
   // guid -> cast-table entry, for display name + icon resolution. The event
   // stream carries only ability ids; the aggregated Casts table is where the
@@ -110,7 +122,7 @@ export function buildCastTimeline(input: TimelineEngineInput): CastTimelineResul
   // Sort ascending by timestamp.
   survivors.sort((a, b) => a.timestamp - b.timestamp);
 
-  const rows: TimelineRow[] = survivors.map((event) => {
+  const castRows: TimelineRow[] = survivors.map((event) => {
     const entry = castTableByGuid.get(event.abilityGameID)!;
     // WCL uses -1 as the "no real target" sentinel (e.g. a self-buff cast) —
     // treated identically to a missing targetID, not resolved to the
@@ -131,6 +143,66 @@ export function buildCastTimeline(input: TimelineEngineInput): CastTimelineResul
       targetName,
     };
   });
+
+  // ── Idle-gap threshold, derived from this player's own cast rhythm ──
+  //
+  // Three times a player's own median cast interval is long enough that a
+  // caster with a 1.5s rhythm and a melee with a 300ms rhythm each get a
+  // threshold proportional to how they actually play, rather than a single
+  // constant tuned for one class and wrong for every other. The 2000ms floor
+  // stops a very fast rotation from flagging every ordinary global-cooldown
+  // boundary as idle. A sequence with fewer than two casts has no gaps, so
+  // the threshold falls back to the floor and no idle row can be emitted.
+  let idleThresholdMs = 2000;
+  if (survivors.length >= 2) {
+    const gaps: number[] = [];
+    for (let i = 1; i < survivors.length; i++) {
+      gaps.push(survivors[i].timestamp - survivors[i - 1].timestamp);
+    }
+    const sortedGaps = [...gaps].sort((a, b) => a - b);
+    const mid = Math.floor(sortedGaps.length / 2);
+    const medianGap =
+      sortedGaps.length % 2 === 0
+        ? (sortedGaps[mid - 1] + sortedGaps[mid]) / 2
+        : sortedGaps[mid];
+    idleThresholdMs = Math.max(2000, Math.round(3 * medianGap));
+  }
+
+  // Interleave an idle row between every pair of consecutive cast rows whose
+  // gap exceeds the threshold. Never before the first cast or after the
+  // last: the log describes the space between casts, and pre-pull or
+  // post-death silence is not a decision the raider made mid-fight.
+  const rowsWithIdle: TimelineRow[] = [];
+  for (let i = 0; i < castRows.length; i++) {
+    rowsWithIdle.push(castRows[i]);
+    if (i < castRows.length - 1) {
+      const gap = survivors[i + 1].timestamp - survivors[i].timestamp;
+      if (gap > idleThresholdMs) {
+        rowsWithIdle.push({
+          kind: "idle",
+          fightTimeMs: castRows[i].fightTimeMs,
+          idleMs: gap,
+        });
+      }
+    }
+  }
+
+  // ── Death marker — at most one row, merged chronologically ──
+  let rows = rowsWithIdle;
+  if (deathEvents && deathEvents.length > 0) {
+    const playerDeaths = deathEvents.filter((event) => event.sourceID === sourceId);
+    if (playerDeaths.length > 0) {
+      const earliest = playerDeaths.reduce((a, b) => (a.timestamp <= b.timestamp ? a : b));
+      const deathRow: TimelineRow = {
+        kind: "death",
+        fightTimeMs: earliest.timestamp - fight.startTime,
+      };
+      const insertAt = rows.findIndex((row) => row.fightTimeMs > deathRow.fightTimeMs);
+      rows = insertAt === -1
+        ? [...rows, deathRow]
+        : [...rows.slice(0, insertAt), deathRow, ...rows.slice(insertAt)];
+    }
+  }
 
   // Ability counts from the unfiltered surviving events, sorted by count desc.
   const countsByAbility = new Map<number, TimelineAbilityCount>();
@@ -158,8 +230,11 @@ export function buildCastTimeline(input: TimelineEngineInput): CastTimelineResul
     playerName: input.playerName,
     rows,
     abilityCounts,
-    idleThresholdMs: 0,
+    idleThresholdMs,
     truncated,
-    castCount: rows.length,
+    // Cast rows only — idle and death bands are structural markers, not
+    // casts, and must never inflate the truncation notice or the
+    // timeline_viewed PostHog event's cast_count.
+    castCount: castRows.length,
   };
 }

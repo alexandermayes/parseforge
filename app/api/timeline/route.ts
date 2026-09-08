@@ -4,6 +4,7 @@ import { cachedApiHandler, parseBody, isValidReportCode, badRequest } from "@/li
 import { checkRateLimit } from "@/lib/rate-limit";
 import { TIMELINE_CASTS_QUERY, TIMELINE_CASTS_PAGE_QUERY } from "@/lib/wcl-queries";
 import { buildCastTimeline } from "@/lib/timeline-engine";
+import type { TimelineDeathEvent } from "@/lib/timeline-engine";
 import type { WCLCastEvent, WCLCastEntry, TimelineRequest } from "@/lib/wcl-types";
 
 interface TimelineActor {
@@ -25,7 +26,7 @@ interface TimelineCastsResponse {
     report: {
       castEvents: { data: WCLCastEvent[]; nextPageTimestamp: number | null };
       castTable: { data: { entries: WCLCastEntry[] } };
-      deathEvents: { data: unknown[] };
+      deathEvents: { data: TimelineDeathEvent[] };
       masterData: { actors: TimelineActor[] };
       fights: TimelineFight[];
     };
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
       playerName: actors.find((a) => a.id === sourceId)?.name ?? "",
       sourceId,
       truncated,
+      deathEvents: report.deathEvents?.data ?? [],
     });
   });
 }

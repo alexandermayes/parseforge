@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { buildCastTimeline, TimelineEngineInput } from "./timeline-engine";
+import { buildCastTimeline, TimelineEngineInput, TimelineDeathEvent } from "./timeline-engine";
 import type { WCLCastEvent, WCLCastEntry } from "./wcl-types";
+import { isJunkSpell } from "./analysis-engine";
 import demoTimelineCasts from "./__fixtures__/demo-timeline-casts.json";
 
 // Driven entirely by lib/__fixtures__/demo-timeline-casts.json — the real
@@ -93,6 +94,32 @@ function buildInput(): TimelineEngineInput {
   };
 }
 
+// Independently mirrors buildCastTimeline's survivor-selection + median-gap
+// math (not imported from the engine) so Test 1 below proves the engine's
+// idleThresholdMs against an isolated re-derivation, not against itself.
+function computeExpectedIdleThreshold(
+  events: WCLCastEvent[],
+  castTable: WCLCastEntry[]
+): number {
+  const byGuid = new Map(castTable.map((e) => [e.guid, e]));
+  const survivors = events
+    .filter((e) => e.type === "cast")
+    .filter((e) => {
+      const entry = byGuid.get(e.abilityGameID);
+      return entry != null && !isJunkSpell(entry);
+    })
+    .sort((a, b) => a.timestamp - b.timestamp);
+  if (survivors.length < 2) return 2000;
+  const gaps: number[] = [];
+  for (let i = 1; i < survivors.length; i++) {
+    gaps.push(survivors[i].timestamp - survivors[i - 1].timestamp);
+  }
+  gaps.sort((a, b) => a - b);
+  const mid = Math.floor(gaps.length / 2);
+  const median = gaps.length % 2 === 0 ? (gaps[mid - 1] + gaps[mid]) / 2 : gaps[mid];
+  return Math.max(2000, Math.round(3 * median));
+}
+
 describe("buildCastTimeline", () => {
   it("returns rows in ascending fightTimeMs order", () => {
     const result = buildCastTimeline(buildInput());
@@ -117,9 +144,11 @@ describe("buildCastTimeline", () => {
     expect(firstRealRow!.fightTimeMs).toBeGreaterThanOrEqual(0);
   });
 
-  it("gives every row a non-empty abilityName", () => {
+  it("gives every cast row a non-empty abilityName", () => {
+    // Scoped to kind === "cast" — idle/death rows are structural markers
+    // introduced by 02-05 and, by design, carry no abilityName.
     const result = buildCastTimeline(buildInput());
-    for (const row of result.rows) {
+    for (const row of result.rows.filter((r) => r.kind === "cast")) {
       expect(typeof row.abilityName).toBe("string");
       expect(row.abilityName!.length).toBeGreaterThan(0);
     }
@@ -159,5 +188,125 @@ describe("buildCastTimeline", () => {
         result.abilityCounts[i - 1].count ?? 0
       );
     }
+  });
+});
+
+// ─── Idle gaps and death marker (02-05) ───────────────────────────────
+//
+// Test 1 is driven by the real fixture (steady-state threshold derivation);
+// Tests 2-9 use small synthetic sequences with a deliberately spaced ability
+// so a specific gap/threshold interaction can be asserted deterministically
+// — the real fixture's cadence cannot be relied on to contain a given gap.
+
+const MIN_ABILITY: WCLCastEntry = {
+  name: "Minimal Ability",
+  guid: 99010,
+  type: 0,
+  abilityIcon: "ability_test3.jpg",
+  total: 1,
+};
+
+function makeCastEvent(timestamp: number): WCLCastEvent {
+  return {
+    timestamp,
+    type: "cast",
+    sourceID: SOURCE_ID,
+    targetID: 999,
+    abilityGameID: MIN_ABILITY.guid,
+  };
+}
+
+function buildMinimalInput(overrides: Partial<TimelineEngineInput> = {}): TimelineEngineInput {
+  return {
+    castEvents: [],
+    castTable: [MIN_ABILITY],
+    actors: recordedActors,
+    fight: { name: "Synthetic Fight", startTime: 0, endTime: 100_000 },
+    playerName: PLAYER_NAME,
+    sourceId: SOURCE_ID,
+    truncated: false,
+    ...overrides,
+  };
+}
+
+describe("buildCastTimeline — idle gaps and death marker", () => {
+  it("Test 1: derives idleThresholdMs as max(2000, 3x median inter-cast gap) for the recorded fixture", () => {
+    const input = buildInput();
+    const result = buildCastTimeline(input);
+    const expected = computeExpectedIdleThreshold(input.castEvents, input.castTable);
+    expect(result.idleThresholdMs).toBeGreaterThanOrEqual(2000);
+    expect(result.idleThresholdMs).toBe(expected);
+  });
+
+  it("Test 2: a steady 1500ms cadence produces zero idle rows", () => {
+    const events = Array.from({ length: 10 }, (_, i) => makeCastEvent(i * 1500));
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events }));
+    expect(result.rows.filter((r) => r.kind === "idle")).toHaveLength(0);
+  });
+
+  it("Test 3: one large gap produces exactly one idle row positioned between its bracketing casts", () => {
+    const events = [makeCastEvent(0), makeCastEvent(1500), makeCastEvent(13_500), makeCastEvent(15_000)];
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events }));
+    const idleRows = result.rows.filter((r) => r.kind === "idle");
+    expect(idleRows).toHaveLength(1);
+    expect(idleRows[0].idleMs).toBe(12_000);
+    const idleIndex = result.rows.findIndex((r) => r.kind === "idle");
+    expect(result.rows[idleIndex - 1].fightTimeMs).toBe(1500);
+    expect(result.rows[idleIndex + 1].fightTimeMs).toBe(13_500);
+  });
+
+  it("Test 4: a death event produces exactly one death row at timestamp minus fight start", () => {
+    const events = [makeCastEvent(0), makeCastEvent(2000)];
+    const deathEvents: TimelineDeathEvent[] = [{ timestamp: 5000, sourceID: SOURCE_ID }];
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events, deathEvents }));
+    const deathRows = result.rows.filter((r) => r.kind === "death");
+    expect(deathRows).toHaveLength(1);
+    expect(deathRows[0].fightTimeMs).toBe(5000);
+  });
+
+  it("Test 5: the death row sorts into chronological position among cast rows, not appended at the end", () => {
+    const events = [0, 2000, 4000, 6000, 8000].map(makeCastEvent);
+    const deathEvents: TimelineDeathEvent[] = [{ timestamp: 5000, sourceID: SOURCE_ID }];
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events, deathEvents }));
+    const deathIndex = result.rows.findIndex((r) => r.kind === "death");
+    expect(deathIndex).toBeGreaterThan(0);
+    expect(deathIndex).toBeLessThan(result.rows.length - 1);
+    expect(result.rows[deathIndex - 1].fightTimeMs).toBeLessThan(5000);
+    expect(result.rows[deathIndex + 1].fightTimeMs).toBeGreaterThan(5000);
+  });
+
+  it("Test 6: two death events for the same player still yield at most one death row", () => {
+    const events = [makeCastEvent(0), makeCastEvent(2000), makeCastEvent(4000)];
+    const deathEvents: TimelineDeathEvent[] = [
+      { timestamp: 3000, sourceID: SOURCE_ID },
+      { timestamp: 3500, sourceID: SOURCE_ID },
+    ];
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events, deathEvents }));
+    const deathRows = result.rows.filter((r) => r.kind === "death");
+    expect(deathRows).toHaveLength(1);
+    expect(deathRows[0].fightTimeMs).toBe(3000);
+  });
+
+  it("Test 7: a single-cast input produces one cast row and zero idle rows", () => {
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: [makeCastEvent(1000)] }));
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0].kind).toBe("cast");
+    expect(result.castCount).toBe(1);
+  });
+
+  it("Test 8: an empty cast input produces zero rows, castCount zero and empty abilityCounts", () => {
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: [] }));
+    expect(result.rows).toHaveLength(0);
+    expect(result.castCount).toBe(0);
+    expect(result.abilityCounts).toHaveLength(0);
+  });
+
+  it("Test 9: castCount counts only cast rows, not idle or death rows", () => {
+    const events = [makeCastEvent(0), makeCastEvent(1500), makeCastEvent(13_500), makeCastEvent(15_000)];
+    const deathEvents: TimelineDeathEvent[] = [{ timestamp: 20_000, sourceID: SOURCE_ID }];
+    const result = buildCastTimeline(buildMinimalInput({ castEvents: events, deathEvents }));
+    // 4 casts + 1 idle row (the 12s gap from Test 3) + 1 death row = 6 total.
+    expect(result.castCount).toBe(4);
+    expect(result.rows.length).toBeGreaterThan(result.castCount);
   });
 });
