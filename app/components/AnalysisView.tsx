@@ -144,6 +144,7 @@ export default function AnalysisView({
             loading={timeline.loading}
             error={timeline.error}
             wowheadDomain={wowheadDomain}
+            onFilterToggle={timeline.captureFilterUsed}
           />
         </TabsContent>
       </Tabs>

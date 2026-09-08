@@ -97,5 +97,20 @@ export function useTimeline(
     if (shouldAutoRun) run();
   }, [shouldAutoRun, run]);
 
-  return { result, error, loading, run };
+  // Fired by CastTimeline once per filter-chip interaction (toggle or the
+  // All reset) — this is client-side only filtering with no refetch, so it
+  // is a distinct interaction from timeline_viewed/timeline_error above.
+  const captureFilterUsed = useCallback(
+    (abilityCount: number, hiddenCount: number) => {
+      posthog.capture("timeline_filter_used", {
+        report_code: reportCode,
+        fight_id: fightId,
+        ability_count: abilityCount,
+        hidden_count: hiddenCount,
+      });
+    },
+    [reportCode, fightId]
+  );
+
+  return { result, error, loading, run, captureFilterUsed };
 }
