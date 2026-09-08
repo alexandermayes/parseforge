@@ -37,10 +37,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Accuracy & Capabilities
 
-- [ ] **ACC-01**: Game-data accuracy re-audit via the wago.tools regeneration workflow (no hand-typed ID maps)
+- [x] **ACC-01**: Game-data accuracy re-audit via the wago.tools regeneration workflow (no hand-typed ID maps)
 - [x] **ACC-02**: Test coverage added for the untested engines (`cla-engine`, `raid-overview-engine`, `wcl-client`)
 - [x] **ACC-03**: User can view a per-fight cast timeline (closes table-stakes gap vs competitors)
-- [ ] **ACC-04**: Healer-specific analysis improved (healer metrics beyond raw HPS)
+- [x] **ACC-04**: Healer-specific analysis improved (healer metrics beyond raw HPS)
 
 ### Community & Cross-Promotion
 
@@ -103,10 +103,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MONY-01 | Phase 1 | Complete |
 | MONY-02 | Phase 4 | Pending |
 | MONY-03 | Phase 4 | Pending |
-| ACC-01 | Phase 2 | Pending |
+| ACC-01 | Phase 2 | Complete |
 | ACC-02 | Phase 2 | Complete |
 | ACC-03 | Phase 2 | Complete |
-| ACC-04 | Phase 2 | Pending |
+| ACC-04 | Phase 2 | Complete |
 | COMM-01 | Phase 5 | Pending |
 | COMM-02 | Phase 5 | Pending |
 | OPS-01 | Phase 1 | Phase 1 gate closed 2026-09-06 — docs/OPS-01-SHIP-GATE.md (standing gate, re-run every phase) |

@@ -92,7 +92,7 @@ Plans:
   4. `cla-engine`, `raid-overview-engine`, and `wcl-client` have automated tests that fail when analysis output changes — a regression safety net in place before the redesign touches anything.
   5. New timeline and healer surfaces ship with PostHog events and pass the GSC verification pass (OPS-01 gate).
 
-**Plans**: 3/9 plans executed
+**Plans**: 9/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -118,7 +118,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 02-09-PLAN.md — OPS-01 gate close-out and approval-gated production deploy
+- [x] 02-09-PLAN.md — OPS-01 gate close-out and approval-gated production deploy
 
 **Notes**: Accuracy is the project's stated core value ("a wrong recommendation is worse than no recommendation"), so it precedes monetization and redesign. The engine tests here are what make Phase 7's redesign safe to attempt.
 
@@ -224,7 +224,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
-| 2. Accuracy & Analysis Depth | 3/9 | In Progress|  |
+| 2. Accuracy & Analysis Depth | 9/9 | In Progress|  |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |

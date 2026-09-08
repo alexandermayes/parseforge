@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Accuracy & Analysis Depth
-status: executing
-stopped_at: Completed 02-08-PLAN.md
-last_updated: "2026-09-08T02:50:37.639Z"
+status: verifying
+stopped_at: Completed 02-09-PLAN.md
+last_updated: "2026-09-08T18:24:06.089Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 02 execution started
-state_head: ff676c27bd85b1ae4bc5904b73bc5cefc037b3a6
+state_head: d8d89c9821cd151d1b84157d9be01438f90cabb8
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
   percent: 14
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-07 after Phase 1)
 
 Phase: 02 (Accuracy & Analysis Depth) — EXECUTING
 Plan: 9 of 9
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-07 — Phase 02 execution started
 
 Progress: [█░░░░░░░░░] 14%
@@ -75,6 +75,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 02-accuracy-analysis-depth P06 | 55min | 3 tasks | 10 files |
 | Phase 02-accuracy-analysis-depth P07 | 45min | 2 tasks | 5 files |
 | Phase 02-accuracy-analysis-depth P08 | 55min | 3 tasks | 6 files |
+| Phase 02 P09 | 35min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,7 @@ Recent decisions affecting current work:
 - [Phase 02-accuracy-analysis-depth]: Phase 02 / 02-06: Cut lib/cla-constants.ts over to lib/generated/index.ts's composed maps (ENCHANT_NAME_DB, GEM_NAME_DB, GEM_STAT_DB, CONSUMABLE_DB, UNVERIFIED_IDS), zero inline id-map literals remain; generated docs/GAME-DATA-AUDIT.md standing audit artifact — Composition uses Classic+TBC-first collision precedence (not the plan's literal later-era-wins text) because live wago data proved cross-era numeric-id reuse would otherwise silently corrupt known-good pinned facts; 130/178 consumable names needed an explicit override (buff-aura names diverge from item names far more often than expected) but a full parity check confirms CONSUMABLE_DB is still byte-identical to pre-cutover values
 - [Phase 02]: Phase 02 / 02-07: Added three healer suggestion rules (high overheal, low uptime, HPS gap despite efficient healing) to generateSuggestions, each thresholded via named constants against the top healers' own averaged values, and role-gated the DPS active-time rule off for healers. Consolidated usePlayerAnalysis.ts's two analysis_error call sites (pre-existing 3 literal posthog.capture lines for 2 interactions) into one closure to satisfy the ship gate's grep. analysis_complete now carries player_role and healer efficiency props for OPS-01 measurement.
 - [Phase 02-accuracy-analysis-depth]: Phase 02 / 02-08: Built the regression net over cla-engine, raid-overview-engine and wcl-client (ACC-02) — 25 assertions across three new test files, driven by real recorded fixtures where available (missing-enchant counts, gem-vs-role mismatch, class-buff availability, healer-metrics agreement, role sort order) and small documented synthetic inputs where no fixture recorded the needed data (flask/food buff-uptime table, death timeline — fight 23 has zero real deaths). wcl-client.test.ts covers token refresh/retry/timeout/all five WCLError classifications via vi.stubGlobal(fetch) + a kv-cache module mock, with no network/Redis/credential dependency; wcl-client.ts itself untouched. OPS-01 gate amended to state a red npm test blocks a production deploy and to name the seven-file coverage reach. Full suite: 14 files / 135 tests, ~1s wall clock.
+- [Phase 02]: Phase 02 / 02-09: Phase 2 shipped to production (dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c, aliased parseforge.gg) via preview-first — developer approved the preview sweep (11 routes/both themes, Timeline 375px pass, real-gear game-data names, healer card), then separately approved production after a Claude Code auto-mode classifier denied the executor's own deploy command and the developer granted a Bash(vercel deploy:*) permission. Post-deploy: seo-invariants clean against production, 11 routes + sitemap/robots 200, and a live POST /api/timeline reproducing the exact 02-05 calibration (castCount 159, idleThresholdMs 2762). PostHog and Search Console recorded honestly as no-data (MCP tools unavailable to this dispatch), carried forward to the Phase 3 gate. OPS-01 gate closed with a dated Phase 2 sign-off — ACC-01 through ACC-04 all satisfied.
 
 ### Pending Todos
 
@@ -138,6 +140,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T02:50:20.747Z
-Stopped at: Completed 02-08-PLAN.md
+Last session: 2026-09-08T18:24:06.017Z
+Stopped at: Completed 02-09-PLAN.md
 Resume file: None
