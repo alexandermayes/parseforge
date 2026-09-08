@@ -11,7 +11,8 @@
     "theme-parity": "node scripts/theme-parity.mjs",
     "token-audit": "node scripts/token-audit.mjs",
     "seo-invariants": "node scripts/seo-invariants.mjs",
-    "record-fixtures": "node scripts/record-wcl-fixtures.mjs"
+    "record-fixtures": "node scripts/record-wcl-fixtures.mjs",
+    "regen-game-data": "node scripts/regen-game-data.mjs"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",

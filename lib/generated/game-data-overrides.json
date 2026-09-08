@@ -1,0 +1,37 @@
+{
+  "statTypeBadForRoles": {
+    "spell_hit": [],
+    "melee_hit": [],
+    "spell_power": ["Physical"],
+    "attack_power": [],
+    "strength": ["Caster", "Healer"],
+    "agility": ["Caster", "Healer"],
+    "intellect": [],
+    "spirit": [],
+    "defense": ["Physical", "Caster", "Healer"],
+    "dodge": ["Physical", "Caster", "Healer"],
+    "parry": ["Physical", "Caster", "Healer"],
+    "stamina": [],
+    "haste": [],
+    "crit": [],
+    "hit": [],
+    "expertise": [],
+    "armor_penetration": [],
+    "neutral": []
+  },
+  "enchantNames": {
+    "88": {
+      "value": "Unidentified Enchantment (ID 88)",
+      "source": "SpellItemEnchantment id 88 carries no Name_lang and is not referenced by any Enchant-effect (SpellEffect Effect 53/54) spell in any of the three regenerated client builds (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) — verified empty across all three by inspecting the raw CSV export during the 2026-09 regeneration. Appears to be a deprecated pre-release placeholder row with no recoverable in-game name."
+    },
+    "2566": {
+      "value": "Healing Power (+24 Healing and +8 Spell Damage)",
+      "source": "Every SpellEffect row (Effect 53/54) referencing SpellItemEnchantment id 2566 in the classic-tbc/wotlk/cata client dumps points to an internal QA/test spell (name prefixed \"QAEnchant\"), so no player-facing spell name is derivable from client data. The friendly label \"Healing Power\" is preserved from the pre-regeneration hand-verified lib/cla-constants.ts entry; the parenthetical stat text (\"+24 Healing and +8 Spell Damage\") is still wago-derived, reproduced verbatim from SpellItemEnchantment.Name_lang."
+    },
+    "2343": {
+      "value": "Major Healing (+81 Healing Spells and +27 Damage Spells)",
+      "source": "Every SpellEffect row (Effect 53/54) referencing SpellItemEnchantment id 2343 in the classic-tbc/wotlk/cata client dumps points to an internal QA/test spell (name prefixed \"QAEnchant\"), so no player-facing spell name is derivable from client data. The friendly label \"Major Healing\" is preserved from the pre-regeneration hand-verified lib/cla-constants.ts entry; the parenthetical stat text is still wago-derived, reproduced verbatim from SpellItemEnchantment.Name_lang."
+    }
+  },
+  "gemNames": {}
+}
