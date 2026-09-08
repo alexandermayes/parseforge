@@ -404,7 +404,7 @@ export interface AbilityShare {
 }
 
 export interface ImprovementSuggestion {
-  category: "dps" | "hps" | "gear" | "consumables" | "casts";
+  category: "dps" | "hps" | "gear" | "consumables" | "casts" | "healing";
   priority: "high" | "medium" | "low";
   title: string;
   description: string;
