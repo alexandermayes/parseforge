@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Accuracy & Analysis Depth
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-09-08T00:32:49.883Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-09-08T00:54:32.078Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 02 execution started
-state_head: 3435abd9c0363b61b0ce35ef36776c8b58eeb998
+state_head: 8e60659aa5984e9a2d0cae40df92e3ad6d5566ab
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 18
-  completed_plans: 10
+  completed_plans: 11
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07 after Phase 1)
 ## Current Position
 
 Phase: 02 (Accuracy & Analysis Depth) — EXECUTING
-Plan: 2 of 9
+Plan: 3 of 9
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 02 execution started
 
@@ -68,6 +68,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 01 P08 | 55min | 3 tasks | 3 files |
 | Phase 01 P09 | 40min | 3 tasks | 1 file (+ prod deploy) |
 | Phase 02 P01 | n/a (checkpoint-resumed) | 2 tasks | 15 files |
+| Phase 02 P02 | 40min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Phase 01 / 01-08: Built scripts/seo-invariants.mjs (local-vs-production head-tag + JSON-LD diff) and docs/OPS-01-SHIP-GATE.md as the repeatable OPS-01 gate every later phase runs; expanded the route set from the plan's stale 9 to the live 11 (adding /privacy and /terms) and corrected a stale consent_resolved instrumentation-count assumption against 01-03's already-correct two-branch implementation; the 11-route theme sweep is deferred to end-of-phase UAT.
 - [Phase 01 / 01-09]: Phase 1 shipped to production (parseforge-424ibrxax → parseforge.gg) after a preview deploy was offered and the developer replied deploy-now; CMP script host confirmed in prod HTML so MONY-01 is live for EEA/UK; GSC 9× PASS on pre-deploy crawls + 2× no-data (/privacy, /terms unknown to Google yet); PostHog event definitions recorded no-data (MCP disconnected after OAuth) — OPS-01 Phase 1 gate closed with a dated sign-off; the real-browser UAT sweep (toggle, EEA vs US dialog, light mode on phone) is the remaining human step.
 - [Phase 02]: [Phase 02 / 02-01]: Recorded real WCL fixtures for the public demo report and corrected RESEARCH.md Assumption A3 from live data — the sourceID-scoped per-ability Healing table DOES carry per-ability overheal (matches the un-scoped total exactly); what it actually lacks is activeTime, which only appears on the un-scoped healingByPlayer row. Timeline query/type contracts (TIMELINE_CASTS_QUERY, WCLCastEvent, CastTimelineResult, HealerTableRow, HealerComparison), RATE_LIMITS.timeline, formatFightTime, and exported JUNK_SPELL_IDS/isJunkSpell are now in place for plans 02-02, 02-04, 02-05 and 02-07 to build against with no further live WCL query. — Every later Phase 2 plan needs verified (not guessed) WCL response shapes; recording once up front replaces five flagged assumptions with facts and hands downstream plans ready-made contracts.
+- [Phase 02]: Timeline engine (02-02): filtered WCL begincast probe events, treated -1 targetID as no-target, duplicated buildRankedNames locally rather than importing a use-client export into server code
 
 ### Pending Todos
 
@@ -124,6 +126,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T00:32:44.281Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-09-08T00:54:25.442Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

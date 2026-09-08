@@ -92,7 +92,7 @@ Plans:
   4. `cla-engine`, `raid-overview-engine`, and `wcl-client` have automated tests that fail when analysis output changes — a regression safety net in place before the redesign touches anything.
   5. New timeline and healer surfaces ship with PostHog events and pass the GSC verification pass (OPS-01 gate).
 
-**Plans**: 1/9 plans executed
+**Plans**: 2/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -102,7 +102,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Cast timeline tracer: open the Timeline tab and read your casts in order, end to end
+- [x] 02-02-PLAN.md — Cast timeline tracer: open the Timeline tab and read your casts in order, end to end
 - [ ] 02-03-PLAN.md — wago.tools regeneration pipeline: script, overrides layer, three generated era modules
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -224,7 +224,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
-| 2. Accuracy & Analysis Depth | 1/9 | In Progress|  |
+| 2. Accuracy & Analysis Depth | 2/9 | In Progress|  |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
