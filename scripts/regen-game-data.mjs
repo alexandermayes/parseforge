@@ -990,6 +990,16 @@ async function main() {
     const verifiedIn = consumableNamesByEra
       .filter(({ names }) => names.get(id) !== undefined)
       .map(({ eraId }) => eraId);
+    // A consumableNames override is the explicit human final say — it wins
+    // even when an era DOES resolve a name, exactly like ENCHANT_NAME_OVERRIDES
+    // / GEM_NAME_OVERRIDES always win in lib/generated/index.ts. This matters
+    // for ids whose client-derived buff-aura label is technically resolvable
+    // but too terse/ambiguous for a raid audit (e.g. scroll ids resolve to a
+    // single stat word like "Agility", not "Scroll of Agility V").
+    if (consumableNameOverrides.has(id)) {
+      resolvedConsumableNames.set(id, { name: consumableNameOverrides.get(id), verifiedIn: [] });
+      continue;
+    }
     const chosen = seenConsumableValueByEra.get(id);
     if (chosen) {
       resolvedConsumableNames.set(id, {
@@ -998,8 +1008,6 @@ async function main() {
           (eraId) => consumableNamesByEra.find((e) => e.eraId === eraId).names.get(id) === chosen.value,
         ),
       });
-    } else if (consumableNameOverrides.has(id)) {
-      resolvedConsumableNames.set(id, { name: consumableNameOverrides.get(id), verifiedIn: [] });
     }
     // else: unresolved — deliberately absent from resolvedConsumableNames;
     // surfaced below as a gate-mode finding, never a silently-empty name.

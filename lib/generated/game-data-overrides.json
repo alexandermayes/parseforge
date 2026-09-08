@@ -976,6 +976,22 @@
     }
   },
   "consumableNames": {
+    "11334": {
+      "value": "Elixir of Greater Agility",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "11348": {
+      "value": "Elixir of Superior Defense",
+      "source": "SpellName.Name_lang for this guardian-elixir spell id resolves to a buff-aura name (e.g. \"Greater Armor\", \"Greater Mana Regeneration\") that describes the elixirs effect rather than the items flavor name (\"Elixir of Superior Defense\", \"Elixir of Major Mageblood\") -- both are genuinely wago-derivable client strings, just from different fields (buff aura vs. item flavor), and this pipelines per-id SpellName lookup only resolves the former. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "11396": {
+      "value": "Elixir of Greater Intellect",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "11474": {
+      "value": "Elixir of Shadow Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
     "13510": {
       "value": "Flask of the Titans (Classic)",
       "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
@@ -991,6 +1007,358 @@
     "13513": {
       "value": "Flask of Chromatic Resistance (Classic)",
       "source": "This spell id resolved to no SpellName row (or an empty Name_lang) in any of the three regenerated eras client dumps (2.5.6.69546 TBC Anniversary, 3.4.5.63697 WotLK, 4.4.2.60895 Cata) during the 2026-09 regeneration, verified by direct CSV inspection — the pre-existing hand-verified name from lib/cla-constants.ts is preserved verbatim as a sourced override."
+    },
+    "16138": {
+      "value": "Dense Sharpening Stone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "16622": {
+      "value": "Dense Weightstone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "17627": {
+      "value": "Flask of Distilled Wisdom",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "17628": {
+      "value": "Flask of Supreme Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "17629": {
+      "value": "Flask of Chromatic Resistance",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "21920": {
+      "value": "Elixir of Frost Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "22756": {
+      "value": "Elemental Sharpening Stone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "24799": {
+      "value": "Well Fed (Stamina)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "24870": {
+      "value": "Well Fed (Spirit)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "25120": {
+      "value": "Brilliant Mana Oil",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "25661": {
+      "value": "Increased Stamina (Food)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "26276": {
+      "value": "Elixir of Greater Firepower",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28490": {
+      "value": "Elixir of Major Strength",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28491": {
+      "value": "Elixir of Healing Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28493": {
+      "value": "Elixir of Major Frost Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28497": {
+      "value": "Elixir of Major Agility",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28501": {
+      "value": "Elixir of Major Firepower",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28502": {
+      "value": "Elixir of Major Defense",
+      "source": "SpellName.Name_lang for this guardian-elixir spell id resolves to a buff-aura name (e.g. \"Greater Armor\", \"Greater Mana Regeneration\") that describes the elixirs effect rather than the items flavor name (\"Elixir of Superior Defense\", \"Elixir of Major Mageblood\") -- both are genuinely wago-derivable client strings, just from different fields (buff aura vs. item flavor), and this pipelines per-id SpellName lookup only resolves the former. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "28503": {
+      "value": "Elixir of Major Shadow Power",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "28509": {
+      "value": "Elixir of Major Mageblood",
+      "source": "SpellName.Name_lang for this guardian-elixir spell id resolves to a buff-aura name (e.g. \"Greater Armor\", \"Greater Mana Regeneration\") that describes the elixirs effect rather than the items flavor name (\"Elixir of Superior Defense\", \"Elixir of Major Mageblood\") -- both are genuinely wago-derivable client strings, just from different fields (buff aura vs. item flavor), and this pipelines per-id SpellName lookup only resolves the former. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "28514": {
+      "value": "Elixir of Empowerment",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "29452": {
+      "value": "Fel Sharpening Stone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "29453": {
+      "value": "Adamantite Sharpening Stone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "33077": {
+      "value": "Scroll of Agility V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33078": {
+      "value": "Scroll of Intellect V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33079": {
+      "value": "Scroll of Protection V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33080": {
+      "value": "Scroll of Spirit V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33081": {
+      "value": "Scroll of Stamina V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33082": {
+      "value": "Scroll of Strength V",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "33254": {
+      "value": "Well Fed (Ravager Dog)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33256": {
+      "value": "Well Fed (Roasted Clefthoof)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33257": {
+      "value": "Well Fed (Blackened Sporefish)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33259": {
+      "value": "Well Fed (Grilled Mudfish)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33261": {
+      "value": "Well Fed (Warp Burger)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33263": {
+      "value": "Well Fed (Blackened Basilisk)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33265": {
+      "value": "Well Fed (Poached Bluefish)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "33268": {
+      "value": "Well Fed (Spicy Hot Talbuk)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "34340": {
+      "value": "Adamantite Weightstone",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "35272": {
+      "value": "Well Fed (Spicy Crawdad)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "43194": {
+      "value": "Scroll of Agility VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43195": {
+      "value": "Scroll of Intellect VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43196": {
+      "value": "Scroll of Protection VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43197": {
+      "value": "Scroll of Spirit VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43198": {
+      "value": "Scroll of Stamina VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43199": {
+      "value": "Scroll of Strength VIII",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to a terse single-word buff label (the raw in-game aura name, e.g. \"Agility\" or \"Armor\") that omits both the item type and its rank -- ambiguous and uninformative in a raid consumable audit (a raider cannot tell which scroll or rank granted the buff, and multiple ranks of the same scroll resolve to the identical terse label). The pre-regeneration hand-verified item-descriptive name (\"Scroll of X [Rank]\") is preserved as a sourced override; the underlying id and rank are still verified against client data (2.5.6.69546 TBC Anniversary / 3.4.5.63697 WotLK), only the terse buff-aura label is not used for display."
+    },
+    "43722": {
+      "value": "Enlightened (Skullfish Soup)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "43764": {
+      "value": "Well Fed (Fish Feast TBC)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "44106": {
+      "value": "Well Fed (Hit Rating)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "46687": {
+      "value": "Well Fed (Broiled Bloodfin)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "53748": {
+      "value": "Elixir of Mighty Strength",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "53763": {
+      "value": "Elixir of Protection",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "53764": {
+      "value": "Elixir of Mighty Mageblood",
+      "source": "SpellName.Name_lang for this guardian-elixir spell id resolves to a buff-aura name (e.g. \"Greater Armor\", \"Greater Mana Regeneration\") that describes the elixirs effect rather than the items flavor name (\"Elixir of Superior Defense\", \"Elixir of Major Mageblood\") -- both are genuinely wago-derivable client strings, just from different fields (buff aura vs. item flavor), and this pipelines per-id SpellName lookup only resolves the former. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "57325": {
+      "value": "Firecracker Salmon",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57327": {
+      "value": "Poached Northern Sculpin",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57329": {
+      "value": "Imperial Manta Steak",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57332": {
+      "value": "Rhinolicious Wormsteak",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57334": {
+      "value": "Mega Mammoth Meal",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57356": {
+      "value": "Spiced Worm Burger",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57358": {
+      "value": "Snapper Extreme",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57360": {
+      "value": "Blackened Dragonfin",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57365": {
+      "value": "Cuttlesteak",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57367": {
+      "value": "Spicy Blue Nettlefish",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57371": {
+      "value": "Tender Shoveltusk Steak",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57373": {
+      "value": "Mighty Rhino Dogs",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "57399": {
+      "value": "Well Fed (Fish Feast)",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "60340": {
+      "value": "Elixir of Accuracy",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60341": {
+      "value": "Elixir of Deadly Strikes",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60343": {
+      "value": "Elixir of Mighty Defense",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60344": {
+      "value": "Elixir of Expertise",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60345": {
+      "value": "Elixir of Armor Piercing",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60346": {
+      "value": "Elixir of Lightning Speed",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "60347": {
+      "value": "Elixir of Mighty Thoughts",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "79481": {
+      "value": "Elixir of Impossible Accuracy",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "79632": {
+      "value": "Elixir of Mighty Speed",
+      "source": "SpellName.Name_lang for this consumable spell id resolves to the buff-aura name without its item-type prefix (e.g. \"Greater Agility\" rather than \"Elixir of Greater Agility\") -- the client genuinely omits \"Elixir of \"/\"Flask of \" from the in-combat buff label. The pre-regeneration hand-verified, prefixed item name is preserved as a sourced override; the underlying stat text is still wago-verified, only the item-type prefix is not client-derivable via this per-id SpellName lookup."
+    },
+    "87545": {
+      "value": "Beer-Basted Crocolisk",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87546": {
+      "value": "Skewered Eel",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87547": {
+      "value": "Basilisk Liverdog",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87548": {
+      "value": "Mushroom Sauce Mudfish",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87549": {
+      "value": "Grilled Dragon",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87550": {
+      "value": "Baked Rockfish",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87551": {
+      "value": "Lavascale Fillet",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87552": {
+      "value": "Severed Sagefish Head",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87554": {
+      "value": "Crocolisk Au Gratin",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87555": {
+      "value": "Lavascale Minestrone",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87556": {
+      "value": "Broiled Dragon Feast",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "87557": {
+      "value": "Seafood Magnifique Feast",
+      "source": "SpellName.Name_lang for this food-buff spell id resolves to a generic buff-aura label (\"Well Fed\" or similar) shared identically across many distinct foods that grant the same stat bonus -- the client genuinely does not encode which specific food item was eaten in the buff aura name. The pre-regeneration hand-verified, food-specific name is preserved as a sourced override so distinct foods remain distinguishable in a raid consumable audit; the id and its stat-granting behaviour are still wago-verified."
+    },
+    "96264": {
+      "value": "Pyrium Weapon Chain (Cata)",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
+    },
+    "96294": {
+      "value": "Pyrium Shield Spike (Cata)",
+      "source": "SpellName.Name_lang for this weapon-enhancement spell id resolves to a generic buff-effect label (e.g. \"Sharpen Blade\", \"Weight Weapon\") shared across multiple distinct oils/stones of different tiers, or (ids 96264, 96294) to a spell name that appears unrelated to the curated item and could not be corroborated against any other regenerated era -- flagged here for the docs/GAME-DATA-AUDIT.md human-check rather than trusted. The pre-regeneration hand-verified item name is preserved as a sourced override."
     },
     "104264": {
       "value": "Well Fed (+250 Int)",
