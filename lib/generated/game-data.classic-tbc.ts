@@ -6,7 +6,7 @@
 // Product: wow_anniversary
 // Build: 2.5.6.69546 (resolution: resolved)
 // Source tables: SpellItemEnchantment, SpellName, SpellEffect, ItemSparse, GemProperties
-// Generated: 2026-09-08T01:12:42.084Z
+// Generated: 2026-09-08T02:20:14.927Z
 //
 // Re-run `npm run regen-game-data` to refresh this file. Hand edits are
 // silently overwritten on the next run and defeat the purpose of this

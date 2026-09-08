@@ -6,7 +6,7 @@
 // CONSUMABLE_CURATION id (lib/generated/game-data-overrides.json's
 // `consumables` key) — category/isSuboptimal/betterAlternative judgment
 // stays hand-curated in that same file; only the name is generated here.
-// Generated: 2026-09-08T02:18:41.585Z
+// Generated: 2026-09-08T02:20:14.930Z
 //
 // Re-run `npm run regen-game-data` to refresh this file. Hand edits are
 // silently overwritten on the next run.
