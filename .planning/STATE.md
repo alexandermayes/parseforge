@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Accuracy & Analysis Depth
 status: executing
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-09-08T01:24:30.493Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-09-08T01:39:49.226Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 02 execution started
-state_head: e552d0f7e153ccca3f35c13f7f32e718969749d8
+state_head: f1a516f620dce79f5de0ff352a4f5527b18f7df5
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 18
-  completed_plans: 12
+  completed_plans: 13
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07 after Phase 1)
 ## Current Position
 
 Phase: 02 (Accuracy & Analysis Depth) — EXECUTING
-Plan: 4 of 9
+Plan: 5 of 9
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 02 execution started
 
@@ -70,6 +70,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 02 P01 | n/a (checkpoint-resumed) | 2 tasks | 15 files |
 | Phase 02 P02 | 40min | 2 tasks | 7 files |
 | Phase 02 P03 | 65min | 2 tasks | 8 files |
+| Phase 02-accuracy-analysis-depth P04 | 35min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,7 @@ Recent decisions affecting current work:
 - [Phase 02]: [Phase 02 / 02-01]: Recorded real WCL fixtures for the public demo report and corrected RESEARCH.md Assumption A3 from live data — the sourceID-scoped per-ability Healing table DOES carry per-ability overheal (matches the un-scoped total exactly); what it actually lacks is activeTime, which only appears on the un-scoped healingByPlayer row. Timeline query/type contracts (TIMELINE_CASTS_QUERY, WCLCastEvent, CastTimelineResult, HealerTableRow, HealerComparison), RATE_LIMITS.timeline, formatFightTime, and exported JUNK_SPELL_IDS/isJunkSpell are now in place for plans 02-02, 02-04, 02-05 and 02-07 to build against with no further live WCL query. — Every later Phase 2 plan needs verified (not guessed) WCL response shapes; recording once up front replaces five flagged assumptions with facts and hands downstream plans ready-made contracts.
 - [Phase 02]: Timeline engine (02-02): filtered WCL begincast probe events, treated -1 targetID as no-target, duplicated buildRankedNames locally rather than importing a use-client export into server code
 - [Phase 02]: Phase 02 / 02-03: Built scripts/regen-game-data.mjs (wago.tools era-pinned generator), ran it for real against live wago.tools, and committed three generated era modules (2553/3895/4891 rows, builds 2.5.6.69546/3.4.5.63697/4.4.2.60895) that provably reproduce every enchant/gem ID-to-name pair lib/cla-constants.test.ts pins. Discovered real cross-era ID collisions at exhaustive-data scale (806 enchant, 295 gem) far exceeding what a naive later-wins merge tolerates safely -- 02-06 should select the correct era module per-report rather than flat-merging all three eras. — Turns PR #11's one-off manual wago.tools fix into a repeatable, row-floor-guarded generator so the class of bug that shipped wrong enchant/gem names to raiders cannot recur silently (ACC-01).
+- [Phase 02]: Phase 02 / 02-04: Extracted computeHealerMetrics/averageTopHealerMetrics into lib/healer-metrics.ts as the single source of truth for healer effective HPS, overheal percent and healing uptime (D-08); wired the analyze route's healer branch and the raid overview engine to both call it, and added Overheal/Uptime comparison rows to the player-page healer card. A cross-surface unit test proves the raid table and the player page can never disagree on the same healer+fight number. RESEARCH.md Assumption A5 was re-confirmed (headline HPS already equals effective HPS) — no code change to the headline was needed. — ACC-04 success criterion 2 requires a healer to see analysis reflecting healing decisions, not a DPS-shaped ranking; a single shared helper closes the risk of the raid table and player page silently disagreeing on the same figure.
 
 ### Pending Todos
 
@@ -128,6 +130,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T01:24:30.429Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-09-08T01:39:49.154Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
