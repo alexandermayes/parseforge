@@ -112,7 +112,7 @@ export default function AnalysisView({
         </TabsList>
 
         <TabsContent value="dps" className="mt-4">
-          <DpsComparison data={data.dps} role={data.playerRole} previousSnapshot={previousSnapshot} />
+          <DpsComparison data={data.dps} role={data.playerRole} healer={data.healer} previousSnapshot={previousSnapshot} />
         </TabsContent>
 
         <TabsContent value="abilities" className="mt-4 space-y-4">

@@ -12,6 +12,7 @@ import type {
   WCLFight,
   WCLRanking,
   TopPlayerFullData,
+  HealerTableRow,
 } from "./wcl-types";
 
 interface TopPlayerDataResponse {
@@ -24,6 +25,10 @@ interface TopPlayerDataResponse {
       };
       damage?: { data: { entries: WCLDamageEntry[] } };
       healing?: { data: { entries: WCLDamageEntry[] } };
+      // Un-scoped per-player Healing row (sourceID omitted) — the only shape
+      // carrying player-level activeTime alongside overheal (README.md A3).
+      // Present only when the healer query variant is used.
+      healingByPlayer?: { data: { entries: HealerTableRow[] } };
       buffs: { data: { auras: WCLBuffEntry[] } };
       casts: { data: { entries: WCLCastEntry[] } };
       fights: WCLFight[];
@@ -99,6 +104,13 @@ export async function fetchTopPlayers(
             ? (topReport.healing?.data?.entries ?? [])
             : (topReport.damage?.data?.entries ?? []);
 
+          // Healer path only: the un-scoped healingByPlayer table already ran
+          // as part of this same request (no extra round trip) — find this
+          // top player's own row by the actor id already resolved above.
+          const healerRow = role === "healer"
+            ? topReport.healingByPlayer?.data?.entries?.find((e) => e.id === actor.id)
+            : undefined;
+
           return {
             name: ranking.name,
             ranking,
@@ -106,6 +118,7 @@ export async function fetchTopPlayers(
             throughputEntries: throughput,
             buffEntries: topReport.buffs?.data?.auras ?? [],
             castEntries: topReport.casts?.data?.entries ?? [],
+            healerRow,
           } as TopPlayerFullData;
         } catch (err) {
           console.error(`Top player fetch error for ${ranking.name}:`, err);

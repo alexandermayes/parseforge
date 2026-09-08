@@ -427,6 +427,25 @@ export function percentileBg(p: number): string {
   return "bg-tier-common/20 text-tier-common border-tier-common/30";
 }
 
+// Healer overheal / healing-uptime color bands (D-08). Consumed by both the
+// raid overview's Healer Breakdown panel (app/components/RaidOverview.tsx)
+// and the player page's healer comparison rows (app/components/DpsComparison.tsx)
+// so a healer's overheal/uptime badge is the same color on both surfaces for
+// the same fight — a single set of threshold bands, not two copies that could
+// drift apart. Reproduces the threshold bands the two components previously
+// defined privately (D-08 consolidation), byte-for-byte.
+export function overhealColor(pct: number): string {
+  if (pct <= 20) return "text-status-good";
+  if (pct <= 40) return "text-status-warn";
+  return "text-status-bad";
+}
+
+export function activityColor(pct: number): string {
+  if (pct >= 95) return "text-status-good";
+  if (pct >= 80) return "text-status-warn";
+  return "text-status-bad";
+}
+
 // TBC/Classic talent tree names per class (order matches CombatantInfo talents array)
 export const CLASS_TALENT_TREES: Record<string, string[]> = {
   Warrior: ["Arms", "Fury", "Protection"],

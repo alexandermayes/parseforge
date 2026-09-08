@@ -40,6 +40,7 @@ import {
   AbilityPriorityEntry,
   MetricPercentile,
   MetricPercentileAnalysis,
+  HealerComparison,
 } from "./wcl-types";
 
 // ─── Junk / internal spell filter ────────────────────────────────────
@@ -1210,6 +1211,8 @@ export function buildAnalysisResult(params: {
   rankings: WCLRanking[];
   totalRankingCount?: number;
   wowheadDomain?: string;
+  /** Healer-only: effective HPS, overheal percent and uptime vs top healers (D-08). */
+  healerComparison?: HealerComparison;
 }): AnalysisResult {
   const topPlayersData = params.topPlayersData;
   const topRanking = topPlayersData[0]?.ranking ?? params.rankings[0];
@@ -1293,5 +1296,6 @@ export function buildAnalysisResult(params: {
     gearPopularity,
     abilityPriority,
     metricPercentiles,
+    healer: role === "healer" ? params.healerComparison : undefined,
   };
 }

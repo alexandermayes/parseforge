@@ -23,7 +23,10 @@ import {
   WCLFight,
   WCLCombatantInfoEvent,
   WCLGearItem,
+  HealerTableRow,
+  HealerComparison,
 } from "@/lib/wcl-types";
+import { computeHealerMetrics, averageTopHealerMetrics } from "@/lib/healer-metrics";
 
 interface PlayerFullDataResponse {
   reportData: {
@@ -37,6 +40,10 @@ interface PlayerFullDataResponse {
       rankings?: { data?: Array<{ fightID?: number; partition?: number }> };
       damage?: { data: { entries: WCLDamageEntry[] } };
       healing?: { data: { entries: WCLDamageEntry[] } };
+      // Un-scoped per-player Healing row (sourceID omitted) — the only shape
+      // carrying player-level activeTime alongside overheal (README.md A3).
+      // Present only on the healer query variant.
+      healingByPlayer?: { data: { entries: HealerTableRow[] } };
       buffs: { data: { auras: WCLBuffEntry[] } };
       casts: { data: { entries: WCLCastEntry[] } };
       combatantInfo: { data: WCLCombatantInfoEvent[] };
@@ -105,6 +112,9 @@ export async function POST(request: NextRequest) {
     let buffEntries: WCLBuffEntry[];
     let castEntries: WCLCastEntry[];
     let combatantInfoData: PlayerFullDataResponse["reportData"]["report"];
+    // Un-scoped per-player Healing row for this player (healer path only) —
+    // the only input computeHealerMetrics accepts (README.md A3).
+    let healerRow: HealerTableRow | undefined;
 
     if (playerRole === "healer") {
       const healerData = await wclQuery<PlayerFullDataResponse>(
@@ -116,6 +126,7 @@ export async function POST(request: NextRequest) {
       buffEntries = healReport.buffs?.data?.auras ?? [];
       castEntries = healReport.casts?.data?.entries ?? [];
       combatantInfoData = healReport;
+      healerRow = healReport.healingByPlayer?.data?.entries?.find((e) => e.id === sourceId);
     } else {
       throughputEntries = report.damage?.data?.entries ?? [];
       buffEntries = report.buffs?.data?.auras ?? [];
@@ -256,6 +267,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Healer-only: effective HPS, overheal percent and healing uptime vs the
+    // same three metrics averaged across the top-ranked healers of this spec.
+    // Built from the single shared helper (D-08) so this can never disagree
+    // with the raid overview's Healer Breakdown panel for the same fight.
+    let healerComparison: HealerComparison | undefined;
+    if (playerRole === "healer") {
+      const playerMetrics = computeHealerMetrics(healerRow, fightDuration);
+      const topMetrics = topPlayersData.map((tp) =>
+        computeHealerMetrics(tp.healerRow, tp.duration)
+      );
+      const topAverage = averageTopHealerMetrics(topMetrics);
+      healerComparison = {
+        effectiveHps: playerMetrics.effectiveHps,
+        overhealPercent: playerMetrics.overhealPercent,
+        activityPercent: playerMetrics.activityPercent,
+        topOverhealPercent: topAverage.overhealPercent,
+        topActivityPercent: topAverage.activityPercent,
+        topSampleCount: topAverage.sampleCount,
+        hasHealing: playerMetrics.hasHealing,
+      };
+    }
+
     // Step 4: Build analysis
     const result = buildAnalysisResult({
       playerName: player.name,
@@ -274,6 +307,7 @@ export async function POST(request: NextRequest) {
       rankings: rankingsData.rankings,
       totalRankingCount: rankingsData.count,
       wowheadDomain,
+      healerComparison,
     });
 
     return result;

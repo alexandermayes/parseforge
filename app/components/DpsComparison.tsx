@@ -4,9 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { BorderBeam } from "@/components/ui/border-beam";
-import { DpsComparison as DpsData } from "@/lib/wcl-types";
+import { DpsComparison as DpsData, HealerComparison } from "@/lib/wcl-types";
 import { AnalysisSnapshot } from "@/lib/analysis-history";
-import { getPerformanceGrade, GRADE_COLORS, percentileColor, percentileBg } from "@/lib/constants";
+import {
+  getPerformanceGrade,
+  GRADE_COLORS,
+  percentileColor,
+  percentileBg,
+  overhealColor,
+  activityColor,
+} from "@/lib/constants";
 
 function formatDps(dps: number): string {
   if (dps >= 1000) return `${(dps / 1000).toFixed(1)}k`;
@@ -23,7 +30,7 @@ const GRADE_BEAM_COLORS: Record<string, { from: string; to: string }> = {
   D: { from: "var(--tier-common)", to: "var(--tier-common)" },
 };
 
-export default function DpsComparison({ data, role = "dps", previousSnapshot }: { data: DpsData; role?: "dps" | "healer"; previousSnapshot?: AnalysisSnapshot | null }) {
+export default function DpsComparison({ data, role = "dps", healer, previousSnapshot }: { data: DpsData; role?: "dps" | "healer"; healer?: HealerComparison; previousSnapshot?: AnalysisSnapshot | null }) {
   const metricLabel = role === "healer" ? "HPS" : "DPS";
   const prevDps = previousSnapshot?.dps ?? 0;
   const maxDps = Math.max(data.playerDps, data.topDps, data.medianDps, prevDps);
@@ -134,6 +141,35 @@ export default function DpsComparison({ data, role = "dps", previousSnapshot }: 
             </div>
           </div>
         </div>
+
+        {role === "healer" && healer && (
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-sm">
+              <span className="text-body-sm text-muted-foreground">Overheal</span>
+              <span className="font-mono text-sm">
+                <span className={healer.hasHealing ? overhealColor(healer.overhealPercent) : "text-muted-foreground"}>
+                  You: {healer.hasHealing ? `${healer.overhealPercent}%` : "—"}
+                </span>
+                <span className="text-muted-foreground"> &middot; </span>
+                <span className={overhealColor(healer.topOverhealPercent)}>
+                  Top: {healer.topOverhealPercent}%
+                </span>
+              </span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-body-sm text-muted-foreground">Uptime</span>
+              <span className="font-mono text-sm">
+                <span className={healer.hasHealing ? activityColor(healer.activityPercent) : "text-muted-foreground"}>
+                  You: {healer.hasHealing ? `${healer.activityPercent}%` : "—"}
+                </span>
+                <span className="text-muted-foreground"> &middot; </span>
+                <span className={activityColor(healer.topActivityPercent)}>
+                  Top: {healer.topActivityPercent}%
+                </span>
+              </span>
+            </div>
+          </div>
+        )}
 
         {data.gapToMedian > 0 && (
           <p className="text-sm text-muted-foreground">

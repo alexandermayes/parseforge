@@ -537,6 +537,8 @@ export interface HealerComparison {
   topOverhealPercent: number;
   topActivityPercent: number;
   topSampleCount: number;
+  /** False when the player recorded no healing this fight — render an em dash, not a measured-looking zero. */
+  hasHealing: boolean;
 }
 
 // ─── Request / Response Types ────────────────────────────────────────
