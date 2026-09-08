@@ -523,12 +523,25 @@ export function detectConsumables(
 
 // ─── Improvement Suggestions ─────────────────────────────────────────
 
+// D-07: healer suggestion thresholds — relative multipliers against the top
+// healers' own values, never a fixed magic percentage. These are starting
+// values (chosen relative to top-healer medians) and are expected to be
+// retuned against real logs once more fixture data exists.
+const HEALER_OVERHEAL_RATIO = 1.3; // ~30% more overheal than top healers triggers advice
+const HEALER_OVERHEAL_HIGH_RATIO = 1.5; // ~50% more overheal escalates priority to high
+const HEALER_OVERHEAL_MIN_GAP_PP = 3; // absolute pp floor so a near-zero top value can't flag any nonzero overheal
+const HEALER_UPTIME_RATIO = 0.9; // ~10% less uptime than top healers triggers advice
+const HEALER_UPTIME_HIGH_RATIO = 0.75; // ~25% less uptime escalates priority to high
+const HEALER_HPS_GAP_THRESHOLD = 10; // percent gapToTop that flags a throughput gap despite efficient healing
+const HEALER_HPS_GAP_HIGH_THRESHOLD = 20; // percent gapToTop that escalates priority to high
+
 export function generateSuggestions(
   dps: DpsComparison,
   gear: GearAnalysis,
   consumables: ConsumableStatus,
   casts: CastAnalysis,
-  playerRole: "dps" | "healer" = "dps"
+  playerRole: "dps" | "healer" = "dps",
+  healer?: HealerComparison
 ): ImprovementSuggestion[] {
   const suggestions: ImprovementSuggestion[] = [];
   const metricLabel = playerRole === "healer" ? "HPS" : "DPS";
@@ -591,8 +604,14 @@ export function generateSuggestions(
     });
   }
 
-  // Active time (ABC)
-  if (casts.topActiveTime > 0 && casts.playerActiveTime / casts.topActiveTime < 0.85) {
+  // Active time (ABC) — damage-dealer advice only. A healer's rotation is
+  // driven by raid damage taken, not by keeping the GCD rolling, so this
+  // never reaches a healer (D-07).
+  if (
+    playerRole !== "healer" &&
+    casts.topActiveTime > 0 &&
+    casts.playerActiveTime / casts.topActiveTime < 0.85
+  ) {
     suggestions.push({
       category: "casts",
       priority: "high",
@@ -600,6 +619,58 @@ export function generateSuggestions(
       description:
         "Your overall casts per minute is significantly lower than top players. Reduce idle time, pre-position for mechanics, and keep your GCD rolling.",
     });
+  }
+
+  // Healer-only suggestions (D-07), thresholded against the top healers of
+  // this player's own spec rather than a fixed constant. No comparison
+  // population means no relative advice — advice relative to zero is worse
+  // than no advice at all (T-02-21).
+  if (playerRole === "healer" && healer && healer.topSampleCount > 0) {
+    const overhealGapPP = healer.overhealPercent - healer.topOverhealPercent;
+    const overhealRatio =
+      healer.topOverhealPercent > 0
+        ? healer.overhealPercent / healer.topOverhealPercent
+        : healer.overhealPercent > 0
+          ? Infinity
+          : 0;
+    const overhealFires =
+      overhealRatio >= HEALER_OVERHEAL_RATIO && overhealGapPP >= HEALER_OVERHEAL_MIN_GAP_PP;
+
+    const uptimeRatio =
+      healer.topActivityPercent > 0 ? healer.activityPercent / healer.topActivityPercent : 1;
+    const uptimeFires = healer.topActivityPercent > 0 && uptimeRatio <= HEALER_UPTIME_RATIO;
+
+    if (overhealFires) {
+      suggestions.push({
+        category: "healing",
+        priority: overhealRatio >= HEALER_OVERHEAL_HIGH_RATIO ? "high" : "medium",
+        title: "High overheal",
+        description: `Your overheal is ${healer.overhealPercent}% vs ${healer.topOverhealPercent}% for top healers. Avoid pre-casting or topping off full-health targets.`,
+      });
+    }
+
+    if (uptimeFires) {
+      suggestions.push({
+        category: "healing",
+        priority: uptimeRatio <= HEALER_UPTIME_HIGH_RATIO ? "high" : "medium",
+        title: "Low healing uptime",
+        description: `Your healing uptime is ${healer.activityPercent}% vs ${healer.topActivityPercent}% for top healers. Reduce idle time between casts and react to damage sooner.`,
+      });
+    }
+
+    // Distinguishes a gear/consumables problem from a technique problem —
+    // only fires when neither of the technique-shaped rules above already
+    // explains the gap. Reuses the existing gapToMedian/gapToTop figures
+    // rather than recomputing a gap, so this never disagrees with the
+    // comparison card displaying the same number above it.
+    if (!overhealFires && !uptimeFires && dps.gapToTop >= HEALER_HPS_GAP_THRESHOLD) {
+      suggestions.push({
+        category: "healing",
+        priority: dps.gapToTop >= HEALER_HPS_GAP_HIGH_THRESHOLD ? "high" : "medium",
+        title: `${metricLabel} gap despite efficient healing`,
+        description: `Your effective HPS is ${dps.gapToTop}% below top healers (you: ${dps.playerDps}, top: ${dps.topDps}). Your overheal and uptime are in line — this points to gear or consumables, not technique.`,
+      });
+    }
   }
 
   suggestions.sort((a, b) => {
@@ -1271,7 +1342,7 @@ export function buildAnalysisResult(params: {
     gearPopularity,
   });
 
-  const suggestions = generateSuggestions(dps, gear, consumables, casts, role);
+  const suggestions = generateSuggestions(dps, gear, consumables, casts, role, params.healerComparison);
 
   return {
     playerName: params.playerName,
