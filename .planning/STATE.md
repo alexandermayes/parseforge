@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Accuracy & Analysis Depth
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-09-08T00:54:32.078Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-09-08T01:24:30.493Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 02 execution started
-state_head: 8e60659aa5984e9a2d0cae40df92e3ad6d5566ab
+state_head: e552d0f7e153ccca3f35c13f7f32e718969749d8
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 18
-  completed_plans: 11
+  completed_plans: 12
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07 after Phase 1)
 ## Current Position
 
 Phase: 02 (Accuracy & Analysis Depth) — EXECUTING
-Plan: 3 of 9
+Plan: 4 of 9
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 02 execution started
 
@@ -69,6 +69,7 @@ Progress: [█░░░░░░░░░] 14%
 | Phase 01 P09 | 40min | 3 tasks | 1 file (+ prod deploy) |
 | Phase 02 P01 | n/a (checkpoint-resumed) | 2 tasks | 15 files |
 | Phase 02 P02 | 40min | 2 tasks | 7 files |
+| Phase 02 P03 | 65min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,7 @@ Recent decisions affecting current work:
 - [Phase 01 / 01-09]: Phase 1 shipped to production (parseforge-424ibrxax → parseforge.gg) after a preview deploy was offered and the developer replied deploy-now; CMP script host confirmed in prod HTML so MONY-01 is live for EEA/UK; GSC 9× PASS on pre-deploy crawls + 2× no-data (/privacy, /terms unknown to Google yet); PostHog event definitions recorded no-data (MCP disconnected after OAuth) — OPS-01 Phase 1 gate closed with a dated sign-off; the real-browser UAT sweep (toggle, EEA vs US dialog, light mode on phone) is the remaining human step.
 - [Phase 02]: [Phase 02 / 02-01]: Recorded real WCL fixtures for the public demo report and corrected RESEARCH.md Assumption A3 from live data — the sourceID-scoped per-ability Healing table DOES carry per-ability overheal (matches the un-scoped total exactly); what it actually lacks is activeTime, which only appears on the un-scoped healingByPlayer row. Timeline query/type contracts (TIMELINE_CASTS_QUERY, WCLCastEvent, CastTimelineResult, HealerTableRow, HealerComparison), RATE_LIMITS.timeline, formatFightTime, and exported JUNK_SPELL_IDS/isJunkSpell are now in place for plans 02-02, 02-04, 02-05 and 02-07 to build against with no further live WCL query. — Every later Phase 2 plan needs verified (not guessed) WCL response shapes; recording once up front replaces five flagged assumptions with facts and hands downstream plans ready-made contracts.
 - [Phase 02]: Timeline engine (02-02): filtered WCL begincast probe events, treated -1 targetID as no-target, duplicated buildRankedNames locally rather than importing a use-client export into server code
+- [Phase 02]: Phase 02 / 02-03: Built scripts/regen-game-data.mjs (wago.tools era-pinned generator), ran it for real against live wago.tools, and committed three generated era modules (2553/3895/4891 rows, builds 2.5.6.69546/3.4.5.63697/4.4.2.60895) that provably reproduce every enchant/gem ID-to-name pair lib/cla-constants.test.ts pins. Discovered real cross-era ID collisions at exhaustive-data scale (806 enchant, 295 gem) far exceeding what a naive later-wins merge tolerates safely -- 02-06 should select the correct era module per-report rather than flat-merging all three eras. — Turns PR #11's one-off manual wago.tools fix into a repeatable, row-floor-guarded generator so the class of bug that shipped wrong enchant/gem names to raiders cannot recur silently (ACC-01).
 
 ### Pending Todos
 
@@ -126,6 +128,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T00:54:25.442Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-09-08T01:24:30.429Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
