@@ -94,9 +94,17 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
 
     fetch("/api/geo")
       .then((res) => res.json())
-      .then((body: { isConsentRegion: boolean }) => {
+      .then((body: unknown) => {
         if (!mounted || appliedRef.current) return;
-        applyDecision(body.isConsentRegion);
+        // Runtime-validate the parsed body: a malformed-but-valid-JSON
+        // response (e.g. a Vercel platform-level failure payload) must fail
+        // CLOSED the same as a network error, not silently opt a visitor in
+        // via `!undefined === true`.
+        const isConsentRegion =
+          typeof (body as { isConsentRegion?: unknown } | null)?.isConsentRegion === "boolean"
+            ? (body as { isConsentRegion: boolean }).isConsentRegion
+            : true;
+        applyDecision(isConsentRegion);
       })
       .catch(() => {
         // Fail closed: a network or CSP failure must never opt a European
