@@ -21,6 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Themes & Consent** - Token audit unlocks a dark/light toggle; consent layer gates ads and PostHog replay (completed 2026-09-06)
 - [x] **Phase 2: Accuracy & Analysis Depth** - Verified game data, tested engines, cast timeline, healer metrics (completed 2026-09-08)
+- [ ] **Phase 2.1: PostHog Consent Gate Hotfix** (INSERTED) - Server-side geo opt-in for non-EEA; live-traffic OPS-01 re-verification
 - [ ] **Phase 3: Share Loop** - Roast/award cards, per-player permalinks, share CTA that survives later phases
 - [ ] **Phase 4: Ads Live** - AdSense in reserved, consent-gated slots that never crowd the core flow
 - [ ] **Phase 5: Community & Cross-Promotion** - Dedicated Discord, LootList+ two-way links, auto-posted reports
@@ -122,6 +123,24 @@ Plans:
 
 **Notes**: Accuracy is the project's stated core value ("a wrong recommendation is worse than no recommendation"), so it precedes monetization and redesign. The engine tests here are what make Phase 7's redesign safe to attempt.
 
+### Phase 2.1: PostHog Consent Gate Hotfix (INSERTED)
+
+**Goal**: Every visitor is measured again — non-EEA/UK visitors are captured without depending on the Google CMP, EEA/UK visitors keep the exact TCF gate, and the OPS-01 gate can never again pass on pre-deploy data
+**Mode:** mvp
+**Depends on**: Phase 2
+**Requirements**: OPS-01 (re-verification), MONY-01 (consent semantics preserved)
+**Success Criteria** (what must be TRUE):
+
+  1. A fresh non-EEA/UK visitor's first `$pageview` reaches PostHog within seconds of load, with no `__tcfapi` involvement — decided server-side from Vercel's `x-vercel-ip-country` header.
+  2. An EEA/UK visitor's behaviour is unchanged: no capture before the TCF dialog resolves, cookieless on reject, replay only on full opt-in.
+  3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
+  4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
+
+**Plans**: TBD
+**UI hint**: no
+
+**Notes**: Diagnosis in `02.1-DIAGNOSIS.md`. Root cause: `cookieless_mode: "on_reject"` makes PENDING consent *drop* events in posthog-js 1.360, and opt-in depended on `__tcfapi` calling back — which it never does for fresh visitors. Capture fell from ~4–10k events/day to 3–7/day on 2026-09-06. Not a traffic collapse.
+
 ### Phase 3: Share Loop
 
 **Goal**: A raider who just analyzed a log wants to post it, and the artifact they post pulls new players back to ParseForge
@@ -219,12 +238,13 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 0/TBD | Not started | - |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |

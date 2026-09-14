@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
-current_phase: 3
-current_phase_name: Share Loop
+current_phase: "2.1"
+current_phase_name: PostHog Consent Gate Hotfix
 status: planning
-stopped_at: Phase 02 complete, ready to plan Phase 3
-last_updated: "2026-09-08T21:21:51.076Z"
-last_activity: 2026-09-08
-last_activity_desc: Phase 02 complete, transitioned to Phase 3
-state_head: b5058ce0f4fe241d967d8634e4837cbfa33adb01
+stopped_at: Phase 2.1 inserted (urgent) — PostHog capture regression diagnosed, ready to plan
+last_updated: "2026-09-14T19:00:48.962Z"
+last_activity: 2026-09-14
+last_activity_desc: Phase 2 review fixes (PR #16); PostHog capture regression found, Phase 2.1 inserted
+state_head: 53db5a0f5d1c0c1ccefad272df2e9abe2e6345ec
 progress:
-  total_phases: 7
+  total_phases: 8
   completed_phases: 2
   total_plans: 18
   completed_plans: 18
-  percent: 29
+  percent: 25
 ---
 
 # Project State
@@ -23,13 +23,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 3 — Share Loop (roast/award cards, per-player permalinks, a share CTA that survives later phases)
+**Current focus:** Phase 2.1 — PostHog Consent Gate Hotfix (URGENT: capture ~99.9% down since 2026-09-06; see `02.1-DIAGNOSIS.md`). Phase 3 Share Loop follows.
 
 ## Current Position
 
 Phase: 3 — Share Loop
 Plan: Not started
-Status: Ready to plan
+Status: planning
 Last activity: 2026-09-08 — Phase 02 complete, transitioned to Phase 3
 
 Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans complete)
@@ -103,10 +103,12 @@ Recent decisions affecting current work:
 
 - `wow-forever-support.md` (2026-09-13) — add World of Warcraft Forever support once WCL exposes Forever logs; era module via wago regen, partition-aware rankings, fixtures. Not actionable until upstream data exists.
 
-Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP connection returns `INVALID_API_KEY` and its active project is "LootList+ App" — re-wire it to the ParseForge project (337485) before the Phase 3 gate so event definitions can be confirmed by tool rather than by hand; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) merge PR #15 (or `git push origin main`) — `origin/main` is at `55d2010`, local `main` carries Phase 2 + close-out commits; parallel worktree execution returns once they match; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) code-review findings in `02-REVIEW.md` — CR-01 (healer suggestions fire with `hasHealing: false`) is live and should be fixed via `/gsd-code-review 02 --fix` + a follow-up deploy.
+Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP now authenticates; its *default* project is still "LootList+ App" — `switch-project 337485` per session works, but fix the connector default; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) ~~merge PR #15~~ done 2026-09-14 (`origin/main` = `f1d74f4`); PR #16 (Phase 2 review fixes) awaits preview + prod deploy; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) ~~code-review findings in `02-REVIEW.md`~~ fixed on `growth/phase-2-review-fixes` (PR #16, 4/4) — still needs deploy.
 
 ### Blockers/Concerns
 
+- **[URGENT — Phase 2.1] PostHog capture has been ~99.9% down since the Phase 1 prod deploy (2026-09-06).** `cookieless_mode: "on_reject"` drops all PENDING-consent events; opt-in depended on `__tcfapi` calling back, which never happens for fresh visitors. Phase 1 & 2 OPS-01 PostHog criteria were not actually met. Fix: server-side geo opt-in (decided 2026-09-14). Evidence: `02.1-DIAGNOSIS.md`.
+- Vercel CLI on this machine is logged into the `beast-app` team, not `loot-list-plus` — preview/prod deploys blocked until `vercel login` with the owning account.
 - Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time; the Claude Code auto-mode classifier also blocks `vercel deploy --prod` unless `Bash(vercel deploy:*)` is allowed (granted 2026-09-08 in `.claude/settings.local.json`). Preview-before-prod is the established pattern.
 - [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only.
 - [Phase 2 carry-forward] `02-REVIEW.md` CR-01: healer overheal/uptime suggestions fire when `hasHealing` is false — a wrong recommendation live on parseforge.gg; plus WR-01..03. Fix before Phase 3 bakes healer numbers into share images.
@@ -123,6 +125,10 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260906-kzw | Add /privacy and /terms pages, footer links, sitemap entries | 2026-09-06 | 8dc7673 | [260906-kzw-add-privacy-and-terms-pages-footer-links](./quick/260906-kzw-add-privacy-and-terms-pages-footer-links/) |
+
+### Roadmap Evolution
+
+- Phase 2.1 inserted after Phase 2: PostHog Consent Gate Hotfix — cookieless_mode on_reject dropped all PENDING-consent capture since the Phase 1 deploy (2026-09-06); server-side geo opt-in for non-EEA, live-traffic OPS-01 re-verification (URGENT)
 
 ## Deferred Items
 
