@@ -86,6 +86,16 @@ function PostHogPageView({ ready }: { ready: boolean }) {
 export default function PostHogProvider({ children }: { children: React.ReactNode }) {
   const [consentReady, setConsentReady] = useState(false);
   const appliedRef = useRef(false);
+  // Dedupes outbound consent_resolved/consent_unavailable events by gate
+  // path: some CMPs (e.g. Google Funding Choices' "manage consent"
+  // re-confirmation flow) can emit a second resolved TCF event for the same
+  // visitor. `startConsentListener`'s own `hasResolved` guard only covers
+  // its timeout branch, not a repeat non-timeout resolution, so a second
+  // identical resolution would otherwise re-fire the same PostHog event and
+  // inflate the OPS-01 gate's consent_gate_path counts. Keyed by gate path
+  // (not a single boolean) so a genuine decision change (e.g. reject, then
+  // later accept via re-confirmation) still gets its own event.
+  const capturedGatePathRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!POSTHOG_KEY) return;
@@ -131,7 +141,10 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
       posthog.register({ consent_gate_path: outcome.gatePath });
       if (outcome.optIn) posthog.opt_in_capturing({ captureEventName: false });
       if (outcome.startReplay) posthog.startSessionRecording();
-      if (outcome.event) posthog.capture(outcome.event, outcome.eventProps);
+      if (outcome.event && !capturedGatePathRef.current.has(outcome.gatePath)) {
+        capturedGatePathRef.current.add(outcome.gatePath);
+        posthog.capture(outcome.event, outcome.eventProps);
+      }
     }
 
     function applyDecision(isConsentRegion: boolean) {
