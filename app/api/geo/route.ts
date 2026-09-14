@@ -12,10 +12,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const country = request.headers.get("x-vercel-ip-country");
+  const normalized = country?.trim();
 
-  if (!country && process.env.VERCEL) {
+  if (!normalized && process.env.VERCEL) {
     // Countable in Vercel logs (D-03) — lets us see how often the header is
-    // missing on real traffic without blocking or slowing the response.
+    // missing OR blank/whitespace-only on real traffic without blocking or
+    // slowing the response. `isConsentRegionCode` already treats both cases
+    // identically (fail closed); this condition mirrors that so the blank
+    // case isn't under-counted relative to the outright-missing case.
     logEvent("geo_header_missing", { route: "api-geo" });
   }
 

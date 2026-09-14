@@ -71,4 +71,18 @@ describe("GET /api/geo", () => {
     );
     expect(missingLogs).toHaveLength(0);
   });
+
+  it("logs exactly one geo_header_missing line when the header is whitespace-only", async () => {
+    process.env.VERCEL = "1";
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    const res = await GET(makeRequest({ "x-vercel-ip-country": "   " }));
+
+    const missingLogs = logSpy.mock.calls.filter(([line]) =>
+      typeof line === "string" && line.includes("geo_header_missing"),
+    );
+    expect(missingLogs).toHaveLength(1);
+    // Still fails closed (consent region) exactly like a missing header.
+    expect(await res.json()).toEqual({ isConsentRegion: true });
+  });
 });
