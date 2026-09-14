@@ -1163,3 +1163,61 @@ at a Vercel figure of ≤ 50.
 **Item 7 overall: two of three thresholds PASS (counted events, pasted above); the third is
 PENDING pending a number this session could not read. Per this document's own recording rule, an
 un-evaluated threshold is not a pass — item 7 is not signed as complete.**
+
+### Code-review follow-up shipped after this deploy, not yet in production (2026-09-14, Task 3)
+
+After the measured deploy above, an advisory code review ran against the 02.1 branch
+(`02.1-REVIEW.md`): 1 Critical, 4 Warning, 2 Info findings. CR-01 — `PostHogProvider` trusted the
+`/api/geo` JSON body without runtime validation, so a JSON-shaped 5xx payload would fail **open**
+(opt the visitor in) instead of closed. WR-01 — no fetch timeout on `/api/geo`. WR-02 — a
+whitespace-only geo header was not logged as `geo_header_missing`. WR-03 — the `__tcfapi` listener
+could double-fire `consent_resolved`/`consent_unavailable` on a repeat TCF resolution. WR-04 —
+missing an explicit return type on the `/api/geo` `GET` handler.
+
+`02.1-REVIEW-FIX.md` records all five fixed on the branch (commits `90f5a46`, `0e03d9b`,
+`7a7cf0c`, `9657535`, `9da21c4`), suite 161 → 162, `tsc` clean. **None of these five fixes are in
+the deployment measured above** (`dpl_HY5319wSDVw3M4ibBU42JrSTgw4e` was built from `8693498`,
+which predates all five commits). Shipping them requires a separate, developer-approved production
+deploy — out of scope for this plan. **Recorded here as a required follow-up, not performed in
+this plan.**
+
+### Search Console (Part 1 item 5) — no GSC MCP tool available this session (Task 3)
+
+This phase's `files_modified` touch only `lib/geo.ts`, `app/api/geo/route.ts`, `lib/consent.ts`
+and `app/components/PostHogProvider.tsx` — no `page.tsx`, no route, and no metadata surface
+changed, so the expected Search Console result is no change to any route's indexability or
+metadata. This session has no `gscServer`-equivalent MCP tool available to actually run the URL
+inspection (the same limitation Part 3 recorded for its own post-deploy Search Console row), so
+this row is recorded as **`no-data`** for this gate — a legitimate outcome for this row, unlike the
+live-traffic row above. STATE.md's standing follow-up about `/` showing "Crawled - currently not
+indexed" belongs to the Phase 3 gate, per this plan's own instruction, and is not investigated
+here.
+
+### Phase 2.1 Sign-off — NOT SIGNED (2026-09-14, Task 3)
+
+Per this document's own oldest rule (a row is passing only with its evidence beside it — an
+unevidenced pass is a claim, not a gate) and per Task 3's own precondition (all three item-7
+thresholds must pass before this section signs), **Phase 2.1 is not signed off.** One threshold —
+the Vercel Web Analytics ratio — is PENDING, not evaluated, so item 7 as a whole cannot be marked
+passing, and the phase-level sign-off table used by Parts 2 and 3 is deliberately not written here.
+
+**What remains before this gate can be signed:**
+1. Read the real Vercel Web Analytics pageview figure for the window `2026-09-14 22:16:59Z` –
+   `23:16:59Z` from `https://vercel.com/loot-list-plus/parseforge/analytics` and compute the ratio
+   against the 25 PostHog `$pageview` events recorded above (pass at Vercel ≤ 50).
+2. If that ratio passes, sign this section with a date and extend `.planning/REQUIREMENTS.md`'s
+   OPS-01 entry with the real date the criterion was met (D-09).
+3. Separately — and not a precondition for item 7's own pass/fail — get the developer's approval
+   for a follow-up production deploy of the five code-review fix commits above, since none of them
+   are in the deployment this gate measured.
+
+Until step 1 resolves, OPS-01's PostHog criterion remains **not-yet-met** for Phase 2.1, exactly as
+it was for Phase 1 and Phase 2 before their own corrections — see the addendum in
+`.planning/REQUIREMENTS.md`.
+
+**Verification note on this Part's own automated secret/IP scan:** Part 1 item 7's committed
+evidence (`## Finding: the bare D-10 command has a false-negative trap`, pre-existing since
+02.1-03) contains a dot-separated Chrome version number embedded in a User-Agent string, which
+Task 3's own verify script's dotted-quad pattern matches as a false positive — it is a browser
+version, not an IP address or a credential. Recorded here rather than silently reworded, since
+that text belongs to a prior plan and this plan's edits are additive-only.

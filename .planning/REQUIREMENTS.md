@@ -121,3 +121,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 ---
 *Requirements defined: 2026-09-04*
 *Last updated: 2026-09-04 after roadmap creation (7 phases, 100% coverage)*
+
+### OPS-01 Addendum (2026-09-14, Phase 2.1 Plan 04)
+
+The OPS-01 traceability row above records Phase 2.1 as having "met [the PostHog criterion] for
+real" — that claim is premature. Phase 2.1's own post-deploy live-traffic gate
+(`docs/OPS-01-SHIP-GATE.md` Part 4) ran its production deploy and live-traffic check on
+2026-09-14, and two of its three item-7 thresholds passed with counted events (≥ 20 `$pageview`:
+25 counted; ≥ 2 distinct non-consent-region countries: 3 counted). The third threshold — PostHog
+`$pageview` at least 50% of Vercel Web Analytics page views for the same window — is recorded as
+**PENDING**, not evaluated and not failed, because the Vercel Web Analytics figure for that window
+could not be read from the session that ran the check (see Part 4 for the full reason and the
+exact figure still needed).
+
+**OPS-01's PostHog criterion is therefore not-yet-met for Phase 2.1.** It remains not-yet-met
+until the pending Vercel Web Analytics figure is read, the ratio is evaluated, and — only if it
+passes — `docs/OPS-01-SHIP-GATE.md` Part 4 is signed with a date, at which point this addendum
+should be superseded by a line recording the real date the criterion was met (D-09).
