@@ -625,7 +625,7 @@ export function generateSuggestions(
   // this player's own spec rather than a fixed constant. No comparison
   // population means no relative advice — advice relative to zero is worse
   // than no advice at all (T-02-21).
-  if (playerRole === "healer" && healer && healer.topSampleCount > 0) {
+  if (playerRole === "healer" && healer && healer.hasHealing && healer.topSampleCount > 0) {
     const overhealGapPP = healer.overhealPercent - healer.topOverhealPercent;
     const overhealRatio =
       healer.topOverhealPercent > 0

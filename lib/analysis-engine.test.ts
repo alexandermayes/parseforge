@@ -276,4 +276,26 @@ describe("generateSuggestions — healer rules (D-07)", () => {
     }
     expect(result.some((s) => s.category === "healing" && s.priority === "high")).toBe(true);
   });
+
+  it("Test 10: no healer rule fires when the player recorded no healing this fight (hasHealing: false)", () => {
+    // Mirrors a healer who died pre-pull or was off-role: every other field on
+    // this fixture is "meaningless, not measured" per hasHealing's contract
+    // (lib/wcl-types.ts), so zero activity/overheal must not read as a real
+    // uptime or overheal gap (CR-01).
+    const healer = healerFixture({
+      hasHealing: false,
+      overhealPercent: 0,
+      activityPercent: 0,
+    });
+    const dps = dpsFixture({ gapToTop: 50, gapToMedian: 50 });
+    const result = generateSuggestions(
+      dps,
+      gearFixture(),
+      consumablesFixture(),
+      healthyCasts,
+      "healer",
+      healer
+    );
+    expect(healingOnly(result)).toHaveLength(0);
+  });
 });
