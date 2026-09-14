@@ -10,7 +10,7 @@ import { logEvent } from "@/lib/observability";
 // so this always executes fresh regardless.
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const country = request.headers.get("x-vercel-ip-country");
   const normalized = country?.trim();
 
