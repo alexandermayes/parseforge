@@ -94,8 +94,13 @@ not add a duplicate row.
 
 4. **PostHog instrumentation** — every new user-facing interaction shipped this phase has
    exactly one `posthog.capture` call site (grep-verifiable pre-deploy). After deploy, confirm
-   the event appears in the PostHog project's event definitions (needs real traffic). Evidence:
-   the grep count pre-deploy, the event-definition screenshot/listing post-deploy.
+   the event appears in the PostHog project's event definitions — but note what that
+   confirms and what it does not: an event definition persists once created, so its presence
+   is evidence that an event was ingested at some point in the past, not evidence that
+   anything is being ingested now. Proving current ingestion is item 7's job, the mandatory
+   post-deploy live-traffic check below — **item 4 alone can no longer close the PostHog half
+   of this gate (D-08).** Evidence: the grep count pre-deploy; item 7 supplies the post-deploy
+   proof this item no longer can.
 
 5. **Search Console** — after deploy, URL-inspect the affected routes and confirm indexability
    and metadata are unchanged. Evidence: the inspection result per route (`no-data` if GSC hasn't
@@ -107,11 +112,66 @@ not add a duplicate row.
    ```
    Never run this from a habit or an assumed approval — confirm with the developer first.
 
+7. **Post-deploy live-traffic check (mandatory)** — this is the row that would have caught the
+   Phase 1/2 outage (`.planning/phases/02.1-posthog-consent-gate-hotfix/02.1-DIAGNOSIS.md`):
+   both prior gates passed item 4 on an event definition that was created weeks earlier and never
+   ingested again. Item 4 alone can no longer close this gate — this item counts events.
+
+   **When:** run against production, within 60 minutes of the prod deploy from item 6, querying
+   the 60-minute window that follows that deploy. If fewer than 60 minutes have elapsed, wait — a
+   partial window is never recorded as a pass.
+
+   **Where:** PostHog project `337485`. The PostHog MCP connector's *default* project is
+   `LootList+ App`, not ParseForge — any session running this check must run `switch-project
+   337485` first, or every query below is silently answered from the wrong project.
+
+   **Thresholds (each stated with the side of equality that passes):**
+   - At least 20 `$pageview` events in the window — **exactly 20 passes.**
+   - From at least 2 distinct non-consent-region `$geoip_country_code` values — **exactly 2
+     passes.**
+   - A PostHog `$pageview` count at least 50% of Vercel Web Analytics page views for the same
+     window — **exactly 50% passes.** Vercel Web Analytics is the reference signal because it is
+     already mounted in `app/layout.tsx`, it is wholly independent of PostHog and of the consent
+     gate, and comparing the two would have exposed this outage on its first day.
+
+   **The exact HogQL** (both queries, run verbatim):
+   ```sql
+   SELECT properties.$geoip_country_code AS country, count() AS pageviews FROM events WHERE event = '$pageview' AND timestamp >= now() - INTERVAL 60 MINUTE GROUP BY country ORDER BY pageviews DESC
+   ```
+   ```sql
+   SELECT properties.consent_gate_path, count() FROM events WHERE timestamp >= now() - INTERVAL 60 MINUTE GROUP BY 1
+   ```
+
+   **The failure rule, stated as strongly as the local-gate rule in item 1:** zero `$pageview`
+   events in the window is a **FAIL**, not a `no-data` row. A phase whose events cannot be
+   observed fails this gate and may not be signed off as recorded-not-assumed. There is no
+   override and no known-quiet-period allowance — if traffic is genuinely too low to reach 20 in
+   an hour, widen the window and say so explicitly in the evidence rather than lowering the bar
+   silently.
+
+   **Browser-level proof (sub-item):** GNU `timeout` and `gtimeout` are both absent on this
+   machine and the bare Chrome command does not exit on its own, so the bound is alarm-based:
+   ```
+   perl -e 'alarm 45; exec @ARGV' "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --no-first-run --user-data-dir=<fresh dir> --virtual-time-budget=12000 --log-net-log=<file> --dump-dom <url>
+   ```
+   then:
+   ```
+   grep -oE '"url":"[^"]*/ingest/(e|i/v0/e)/[^"]*"' <file>
+   ```
+   must return at least one line. **Use a fresh profile** (`<fresh dir>` created new each run) —
+   a reused profile may carry an opt-in cookie from a prior session and would prove nothing about
+   a first-time visitor.
+
+   **What to paste as evidence:** the query output verbatim (country rows and gate-path rows),
+   the Vercel Analytics figure it was compared against, and the netlog grep output.
+
 **Recording rules (what makes this a gate, not a habit):**
 - A row is marked passing only with the evidence that produced it recorded alongside it.
 - A route Search Console has no data for is `no-data` — never a pass, never a silent omission.
 - Rows are ordered lexicographically by route path, one row per route; a re-check of a route
   extends its existing row rather than adding a new one.
+- A gate row about ingested events is passing only when it carries counted events — an absent
+  count is a **FAIL** for that row, never a `no-data`.
 
 ---
 
