@@ -1023,3 +1023,143 @@ design, Phase 2.1's gate is not complete until the production deploy and its liv
 run in 02.1-04. This section records the preview evidence only; the dated sign-off table (in the
 style of Parts 2 and 3's own `Sign-off` sections) belongs to 02.1-04, once the live-traffic row
 above is no longer open.
+
+### Production deploy (2026-09-14, 02.1-04, Task 2)
+
+Developer's explicit yes was given in this session before any production command ran (Task 1);
+recorded verbatim in `02.1-04-SUMMARY.md`.
+
+```
+Deployment id:   dpl_HY5319wSDVw3M4ibBU42JrSTgw4e
+Deployment URL:  https://parseforge-dw7yctna6-loot-list-plus.vercel.app
+Created:         2026-09-14T22:16:59Z
+Aliased:         https://parseforge.gg, https://www.parseforge.gg
+Target:          production   Status: Ready
+Built from:      growth/phase-2-review-fixes @ 8693498
+Rollback target: dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7 (PR #16, live immediately prior)
+```
+
+**The 60-minute window this gate is measured over: `2026-09-14T22:16:59Z` → `2026-09-14T23:16:59Z`
+(UTC).**
+
+`/api/geo` post-deploy: `HTTP 200`, body `{"isConsentRegion":false}`, `Cache-Control: private,
+no-store`, no `Set-Cookie` header.
+
+**Production netlog (D-10 proof against the live site).** Fresh Chrome profile created only for
+this run, the same `--user-agent` override 02.1-03 documented as necessary against posthog-js's
+built-in headless-Chrome bot filter, run against the bare `https://parseforge.gg/` — no bypass
+secret or query parameters, because production carries no deployment protection:
+
+```
+$ grep -oE '"url":"[^"]*/ingest/(e|i/v0/e)/[^"]*"' "$NETLOG" | wc -l
+16
+```
+
+16 matching lines / **3 distinct capture requests** (three flush timestamps, the third carrying
+`beacon=1` — same phase-logging quadruplication 02.1-03 recorded), against the **2026-09-14
+production baseline of zero** (`02.1-DIAGNOSIS.md` §3). The regression is closed on the live site,
+not only on a preview.
+
+**Post-deploy local suite** (at the deployed commit): `npx vitest run` → 161/161 passed; `npx tsc
+--noEmit` → exit 0, no output.
+
+**Deviation recorded (no production impact).** While probing for a way to read Vercel Analytics
+from this session, a bare `vercel --global-config ~/.vercel-personal` invocation with no
+subcommand was run, which created an unintended **preview** deployment
+(`parseforge-hjr7rkdvv-loot-list-plus.vercel.app`). Production (`dpl_HY5319wSDVw3M4ibBU42JrSTgw4e`,
+aliased to `parseforge.gg`) was not affected; no action was needed.
+
+### Live-traffic check (item 7) — production run (2026-09-14, 02.1-04, Task 2)
+
+PostHog project `337485` (confirmed project name "ParseForge" after `switch-project 337485`).
+Both queries from Part 1 item 7 run verbatim over `timestamp >= toDateTime('2026-09-14
+22:16:59') AND timestamp < toDateTime('2026-09-14 23:16:59')` (the exact 60-minute window above),
+at approximately 23:18Z — after the full window had elapsed.
+
+**Query 1 — `$pageview` by `properties.$geoip_country_code`:**
+
+```sql
+SELECT properties.$geoip_country_code AS country, count() AS pageviews FROM events WHERE event = '$pageview' AND timestamp >= now() - INTERVAL 60 MINUTE GROUP BY country ORDER BY pageviews DESC
+```
+
+| Country | Pageviews | Distinct people | In `CONSENT_REGIONS` (`lib/geo.ts`)? |
+|---|---|---|---|
+| US | 13 | 4 | No |
+| BR | 7 | 3 | No |
+| CA | 5 | 1 | No |
+
+**Total: 25 `$pageview`, 3 distinct countries, all 3 classified non-consent-region** by direct
+lookup against `CONSENT_REGIONS` in `lib/geo.ts` (none of US/BR/CA appear in that set). First
+`$pageview` at 22:18:13Z, last at 23:02:56Z — both inside the window.
+
+**Caveat, recorded honestly:** 1–2 of the US pageviews are this executor's own production netlog
+run (Task 2) hitting `https://parseforge.gg/` with a real, JS-executing headless-Chrome session.
+The total clears the 20-event threshold even after discounting them (23–24 ≥ 20).
+
+- **Threshold "≥ 20 `$pageview`": 25 ≥ 20 — PASS.**
+- **Threshold "≥ 2 distinct non-consent-region countries": 3 ≥ 2 — PASS.**
+
+**Query 2 — `consent_gate_path` breakdown:**
+
+```sql
+SELECT properties.consent_gate_path, count() FROM events WHERE timestamp >= now() - INTERVAL 60 MINUTE GROUP BY 1
+```
+
+| `consent_gate_path` | Count | Distinct people |
+|---|---|---|
+| `geo-non-consent-region` | 89 | 8 |
+
+No `tcf-accept`, `tcf-reject` or `tcf-timeout` value appears — no EEA/UK/CH visitor arrived in this
+window. **The TCF path is recorded as UNOBSERVED, not as passing.** As noted in this Part's "What
+this preview cannot show" section above, the preview rendered no Google CMP at all because
+`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` is a Production-only variable — this production window was
+therefore the first opportunity in the whole phase to observe the consent-region path, and it did
+not occur. **Mismatch backstop (T-02.1-21):** no consent-region country appears under
+`tcf-timeout` in this breakdown — there is nothing to route to Phase 4 from this window, because
+there is no consent-region traffic in it at all.
+
+**All events ingested in the window, by name** (from the same query family, all-events form):
+`$pageview` 25, `$autocapture` 19, `$web_vitals` 16, `raid_overview_complete` 9, `$pageleave` 7,
+`fight_selected` 4, `analysis_complete` 3, `report_submitted` 2, `tab_switched` 1, `$rageclick` 1,
+`player_selected` 1, `report_url_invalid` 1 — **12 distinct event types actually ingested**, an
+unambiguous restoration of live capture.
+
+**The five previously-never-ingested events, checked for real ingestion in this window (not
+merely for an event-definition's existence):**
+
+| Event | Count in window | Status |
+|---|---|---|
+| `theme_changed` | 0 | not observed in window (no triggering action — needs a navbar theme toggle) |
+| `consent_resolved` | 0 | not observed in window (requires a TCF/consent-region visitor; none arrived) |
+| `timeline_viewed` | 0 | not observed in window (no triggering action — needs a Timeline tab open) |
+| `timeline_filter_used` | 0 | not observed in window (no triggering action — needs an ability-chip filter toggle) |
+| `timeline_error` | 0 | not observed in window (no triggering action, and not expected to fire absent an error) |
+
+Each is recorded as "not observed in window (no triggering action)" — distinct from "not working" —
+per the plan's own instruction; none is recorded as a pass or a fail.
+
+**Vercel Web Analytics comparison — threshold 3, PENDING:**
+
+Vercel Web Analytics pageviews for the identical window (`2026-09-14T22:16:59Z` –
+`2026-09-14T23:16:59Z`) could **not be read** from this session:
+- The Vercel MCP connector available here is authenticated to a different team (403 response
+  against `loot-list-plus`).
+- The personal Vercel CLI token (`~/.vercel-personal`) exposes no Web Analytics endpoint.
+- A `vercel logs` runtime-log proxy was attempted and judged **unfit** as a substitute: the CLI
+  caps output at 100 lines per query, and 4 of 6 ten-minute slices of the window hit that cap, so
+  "≥ 160 unique page-document requests" is only a lower bound, not the real figure. The requests
+  are also crawler-dominated (roughly 45 distinct `/analyze/<code>` URLs hit once each, `/guides`
+  ×31, `/tbc-audit` ×29) — crawlers execute no JavaScript and are counted by neither PostHog nor
+  Vercel Web Analytics, so this proxy cannot stand in for either signal. Only ≥ 5 `/api/geo`
+  invocations (a proxy for JS-executing loads) appear in the log sample, consistent with the 8 real
+  people PostHog recorded above. Zero `geo_header_missing` log lines appeared.
+
+**This threshold is recorded as PENDING — not evaluated, not failed.** The real Vercel Web
+Analytics pageview count for this exact window must be read from
+`https://vercel.com/loot-list-plus/parseforge/analytics` (custom range 2026-09-14 22:16–23:17
+UTC) before this row can be scored. For reference, 25 PostHog pageviews passes the ≥ 50% threshold
+at a Vercel figure of ≤ 50.
+
+**Item 7 overall: two of three thresholds PASS (counted events, pasted above); the third is
+PENDING pending a number this session could not read. Per this document's own recording rule, an
+un-evaluated threshold is not a pass — item 7 is not signed as complete.**
