@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 02.1
 current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
-status: executing
-stopped_at: Completed 02.1-03-PLAN.md
-last_updated: "2026-09-14T22:04:58.883Z"
+status: verifying
+stopped_at: Completed 02.1-04-PLAN.md (gate unsigned - Vercel Web Analytics figure pending)
+last_updated: "2026-09-14T23:34:56.279Z"
 last_activity: 2026-09-14
 last_activity_desc: Phase 02.1 execution started
-state_head: 3c385fc16cb9ae42bfb016337a4b23188aebffab
+state_head: 5358b48d3a32eae9fb5dced5948b7ba443b4eeac
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 22
-  completed_plans: 21
+  completed_plans: 22
   percent: 25
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 
 Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-14 — Phase 02.1 execution started
 
 Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans complete)
@@ -80,6 +80,7 @@ Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans 
 | Phase 02.1 P02 | 25min | 2 tasks | 4 files |
 | Phase 02.1 P01 | continuation | 3 tasks | 7 files |
 | Phase 02.1 P03 | 30min | 3 tasks | 2 files |
+| Phase 02.1 P04 | 25min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,7 @@ Recent decisions affecting current work:
 - [Phase 02.1]: Task 2 (02.1-01): user-selected option a at checkpoint — Gibraltar, Isle of Man, Jersey and Guernsey stay outside CONSENT_REGIONS (no code change needed, Task 1 already implemented the default).
 - [Phase 02.1]: [Phase 02.1 / 02.1-03]: Preview dpl_7JGkziQrpZrhKfvxHJNAmtuXfuFy proved the consent-gate fix end-to-end via headless-Chrome netlog (3 capture requests vs a production baseline of zero); RESEARCH Open Question 1 answered (preview deployments receive real x-vercel-ip-country geo headers).
 - [Phase 02.1]: [Phase 02.1 / 02.1-03]: Found and worked around a previously-unknown false-negative trap in the D-10 netlog technique - posthog-js's built-in bot filter drops all captures for any User-Agent containing "HeadlessChrome" by default; fixed via --user-agent override for this run, logged as WINDOWS.md todo #7 for Part 1's own command text.
+- [Phase 02.1]: [Phase 02.1 / 02.1-04]: Production deploy dpl_HY5319wSDVw3M4ibBU42JrSTgw4e ran the hardened OPS-01 live-traffic gate for the first time - 2 of 3 item-7 thresholds passed with counted PostHog evidence (25 pageviews across 3 non-consent-region countries); the Vercel Web Analytics ratio threshold is PENDING (unreadable this session), so Phase 2.1 was left deliberately unsigned rather than fabricated as complete. OPS-01 remains not-yet-met in REQUIREMENTS.md via an appended addendum.
 
 ### Pending Todos
 
@@ -128,6 +130,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - Phase 5 open question: dedicated ParseForge Discord vs. channel in existing LootList+ server (empty-room risk). Phase touches a second repo at /Users/alexander.mayes/Code/loot-list-plus (Railway deploy).
 - Phase 6 research flag: define the per-page uniqueness rubric before scaling programmatic pages past the 10–15 pilot set (scaled-content-abuse risk).
 - Scheduled check-in 2026-09-08 reviews /tbc-audit + PR #10 outcomes — do not re-diagnose those before then.
+- [Phase 2.1 close] Phase 2.1's OPS-01 gate is NOT signed: the Vercel Web Analytics pageview figure for the 2026-09-14 22:16:59Z-23:16:59Z window could not be read this session (Vercel MCP scoped to a different team; personal CLI token has no Web Analytics endpoint; vercel logs proxy judged unfit). Next action: read https://vercel.com/loot-list-plus/parseforge/analytics for that window, compute the ratio against 25 PostHog pageviews (passes at Vercel <= 50), and if it passes, sign docs/OPS-01-SHIP-GATE.md Part 4 + date REQUIREMENTS.md OPS-01. Separately: 5 code-review fix commits (90f5a46, 0e03d9b, 7a7cf0c, 9657535, 9da21c4) are not yet in production - a follow-up developer-approved deploy is needed.
 
 ### Quick Tasks Completed
 
@@ -150,6 +153,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-14T22:04:58.130Z
-Stopped at: Completed 02.1-03-PLAN.md
+Last session: 2026-09-14T23:34:55.979Z
+Stopped at: Completed 02.1-04-PLAN.md (gate unsigned - Vercel Web Analytics figure pending)
 Resume file: None

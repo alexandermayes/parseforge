@@ -136,7 +136,7 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans executed
 **UI hint**: no
 
 Plans:
@@ -151,7 +151,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02.1-04-PLAN.md — Approval-gated production deploy, the live-traffic gate run for real, and the dated Phase 2.1 sign-off
+- [x] 02.1-04-PLAN.md — Approval-gated production deploy, the live-traffic gate run for real, and the dated Phase 2.1 sign-off
 
 **Notes**: Diagnosis in `02.1-DIAGNOSIS.md`. Root cause: `cookieless_mode: "on_reject"` makes PENDING consent *drop* events in posthog-js 1.360, and opt-in depended on `__tcfapi` calling back — which it never does for fresh visitors. Capture fell from ~4–10k events/day to 3–7/day on 2026-09-06. Not a traffic collapse.
 
@@ -258,7 +258,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
-| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 3/4 | In Progress|  |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 4/4 | In Progress|  |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
