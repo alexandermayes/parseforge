@@ -247,6 +247,7 @@ export const TIMELINE_CASTS_QUERY = `
   query TimelineCasts($code: String!, $fightIDs: [Int!]!, $sourceID: Int!, $startTime: Float) {
     reportData {
       report(code: $code) {
+        playerDetails(fightIDs: $fightIDs)
         castEvents: events(
           fightIDs: $fightIDs
           sourceID: $sourceID

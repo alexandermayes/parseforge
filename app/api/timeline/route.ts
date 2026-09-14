@@ -5,7 +5,8 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { TIMELINE_CASTS_QUERY, TIMELINE_CASTS_PAGE_QUERY } from "@/lib/wcl-queries";
 import { buildCastTimeline } from "@/lib/timeline-engine";
 import type { TimelineDeathEvent } from "@/lib/timeline-engine";
-import type { WCLCastEvent, WCLCastEntry, TimelineRequest } from "@/lib/wcl-types";
+import type { WCLCastEvent, WCLCastEntry, TimelineRequest, WCLPlayerDetails } from "@/lib/wcl-types";
+import { flattenPlayerDetails } from "@/lib/wcl-helpers";
 
 interface TimelineActor {
   id: number;
@@ -24,6 +25,11 @@ interface TimelineFight {
 interface TimelineCastsResponse {
   reportData: {
     report: {
+      playerDetails: {
+        data: {
+          playerDetails: Record<string, WCLPlayerDetails[]>;
+        };
+      };
       castEvents: { data: WCLCastEvent[]; nextPageTimestamp: number | null };
       castTable: { data: { entries: WCLCastEntry[] } };
       deathEvents: { data: TimelineDeathEvent[] };
@@ -82,8 +88,14 @@ export async function POST(request: NextRequest) {
     }
 
     const actors = report.masterData?.actors ?? [];
-    const sourceExists = actors.some((a) => a.id === sourceId);
-    if (!sourceExists) {
+
+    // playerDetails is fetched with fightIDs: [fightId], so — unlike the
+    // report-wide actor list above — this genuinely confirms sourceId played
+    // in *this* fight, not just somewhere in the report (WR-01). Mirrors the
+    // fight-scoped check in app/api/analyze/route.ts.
+    const fightPlayers = flattenPlayerDetails(report.playerDetails);
+    const sourceInFight = fightPlayers.some((p) => p.id === sourceId);
+    if (!sourceInFight) {
       return NextResponse.json({ error: "Player not found in fight" }, { status: 404 });
     }
 
