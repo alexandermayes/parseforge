@@ -128,15 +128,19 @@ export default function CastTimeline({
 
   const toggleAbility = useCallback(
     (id: number) => {
-      setHiddenAbilityIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        onFilterToggle?.(result?.abilityCounts.length ?? 0, next.size);
-        return next;
-      });
+      // The onFilterToggle side effect (fires the timeline_filter_used
+      // PostHog event) must not live inside the setState updater — React
+      // Strict Mode invokes updater functions twice specifically to surface
+      // impurities like this, which would double-fire the event on every
+      // click (WR-02). Compute `next` from current state up front instead,
+      // mirroring resetAbilities below.
+      const next = new Set(hiddenAbilityIds);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      setHiddenAbilityIds(next);
+      onFilterToggle?.(result?.abilityCounts.length ?? 0, next.size);
     },
-    [onFilterToggle, result]
+    [hiddenAbilityIds, onFilterToggle, result]
   );
 
   const resetAbilities = useCallback(() => {
