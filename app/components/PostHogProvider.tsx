@@ -4,7 +4,8 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useEffect, useRef, useState, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { startConsentListener } from "@/lib/consent";
+import { startConsentListener, deriveConsentGateOutcome } from "@/lib/consent";
+import type { ConsentAction } from "@/lib/consent";
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "";
 
@@ -104,54 +105,43 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
         applyDecision(true);
       });
 
+    // Single executor (D-06): the ONLY place in this file that turns a
+    // ConsentGateOutcome into SDK calls. Both the geo path and the TCF path
+    // route through it, in a fixed order: register the gate-path property
+    // BEFORE opting in, so consent_gate_path is already in the in-memory
+    // props bag by the time the first $pageview (or any other event) is
+    // captured (D-07); then opt in when the outcome says to; then start
+    // replay when the outcome says to; then fire the outcome's event, if any.
+    function applyOutcome(outcome: ReturnType<typeof deriveConsentGateOutcome>) {
+      if (!outcome) return;
+      posthog.register({ consent_gate_path: outcome.gatePath });
+      if (outcome.optIn) posthog.opt_in_capturing({ captureEventName: false });
+      if (outcome.startReplay) posthog.startSessionRecording();
+      if (outcome.event) posthog.capture(outcome.event, outcome.eventProps);
+    }
+
     function applyDecision(isConsentRegion: boolean) {
       appliedRef.current = true;
 
       if (!isConsentRegion) {
         // Non-consent-region visitor (D-04): opt in with NO CMP dependency
-        // and no __tcfapi involvement whatsoever. Register the gate-path
-        // property BEFORE opting in, so it's already in the in-memory props
-        // bag by the time the first $pageview is captured.
-        posthog.register({ consent_gate_path: "geo-non-consent-region" });
-        posthog.opt_in_capturing({ captureEventName: false });
-        posthog.startSessionRecording();
+        // and no __tcfapi involvement whatsoever.
+        applyOutcome(deriveConsentGateOutcome(false, null));
         setConsentReady(true);
         return;
       }
 
-      // Consent-region visitor (D-05): keep the existing TCF flow exactly
-      // as it is today. Task 3 replaces this inline switch with a call into
-      // a pure decision function — do not pre-empt that here.
-      disposeConsentListener = startConsentListener((action) => {
-        switch (action) {
-          case "opt-in-full":
-            posthog.opt_in_capturing();
-            posthog.startSessionRecording();
-            posthog.capture("consent_resolved", { accepted: true, gdpr_applies: true });
-            break;
-          case "cookieless":
-            // cookieless_mode: "on_reject" + disable_session_recording
-            // above already give D-05/D-06's memory-only persistence and
-            // no replay — no further SDK call needed.
-            posthog.capture("consent_resolved", { accepted: false, gdpr_applies: true });
-            break;
-          case "opt-in-non-eea":
-            // Restore today's default-on behavior for everyone outside
-            // the EEA/UK (D-07) — without this, the global
-            // cookieless_mode above would silently cookie-block a visitor
-            // who was never shown a dialog (01-RESEARCH.md Pitfall 1).
-            posthog.opt_in_capturing();
-            posthog.startSessionRecording();
-            break;
-          case "pending":
-            // Only reached via lib/consent.ts's CMP_TIMEOUT_MS fail-closed
-            // path — a live "dialog still open" event never invokes this
-            // callback. The visitor stays cookieless with no replay
-            // indefinitely (deliberate: no home-rolled banner fallback);
-            // this event is what makes that silence measurable.
-            posthog.capture("consent_unavailable", { reason: "tcfapi_timeout" });
-            break;
-        }
+      // Consent-region visitor (D-05): keep the existing TCF flow exactly as
+      // it is today. deriveConsentGateOutcome (lib/consent.ts) now decides
+      // which SDK calls fire; this callback only executes the result via the
+      // single executor above.
+      disposeConsentListener = startConsentListener((action: ConsentAction) => {
+        applyOutcome(deriveConsentGateOutcome(true, action));
+        // consent_resolved / consent_unavailable on the reject and timeout
+        // paths are dropped by the SDK while the visitor is opted out — that
+        // is accepted (D-07); the observability for that gap is the
+        // server-side geo_header_missing log plus the Vercel-Analytics-
+        // versus-PostHog ratio recorded in the OPS-01 gate.
         setConsentReady(true);
       });
     }
