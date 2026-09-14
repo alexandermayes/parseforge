@@ -785,3 +785,241 @@ Nothing in this table is marked passing without the evidence that produced it. B
 rows have the same, honestly-recorded cause (MCP tool unavailability in this dispatch, not
 missing traffic or a broken instrumentation site) and are the first items to re-run at the next
 gate — mirroring Phase 1's own pattern of naming its outstanding items rather than omitting them.
+
+---
+
+## Part 4 — Phase 2.1 evidence
+
+Phase 2.1 (posthog-consent-gate-hotfix) fixed a live regression: `cookieless_mode: "on_reject"`
+made every `capture()` call a silent no-op while consent stayed `PENDING`, and non-EEA/UK
+visitors never got a `__tcfapi` callback to resolve it — see `02.1-DIAGNOSIS.md`. This section
+records the **preview half** of this phase's gate evidence (02.1-03): the local gate, the preview
+deployment, the deployed `/api/geo` response, and the D-10 netlog proof. The **live-traffic row
+(item 7) is left explicitly open below**, pending the production deploy in 02.1-04 — this section
+does not sign the gate off.
+
+### Local gate output (2026-09-14, 02.1-03, this session)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+
+$ npx vitest run
+ Test Files  16 passed (16)
+      Tests  161 passed (161)
+   Duration  1.77s
+
+$ npx eslint lib/geo.ts lib/geo.test.ts app/api/geo/route.ts app/api/geo/route.test.ts \
+    lib/consent.ts lib/consent.test.ts app/components/PostHogProvider.tsx
+(no output — exit 0)
+
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+
+$ npm run token-audit
+- Total findings: 57
+- Allowlisted: 57
+- Non-allowlisted (gate-relevant): 0
+- Missing required @theme categories: none
+```
+
+**Lint scope note (same caveat as Parts 2 and 3):** repo-wide `npm run lint` carries roughly 1698
+pre-existing problems, all traced to the untracked `.codex/`/`.claude/`/`.agents/` scaffolding
+directories (out of scope per CLAUDE.md) — not this phase's evidence. The gate-relevant evidence
+is the **scoped** `npx eslint` run above, over exactly the seven files 02.1-01 created or
+modified, exiting 0. This is not a claim that the whole repository is lint-clean.
+
+### SEO invariants (2026-09-14, local dev server on port 3993)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npm run seo-invariants -- --base http://localhost:3993
+/: diff-report-only — ogImage (non-failing): local="http://localhost:3993/opengraph-image?f0febbec01d0ca06" prod="https://parseforge.gg/opengraph-image?f0febbec01d0ca06"
+/analyze/ZjKgNYxVcAqR8pGJ: diff-report-only — canonical/robots (non-failing: local dev server has no WCL_CLIENT_ID/SECRET) — same non-failing caveats as every prior gate run
+/guides ... /privacy ... /tbc-audit ... /terms: same (canonical/robots/structured-data match production)
+seo-invariants exit: 0
+```
+
+No canonical/robots/structured-data regression — this phase touches no route or metadata surface
+(only `lib/`, `app/api/geo/`, and `app/components/PostHogProvider.tsx`).
+
+### Preview deployment (2026-09-14)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+Preview   https://parseforge-ng0khtpbv-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_7JGkziQrpZrhKfvxHJNAmtuXfuFy",
+    "url": "https://parseforge-ng0khtpbv-loot-list-plus.vercel.app",
+    "readyState": "READY"
+  }
+}
+```
+
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `110a22d` (HEAD at deploy time —
+  includes 02.1-01's consent-gate source fix and 02.1-02's OPS-01 hardening/addenda; no
+  uncommitted changes present at deploy time).
+- **Deployment id:** `dpl_7JGkziQrpZrhKfvxHJNAmtuXfuFy`
+- **Preview URL:** `https://parseforge-ng0khtpbv-loot-list-plus.vercel.app`
+- Every `vercel` invocation in this plan carried `--global-config ~/.vercel-personal`. The
+  flagged Task 1 pre-flight (`whoami` → `alexandermayes`, `teams ls` → lists `loot-list-plus`,
+  `project ls --scope loot-list-plus` → lists `parseforge`) passed with no developer interaction
+  before this deploy was attempted, per D-11/CLAUDE.md.
+- No production deploy was run in this plan.
+
+### The bypass (approved, redacted)
+
+The preview sits behind Vercel team SSO — an unauthenticated request 302s to
+`vercel.com/sso-api`. The developer enabled **Protection Bypass for Automation** for this project
+and approved its use for this verification. The secret was read from a scratchpad file
+(`bypass.env`, key `VERCEL_AUTOMATION_BYPASS_SECRET`) directly into a shell variable — never
+echoed — and every recorded excerpt below had the secret value `sed`-redacted before being
+written to disk. Two transports were used, both documented here by name/parameter only:
+- `curl` (for `/api/geo`): header `x-vercel-protection-bypass: <redacted>`
+- headless Chrome (cannot set request headers): query parameters
+  `?x-vercel-protection-bypass=<redacted>&x-vercel-set-bypass-cookie=true` appended to the
+  navigated URL, which caused Vercel to set a bypass cookie on the first hit so the rest of the
+  page load inherited it.
+
+The netlog file itself (which briefly carries the secret in its top-level navigation URL) stayed
+in the session scratchpad and was never committed; every line copied out of it into this document
+or the SUMMARY was `sed`-redacted first. No bypass secret value appears anywhere in this
+document, in any pasted excerpt, or in the repository.
+
+### Deployed `/api/geo` response (2026-09-14)
+
+```
+HTTP/2 200
+age: 0
+cache-control: private, no-store
+content-type: application/json
+x-matched-path: /api/geo
+x-vercel-cache: MISS
+
+{"isConsentRegion":false}
+```
+
+Full headers recorded (redacted) confirm: `Cache-Control: private, no-store` present, **no**
+`Set-Cookie` header at all, `content-type: application/json`. Read through the approved bypass
+header directly against the deployed preview.
+
+### RESEARCH Open Question 1 — answered
+
+**Question:** does a preview deployment receive `x-vercel-ip-country` the same way production
+does (undocumented by Vercel, per `02.1-RESEARCH.md` Pitfall 3 / Assumption A2)?
+
+**Answer: yes.** The developer's real, non-consent-region egress IP produced
+`{"isConsentRegion":false}` from the deployed `/api/geo` Route Handler on this preview —
+identically via a plain `curl` request and via headless Chrome navigating the same URL. Preview
+deployments receive real Vercel geo headers for the requester's actual IP, not a synthetic or
+fail-closed value. This closes RESEARCH's Open Question 1 and confirms Assumption A2 empirically
+rather than by further doc-reading: nothing about "preview" changes Vercel's geo-header behavior.
+
+### The D-10 netlog proof (2026-09-14)
+
+**The bounded command, run against the preview with a fresh Chrome profile:**
+```
+PROFILE_DIR=<fresh dir under the session scratchpad, created only for this run>
+NETLOG=<scratchpad>/02.1-preview-netlog.json
+UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.7977.84 Safari/537.36"
+perl -e 'alarm 45; exec @ARGV' "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless=new --disable-gpu --no-first-run \
+  --user-data-dir="$PROFILE_DIR" \
+  --user-agent="$UA" \
+  --virtual-time-budget=12000 \
+  --log-net-log="$NETLOG" \
+  --dump-dom "https://parseforge-ng0khtpbv-loot-list-plus.vercel.app/?x-vercel-protection-bypass=<redacted>&x-vercel-set-bypass-cookie=true"
+```
+
+**Grep result:**
+```
+$ grep -oE '"url":"[^"]*/ingest/(e|i/v0/e)/[^"]*"' "$NETLOG"
+"url":"https://parseforge-ng0khtpbv-loot-list-plus.vercel.app/ingest/i/v0/e/?ip=0&_=1789423083437&ver=1.360.0&compression=gzip-js"
+"url":"https://parseforge-ng0khtpbv-loot-list-plus.vercel.app/ingest/i/v0/e/?ip=0&_=1789423088829&ver=1.360.0&compression=gzip-js"
+"url":"https://parseforge-ng0khtpbv-loot-list-plus.vercel.app/ingest/i/v0/e/?ip=0&_=1789423092854&ver=1.360.0&compression=gzip-js&beacon=1"
+12 matching lines total (posthog-js's netlog phase logging records each request 4 times — START/
+HEADERS/etc — for these 3 distinct capture requests at three separate flush timestamps roughly
+3-5s apart, consistent with the SDK's default 3s batch-flush interval firing repeatedly across
+the run; the third carries `beacon=1`, a `navigator.sendBeacon` flush on page teardown).
+```
+
+**Result: capture-requests = 12 (3 distinct `/ingest/i/v0/e/` POSTs).** Compared against the
+production baseline this is measured against — **zero** capture requests, from the identical
+technique run against `https://parseforge.gg/` on 2026-09-14 per `02.1-DIAGNOSIS.md` §3 — this is
+the whole difference this phase set out to prove: the first `$pageview` (and subsequent captures)
+now reach PostHog for a non-consent-region visitor with no `__tcfapi` involvement at all.
+
+### Finding: the bare D-10 command has a false-negative trap (headless-Chrome bot filtering)
+
+**This was not anticipated by RESEARCH, VALIDATION, or the plan, and is recorded here because it
+changes how this technique must be run from now on.** The literal command in `02.1-RESEARCH.md`,
+`02.1-VALIDATION.md`, and Part 1 item 7's own "browser-level proof" sub-item (added by 02.1-02)
+omits `--user-agent`. Run that way — as this session first did, five times, with generous
+real-wall-clock waits up to 12s and multiple diagnostic techniques (CDP console/network
+instrumentation, a temporary debug-logged redeploy) — it produces **zero** capture requests
+**even against this already-fixed code**, for a reason that has nothing to do with the consent
+gate: `node_modules/posthog-js/dist/module.js` ships a built-in bot/crawler filter
+(`_is_bot()`, gated by `opt_out_useragent_filter` which defaults to `false`, i.e. the filter is
+**on** by default) whose blocklist includes the literal substring `"headlesschrome"` — and
+Chrome's own headless mode reports exactly that in `navigator.userAgent`
+(`...HeadlessChrome/152.0.0.0...`). When the filter matches, `capture()` returns silently with no
+error, no console warning, and no network request — indistinguishable, from the outside, from the
+original consent bug.
+
+This was diagnosed empirically in this session by: (1) confirming the pipe itself works (a
+manual, hand-crafted `curl` POST straight to `/ingest/e/` returned `{"status":"Ok"}`); (2)
+confirming via CDP-instrumented console logging on a temporary debug-logged redeploy that
+`applyDecision`/`applyOutcome`/`setConsentReady`/`ph.capture("$pageview")` all ran correctly, with
+`isOptedOut()` flipping `true → false` exactly as designed, and `ph.capture()` was called with
+`isOptedOut()` already `false` — yet still no network request followed; (3) finding the literal
+`"headlesschrome"` string in the installed SDK's bot blocklist and confirming the `_is_bot()`
+gate wraps the entire body of `capture()`. The temporary debug `console.log` lines were added only
+to `app/components/PostHogProvider.tsx` on a disposable diagnostic preview deploy
+(`dpl_AVRyQo6THLcTpm6UXJ6vj9ivsU5D`, not the deployment recorded above) and were reverted via
+`git checkout` before the evidence-gathering deploy above was made — the deployment this document
+records as evidence (`dpl_7JGkziQrpZrhKfvxHJNAmtuXfuFy`) never carried debug logging.
+
+**The fix used for the netlog run above:** override `--user-agent` to a standard desktop Chrome
+string with `Headless` removed (see the command block above). This does not change what is being
+tested — the same real deployed code, the same real network round trip, the same real consent
+logic — it only removes an artifact of the test tool's own default UA string that would otherwise
+make this exact command produce a false negative **regardless of whether the app is correct**.
+
+**Follow-up needed (not done here — Part 1 is not modified by this plan):** Part 1 item 7's
+"browser-level proof" sub-item command should gain the same `--user-agent` override, or an
+explicit note that `opt_out_useragent_filter: true` would be needed in `posthog.init()` if a
+bot-like UA must ever be measured for real. Recorded as a follow-up in `.planning/WINDOWS.md`; the
+production baseline in `02.1-DIAGNOSIS.md` §3 remains valid as evidence of the outage because it
+is corroborated independently by that diagnosis's multi-day real-user PostHog event-volume data
+(section 1), not solely by its own netlog run.
+
+### What this preview cannot show
+
+`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` and `NEXT_PUBLIC_POSTHOG_HOST` are **Production-only** environment
+variables (confirmed in `02.1-CONTEXT.md` and re-confirmed by this deploy: no Google CMP script
+tag appears anywhere in the requests this preview made). This preview therefore exercises and
+proves **only the non-consent-region geo path** of the tracer. The consent-region (EEA/UK/CH) TCF
+path — dialog timing, cookieless-on-reject, replay-only-on-full-opt-in — is observable only on
+production, in 02.1-04. **Developer follow-up (outside this phase):** add
+`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` to the Preview environment if a future phase wants to exercise the
+TCF path on a preview deployment.
+
+### Item 7 (live-traffic check) — explicitly open
+
+**Not run in this plan.** Item 7 requires production traffic within 60 minutes of a **production**
+deploy; this plan performed no production deploy (D-11, CLAUDE.md — preview only). This row is
+pending 02.1-04, which runs the production deploy and the live-traffic HogQL check. It is
+recorded here as open, not as `no-data` and not as a pass — per this document's own recording
+rule, an absent count is a FAIL for that row if claimed complete, so it is left unclaimed instead.
+
+### Preview-half status (not a gate sign-off)
+
+**This plan does not sign off the Phase 2.1 gate.** Per Part 1's item 7 and this phase's own
+design, Phase 2.1's gate is not complete until the production deploy and its live-traffic check
+run in 02.1-04. This section records the preview evidence only; the dated sign-off table (in the
+style of Parts 2 and 3's own `Sign-off` sections) belongs to 02.1-04, once the live-traffic row
+above is no longer open.
