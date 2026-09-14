@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 6
+open_count: 7
 waived_count: 0
 fixed_count: 0
-total_count: 6
-last_updated: 2026-09-08T02:21:39.073Z
+total_count: 7
+last_updated: 2026-09-14T22:02:16.645Z
 ---
 
 # Broken Windows Ledger
@@ -21,6 +21,7 @@ last_updated: 2026-09-08T02:21:39.073Z
 | 4 | 02 | deviation | lib/generated/index.ts |  | Enchant/gem era composition uses Classic+TBC-first precedence (not later-era-wins as the plan's literal text describes) — required to keep cla-constants.test.ts passing against real cross-era ID reuse. | open |  | 2026-09-08T02:21:30.999Z |  |
 | 5 | 02 | deviation | lib/generated/game-data-overrides.json |  | Cata weapon-enhancement consumable ids 96264 (Pyrium Weapon Chain) and 96294 (Pyrium Shield Spike) resolve to a SpellName value that looks unrelated to the curated item and could not be corroborated against another era; preserved via override pending a future human/ItemSparse-based verification pass. | open |  | 2026-09-08T02:21:38.992Z |  |
 | 6 | 02 | deviation | lib/generated/game-data.consumables.ts |  | Consumable-name derivation via direct SpellName.Name_lang per-id lookup resolved only 48/178 (27%) names reliably; the remaining 130 needed a consumableNames override (prefix loss, generic buff-aura collapse, or unresolvable era coverage) — a future item-name-based (ItemSparse) derivation pass could raise the wago-verified ratio for this map. | open |  | 2026-09-08T02:21:39.073Z |  |
+| 7 | 02.1 | todo | docs/OPS-01-SHIP-GATE.md |  | Part 1 item 7's browser-level netlog sub-item needs a --user-agent override (or opt_out_useragent_filter:true in posthog.init) - posthog-js's built-in bot filter silently drops all captures for any UA containing HeadlessChrome, producing a false negative regardless of app correctness (found 02.1-03). | open |  | 2026-09-14T22:02:16.645Z |  |
 
 ````json
 [
@@ -94,6 +95,18 @@ last_updated: 2026-09-08T02:21:39.073Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-08T02:21:39.073Z",
+    "resolved_at": null
+  },
+  {
+    "id": 7,
+    "kind": "todo",
+    "phase": "02.1",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "Part 1 item 7's browser-level netlog sub-item needs a --user-agent override (or opt_out_useragent_filter:true in posthog.init) - posthog-js's built-in bot filter silently drops all captures for any UA containing HeadlessChrome, producing a false negative regardless of app correctness (found 02.1-03).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-14T22:02:16.645Z",
     "resolved_at": null
   }
 ]
