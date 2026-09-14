@@ -136,13 +136,13 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: 1/4 plans executed
+**Plans**: 2/4 plans executed
 **UI hint**: no
 
 Plans:
 **Wave 1**
 
-- [ ] 02.1-01-PLAN.md — Tracer: server-side geo classification through `/api/geo` to an immediate PostHog opt-in, with the first `$pageview` gated on the consent path resolving
+- [x] 02.1-01-PLAN.md — Tracer: server-side geo classification through `/api/geo` to an immediate PostHog opt-in, with the first `$pageview` gated on the consent path resolving
 - [x] 02.1-02-PLAN.md — OPS-01 hardening: mandatory post-deploy live-traffic check, plus dated addenda correcting the Phase 1 and Phase 2 records
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -258,7 +258,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
-| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 1/4 | In Progress|  |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 2/4 | In Progress|  |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |

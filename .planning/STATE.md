@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02.1
 current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
 status: executing
-stopped_at: Completed 02.1-02-PLAN.md
-last_updated: "2026-09-14T21:12:30.975Z"
+stopped_at: Completed 02.1-01-PLAN.md
+last_updated: "2026-09-14T21:32:36.705Z"
 last_activity: 2026-09-14
 last_activity_desc: Phase 02.1 execution started
-state_head: b3c72210e2f6cd409868143112a260230c7d2971
+state_head: 20e57e16453f191d3e2cfa17d2755ba69f6eed77
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 22
-  completed_plans: 19
+  completed_plans: 20
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 ## Current Position
 
 Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-09-14 — Phase 02.1 execution started
 
@@ -78,6 +78,7 @@ Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans 
 | Phase 02-accuracy-analysis-depth P08 | 55min | 3 tasks | 6 files |
 | Phase 02 P09 | 35min | 3 tasks | 1 files |
 | Phase 02.1 P02 | 25min | 2 tasks | 4 files |
+| Phase 02.1 P01 | continuation | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,7 @@ Recent decisions affecting current work:
 - [Phase 02 / 02-02, 02-05]: Timeline idle threshold `max(2000ms, 3×median inter-cast gap)`; death rows merged chronologically; hand-rolled windowing (no virtualisation dependency); WCL `begincast` probes filtered, `-1` targetID = no target.
 - [Phase 02 / 02-09]: Shipped preview-first with push + PR #15 before prod (`dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c`); the harness classifier denied `vercel deploy --prod` for both executor and orchestrator until the developer granted `Bash(vercel deploy:*)`. ASVS review deferred again (tooling absent) with the developer's explicit choice.
 - [Phase 02.1]: [Phase 02.1 / 02-02]: OPS-01 gate hardened with a mandatory post-deploy live-traffic check (item 7: HogQL thresholds, zero-events-is-a-FAIL rule, bounded netlog proof) - an event definition's presence is no longer accepted as ingestion proof (D-08). Phase 1 and Phase 2 VERIFICATION.md records + REQUIREMENTS.md carry dated append-only addenda correcting the PostHog criterion (D-09).
+- [Phase 02.1]: Task 2 (02.1-01): user-selected option a at checkpoint — Gibraltar, Isle of Man, Jersey and Guernsey stay outside CONSENT_REGIONS (no code change needed, Task 1 already implemented the default).
 
 ### Pending Todos
 
@@ -145,6 +147,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-14T21:12:22.673Z
-Stopped at: Completed 02.1-02-PLAN.md
+Last session: 2026-09-14T21:32:36.591Z
+Stopped at: Completed 02.1-01-PLAN.md
 Resume file: None
