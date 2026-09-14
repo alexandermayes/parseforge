@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-current_phase: 2.1
-current_phase_name: PostHog Consent Gate Hotfix
+current_phase: 02.1
+current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
 status: executing
-stopped_at: Phase 2.1 planned (4 plans / 3 waves, checker passed iteration 2) — ready to execute
-last_updated: "2026-09-14T20:46:33.171Z"
+stopped_at: Completed 02.1-02-PLAN.md
+last_updated: "2026-09-14T21:12:30.975Z"
 last_activity: 2026-09-14
-last_activity_desc: PR #16 merged + deployed to prod; PostHog capture regression diagnosed; Phase 2.1 inserted, researched, planned, verified
-state_head: 66b59da8a728eb48739990956591e2219dfa7c73
+last_activity_desc: Phase 02.1 execution started
+state_head: b3c72210e2f6cd409868143112a260230c7d2971
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 22
-  completed_plans: 18
+  completed_plans: 19
   percent: 25
 ---
 
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 2.1 — PostHog Consent Gate Hotfix (URGENT: capture ~99.9% down since 2026-09-06; see `02.1-DIAGNOSIS.md`). Phase 3 Share Loop follows.
+**Current focus:** Phase 02.1 — PostHog Consent Gate Hotfix (INSERTED)
 
 ## Current Position
 
-Phase: 2.1 (PostHog Consent Gate Hotfix) — READY TO EXECUTE
-Plan: Not started
+Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-09-08 — Phase 02 complete, transitioned to Phase 3
+Last activity: 2026-09-14 — Phase 02.1 execution started
 
-Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans complete)
+Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans complete)
 
 ## Performance Metrics
 
@@ -77,6 +77,7 @@ Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans 
 | Phase 02-accuracy-analysis-depth P07 | 45min | 2 tasks | 5 files |
 | Phase 02-accuracy-analysis-depth P08 | 55min | 3 tasks | 6 files |
 | Phase 02 P09 | 35min | 3 tasks | 1 files |
+| Phase 02.1 P02 | 25min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,7 @@ Recent decisions affecting current work:
 - [Phase 02 / 02-04, 02-07]: One `lib/healer-metrics.ts` helper feeds both the player card and the raid Healer Breakdown (D-08, parity asserted by test and confirmed live in prod); healer suggestion rules threshold against top healers' own values and DPS-shaped rules are role-gated off.
 - [Phase 02 / 02-02, 02-05]: Timeline idle threshold `max(2000ms, 3×median inter-cast gap)`; death rows merged chronologically; hand-rolled windowing (no virtualisation dependency); WCL `begincast` probes filtered, `-1` targetID = no target.
 - [Phase 02 / 02-09]: Shipped preview-first with push + PR #15 before prod (`dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c`); the harness classifier denied `vercel deploy --prod` for both executor and orchestrator until the developer granted `Bash(vercel deploy:*)`. ASVS review deferred again (tooling absent) with the developer's explicit choice.
+- [Phase 02.1]: [Phase 02.1 / 02-02]: OPS-01 gate hardened with a mandatory post-deploy live-traffic check (item 7: HogQL thresholds, zero-events-is-a-FAIL rule, bounded netlog proof) - an event definition's presence is no longer accepted as ingestion proof (D-08). Phase 1 and Phase 2 VERIFICATION.md records + REQUIREMENTS.md carry dated append-only addenda correcting the PostHog criterion (D-09).
 
 ### Pending Todos
 
@@ -143,6 +145,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T21:30:00Z
-Stopped at: Phase 02 complete (verified, UAT 1/1, shipped dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c), ready to plan Phase 3
+Last session: 2026-09-14T21:12:22.673Z
+Stopped at: Completed 02.1-02-PLAN.md
 Resume file: None
