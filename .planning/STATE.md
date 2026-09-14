@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 current_phase: 2.1
 current_phase_name: PostHog Consent Gate Hotfix
 status: executing
-stopped_at: Phase 2.1 inserted (urgent) — PostHog capture regression diagnosed, ready to plan
+stopped_at: Phase 2.1 planned (4 plans / 3 waves, checker passed iteration 2) — ready to execute
 last_updated: "2026-09-14T20:46:33.171Z"
 last_activity: 2026-09-14
-last_activity_desc: Phase 2 review fixes (PR
+last_activity_desc: PR #16 merged + deployed to prod; PostHog capture regression diagnosed; Phase 2.1 inserted, researched, planned, verified
 state_head: 66b59da8a728eb48739990956591e2219dfa7c73
 progress:
   total_phases: 8
