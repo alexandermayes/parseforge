@@ -174,3 +174,35 @@ mechanism working as designed, not defects in it.
 
 _Verified: 2026-09-08_
 _Verifier: Claude (gsd-verifier)_
+
+## Addendum (2026-09-14)
+
+This report's "Human Verification Required" item 1 already routed criterion 5's PostHog half to
+human verification rather than passing it — this addendum records that the follow-up it described
+could not have succeeded, and corrects the record accordingly. Nothing already written above is
+being changed.
+
+**What was actually true.** The Phase 1 production deploy of 2026-09-06 introduced
+`cookieless_mode: "on_reject"` in `app/components/PostHogProvider.tsx`; in posthog-js 1.360 that
+setting drops every `capture()` while consent is `PENDING`, and the opt-in path depended on a
+`__tcfapi` callback Google's CMP never fires for a fresh visitor. That regression was already live
+throughout Phase 2's development and its 2026-09-08 deploy — Phase 2 shipped on top of an already
+broken capture path, it did not introduce a new one.
+
+**The volume evidence** (`.planning/phases/02.1-posthog-consent-gate-hotfix/02.1-DIAGNOSIS.md`):
+`timeline_viewed`, `timeline_filter_used` and `timeline_error` — the three Phase 2 custom events
+this report's human-verification item named — were never ingested, for the same reason. Daily
+event volume across this whole period ran 3–7/day, against 4,000–10,000/day before the Phase 1
+deploy.
+
+**What is not retracted.** The code-side evidence in this report's Truths and prohibition checks —
+the single capture call site per event, verified by grep, and the canonical/robots/structured-data
+checks for `/analyze` — remains correct and is not retracted by this addendum. Only the ingestion
+claim implicit in routing this to a "confirm the events are present" follow-up is corrected: that
+follow-up could not have found the events present, because nothing was reaching PostHog to find.
+
+**Where it was actually met.** The PostHog half of Phase 2's OPS-01 criterion was met for real by
+Phase 2.1 (`.planning/phases/02.1-posthog-consent-gate-hotfix/`), which fixes the capture path with
+server-side geo consent classification and adds a mandatory post-deploy live-traffic check —
+`docs/OPS-01-SHIP-GATE.md` Part 1 item 7 — so a gate whose events cannot be observed now fails
+outright rather than recording `no-data` and passing anyway.

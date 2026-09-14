@@ -49,7 +49,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Operations (standing invariants)
 
-- [x] **OPS-01**: Every user-facing change ships WITH PostHog instrumentation and GSC verification (sitemap/indexing/metadata) — enforced as a phase-gate, not a follow-up task. *Phase 1 gate closed 2026-09-06 (`docs/OPS-01-SHIP-GATE.md`, dated sign-off); standing gate — re-run for every later phase.*
+- [x] **OPS-01**: Every user-facing change ships WITH PostHog instrumentation and GSC verification (sitemap/indexing/metadata) — enforced as a phase-gate, not a follow-up task. *Phase 1 gate closed 2026-09-06 (`docs/OPS-01-SHIP-GATE.md`, dated sign-off); standing gate — re-run for every later phase. Correction (2026-09-14): the Phase 1 and Phase 2 PostHog halves of that gate were not actually met at their respective sign-offs — see the dated addenda in `01-VERIFICATION.md` and `02-VERIFICATION.md` — and were met for real by Phase 2.1, which also hardened this gate to require a mandatory post-deploy live-traffic check.*
 - [ ] **OPS-02**: CSP promoted from report-only to enforcing at end of milestone, after all ad/CMP script sources are discovered via violation reports
 
 ## v2 Requirements
@@ -109,7 +109,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACC-04 | Phase 2 | Complete |
 | COMM-01 | Phase 5 | Pending |
 | COMM-02 | Phase 5 | Pending |
-| OPS-01 | Phase 1 | Phase 1 gate closed 2026-09-06 — docs/OPS-01-SHIP-GATE.md (standing gate, re-run every phase) |
+| OPS-01 | Phase 1 | Phase 1 gate closed 2026-09-06 — docs/OPS-01-SHIP-GATE.md (standing gate, re-run every phase); PostHog half not actually met until Phase 2.1 (addenda dated 2026-09-14 in 01-VERIFICATION.md / 02-VERIFICATION.md) |
 | OPS-02 | Phase 7 | Pending |
 
 **Coverage:**
