@@ -92,7 +92,13 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
     let disposeConsentListener: (() => void) | undefined;
     let mounted = true;
 
-    fetch("/api/geo")
+    // Bound with a timeout so a hung request (dropped connection, stalled
+    // edge function) can't leave `consentReady` stuck false forever — the
+    // exact class of bug this hotfix exists to eliminate, just via a
+    // stalled request instead of a stuck consent state. AbortSignal.timeout
+    // rejects the fetch promise, which the existing `.catch` fail-closed
+    // path below already handles.
+    fetch("/api/geo", { signal: AbortSignal.timeout(5000) })
       .then((res) => res.json())
       .then((body: unknown) => {
         if (!mounted || appliedRef.current) return;
