@@ -3,6 +3,7 @@ import { ENCHANT_NAME_CLASSIC_TBC, GEM_NAME_CLASSIC_TBC, GEM_STAT_CLASSIC_TBC } 
 import { ENCHANT_NAME_WOTLK, GEM_NAME_WOTLK, GEM_STAT_WOTLK } from "./game-data.wotlk";
 import { ENCHANT_NAME_CATA, GEM_NAME_CATA, GEM_STAT_CATA } from "./game-data.cata";
 import { ENCHANT_NAME_OVERRIDES, GEM_NAME_OVERRIDES, UNVERIFIED_OVERRIDE_IDS } from "./game-data-overrides";
+import { ENCHANT_NAME_DB } from "./index";
 
 // Proves the wago.tools-generated data (scripts/regen-game-data.mjs) reproduces
 // every ID-to-name pair lib/cla-constants.test.ts pins against the
@@ -14,8 +15,16 @@ import { ENCHANT_NAME_OVERRIDES, GEM_NAME_OVERRIDES, UNVERIFIED_OVERRIDE_IDS } f
 
 /**
  * Composes era maps in the same order lib/cla-constants.ts's sections list
- * today — Classic and TBC, then WotLK, then Cata — so a later era wins for a
- * colliding id, matching current behaviour.
+ * today — Classic and TBC, then WotLK, then Cata — with a later era winning
+ * for a colliding id (`result.set` unconditionally overwrites). This is the
+ * OPPOSITE of production: lib/generated/index.ts's `composeEraPriority`
+ * implements first-resolved-era-wins (Classic/TBC beats WotLK/Cata on a
+ * collision) — see that file's header for why a later-wins merge would
+ * silently replace a real TBC fact with an unrelated later-era item reusing
+ * the same numeric id (e.g. enchant 3003). This local helper exists only to
+ * verify internal self-consistency of Tests 7-8 below, not to reproduce
+ * production precedence — Test 9 exercises the real precedence via the
+ * production `ENCHANT_NAME_DB`.
  */
 function composeEras<T>(maps: Map<number, T>[]): Map<number, T> {
   const result = new Map<number, T>();
@@ -123,5 +132,17 @@ describe("generated game data reproduces the pinned ID-to-name pairs", () => {
     for (const [id, value] of ENCHANT_NAME_OVERRIDES) {
       expect(composedEnchantNames.get(id)).toBe(value);
     }
+  });
+
+  it("Test 9: production's first-resolved-era-wins composition resolves the id 3003 collision to the Classic/TBC fact, not WotLK's", () => {
+    // Enchant 3003 means "Glyph of Ferocity" in Classic/TBC and "Arcanum of
+    // Ferocity" in WotLK (WR-03) — the exact collision this test's local
+    // composeEras() (later-wins, opposite direction) would get backwards.
+    // Assert against the real production map (lib/generated/index.ts's
+    // ENCHANT_NAME_DB), not the local helper, so this closes the coverage
+    // gap the stale comment above used to paper over.
+    expect(ENCHANT_NAME_CLASSIC_TBC.get(3003)).toContain("Glyph of Ferocity");
+    expect(ENCHANT_NAME_WOTLK.get(3003)).toContain("Arcanum of Ferocity");
+    expect(ENCHANT_NAME_DB.get(3003)).toBe(ENCHANT_NAME_CLASSIC_TBC.get(3003));
   });
 });
