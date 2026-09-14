@@ -136,8 +136,22 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: TBD
+**Plans**: 4 plans
 **UI hint**: no
+
+Plans:
+**Wave 1**
+
+- [ ] 02.1-01-PLAN.md — Tracer: server-side geo classification through `/api/geo` to an immediate PostHog opt-in, with the first `$pageview` gated on the consent path resolving
+- [ ] 02.1-02-PLAN.md — OPS-01 hardening: mandatory post-deploy live-traffic check, plus dated addenda correcting the Phase 1 and Phase 2 records
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02.1-03-PLAN.md — Preview deploy and the bounded headless-Chrome netlog proof that the first `$pageview` leaves the browser
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02.1-04-PLAN.md — Approval-gated production deploy, the live-traffic gate run for real, and the dated Phase 2.1 sign-off
 
 **Notes**: Diagnosis in `02.1-DIAGNOSIS.md`. Root cause: `cookieless_mode: "on_reject"` makes PENDING consent *drop* events in posthog-js 1.360, and opt-in depended on `__tcfapi` calling back — which it never does for fresh visitors. Capture fell from ~4–10k events/day to 3–7/day on 2026-09-06. Not a traffic collapse.
 

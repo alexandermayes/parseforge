@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-current_phase: "2.1"
+current_phase: 2.1
 current_phase_name: PostHog Consent Gate Hotfix
-status: planning
+status: executing
 stopped_at: Phase 2.1 inserted (urgent) — PostHog capture regression diagnosed, ready to plan
-last_updated: "2026-09-14T19:00:48.962Z"
+last_updated: "2026-09-14T20:46:33.171Z"
 last_activity: 2026-09-14
-last_activity_desc: Phase 2 review fixes (PR #16); PostHog capture regression found, Phase 2.1 inserted
-state_head: 53db5a0f5d1c0c1ccefad272df2e9abe2e6345ec
+last_activity_desc: Phase 2 review fixes (PR
+state_head: 66b59da8a728eb48739990956591e2219dfa7c73
 progress:
   total_phases: 8
   completed_phases: 2
-  total_plans: 18
+  total_plans: 22
   completed_plans: 18
   percent: 25
 ---
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 
 ## Current Position
 
-Phase: 3 — Share Loop
+Phase: 2.1 (PostHog Consent Gate Hotfix) — READY TO EXECUTE
 Plan: Not started
-Status: planning
+Status: Ready to execute
 Last activity: 2026-09-08 — Phase 02 complete, transitioned to Phase 3
 
 Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans complete)
@@ -103,16 +103,18 @@ Recent decisions affecting current work:
 
 - `wow-forever-support.md` (2026-09-13) — add World of Warcraft Forever support once WCL exposes Forever logs; era module via wago regen, partition-aware rankings, fixtures. Not actionable until upstream data exists.
 
-Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP now authenticates; its *default* project is still "LootList+ App" — `switch-project 337485` per session works, but fix the connector default; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) ~~merge PR #15~~ done 2026-09-14 (`origin/main` = `f1d74f4`); PR #16 (Phase 2 review fixes) awaits preview + prod deploy; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) ~~code-review findings in `02-REVIEW.md`~~ fixed on `growth/phase-2-review-fixes` (PR #16, 4/4) — still needs deploy.
+Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP now authenticates; its *default* project is still "LootList+ App" — `switch-project 337485` per session works, but fix the connector default; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) ~~merge PR #15~~ done 2026-09-14; ~~PR #16~~ merged (fast-forward, `main` = `66b59da`) and deployed to prod 2026-09-14 (`dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7`), verified live: not-in-fight player → 404 on `/api/timeline`; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) ~~code-review findings in `02-REVIEW.md`~~ fixed (PR #16, 4/4) and live in prod since 2026-09-14; (7) PR #14 (external, Illidari-mark flasks — issue #13) must not merge as-is (hand-typed IDs, conflicting) — redo via `regen-game-data` + overrides with contributor credit, a `/gsd-quick` after Phase 2.1.
 
 ### Blockers/Concerns
 
 - **[URGENT — Phase 2.1] PostHog capture has been ~99.9% down since the Phase 1 prod deploy (2026-09-06).** `cookieless_mode: "on_reject"` drops all PENDING-consent events; opt-in depended on `__tcfapi` calling back, which never happens for fresh visitors. Phase 1 & 2 OPS-01 PostHog criteria were not actually met. Fix: server-side geo opt-in (decided 2026-09-14). Evidence: `02.1-DIAGNOSIS.md`.
-- Vercel CLI on this machine is logged into the `beast-app` team, not `loot-list-plus` — preview/prod deploys blocked until `vercel login` with the owning account.
+- ~~Vercel CLI logged into the wrong team~~ resolved 2026-09-14: personal login lives in `~/.vercel-personal`; every Vercel command needs `--global-config ~/.vercel-personal` (documented in CLAUDE.md).
+- **Preview deployments are behind Vercel SSO** (302 → `vercel.com/sso-api`). Developer chose to enable "Protection Bypass for Automation"; once on, `VERCEL_AUTOMATION_BYPASS_SECRET` appears in `vercel env pull --environment=preview` and is sent as the `x-vercel-protection-bypass` header (or `?x-vercel-protection-bypass=…&x-vercel-set-bypass-cookie=true` for headless Chrome) — never printed, file deleted after use. Phase 2.1's D-10 netlog and the PR #16 smoke test both depend on it.
+- **`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` (and `NEXT_PUBLIC_POSTHOG_HOST`) are Production-only env vars** — previews render no Google CMP, so the consent-region (EEA/UK/CH) path is only observable on production. Phase 2.1 verification must say so explicitly; adding the var to Preview is a developer decision (low risk).
 - Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time; the Claude Code auto-mode classifier also blocks `vercel deploy --prod` unless `Bash(vercel deploy:*)` is allowed (granted 2026-09-08 in `.claude/settings.local.json`). Preview-before-prod is the established pattern.
 - [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only.
-- [Phase 2 carry-forward] `02-REVIEW.md` CR-01: healer overheal/uptime suggestions fire when `hasHealing` is false — a wrong recommendation live on parseforge.gg; plus WR-01..03. Fix before Phase 3 bakes healer numbers into share images.
-- [Phase 2 carry-forward] `origin/main` at `55d2010`; Phase 2 on PR #15 — worktree isolation degrades to sequential until merged/pushed.
+- ~~[Phase 2 carry-forward] `02-REVIEW.md` CR-01 / WR-01..03~~ fixed and deployed 2026-09-14 (PR #16, `dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7`).
+- ~~[Phase 2 carry-forward] `origin/main` behind~~ resolved 2026-09-14 (PR #15 and #16 merged; `main` = `66b59da`).
 - [Phase 2 carry-forward] GSC reports `/` as "Crawled – currently not indexed" (crawl 2026-09-05, pre-deploy) — pre-existing but unexplained for the homepage; investigate at the Phase 3 gate.
 - [Phase 1 carry-forward] Build-time `[kv-cache] getRecentReports failed: Dynamic server usage` noise during prerender of `/` and `/sitemap.xml` — pre-existing, harmless at runtime; small cleanup candidate.
 - Phase 4 research flag: verify current ad-network eligibility thresholds directly at signup (Ezoic source contradiction unresolved); model revenue vs. CWV/UX cost before committing.
