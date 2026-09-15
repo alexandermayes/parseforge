@@ -18,7 +18,7 @@ phase reads, not which ones exist.
 | capability | decision | reason |
 |---|---|---|
 | `x-vercel-ip-country` | INTEGRATE | |
-| `x-vercel-ip-country-region` | OPT-OUT | The consent-region set (D-03) is defined at country granularity — Google Privacy & Messaging's targeted list names countries (EEA, UK, Switzerland), never sub-national regions, so a region read would add a field with no consumer. |
+| `x-vercel-ip-country-region` | OPT-OUT | The consent-region set (D-03) is country-granular — Google Privacy & Messaging targets countries (EEA, UK, CH), never sub-national regions. A region read would have no consumer. |
 | `x-vercel-ip-city` | OPT-OUT | City is personal data under GDPR and this phase's endpoint must return a single boolean; reading it would put PII into a request path that exists to protect privacy. |
 | `x-vercel-ip-latitude` | OPT-OUT | Same PII reason as city, at finer precision. Nothing in the consent decision needs coordinates. |
 | `x-vercel-ip-longitude` | OPT-OUT | Same PII reason as latitude. |
@@ -41,8 +41,8 @@ deliberately does not.
 | `startSessionRecording` | INTEGRATE | |
 | `register` | INTEGRATE | |
 | `capture` | INTEGRATE | |
-| `opt_out_capturing` | OPT-OUT | The explicit-reject path is owned by the SDK's own `cookieless_mode: "on_reject"` handling, which already yields memory-only persistence and no cookie. Forcing the `DENIED` state ourselves would additionally trigger `opt_in_capturing`'s `reset(true)` branch on any later opt-in (RESEARCH Pitfall 4), destroying the session and page-view managers. D-05 keeps the reject path exactly as-is. |
-| `get_explicit_consent_status` | OPT-OUT | Would be the natural assertion target for a provider-level test, but this project has no browser test harness (Vitest `environment: "node"`, no RTL, no jsdom — `vitest.config.ts`) and D-06 explicitly does not add one. The consent decision is unit-tested as a pure function in `lib/consent.ts` instead. |
+| `opt_out_capturing` | OPT-OUT | Reject is owned by the SDK's `cookieless_mode: "on_reject"` (memory-only, no cookie). Forcing `DENIED` would trigger `reset(true)` on a later opt-in (RESEARCH Pitfall 4). D-05 keeps reject as-is. |
+| `get_explicit_consent_status` | OPT-OUT | Natural provider-test assertion, but there is no browser harness (Vitest `environment: "node"`, no RTL/jsdom) and D-06 adds none. Consent is unit-tested as a pure function in `lib/consent.ts`. |
 | `is_capturing` | OPT-OUT | Same missing-harness reason as `get_explicit_consent_status`. The end-to-end equivalent is verified for real by D-10's headless-Chrome netlog against a deployed URL, not by a stubbed SDK. |
 | `has_opted_in_capturing` | OPT-OUT | Same missing-harness reason; no runtime branch in this phase depends on reading the opt-in flag back. |
 | `has_opted_out_capturing` | OPT-OUT | Same missing-harness reason. |
