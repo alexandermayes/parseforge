@@ -1282,3 +1282,111 @@ Nothing in this table is marked passing without the evidence that produced it, p
 own oldest rule. Item 7's third threshold specifically rests on a Vercel figure recorded as an
 **upper bound** (end-of-range unconfirmed) — the PASS is robust to that uncertainty because 23 is
 far below the 50-figure ceiling and any true value at or below 23 also clears it.
+
+### Targeted custom-event observation (gap closure 02.1-06, 2026-09-15)
+
+This section closes the automatable half of the Truth 5 gap left open by `02.1-VERIFICATION.md`
+("`theme_changed` and `timeline_viewed` (at minimum) should appear in the query results with
+`consent_gate_path` populated") and by the "Phase 2.1 Sign-off — SIGNED" scoping note above, which
+named `theme_changed`, `timeline_viewed`, `timeline_filter_used`, `timeline_error`,
+`consent_resolved` and `consent_unavailable` as **not observed** in the 2026-09-14 measured window.
+It is a **targeted follow-up test, not the original 60-minute post-deploy window measured on
+2026-09-14** — the plan's own `missing` clause explicitly accepts a targeted manual test in place
+of waiting for an organic session, and this section is that test, run against a separate,
+later, named window.
+
+**Deployment observed:** `dpl_HY5319wSDVw3M4ibBU42JrSTgw4e`, built from commit `8693498` — the
+same production build the 2026-09-14 item-7 evidence above measured. No new deploy was made for
+this observation.
+
+**Window and route:** UTC `2026-09-15T18:26:27Z` – `2026-09-15T18:28:57Z` (the raw interaction
+window ended `2026-09-15T18:26:57Z`; the recorded end bound carries a 2-minute margin so a
+trailing analytics-batch flush falls inside the query window). Route: **automation-performed** —
+the developer authorized browser automation in-session ("you drive it") because the
+Claude-in-Chrome extension was not connected; the orchestrator drove production with a fresh-profile
+headless Chrome instance over the DevTools Protocol, with the User-Agent overridden to a standard
+desktop Chrome string (same false-negative-avoidance fix as 02.1-03's netlog run — see
+`### Finding: the bare D-10 command has a false-negative trap` above) and real pointer events for
+every click. Only `parseforge.gg` was navigated; no Vercel page, no PostHog page, no form
+submission, no account action, and no other site.
+
+**Interactions performed** (copied from the session interaction record):
+- Loaded `https://parseforge.gg/`.
+- Theme: clicked the navbar theme control (`aria-label="Toggle theme"`), selected **Light**;
+  opened the control again and selected **Dark**.
+- Timeline: opened
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&tab=player&ptab=timeline`; the
+  Cast Timeline rendered with 13 ability chips (the hook's auto-run fires `timeline_viewed`, no
+  click required).
+- Filter: clicked one ability filter chip, then clicked the **All** reset chip.
+- **Not performed:** the optional step 5 error-inducing load
+  (`fight=999999&source=999999`) — the developer did not explicitly agree to it in this session, so
+  it was skipped rather than assumed. `timeline_error` is recorded below as not triggered by
+  design, not as absent-and-fine.
+
+**Both query forms.** Part 1 item 7's own queries use a relative `now() - INTERVAL 60 MINUTE`
+bound; that relative form is copied here verbatim from Part 1 item 7 above and was **not re-run**
+for this section — the window this section observes is already in the past by the time this
+section was written, so a relative-window query would answer a different (empty) window, not this
+one. Stating that plainly rather than pretending it was executed:
+
+```sql
+SELECT properties.consent_gate_path, count() FROM events WHERE timestamp >= now() - INTERVAL 60 MINUTE GROUP BY 1
+```
+
+The explicit-bounds query actually executed, filtered to the six named events and grouped by event
+and gate path — **bounds interpreted in UTC** (the PostHog project's confirmed timezone is UTC,
+matching the record file's UTC start/end):
+
+```sql
+SELECT event, properties.consent_gate_path AS consent_gate_path, count() AS count
+FROM events
+WHERE timestamp >= toDateTime('2026-09-15 18:26:27')
+  AND timestamp < toDateTime('2026-09-15 18:28:57')
+  AND event IN ('theme_changed', 'timeline_viewed', 'timeline_filter_used', 'timeline_error', 'consent_resolved', 'consent_unavailable')
+GROUP BY event, consent_gate_path
+ORDER BY event
+```
+
+Before reading any number, the PostHog connector was switched to project `337485` with
+`switch-project 337485`, and the response confirmed the active project as "ParseForge" (id
+337485, organization "LootList+", project timezone UTC) — the connector's prior default was a
+different application ("LootList+ App", id 310668). This confirmation is recorded here per the
+plan's own requirement, without pasting any token.
+
+**Result table, verbatim** (first run, no retry needed):
+
+| event | consent_gate_path | count |
+|---|---|---|
+| `theme_changed` | `geo-non-consent-region` | 2 |
+| `timeline_filter_used` | `geo-non-consent-region` | 2 |
+| `timeline_viewed` | `geo-non-consent-region` | 1 |
+
+The three named events absent from this table — `timeline_error`, `consent_resolved`,
+`consent_unavailable` — returned a taxonomy warning from the connector ("Event '…' was not found in
+this project taxonomy" for each of the three), i.e. none of the three has ever ingested in this
+project; each carries count 0 for this window below.
+
+**Per-event status (six of six, none left without a line):**
+
+- Event `theme_changed`: count 2, observed, consent_gate_path "geo-non-consent-region".
+- Event `timeline_viewed`: count 1, observed, consent_gate_path "geo-non-consent-region".
+- Event `timeline_filter_used`: count 2, observed, consent_gate_path "geo-non-consent-region".
+- Event `timeline_error`: count 0, not triggered by design — the optional error-inducing step
+  (step 5) was not agreed to in this session and was skipped.
+- Event `consent_resolved`: count 0, structurally unobservable from this egress — a
+  non-consent-region visitor never starts the `__tcfapi` listener, so there is no consent event to
+  emit from a US egress; the observation moves to gap plan 02.1-08 (EEA/UK session).
+- Event `consent_unavailable`: count 0, structurally unobservable from this egress — same reason as
+  `consent_resolved` above; deferred to 02.1-08.
+
+**What this closes and what it does not.** `theme_changed`, `timeline_viewed` and
+`timeline_filter_used` — the three events a non-consent-region session can produce — are now
+counted-observed with `consent_gate_path = geo-non-consent-region` attached, closing that half of
+the Truth 5 gap. `timeline_error` remains untriggered by design (a scoped, one-attempt-only optional
+step the developer did not authorize this session, not a defect). `consent_resolved` and
+`consent_unavailable` remain structurally unreachable from any non-consent-region egress and are
+explicitly hand-off to 02.1-08 rather than left as an unexplained zero. No application source was
+changed to produce this section, and every added line above is aggregate counts, event names and
+gate-path literals — no per-visitor row, address, session-recording link, or credential from either
+service.
