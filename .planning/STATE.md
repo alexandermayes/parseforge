@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02.1
 current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
 status: executing
-stopped_at: Completed 02.1-05-PLAN.md (OPS-01 gate SIGNED, Vercel Web Analytics threshold PASS)
-last_updated: "2026-09-15T17:55:59.559Z"
+stopped_at: "Completed 02.1-06-PLAN.md (targeted custom-event observation: 3/6 named events counted-observed, 2 deferred to 02.1-08, 1 not triggered by design)"
+last_updated: "2026-09-15T18:53:39.047Z"
 last_activity: 2026-09-14
 last_activity_desc: Phase 02.1 execution started
-state_head: 9bced9fad4ad8295074b8fa9dc417e742f7833be
+state_head: ba9b68632c29f3d4da9273c895d38a3c22c5a25d
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 26
-  completed_plans: 23
+  completed_plans: 24
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 ## Current Position
 
 Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
-Plan: 2 of 8
+Plan: 3 of 8
 Status: Ready to execute
 Last activity: 2026-09-14 — Phase 02.1 execution started
 
@@ -82,6 +82,7 @@ Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans 
 | Phase 02.1 P03 | 30min | 3 tasks | 2 files |
 | Phase 02.1 P04 | 25min | 3 tasks | 3 files |
 | Phase 02.1 P05 | 20min | 2 tasks | 2 files |
+| Phase 02.1 P06 | 20min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,7 @@ Recent decisions affecting current work:
 - [Phase 02.1]: [Phase 02.1 / 02.1-03]: Found and worked around a previously-unknown false-negative trap in the D-10 netlog technique - posthog-js's built-in bot filter drops all captures for any User-Agent containing "HeadlessChrome" by default; fixed via --user-agent override for this run, logged as WINDOWS.md todo #7 for Part 1's own command text.
 - [Phase 02.1]: [Phase 02.1 / 02.1-04]: Production deploy dpl_HY5319wSDVw3M4ibBU42JrSTgw4e ran the hardened OPS-01 live-traffic gate for the first time - 2 of 3 item-7 thresholds passed with counted PostHog evidence (25 pageviews across 3 non-consent-region countries); the Vercel Web Analytics ratio threshold is PENDING (unreadable this session), so Phase 2.1 was left deliberately unsigned rather than fabricated as complete. OPS-01 remains not-yet-met in REQUIREMENTS.md via an appended addendum.
 - [Phase 02.1]: [Phase 02.1 / 02.1-05]: OPS-01 gate SIGNED (2026-09-15) — Vercel Web Analytics figure (23 page views, recorded as an upper bound) scored PASS against 25 PostHog pageviews (25/23 ~ 108.7% >= 50%); all three item 7 thresholds now PASS. — Developer read the dashboard directly (route a); figure recorded as an upper bound because the range's end time was illegible, but the PASS is invariant to that imprecision since any true figure <= 23 also clears the <= 50 PASS line.
+- [Phase 02.1]: theme_changed, timeline_viewed and timeline_filter_used counted-observed in PostHog project 337485 with consent_gate_path=geo-non-consent-region via a targeted manual test (route: automation-performed, orchestrator-driven headless Chrome scoped to parseforge.gg, developer authorized "you drive it"); consent_resolved/consent_unavailable recorded structurally unobservable from a non-consent-region egress and handed off to 02.1-08; timeline_error not triggered by design (optional step not authorized).
 
 ### Pending Todos
 
@@ -155,6 +157,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T17:55:59.222Z
-Stopped at: Completed 02.1-05-PLAN.md (OPS-01 gate SIGNED, Vercel Web Analytics threshold PASS)
+Last session: 2026-09-15T18:53:37.687Z
+Stopped at: Completed 02.1-06-PLAN.md (targeted custom-event observation: 3/6 named events counted-observed, 2 deferred to 02.1-08, 1 not triggered by design)
 Resume file: None

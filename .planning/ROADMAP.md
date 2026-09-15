@@ -136,7 +136,7 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: 5/8 plans executed (4 gap-closure plans pending)
+**Plans**: 6/8 plans executed (4 gap-closure plans pending)
 **UI hint**: no
 
 Plans:
@@ -156,7 +156,7 @@ Plans:
 **Gap closure** *(added 2026-09-14 from `02.1-VERIFICATION.md` — run with `/gsd-execute-phase 02.1 --gaps-only`; each depends on the previous)*
 
 - [x] 02.1-05-PLAN.md — Gap B: read the pending Vercel Web Analytics figure for the 22:16:59Z–23:16:59Z window, score item-7 threshold 3, then sign Part 4 with a date or record FAIL honestly (never lower the bar)
-- [ ] 02.1-06-PLAN.md — Gap A (automatable half): drive the theme toggle and Timeline tab on production from a non-consent-region session, re-run the item-7 HogQL, record `theme_changed` / `timeline_*` with their `consent_gate_path`
+- [x] 02.1-06-PLAN.md — Gap A (automatable half): drive the theme toggle and Timeline tab on production from a non-consent-region session, re-run the item-7 HogQL, record `theme_changed` / `timeline_*` with their `consent_gate_path`
 - [ ] 02.1-07-PLAN.md — Developer-approved redeploy of the five code-review fixes (CR-01, WR-01..04) so WR-03 is testable, plus a fresh 60-minute item-7 window measured for real
 - [ ] 02.1-08-PLAN.md — Truth 4 / MONY-01: EEA/UK TCF observation (reject, full opt-in, CMP re-confirm) as a human checkpoint with an honest not-performed branch
 
@@ -265,7 +265,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
-| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 5/8 | In Progress|  |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 6/8 | In Progress|  |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
