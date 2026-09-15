@@ -157,3 +157,36 @@ that figure, all three of item 7's thresholds read PASS:
 **OPS-01's PostHog criterion was met for Phase 2.1 on 2026-09-15**, against production deployment
 `dpl_HY5319wSDVw3M4ibBU42JrSTgw4e` (created 2026-09-14T22:16:59Z). `docs/OPS-01-SHIP-GATE.md`
 Part 4 is signed accordingly: `### Phase 2.1 Sign-off — SIGNED (2026-09-15, gap-closure 02.1-05)`.
+
+### MONY-01 Addendum (2026-09-15, Phase 2.1 gap closure 02.1-08)
+
+The MONY-01 row above records "Complete" from Phase 1. That row covers the consent-management
+layer's existence and its non-EEA/UK behaviour, which Phase 2.1 has now proven live in production.
+It does **not** cover a real-browser observation of the EEA/UK/CH TCF path itself — that live proof
+**remains outstanding**.
+
+**Reason.** No EEA/UK/CH consent-region browser session was performed this plan. The developer
+declined the manual ask, saying verbatim: "Stop asking for me to do things. Do it for me please."
+The orchestrator could not perform it either — no EEA/UK/CH egress IP exists in this environment,
+the Claude-in-Chrome extension was not connected this session, and no VPN is available to the
+automation.
+
+**What is proven and what is not.** `deriveConsentGateOutcome`'s consent-region branch
+(`lib/consent.ts`) is exhaustively unit-tested (21 tests) and confirmed by code review to reproduce
+the pre-hotfix SDK-call mapping byte for byte. That is evidence about the logic. No browser has ever
+executed `PostHogProvider.tsx`'s TCF wiring against that logic — the preview never rendered the
+Google CMP (`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` is Production-only) and zero EEA/UK/CH visitors arrived
+in any measured production window this phase. That gap is evidence about the wiring, and it is not
+closed by the unit tests or the code review. See `docs/OPS-01-SHIP-GATE.md` Part 4,
+`### EEA/UK TCF observation (gap closure 02.1-08, 2026-09-15)`, for the full record, including the
+WR-03 dedupe's not-exercised status (commit `9da21c4` is live in production and ready to test, but
+untested by a browser).
+
+**The test that would close this.** A developer-run session, from a real EEA/UK/Swiss VPN egress and
+a fresh private browser window opened after the VPN connects, covering explicit reject, full opt-in,
+and a CMP re-confirmation (testing the WR-03 dedupe) — exact steps in the gate document section
+above.
+
+**MONY-01's live proof therefore stays outstanding.** ROADMAP SC2 and `02.1-VERIFICATION.md`
+Truth 4 stay behaviour-unverified for the same reason. This addendum does not change the MONY-01
+traceability row above; it appends the live-proof status the row itself does not carry.

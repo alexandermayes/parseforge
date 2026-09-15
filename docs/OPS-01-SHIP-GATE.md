@@ -1605,3 +1605,72 @@ captured with `consent_gate_path = geo-non-consent-region`, and `/api/geo` answe
 0.3–0.6 s from a US client, well under the new 5-second timeout. Recorded here as a finding for the
 developer, not fixed in this plan; a candidate follow-up is a `WINDOWS.md` item to quantify the
 PostHog-vs-Vercel capture ratio per country over a full week.
+
+### EEA/UK TCF observation (gap closure 02.1-08, 2026-09-15)
+
+**Not performed.** No EEA/UK/CH consent-region browser session was run in this plan.
+
+**Deployment the session would have run against.** The current production deployment is
+**`dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5`**, built from commit **`dd19b0ba1716d180a915bd9ad483d50d945cdcfc`**
+(short `dd19b0b`; see `### Re-deploy gate run (gap closure 02.1-07, 2026-09-15)` above). Commit
+**`9da21c4` (WR-03, the `capturedGatePathRef` consent-event dedupe) IS in this deployed build** — it
+is one of the five review-fix commits that deploy shipped. Had an EEA/UK/CH session been performed,
+its Session C (CMP re-confirmation) result would therefore have been a meaningful test of the
+dedupe, not a test of a build that predates the fix.
+
+**Reason, recorded verbatim from Task 1.** The developer did not run any session and had earlier
+said, verbatim: **"Stop asking for me to do things. Do it for me please."** — a decline of the
+manual EEA/UK/CH session ask. The orchestrator could not perform it either: no EEA/UK/CH egress
+exists in this environment (Vercel derives `x-vercel-ip-country` from the visitor's real IP, which
+cannot be spoofed from a US client), the Claude-in-Chrome extension was not connected in this
+session, and no VPN is available to the automation. Result: no session was performed.
+
+**The exact test that would close this.** A developer-run browser session from a real EEA, UK or
+Swiss egress IP (a VPN exit in, e.g., Germany, Ireland or the UK), using a **fresh private browser
+window opened after the VPN is already connected** — a reused profile may already carry a prior
+consent choice or opt-in cookie and would prove nothing about a first-time visitor. Three sessions,
+any one of which narrows the gap and Session B alone being the most valuable if only one is run:
+
+- **Session A — explicit reject.** Fresh private window, DevTools Network tab filtered to
+  `ingest`, load `https://parseforge.gg/`. Before the dialog resolves: confirm no request to
+  `/ingest/e/` or `/ingest/i/v0/e/`. Click reject. After: confirm no session-replay start and no
+  `ph_*` / `__ph_opt_in_out_*` cookie for `parseforge.gg`.
+- **Session B — full opt-in (do this one first if only one is run).** New fresh private window,
+  same setup. Before interacting: confirm no capture request yet. Accept all. Note the UTC time.
+  After: confirm capture requests and session replay both start; optionally log `__tcfapi`
+  `eventStatus` values via `addEventListener` to count how many resolved events the CMP emitted.
+- **Session C — CMP re-confirmation (tests the WR-03 dedupe; meaningful now that `9da21c4` is
+  live).** Fresh window: accept, then re-open the CMP's privacy / manage-options entry point and
+  confirm again, so the CMP re-emits a resolved TCF event for the same visit. Note the UTC bounds.
+  Expectation: `consent_resolved` fires exactly once across both resolutions.
+
+For whichever sessions are run: egress country, UTC start and end, whether the CMP dialog appeared,
+and the observations in the developer's own words, unfiltered to match expectations.
+
+**What remains behaviour-unverified.** ROADMAP SC2, `02.1-VERIFICATION.md` Truth 4 (real-browser
+EEA/UK behaviour unchanged), and MONY-01's live proof all remain **behaviour-unverified** — not
+"verified by unit tests," not "verified by code review." The 21 unit tests over
+`deriveConsentGateOutcome` and the code review confirming the SDK-call mapping are recorded evidence
+about the *logic*; they are not evidence about the *wiring*, and no amount of either upgrades this
+claim. This matches the plan's own flagged MONY-01 assumption verbatim.
+
+**Consent-region gate paths — none exercised this session:**
+
+- Gate path `tcf-accept`: count 0, not exercised.
+- Gate path `tcf-reject`: count 0, not exercised.
+- Gate path `tcf-timeout`: count 0, not exercised.
+
+**Consent events — closing what 02.1-06 handed forward, both still unresolved:**
+
+- Event `consent_resolved`: count 0, not exercised.
+- Event `consent_unavailable`: count 0, not exercised.
+
+**WR-03 dedupe:**
+
+- WR-03 dedupe: not exercised (no opt-in session was performed). The deployed build (`dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5`,
+  commit `dd19b0b`) DOES contain the `9da21c4` dedupe fix, so this test is ready to run and would be
+  meaningful whenever an EEA/UK/CH session becomes available — nothing about the fix itself is in
+  question, only whether it has ever been exercised by a real browser.
+
+No application source was read for numbers and none was modified to produce this section. Nothing
+above is a per-visitor row, an address, a session-recording link, or a credential.
