@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02.1
 current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
 status: executing
-stopped_at: "Completed 02.1-07-PLAN.md (re-deploy gate run: shipped 5 review-fix commits as dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5; new window's OPS-01 gate row NOT signed - thresholds 1/2 FAIL, 3 NOT EVALUABLE)"
-last_updated: "2026-09-15T20:54:45.332Z"
+stopped_at: Completed 02.1-08-PLAN.md (EEA/UK TCF observation recorded as not-performed - developer declined the manual VPN session; ROADMAP SC2 / Truth 4 / MONY-01 stay behaviour-unverified with the exact test that would close them)
+last_updated: "2026-09-15T21:05:56.210Z"
 last_activity: 2026-09-14
 last_activity_desc: Phase 02.1 execution started
-state_head: 12a4b11d93bced15f123810541964baaf3c28b60
+state_head: 12139cdf6e8c1977445162a724620ae8d809eb7c
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 26
-  completed_plans: 25
+  completed_plans: 26
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
 ## Current Position
 
 Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
-Plan: 4 of 8
+Plan: 5 of 8
 Status: Ready to execute
 Last activity: 2026-09-14 — Phase 02.1 execution started
 
@@ -84,6 +84,7 @@ Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans 
 | Phase 02.1 P05 | 20min | 2 tasks | 2 files |
 | Phase 02.1 P06 | 20min | 3 tasks | 1 files |
 | Phase 02.1 P07 | continuation | 3 tasks | 1 files |
+| Phase 02.1 P08 | continuation | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,7 @@ Recent decisions affecting current work:
 - [Phase 02.1]: theme_changed, timeline_viewed and timeline_filter_used counted-observed in PostHog project 337485 with consent_gate_path=geo-non-consent-region via a targeted manual test (route: automation-performed, orchestrator-driven headless Chrome scoped to parseforge.gg, developer authorized "you drive it"); consent_resolved/consent_unavailable recorded structurally unobservable from a non-consent-region egress and handed off to 02.1-08; timeline_error not triggered by design (optional step not authorized).
 - [Phase 02.1]: [Phase 02.1 / 02.1-07]: Deployed dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 (commit dd19b0b) on the developer's verbatim "ship it" - all five 02.1-REVIEW-FIX.md commits (90f5a46, 0e03d9b, 7a7cf0c, 9657535, 9da21c4, incl. WR-03 consent_resolved dedupe) are now live in production. — Makes the WR-03 dedupe testable in 02.1-08 against actual reviewed source rather than known-unfixed code; the fail-closed geo body validation (CR-01/90f5a46) is now protecting real visitors too.
 - [Phase 02.1]: [Phase 02.1 / 02.1-07]: This deploy's own OPS-01 item 7 gate row is recorded NOT SIGNED - the new 60-minute window (2026-09-15T19:16:13Z-20:16:13Z) landed on a low-traffic UTC hour: Threshold 1 FAIL (3 pageviews, need 20), Threshold 2 FAIL (1 non-consent-region country, need 2), Threshold 3 NOT EVALUABLE (Vercel CLI API only returns an hour-rounded upper bound, not a window-exact figure). — 02.1-05's 2026-09-14 sign-off is untouched and rests on its own evidence; this deploy needs its own re-measurement on a busier UTC hour with a window-granularity Vercel read to close its own row. Recorded honestly rather than reused, softened, or omitted (docs/OPS-01-SHIP-GATE.md).
+- [Phase 02.1]: [Phase 02.1 / 02.1-08]: EEA/UK/CH TCF observation not performed - developer declined the manual VPN session verbatim ("Stop asking for me to do things. Do it for me please"), and no automation-side EEA egress exists in this environment; recorded as not-performed with the exact test that would close it, rather than upgraded on unit tests or code review. — Commit 9da21c4 (WR-03 dedupe) is confirmed live in the deployed production build (dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5, commit dd19b0b), so the test remains ready to run and meaningful whenever an EEA/UK/CH session becomes available.
 
 ### Pending Todos
 
@@ -139,6 +141,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - Scheduled check-in 2026-09-08 reviews /tbc-audit + PR #10 outcomes — do not re-diagnose those before then.
 - [Phase 2.1 close] Phase 2.1's OPS-01 gate is NOT signed: the Vercel Web Analytics pageview figure for the 2026-09-14 22:16:59Z-23:16:59Z window could not be read this session (Vercel MCP scoped to a different team; personal CLI token has no Web Analytics endpoint; vercel logs proxy judged unfit). Next action: read https://vercel.com/loot-list-plus/parseforge/analytics for that window, compute the ratio against 25 PostHog pageviews (passes at Vercel <= 50), and if it passes, sign docs/OPS-01-SHIP-GATE.md Part 4 + date REQUIREMENTS.md OPS-01. Separately: 5 code-review fix commits (90f5a46, 0e03d9b, 7a7cf0c, 9657535, 9da21c4) are not yet in production - a follow-up developer-approved deploy is needed.
 - [Phase 2.1 / 02.1-07] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
+- [Phase 02.1 close] ROADMAP SC2, 02.1-VERIFICATION.md Truth 4, and MONY-01's live proof remain behaviour-unverified: no real EEA/UK/CH browser session has ever exercised the TCF consent path (deriveConsentGateOutcome / PostHogProvider.tsx wiring), because no EEA egress exists in this environment and the developer declined the manual VPN session. Closing test: a developer-run session from a real EEA/UK/Swiss VPN egress, fresh private browser window opened after the VPN connects, covering explicit reject, full opt-in, and a CMP re-confirmation (tests the already-live WR-03 dedupe, commit 9da21c4). See docs/OPS-01-SHIP-GATE.md Part 4 "EEA/UK TCF observation (gap closure 02.1-08, 2026-09-15)" for full detail.
 
 ### Quick Tasks Completed
 
@@ -161,6 +164,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T20:54:45.113Z
-Stopped at: Completed 02.1-07-PLAN.md (re-deploy gate run: shipped 5 review-fix commits as dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5; new window's OPS-01 gate row NOT signed - thresholds 1/2 FAIL, 3 NOT EVALUABLE)
+Last session: 2026-09-15T21:05:17.073Z
+Stopped at: Completed 02.1-08-PLAN.md (EEA/UK TCF observation recorded as not-performed - developer declined the manual VPN session; ROADMAP SC2 / Truth 4 / MONY-01 stay behaviour-unverified with the exact test that would close them)
 Resume file: None
