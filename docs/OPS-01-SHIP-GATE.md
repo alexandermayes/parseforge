@@ -1221,3 +1221,64 @@ evidence (`## Finding: the bare D-10 command has a false-negative trap`, pre-exi
 Task 3's own verify script's dotted-quad pattern matches as a false positive — it is a browser
 version, not an IP address or a credential. Recorded here rather than silently reworded, since
 that text belongs to a prior plan and this plan's edits are additive-only.
+
+### Vercel Web Analytics figure and final item 7 scoring (gap closure 02.1-05, 2026-09-15)
+
+**Vercel Web Analytics figure, with provenance:**
+- Figure (page views): **23**
+- Dashboard URL: `https://vercel.com/loot-list-plus/parseforge/analytics` — team LootListPlus
+  (slug `loot-list-plus`), project `parseforge`, environment filter "Production", hostname
+  parseforge.gg (+2)
+- Range set: the range picker displayed "Sep 14, 3:16pm …" with the end of the range truncated
+  and illegible in the screenshot; the chart's x-axis spans 3pm–4pm. The developer was instructed
+  to set 3:16 PM – 4:17 PM Pacific — the start (3:16 PM) is confirmed visually, the end is not.
+- Timezone: US Pacific, daylight time (PDT, UTC−7). The developer's own words were "It's PST
+  btw"; on 2026-09-14 Pacific observes daylight time, so 3:16 PM PDT = 22:16 UTC, matching this
+  window's start (`2026-09-14T22:16:59Z`) exactly.
+- Window match: **not confirmed as exactly the 60-minute window** — the range's end time is
+  illegible in the screenshot, so this figure is recorded as an **upper bound**, per this plan's
+  own rule for a range that may be wider than the window.
+- Reader: the developer, via a screenshot supplied in-session on 2026-09-15 (UTC), reading the
+  dashboard directly. No browser automation was used (the Chrome extension was not connected). No
+  Vercel or PostHog credential, cookie, token or session value was requested, read, printed or
+  stored.
+
+**Threshold scoring** — thresholds 1 and 2 restated from the 2026-09-14 production run above,
+threshold 3 computed against the figure just recorded:
+
+- Threshold 1 (≥ 20 `$pageview` events — 25 counted in the 2026-09-14 production window): PASS
+- Threshold 2 (≥ 2 distinct non-consent-region countries — 3 counted: US, BR, CA): PASS
+- Threshold 3 (PostHog `$pageview` count ≥ 50% of the Vercel Web Analytics figure for the same
+  window — PostHog 25, Vercel figure 23 (upper bound; the true window figure is ≤ 23) → 25 / 23 ≈
+  108.7%, well above the 50% line; the result holds a fortiori for any true window figure ≤ 23):
+  PASS
+
+### Phase 2.1 Sign-off — SIGNED (2026-09-15, gap-closure 02.1-05)
+
+This section **supersedes** the `### Phase 2.1 Sign-off — NOT SIGNED (2026-09-14, Task 3)` section
+above it, which stays in place unedited. All three item 7 thresholds now read PASS with the Vercel
+Web Analytics figure recorded above.
+
+| Gate step | Result | Evidence |
+|---|---|---|
+| 1. Local gate | **pass** | `npx tsc --noEmit` exit 0; 161/161 tests; scoped `eslint` exit 0; `theme-parity` PASS; `token-audit` 0 non-allowlisted findings (02.1-03, "Local gate output") |
+| 2. Both-theme route sweep | **deferred → end-of-phase UAT** | `human_verify_mode=end-of-phase`, same deferral pattern as Parts 1–3 |
+| 3. SEO invariants | **pass** | `seo-invariants` exit 0; no canonical/robots/structured-data regression (02.1-03) |
+| 4. PostHog instrumentation | pre-deploy **pass** / post-deploy **pass** | grep evidence (02.1-01/02.1-03); 12 distinct event types ingested in the item 7 window (above) |
+| 5. Search Console | **no-data** | no GSC MCP tool available this session (02.1-04, Task 3) |
+| 6. Manual prod deploy | **pass** | developer's explicit yes; `dpl_HY5319wSDVw3M4ibBU42JrSTgw4e`, created `2026-09-14T22:16:59Z`, aliased to `parseforge.gg` |
+| 7. Post-deploy live-traffic check | **pass** | all three threshold lines above read PASS |
+
+**Two scoping notes on what this sign-off does and does not cover:**
+(i) This sign-off scores the OPS-01 gate rows only. ROADMAP SC3's named custom events —
+`theme_changed`, `timeline_viewed`, `timeline_filter_used`, `timeline_error`, `consent_resolved`,
+`consent_unavailable` — were **not observed** in the 2026-09-14 measured window and are tracked
+separately in gap-closure plans 02.1-06 and 02.1-08.
+(ii) The `tcf-accept` / `tcf-reject` / `tcf-timeout` gate paths remain **unobserved**, because no
+EEA/UK/CH visitor arrived in the measured window, and the Search Console row for this phase remains
+`no-data` exactly as 02.1-04 recorded it.
+
+Nothing in this table is marked passing without the evidence that produced it, per this document's
+own oldest rule. Item 7's third threshold specifically rests on a Vercel figure recorded as an
+**upper bound** (end-of-range unconfirmed) — the PASS is robust to that uncertainty because 23 is
+far below the 50-figure ceiling and any true value at or below 23 also clears it.

@@ -138,3 +138,22 @@ exact figure still needed).
 until the pending Vercel Web Analytics figure is read, the ratio is evaluated, and — only if it
 passes — `docs/OPS-01-SHIP-GATE.md` Part 4 is signed with a date, at which point this addendum
 should be superseded by a line recording the real date the criterion was met (D-09).
+
+### OPS-01 Addendum 2 (2026-09-15, Phase 2.1 gap closure 02.1-05)
+
+This addendum supersedes `### OPS-01 Addendum (2026-09-14, Phase 2.1 Plan 04)` above it, which
+stays in place unedited.
+
+The Vercel Web Analytics page-view figure for the window `2026-09-14T22:16:59Z`–
+`2026-09-14T23:16:59Z` that the 2026-09-14 addendum recorded as PENDING has now been read: **23**
+page views (recorded as an upper bound — the range's end time was illegible in the screenshot the
+developer supplied; see `docs/OPS-01-SHIP-GATE.md` Part 4 for the full provenance). Scored against
+that figure, all three of item 7's thresholds read PASS:
+
+- ≥ 20 `$pageview` events: 25 counted — PASS
+- ≥ 2 distinct non-consent-region countries: 3 counted — PASS
+- PostHog `$pageview` count ≥ 50% of the Vercel figure: 25 / 23 ≈ 108.7% — PASS
+
+**OPS-01's PostHog criterion was met for Phase 2.1 on 2026-09-15**, against production deployment
+`dpl_HY5319wSDVw3M4ibBU42JrSTgw4e` (created 2026-09-14T22:16:59Z). `docs/OPS-01-SHIP-GATE.md`
+Part 4 is signed accordingly: `### Phase 2.1 Sign-off — SIGNED (2026-09-15, gap-closure 02.1-05)`.
