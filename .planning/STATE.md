@@ -1,44 +1,44 @@
 ---
 gsd_state_version: 1.0
-current_phase: 02.1
-current_phase_name: PostHog Consent Gate Hotfix (INSERTED)
-status: executing
-stopped_at: Completed 02.1-08-PLAN.md (EEA/UK TCF observation recorded as not-performed - developer declined the manual VPN session; ROADMAP SC2 / Truth 4 / MONY-01 stay behaviour-unverified with the exact test that would close them)
-last_updated: "2026-09-15T21:05:56.210Z"
-last_activity: 2026-09-14
-last_activity_desc: Phase 02.1 execution started
-state_head: 12139cdf6e8c1977445162a724620ae8d809eb7c
+current_phase: 3
+current_phase_name: Share Loop
+status: planning
+stopped_at: Phase 02.1 complete, ready to plan Phase 3
+last_updated: "2026-09-15T22:46:18.518Z"
+last_activity: 2026-09-15
+last_activity_desc: Phase 02.1 complete, transitioned to Phase 3
+state_head: 1e4dab3d1ef10a9c3a2f1674b51a5b5f0aaa6617
 progress:
   total_phases: 8
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 26
   completed_plans: 26
-  percent: 25
+  percent: 38
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
+See: .planning/PROJECT.md (updated 2026-09-15 after Phase 2.1)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 02.1 — PostHog Consent Gate Hotfix (INSERTED)
+**Current focus:** Phase 3 — Share Loop
 
 ## Current Position
 
-Phase: 02.1 (PostHog Consent Gate Hotfix (INSERTED)) — EXECUTING
-Plan: 5 of 8
-Status: Ready to execute
-Last activity: 2026-09-14 — Phase 02.1 execution started
+Phase: 3 — Share Loop
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-15 — Phase 02.1 complete, transitioned to Phase 3
 
-Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans complete)
+Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 18
+- Total plans completed: 26
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -48,6 +48,7 @@ Progress: [███░░░░░░░] 25% (2/7 phases; 18/18 planned plans 
 |-------|-------|-------|----------|
 | 01 | 9 | - | - |
 | 02 | 9 | - | - |
+| 02.1 | 8 | - | - |
 
 **Recent Trend:**
 
@@ -125,12 +126,12 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 
 ### Blockers/Concerns
 
-- **[URGENT — Phase 2.1] PostHog capture has been ~99.9% down since the Phase 1 prod deploy (2026-09-06).** `cookieless_mode: "on_reject"` drops all PENDING-consent events; opt-in depended on `__tcfapi` calling back, which never happens for fresh visitors. Phase 1 & 2 OPS-01 PostHog criteria were not actually met. Fix: server-side geo opt-in (decided 2026-09-14). Evidence: `02.1-DIAGNOSIS.md`.
+- ~~[URGENT — Phase 2.1] PostHog capture ~99.9% down since 2026-09-06~~ resolved by Phase 2.1 (server-side geo opt-in, prod since 2026-09-14; gate signed 2026-09-15 on counted live traffic; EEA/UK TCF path confirmed in a real browser at UAT 2026-09-15). Evidence: `02.1-DIAGNOSIS.md`, `docs/OPS-01-SHIP-GATE.md` Part 4, `02.1-UAT.md`.
 - ~~Vercel CLI logged into the wrong team~~ resolved 2026-09-14: personal login lives in `~/.vercel-personal`; every Vercel command needs `--global-config ~/.vercel-personal` (documented in CLAUDE.md).
 - **Preview deployments are behind Vercel SSO** (302 → `vercel.com/sso-api`). Developer chose to enable "Protection Bypass for Automation"; once on, `VERCEL_AUTOMATION_BYPASS_SECRET` appears in `vercel env pull --environment=preview` and is sent as the `x-vercel-protection-bypass` header (or `?x-vercel-protection-bypass=…&x-vercel-set-bypass-cookie=true` for headless Chrome) — never printed, file deleted after use. Phase 2.1's D-10 netlog and the PR #16 smoke test both depend on it.
 - **`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` (and `NEXT_PUBLIC_POSTHOG_HOST`) are Production-only env vars** — previews render no Google CMP, so the consent-region (EEA/UK/CH) path is only observable on production. Phase 2.1 verification must say so explicitly; adding the var to Preview is a developer decision (low risk).
 - Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time; the Claude Code auto-mode classifier also blocks `vercel deploy --prod` unless `Bash(vercel deploy:*)` is allowed (granted 2026-09-08 in `.claude/settings.local.json`). Preview-before-prod is the established pattern.
-- [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only.
+- [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only. Phase 2.1's own `02.1-SECURITY.md` closed at ASVS L1 grep-depth (45 threats, 0 open, `gsd-security-auditor` still not installed).
 - ~~[Phase 2 carry-forward] `02-REVIEW.md` CR-01 / WR-01..03~~ fixed and deployed 2026-09-14 (PR #16, `dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7`).
 - ~~[Phase 2 carry-forward] `origin/main` behind~~ resolved 2026-09-14 (PR #15 and #16 merged; `main` = `66b59da`).
 - [Phase 2 carry-forward] GSC reports `/` as "Crawled – currently not indexed" (crawl 2026-09-05, pre-deploy) — pre-existing but unexplained for the homepage; investigate at the Phase 3 gate.
@@ -139,9 +140,9 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - Phase 5 open question: dedicated ParseForge Discord vs. channel in existing LootList+ server (empty-room risk). Phase touches a second repo at /Users/alexander.mayes/Code/loot-list-plus (Railway deploy).
 - Phase 6 research flag: define the per-page uniqueness rubric before scaling programmatic pages past the 10–15 pilot set (scaled-content-abuse risk).
 - Scheduled check-in 2026-09-08 reviews /tbc-audit + PR #10 outcomes — do not re-diagnose those before then.
-- [Phase 2.1 close] Phase 2.1's OPS-01 gate is NOT signed: the Vercel Web Analytics pageview figure for the 2026-09-14 22:16:59Z-23:16:59Z window could not be read this session (Vercel MCP scoped to a different team; personal CLI token has no Web Analytics endpoint; vercel logs proxy judged unfit). Next action: read https://vercel.com/loot-list-plus/parseforge/analytics for that window, compute the ratio against 25 PostHog pageviews (passes at Vercel <= 50), and if it passes, sign docs/OPS-01-SHIP-GATE.md Part 4 + date REQUIREMENTS.md OPS-01. Separately: 5 code-review fix commits (90f5a46, 0e03d9b, 7a7cf0c, 9657535, 9da21c4) are not yet in production - a follow-up developer-approved deploy is needed.
-- [Phase 2.1 / 02.1-07] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
-- [Phase 02.1 close] ROADMAP SC2, 02.1-VERIFICATION.md Truth 4, and MONY-01's live proof remain behaviour-unverified: no real EEA/UK/CH browser session has ever exercised the TCF consent path (deriveConsentGateOutcome / PostHogProvider.tsx wiring), because no EEA egress exists in this environment and the developer declined the manual VPN session. Closing test: a developer-run session from a real EEA/UK/Swiss VPN egress, fresh private browser window opened after the VPN connects, covering explicit reject, full opt-in, and a CMP re-confirmation (tests the already-live WR-03 dedupe, commit 9da21c4). See docs/OPS-01-SHIP-GATE.md Part 4 "EEA/UK TCF observation (gap closure 02.1-08, 2026-09-15)" for full detail.
+- ~~[Phase 2.1 close] OPS-01 gate NOT signed / five review fixes not in production~~ resolved: gate signed 2026-09-15 (02.1-05, ratio 25/23); the five fix commits shipped in `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` (02.1-07).
+- [Phase 2.1 carry-forward → Phase 3 gate] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
+- ~~[Phase 02.1 close] ROADMAP SC2 / Truth 4 / MONY-01 behaviour-unverified~~ resolved 2026-09-15: the developer ran the EEA/UK/CH VPN session (reject, full opt-in, CMP re-confirm) and passed it as `02.1-UAT.md` Test 1; `consent_resolved` fired once (WR-03 dedupe holds in-browser).
 
 ### Quick Tasks Completed
 
@@ -164,6 +165,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T21:05:17.073Z
-Stopped at: Completed 02.1-08-PLAN.md (EEA/UK TCF observation recorded as not-performed - developer declined the manual VPN session; ROADMAP SC2 / Truth 4 / MONY-01 stay behaviour-unverified with the exact test that would close them)
+Last session: 2026-09-15T22:47:00Z
+Stopped at: Phase 02.1 complete (UAT 2/2, Nyquist validated, security verified), ready to plan Phase 3
 Resume file: None

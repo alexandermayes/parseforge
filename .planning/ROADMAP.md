@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Themes & Consent** - Token audit unlocks a dark/light toggle; consent layer gates ads and PostHog replay (completed 2026-09-06)
 - [x] **Phase 2: Accuracy & Analysis Depth** - Verified game data, tested engines, cast timeline, healer metrics (completed 2026-09-08)
-- [ ] **Phase 2.1: PostHog Consent Gate Hotfix** (INSERTED) - Server-side geo opt-in for non-EEA; live-traffic OPS-01 re-verification
+- [x] **Phase 2.1: PostHog Consent Gate Hotfix** (INSERTED) - Server-side geo opt-in for non-EEA; live-traffic OPS-01 re-verification (completed 2026-09-15)
 - [ ] **Phase 3: Share Loop** - Roast/award cards, per-player permalinks, share CTA that survives later phases
 - [ ] **Phase 4: Ads Live** - AdSense in reserved, consent-gated slots that never crowd the core flow
 - [ ] **Phase 5: Community & Cross-Promotion** - Dedicated Discord, LootList+ two-way links, auto-posted reports
@@ -136,7 +136,7 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: 8/8 plans executed (4 gap-closure plans pending)
+**Plans**: 8/8 plans complete (incl. 4 gap-closure plans) — phase completed 2026-09-15 after human UAT (2/2), Nyquist validation and security verification
 **UI hint**: no
 
 Plans:
@@ -265,7 +265,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
-| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 8/8 | In Progress|  |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 8/8 | Complete    | 2026-09-15 |
 | 3. Share Loop | 0/TBD | Not started | - |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
