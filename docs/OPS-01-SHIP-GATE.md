@@ -1390,3 +1390,218 @@ explicitly hand-off to 02.1-08 rather than left as an unexplained zero. No appli
 changed to produce this section, and every added line above is aggregate counts, event names and
 gate-path literals — no per-visitor row, address, session-recording link, or credential from either
 service.
+
+### Re-deploy gate run (gap closure 02.1-07, 2026-09-15)
+
+**Decision (Task 1).** The developer's answer to the deploy decision was recorded verbatim in-session
+as **"ship it"** (2026-09-15 UTC), given in direct reply to a checkpoint that stated all five
+commits, the full price (a new 60-minute window, a re-run of all three item 7 thresholds, another
+Vercel Web Analytics figure), the rollback command and target, and the decline branch.
+
+On the Vercel-figure route (agreed in the same checkpoint, per this plan's own requirement), the
+developer's first answer was "developer reads it"; when the window elapsed the developer instead
+said, verbatim: **"Stop asking for me to do things. Do it for me please."** The orchestrator then
+obtained the figure itself — route and limitations recorded below. Both statements are recorded here
+as given.
+
+**Deployment.** New deployment id **`dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5`** — production, `Ready`,
+aliased to `https://parseforge.gg` and `https://www.parseforge.gg`. Deployed commit
+**`dd19b0ba1716d180a915bd9ad483d50d945cdcfc`** (HEAD of `growth/phase-2-review-fixes` at deploy
+time; contains all five review-fix commits). UTC deploy timestamp (from `vercel inspect`'s
+`created` field): **`2026-09-15T19:16:13Z`**. Rollback target:
+**`dpl_HY5319wSDVw3M4ibBU42JrSTgw4e`** (or `vercel --global-config ~/.vercel-personal rollback
+--scope loot-list-plus`).
+
+Preconditions re-verified before deploying: `vercel --global-config ~/.vercel-personal whoami` →
+`alexandermayes`; all five commits (`90f5a46`, `0e03d9b`, `7a7cf0c`, `9657535`, `9da21c4`) confirmed
+ancestors of HEAD via `git merge-base --is-ancestor`; working tree clean; local gates green
+(`npx tsc --noEmit` exit 0; `npx vitest run` 162/162; scoped `eslint` — 1 pre-existing warning,
+`CastTimeline.tsx:42`, img/LCP, already documented, nothing new added). Deploy command:
+`vercel --global-config ~/.vercel-personal deploy --prod --scope loot-list-plus --yes`.
+
+**The five commits shipped by this deploy:**
+- `90f5a46` — CR-01: `PostHogProvider` now validates the `/api/geo` response body at runtime, so a
+  JSON-shaped 5xx fails **closed** (does not opt the visitor in) instead of failing open.
+- `0e03d9b` — WR-01: adds a 5-second timeout to that `/api/geo` fetch.
+- `7a7cf0c` — WR-02: logs a whitespace-only geo header as `geo_header_missing` instead of treating
+  it as present.
+- `9657535` — WR-04: adds an explicit return type to the `/api/geo` route's `GET` handler.
+- `9da21c4` — WR-03: stops the `__tcfapi` listener from double-firing `consent_resolved` /
+  `consent_unavailable` on a repeat TCF resolution.
+
+**Browser-level netlog proof, against the new production build.** Fresh Chrome profile, standard
+desktop `--user-agent` override (no "Headless" substring), bare `https://parseforge.gg/`, no bypass
+parameters → **16 capture-request lines** to `/ingest/` (2026-09-14 pre-fix production baseline was
+0). `/api/geo` answered `200`.
+
+**In-window interaction repeat (02.1-06's four interactions, re-run inside this deploy's window).**
+Route: the automation route 02.1-06 recorded — orchestrator-driven headless Chrome via CDP, fresh
+profile, User-Agent override, `parseforge.gg` only. `2026-09-15T19:22:42Z` → `2026-09-15T19:23:07Z`:
+loaded `/`; theme Light then Dark via `button[aria-label="Toggle theme"]` (`html.class`
+light→dark confirmed); loaded
+`https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&tab=player&ptab=timeline` (13
+ability chips rendered); clicked one ability chip, then **All**. 16 `/ingest/` requests observed,
+including 5 `POST /ingest/i/v0/e/` batches. The optional error-inducing load (`fight=999999`) was
+**not** performed, matching 02.1-06's own scope.
+
+**Measured window.** The full 60 minutes elapsed before any query ran (first query at
+`2026-09-15T20:17Z`): **`2026-09-15T19:16:13Z` → `2026-09-15T20:16:13Z`**, bounds interpreted in
+**UTC** (confirmed PostHog project timezone). Connector confirmation, recorded before any number was
+read: `switch-project 337485` → "Switched to project 337485 … currently in project \"ParseForge\"
+(id: 337485) within organization \"LootList+\" … Project timezone: UTC."
+
+**Item 7's relative-form queries** (Part 1 item 7, copied verbatim — **not re-run**, since the window
+is already in the past by the time this section was written and a relative-window query would answer
+a different, empty window, not this one):
+
+```sql
+SELECT properties.$geoip_country_code AS country, count() AS pageviews FROM events WHERE event = '$pageview' AND timestamp >= now() - INTERVAL 60 MINUTE GROUP BY country ORDER BY pageviews DESC
+```
+
+```sql
+SELECT properties.consent_gate_path, count() FROM events WHERE timestamp >= now() - INTERVAL 60 MINUTE GROUP BY 1
+```
+
+**Explicit-bounds queries actually executed** (HogQL, bounds interpreted in **UTC**):
+
+Query 1:
+```sql
+SELECT properties.$geoip_country_code AS country, count() AS pageviews
+FROM events
+WHERE event = '$pageview'
+  AND timestamp >= toDateTime('2026-09-15 19:16:13', 'UTC')
+  AND timestamp < toDateTime('2026-09-15 20:16:13', 'UTC')
+GROUP BY country
+ORDER BY pageviews DESC
+```
+
+Result, verbatim:
+
+| country | pageviews |
+|---|---|
+| US | 3 |
+
+Query 2:
+```sql
+SELECT properties.consent_gate_path AS consent_gate_path, count() AS count
+FROM events
+WHERE timestamp >= toDateTime('2026-09-15 19:16:13', 'UTC')
+  AND timestamp < toDateTime('2026-09-15 20:16:13', 'UTC')
+GROUP BY 1
+ORDER BY count DESC
+```
+
+Result, verbatim:
+
+| consent_gate_path | count |
+|---|---|
+| geo-non-consent-region | 19 |
+
+Query 3 (the six named custom events, same window):
+```sql
+SELECT event, properties.consent_gate_path AS consent_gate_path, count() AS count
+FROM events
+WHERE timestamp >= toDateTime('2026-09-15 19:16:13', 'UTC')
+  AND timestamp < toDateTime('2026-09-15 20:16:13', 'UTC')
+  AND event IN ('theme_changed', 'timeline_viewed', 'timeline_filter_used', 'timeline_error', 'consent_resolved', 'consent_unavailable')
+GROUP BY event, consent_gate_path
+ORDER BY event
+```
+
+Result, verbatim:
+
+| event | consent_gate_path | count |
+|---|---|---|
+| theme_changed | geo-non-consent-region | 2 |
+| timeline_filter_used | geo-non-consent-region | 2 |
+| timeline_viewed | geo-non-consent-region | 1 |
+
+(Connector taxonomy note: `timeline_error`, `consent_resolved` and `consent_unavailable` have never
+been seen in this project — count 0 for each, for the same reason 02.1-06 recorded: no triggering
+action / structurally unreachable from a non-consent-region egress.) These three observed counts —
+`theme_changed`, `timeline_viewed`, `timeline_filter_used` — came from the in-window interaction
+repeat above, so they were observed **inside a genuine post-deploy window**, which is ROADMAP SC3
+read literally.
+
+**Vercel Web Analytics figure and its provenance.** Route: the developer declined to read the
+dashboard himself ("Stop asking for me to do things. Do it for me please"); the Claude-in-Chrome
+extension was not connected; the Vercel MCP connector is authenticated to a different team (403 on
+scope `loot-list-plus`). The orchestrator therefore used the **Vercel CLI's authenticated beta API
+passthrough** — `vercel --global-config ~/.vercel-personal --scope loot-list-plus api "<endpoint>"`
+(personal login `alexandermayes`; the CLI holds the token, nothing was read or printed) — against
+`GET /v1/query/web-analytics/visits/aggregate` with `projectId=parseforge`,
+`teamId=team_TI2b6b1clUIlT3tZgaMSBnPV`, production filter (API default). URL/endpoint in place of a
+dashboard URL — this route did not use the dashboard: the Vercel API endpoint path above, reached
+through the authenticated CLI passthrough rather than a browser session at
+`https://vercel.com/loot-list-plus/parseforge/analytics`.
+
+**Granularity limitation, recorded exactly:** the API rounds `since`/`until` to whole **hours** for
+aggregate queries (echoed query: since `2026-09-15T19:00:00.000Z`, until
+`2026-09-15T21:00:00.000Z`), and the `/visits/count` endpoint floored both bounds to the **day** and
+returned 0 — so the exact 60-minute window is **not readable at window granularity** through this
+route. The figure below is therefore an **upper bound** over `19:00:00Z`–`21:00:00Z` (120 minutes,
+containing the whole 60-minute window):
+
+Vercel page views 19:00–21:00Z by country (verbatim, environment production): DE pv=5 vis=3; CZ
+pv=4 vis=2; US pv=4 vis=2; BR pv=9 vis=1; DK pv=1 vis=1; SG pv=2 vis=1 → **TOTAL 25 pageviews, 10
+visitors.**
+
+By hour bucket: 19:00 bucket → DE 2, CZ 2, US 4, BR 9 (=17); 20:00 bucket → DE 3, CZ 2, DK 1, SG 2
+(=8). The 19:00 bucket includes `19:00`–`19:16Z` on the **old** build; the 20:00 bucket includes
+`20:16`–`21:00Z`, which is **outside** the measured window — both widen the figure further beyond
+the true window value. Timezone: UTC (API). Read by: the orchestrator, via the CLI, on 2026-09-15 at
+approximately `20:4xZ`.
+
+**Threshold scoring for the new window:**
+
+- Threshold 1 (≥ 20 `$pageview` events in the new window — exactly 20 passes; 3 counted, all from
+  US): FAIL
+- Threshold 2 (≥ 2 distinct non-consent-region `$geoip_country_code` values, classified against
+  `CONSENT_REGIONS` in `lib/geo.ts` by lookup — exactly 2 passes; 1 counted (US; not in
+  `CONSENT_REGIONS`)): FAIL
+- Threshold 3 (PostHog `$pageview` count ≥ 50% of the Vercel Web Analytics figure for the same
+  window — exactly 50% passes; PostHog count 3, Vercel figure 25 over the wider 2-hour upper-bound
+  range described above → 3 / 25 ≈ 12% of an **upper bound**, which a shortfall against can never
+  itself be scored FAIL — passing at the exact window would require the true Vercel figure to be
+  ≤ 6): NOT EVALUABLE
+
+**Closing verdict — this deploy's gate row is NOT signed.** Thresholds 1 and 2 did not pass: 3
+`$pageview` events against a required 20, and 1 distinct non-consent-region country (US) against a
+required 2. Threshold 3 is not evaluable at window granularity given the data available this
+session. What would close this row: re-measure a full 60-minute window against this same deployment
+on a busier hour — the PostHog hourly series (below) shows the **old** build also produced 1-pageview
+hours at 12:00, 13:00, 16:00 and 17:00Z the same day, and 24 pageviews in the 22:00Z hour on
+2026-09-14 — together with a Vercel Web Analytics figure read at window granularity from the
+dashboard rather than the CLI's hour-rounded aggregate endpoint.
+
+**02.1-05's sign-off is untouched.** The `### Phase 2.1 Sign-off — SIGNED (2026-09-15, gap-closure
+02.1-05)` section above, covering the 2026-09-14 window, is not edited, retracted or superseded by
+this section — it rests on its own evidence for its own window. This section covers a different
+deploy and a different window; it is recorded honestly as unsigned, and that does not soften or
+qualify the earlier sign-off.
+
+**Finding, surfaced to the developer and not patched here — an apparent capture gap that predates
+this deploy.** PostHog hourly `$pageview` counts (UTC) on the **old** build, up to the
+`19:16Z` cutover: Sep 14 22:00 → 24 (3 countries); 23:00 → 7; Sep 15 05:00 → 14; 07:00 → 20; 11:00 →
+18; 12:00 → 1; 13:00 → 1; 15:00 → 16; 16:00 → 1; 17:00 → 1; 18:00 → 3 (US 2, CA 1); 19:00 → 4 (US).
+Low-volume hours are a normal feature of this site's traffic, and the 2026-09-14 measured window
+happened to land on the day's peak hour.
+
+Cross-checking capture by country on the **old** build (Vercel API `2026-09-14T19:00Z`–
+`2026-09-15T20:00Z` as echoed, vs PostHog `$pageview` `2026-09-14T19:00Z`–`2026-09-15T19:00Z`): US 61
+vs 63; CA 11 vs 24; BR 15 vs 7; SG 6 vs 0; TR 3 vs 8; UA 2 vs 20; RS 2 vs 0; AR 1 vs 1; AU 1 vs 1; PE
+1 vs 2. EEA countries (DE 29, GB 25, DK 10, CZ 10, FR 9, PL 6, and others) are absent from PostHog as
+designed — no capture before TCF consent. PostHog `consent_gate_path` over that same day:
+`geo-non-consent-region` 478 events / 30 visitors; `(null)` 2.
+
+Interpretation: PostHog over-counts SPA navigations relative to Vercel for most non-consent
+countries, but SG (0 vs 6) and RS (0 vs 2) visitors were never captured on the old build either, and
+BR was roughly 1:1 before `19:00Z`. The BR/SG capture gap visible in this deploy's own window is
+therefore most plausibly a **pre-existing** gap for a subset of non-consent-region visitors
+(consistent with client-side ad-blockers blocking the `/ingest/` PostHog paths while leaving
+Vercel's first-party analytics script largely unaffected) rather than a regression introduced by the
+five fixes shipped in this deploy — every orchestrator-driven interaction in this window was
+captured with `consent_gate_path = geo-non-consent-region`, and `/api/geo` answered in roughly
+0.3–0.6 s from a US client, well under the new 5-second timeout. Recorded here as a finding for the
+developer, not fixed in this plan; a candidate follow-up is a `WINDOWS.md` item to quantify the
+PostHog-vs-Vercel capture ratio per country over a full week.
