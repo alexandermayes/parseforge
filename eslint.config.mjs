@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // GSD / agent tooling — not application code (Phase 3 gate fix)
+    ".claude/**",
+    ".codex/**",
+    ".agents/**",
+    ".gsd/**",
+    ".impeccable/**",
+    ".planning/**",
   ]),
 ]);
 
