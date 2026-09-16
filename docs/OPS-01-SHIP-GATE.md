@@ -2027,3 +2027,267 @@ follow-up (or files a defect if either button requires scrolling past a table fi
 **Part 5 remains unsigned below this line** — no sign-off table, no dated approval. The production
 deploy and its own live-traffic gate row are 03-07's job, per this plan's own objective and Part
 4's precedent.
+
+---
+
+## Part 5 (continued) — 03-07 production half
+
+### Production deploy
+
+**Developer approval (Task 1 decision checkpoint), recorded verbatim.** Timestamp: 2026-09-16T09:11Z.
+Option id selected: **`deploy-now`**. The prompt the developer answered: "Deploy Phase 3 to
+production now? (Task 2 will run only the command your choice authorizes and record your approval
+verbatim in Part 5.)" The `deploy-now` option's own text, as presented: "Ship HEAD adaea2f to
+parseforge.gg now. Share loop starts generating the live data OPS-01 needs; Discord unfurl and
+item-7 become measurable. Rollback = redeploy prior commit."
+
+**Preconditions re-verified before deploying, this session:** `git rev-parse HEAD` →
+`adaea2f13914f35e8a7ff1b4b8bd3a424cd66251`, matching the approved HEAD exactly; `git status --short`
+showed only the same untracked GSD-scaffolding paths every prior Part in this document records as
+out of scope (`.codex/`, `.gsd/`, `.impeccable/`, `.planning/milestone.lock`,
+`.planning/research/.cache/*`, `.planning/state.json`, `AGENTS.md`) — no uncommitted change to any
+tracked file. The orchestrator's own diff check (`840b05f` → `adaea2f`) had already confirmed the
+delta since 03-06's own preview deploy touches only `.planning/` and `docs/` — zero application
+files — so this deploy ships exactly the application code the 03-06 preview proved.
+
+**Deploy command:** `vercel --global-config ~/.vercel-personal deploy --prod --scope loot-list-plus
+--yes`.
+
+**Result:**
+- **Deployment id:** `dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`
+- **Deployment URL:** `https://parseforge-3oskjc2ii-loot-list-plus.vercel.app`
+- **Aliased:** `https://parseforge.gg`, `https://www.parseforge.gg`
+- **Target / status:** `production` / `Ready` (`vercel inspect` confirmed)
+- **Deployed commit:** `adaea2f13914f35e8a7ff1b4b8bd3a424cd66251` — recorded from `git rev-parse
+  HEAD` immediately before the deploy call, the same method Part 4 used for
+  `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5`; this CLI-driven deploy is not git-integration-linked, so
+  Vercel's own deployment record carries no `gitSource` SHA to cross-check against.
+- **UTC deploy timestamp** (`vercel inspect`'s `created` field, converted from the CLI's local `Sep
+  16 2026 02:14:57 GMT-0700`): **`2026-09-16T09:14:57Z`**. This opens the item-7 60-minute window
+  below.
+- **Rollback target:** the immediately-prior production deployment is
+  `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` (`https://parseforge-10dpibrmf-loot-list-plus.vercel.app`,
+  created `2026-09-15T19:16:13Z`, confirmed via `vercel ls` + `vercel inspect` this session) — a
+  redeploy of that build, or `vercel --global-config ~/.vercel-personal rollback --scope
+  loot-list-plus`, restores the prior state per the approved option's own "Rollback = redeploy
+  prior commit" text.
+
+No `promote`, `alias`, or second `deploy --prod` command was run. Exactly one production deploy
+command executed this task.
+
+### Post-deploy production route-contract evidence (2026-09-16, ~09:16Z)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ for U in "https://parseforge.gg/og?report=ZjKgNYxVcAqR8pGJ&fight=23&view=awards" \
+           "https://parseforge.gg/og?report=ZjKgNYxVcAqR8pGJ&fight=23&source=12" \
+           "https://parseforge.gg/og?report=ZjKgNYxVcAqR8pGJ"; do
+  curl -s -o /dev/null -w '%{http_code}:%{content_type}\n' "$U"
+done
+200:image/png
+200:image/png
+200:image/png
+
+$ curl -s "https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ" | grep -o 'rel="canonical" href="[^"]*"'
+rel="canonical" href="https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ"
+```
+
+All three production OG branches (awards, player, bare report) return `200 image/png`; the
+production analyze canonical carries no query string.
+
+```
+$ npm run protected-elements
+PASS  attr:awards-panel  found in app/components/RaidOverview.tsx
+PASS  attr:awards-preview  found in app/components/RaidOverview.tsx
+PASS  attr:share-awards  found in app/components/RaidOverview.tsx
+PASS  attr:share-discord  found in app/components/ComparisonSummary.tsx
+PASS  attr:share-header  found in app/analyze/[reportCode]/AnalyzeClient.tsx
+PASS  attr:share-player  found in app/components/ComparisonSummary.tsx
+PASS  route:analyze-canonical  canonical=https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ
+PASS  route:og-awards  200 image/png
+PASS  route:og-player  200 image/png
+PASS  route:og-report  200 image/png
+
+10 passed, 0 failed
+```
+
+`npm run protected-elements` exits 0 against production, all ten rows PASS — unlike Task 1's
+production-base run earlier in this Part (which only proved the fallback safety net before this
+deploy shipped), this run proves the new card content itself is live.
+
+### Item 7 — post-deploy live-traffic check: **PENDING**
+
+**Window this deployment opens (UTC):** `2026-09-16T09:14:57Z` → `2026-09-16T10:14:57Z`. Per Part 1
+item 7's own rule, a partial window is never recorded as a pass — this plan's own execution session
+cannot itself wait out a 60-minute window, so this row is recorded PENDING rather than run early or
+skipped.
+
+**The exact HogQL to run, verbatim, once the window above has fully elapsed** (PostHog project
+`337485` — `switch-project 337485` first, since the connector's default project is `LootList+ App`,
+not ParseForge):
+
+Query 1 (pageviews by country):
+```sql
+SELECT properties.$geoip_country_code AS country, count() AS pageviews
+FROM events
+WHERE event = '$pageview'
+  AND timestamp >= toDateTime('2026-09-16 09:14:57', 'UTC')
+  AND timestamp < toDateTime('2026-09-16 10:14:57', 'UTC')
+GROUP BY country
+ORDER BY pageviews DESC
+```
+
+Query 2 (consent gate path coverage):
+```sql
+SELECT properties.consent_gate_path AS consent_gate_path, count() AS count
+FROM events
+WHERE timestamp >= toDateTime('2026-09-16 09:14:57', 'UTC')
+  AND timestamp < toDateTime('2026-09-16 10:14:57', 'UTC')
+GROUP BY 1
+ORDER BY count DESC
+```
+
+Query 3 (this phase's new events, with consent_gate_path — closes RESEARCH A3):
+```sql
+SELECT event, properties.consent_gate_path AS consent_gate_path, count() AS count
+FROM events
+WHERE timestamp >= toDateTime('2026-09-16 09:14:57', 'UTC')
+  AND timestamp < toDateTime('2026-09-16 10:14:57', 'UTC')
+  AND event IN ('share_action', 'share_landing', 'share_link_copied', 'discord_copied')
+GROUP BY event, consent_gate_path
+ORDER BY event
+```
+
+Also needed: the Vercel Web Analytics page-view figure for the same window (production filter,
+window-granularity if the dashboard allows it; the hour-rounded CLI aggregate endpoint is a known
+upper-bound-only fallback per Part 4's precedent) for threshold 3.
+
+**Thresholds to score once counted (Part 1 item 7, unmodified):**
+- Threshold 1: ≥ 20 `$pageview` events in the window — exactly 20 passes. Zero events is a FAIL,
+  never `no-data`.
+- Threshold 2: ≥ 2 distinct non-consent-region `$geoip_country_code` values — exactly 2 passes.
+- Threshold 3: PostHog `$pageview` count ≥ 50% of the Vercel Web Analytics figure for the same
+  window — exactly 50% passes.
+
+**Status: PENDING.** No count has been read for this window — this executor has no PostHog MCP
+tool and no `POSTHOG_PERSONAL_API_KEY`/`POSTHOG_API_KEY` credential in this environment (`env | grep
+-ci posthog` → `0`), and the window has not elapsed inside this run regardless. Recorded as PENDING,
+not estimated, not assumed, not borrowed from any prior deploy's window.
+
+### Share-rate figure (D-14): **PENDING**
+
+**The exact HogQL to run, verbatim** (Part 1 item 4, PostHog project `337485`, 7-day trailing
+window — independent of the item-7 window above):
+```sql
+SELECT
+  (SELECT count(DISTINCT $session_id) FROM events WHERE event = 'share_action' AND timestamp >= now() - INTERVAL 7 DAY) AS sessions_with_share,
+  (SELECT count(DISTINCT $session_id) FROM events WHERE event = 'analysis_complete' AND timestamp >= now() - INTERVAL 7 DAY) AS sessions_with_analysis,
+  sessions_with_share * 100.0 / nullif(sessions_with_analysis, 0) AS share_rate_pct
+```
+
+Also needed, same window: whether `share_landing` appears at all, and with which `ref` values —
+```sql
+SELECT properties.ref AS ref, count() AS count
+FROM events
+WHERE event = 'share_landing' AND timestamp >= now() - INTERVAL 7 DAY
+GROUP BY 1
+ORDER BY count DESC
+```
+
+**Status: PENDING.** Same reason as item 7 — no PostHog credential or MCP tool available to this
+executor. The numerator, denominator, resulting percentage, the counts (not only the ratio), the
+comparison against the ~2.8% baseline, `share_landing` presence/ref breakdown, and whether captured
+`share_action`/`share_landing` events carry `consent_gate_path` all remain to be filled in once
+these queries are run. Never fabricated, never estimated from Query 3 above alone (that query's
+window is item 7's 60-minute window, not this HogQL's 7-day window — the two are not
+interchangeable).
+
+### Carried-forward item: `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` item-7 row — **superseded**
+
+That deployment (Part 4's unsigned item-7 row, thresholds 1/2 FAIL, threshold 3 NOT EVALUABLE) is
+no longer in production — this plan's deploy (`dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`) replaced it at the
+`parseforge.gg`/`www.parseforge.gg` aliases at `2026-09-16T09:14:57Z` (confirmed via `vercel ls` +
+`vercel inspect` this session: `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` now shows age `14h`, no longer the
+newest production entry). Rather than leave that row looking open against a build no longer live,
+it is recorded here as **superseded** — its own thresholds are not retroactively re-scored, and the
+live gate obligation for production traffic now points at this deployment's own item-7 window
+(`### Item 7 — post-deploy live-traffic check` above), not at the superseded deployment's.
+
+### Search Console pass: **PENDING**
+
+Per Part 1 item 5, this phase introduces no new indexable route (03-CONTEXT.md), so the check is a
+no-regression one. This executor has no `gscServer` MCP tool available in this session (same
+limitation Part 3 recorded for its own dispatch). The exact test that would close this, per route:
+
+- **`/`** — URL-inspect via Search Console (`sc-domain:parseforge.gg`), confirm indexability
+  unchanged (currently "Crawled – currently not indexed" per STATE.md, crawl date 2026-09-05,
+  predating even the Phase 2 deploy) and confirm no metadata regression. **Also**: record the
+  current coverage state and crawl date at inspection time, and either request a recrawl via the
+  URL Inspection tool's "Request indexing" action and record that it was requested, or record the
+  specific reason it could not be (e.g., a daily recrawl-request quota already spent this session).
+  Do not guess at why `/` is uncrawled-since-indexing — record only what the inspection tool
+  states.
+- **`/analyze/ZjKgNYxVcAqR8pGJ`** — URL-inspect, confirm indexability and metadata unchanged from
+  the Phase 1/2 baseline (route confirmed untouched by this phase's `git log` — same check every
+  prior Part ran).
+- **No new indexed URL for an awards-view or `ref` permutation** — confirm via Search Console's
+  Pages report (or a site: search) that no `?view=awards`, `?ref=awards`, or `?ref=parse` variant of
+  `/analyze/ZjKgNYxVcAqR8pGJ` appears as a separately indexed URL (expected: none, since the
+  canonical the route emits is always the param-free form, confirmed again in this Part's own
+  post-deploy evidence above).
+
+**Status: PENDING.** No inspection was run this session. Recorded as PENDING with the exact test
+above, not as `no-data` folded silently into a pass, and not skipped.
+
+### Developer review backstops — production URLs (rewritten from 03-06's preview URLs)
+
+The three developer-only checks 03-06 recorded as not-performed against the preview remain
+**not performed** — production removes the SSO complication 03-06 flagged, but performing the
+checks still requires a human. Their closing tests, rewritten to the now-live production URLs (no
+bypass header, no SSO, needed):
+
+**1. Award pool tone (D-04) — still not performed.** Exact test unchanged from 03-06: read the
+fifteen-row table in `### Award pool for review (D-04)` above and confirm the D-01 bar. Closes when
+the developer states, in this document or `03-07-SUMMARY.md`, that the pool as shipped clears that
+bar (or names the row that doesn't).
+
+**2. Real Discord unfurl — still not performed.** Exact test: paste each URL below into a real
+Discord channel and confirm it unfurls as an image with rows and receipts legible, specifically
+checking whether the longest raider names in the demo log clip with an ellipsis rather than
+overflow (RESEARCH Pitfall 2 / Assumption A2). Change the `v=` value on every retry — Discord caches
+an embed and its proxied image by exact URL for an undocumented period (RESEARCH Pitfall 1).
+- Awards link: `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=1789550356`
+- Player link: `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=1789550356`
+
+No SSO/bypass complication applies to these — production carries no Deployment Protection. This is
+the first point at which a genuine, unauthenticated Discord-crawler unfurl test is actually possible
+for this phase, per 03-06's own recommendation (option "c") to defer this specific check here.
+
+**3. Mobile reachability (D-13) — still not performed.** Exact test: on a phone-width viewport (real
+device or a resized real browser), open
+`https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12`, switch to the Raid tab, and
+confirm both the awards "Copy link" button and the player "Share my parse" button are reachable
+without scrolling past the analysis tables. Closes when the developer confirms this in this
+document or in `03-07-SUMMARY.md`'s follow-up (or files a defect).
+
+### Part 5 status — outstanding items (NOT YET SIGNED)
+
+Part 5 is **not signed** as of this session. Every item below has a name and an exact closing test —
+none is omitted, none is softened into a pass, and no prior phase's evidence or threshold has been
+reused or lowered to reach a signature:
+
+| # | Item | Status | Closing test |
+|---|---|---|---|
+| 1 | Item 7 live-traffic thresholds (this deployment's `09:14:57Z`–`10:14:57Z` window) | PENDING | Run the three HogQL queries in `### Item 7` above against PostHog project 337485 once the window has fully elapsed, plus the Vercel Web Analytics figure for the same window |
+| 2 | Share-rate figure (D-14) | PENDING | Run the two HogQL queries in `### Share-rate figure (D-14)` above against PostHog project 337485 |
+| 3 | Search Console — `/` no-regression + recrawl status | PENDING | URL-inspect `/` via `sc-domain:parseforge.gg`; record coverage state, crawl date, and whether a recrawl was requested |
+| 4 | Search Console — `/analyze/ZjKgNYxVcAqR8pGJ` no-regression | PENDING | URL-inspect the route; confirm indexability/metadata unchanged |
+| 5 | Search Console — no separately-indexed awards/ref permutation | PENDING | Pages report / site: search for `?view=awards`, `?ref=awards`, `?ref=parse` variants of the analyze route |
+| 6 | D-04 award-pool tone review | NOT PERFORMED | Developer reads `### Award pool for review (D-04)` and states a verdict |
+| 7 | Real Discord unfurl (production URLs) | NOT PERFORMED | Paste the two production links above into a real Discord channel, changing `v=` each retry |
+| 8 | D-13 mobile reachability (production URL) | NOT PERFORMED | Phone-width viewport pass on the production analyze page's Raid tab |
+
+Rows already closed by this session: the production deploy itself, all three production OG-route
+contracts, the production canonical, and `npm run protected-elements` against production (all
+recorded with evidence above), and the `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` item-7 row (recorded
+superseded, not re-scored).
