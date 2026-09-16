@@ -731,3 +731,167 @@ describe("computeAwards — outcome", () => {
     expect(result.outcome).toBeNull();
   });
 });
+
+// ─── Pool-wide invariants (D-01/D-02/D-04) ────────────────────────────
+// These assert the contract of the fifteen-rule pool itself, not any one
+// rule's behaviour — the guardrails that keep a future sixteenth rule safe
+// to add without silently breaking the shape every consumer depends on.
+
+describe("AWARD_POOL — pool-wide invariants", () => {
+  it("has unique ids", () => {
+    const ids = AWARD_POOL.map((r) => r.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("has the contiguous priority range 1 to 15 with no gaps or repeats", () => {
+    const priorities = AWARD_POOL.map((r) => r.priority).slice().sort((a, b) => a - b);
+    expect(priorities).toEqual(Array.from({ length: 15 }, (_, i) => i + 1));
+  });
+
+  it("gives every rule a non-empty title and icon", () => {
+    for (const rule of AWARD_POOL) {
+      expect(rule.title.length, `${rule.id} title`).toBeGreaterThan(0);
+      expect(rule.icon.length, `${rule.id} icon`).toBeGreaterThan(0);
+    }
+  });
+
+  it("gives every rule one of the two allowed tones", () => {
+    for (const rule of AWARD_POOL) {
+      expect(["praise", "jab"], `${rule.id} tone`).toContain(rule.tone);
+    }
+  });
+
+  it("fires no rule unconditionally — only an explicit allowlist fires on a minimal all-zero fight", () => {
+    // One player, no deaths, all consumables true, no missing enchants, zero
+    // healing — the emptiest fight computeAwards will still evaluate rules
+    // against (fightDuration/players guards need a positive duration and a
+    // non-empty roster).
+    const minimal = makeOverview();
+
+    // top-dps and best-prepared are the only rules whose trigger genuinely
+    // holds on this input: a single non-healer with positive throughput is
+    // trivially "top", and a single fully-consumed, fully-enchanted player is
+    // trivially "best prepared". Every other rule's trigger requires a
+    // condition this fixture does not create (a death, a missing consumable,
+    // a second player to create a spread, etc.) — adding a rule that fires
+    // here without adding it to this allowlist is a bug, not a feature.
+    const permittedToFireOnMinimalFight = new Set(["top-dps", "best-prepared"]);
+
+    for (const rule of AWARD_POOL) {
+      const fired = rule.evaluate(minimal, null);
+      if (permittedToFireOnMinimalFight.has(rule.id)) {
+        expect(fired, `expected ${rule.id} to fire on the minimal fixture`).toBeTruthy();
+      } else {
+        expect(fired, `expected ${rule.id} NOT to fire on the minimal fixture`).toBeNull();
+      }
+    }
+  });
+
+  it("gives every fired row a non-empty stat and 1..MAX_WINNER_NAMES winners, across every fixture in this suite", () => {
+    const fixtures: RaidOverviewResult[] = [
+      realOverview(),
+      makeOverview(),
+      makeOverview({
+        players: ["Amy", "Bob", "Cody", "Dee", "Eve"].map((name, i) =>
+          makePlayer({
+            sourceId: i + 1,
+            name,
+            consumables: { flask: false, food: true, weaponEnhancement: true },
+          }),
+        ),
+      }),
+      makeOverview({
+        fightDuration: 120_000,
+        players: [
+          makePlayer({
+            sourceId: 1,
+            name: "Ace",
+            role: "Physical",
+            throughput: 5000,
+            avoidableDamage: 200,
+            activityPercent: 95,
+            avgItemLevel: 80,
+          }),
+          makePlayer({
+            sourceId: 2,
+            name: "Bee",
+            role: "Physical",
+            throughput: 1200,
+            avoidableDamage: 150,
+            activityPercent: 85,
+            consumables: { flask: true, food: true, weaponEnhancement: false },
+            missingEnchants: 4,
+            avgItemLevel: 68,
+          }),
+          makePlayer({
+            sourceId: 3,
+            name: "Cee",
+            role: "Caster",
+            throughput: 300,
+            deaths: 3,
+            avoidableDamage: 5000,
+            activityPercent: 60,
+            consumables: { flask: false, food: false, weaponEnhancement: true },
+            avgItemLevel: 55,
+          }),
+          makePlayer({
+            sourceId: 4,
+            name: "Dee",
+            role: "Tank",
+            throughput: 800,
+            avoidableDamage: 300,
+            activityPercent: 90,
+            missingEnchants: 1,
+            avgItemLevel: 70,
+          }),
+          makePlayer({
+            sourceId: 5,
+            name: "Newbie",
+            role: "Caster",
+            throughput: 900,
+            avoidableDamage: 100,
+            activityPercent: 88,
+            avgItemLevel: 40,
+          }),
+        ],
+        healerMetrics: [
+          makeHealer({
+            sourceId: 6,
+            name: "Holy",
+            hps: 900,
+            totalHealing: 200_000,
+            overhealPercent: 55,
+            activityPercent: 90,
+          }),
+        ],
+        deathTimeline: [
+          { playerName: "Cee", playerClass: "Mage", sourceId: 3, fightTimeMs: 10_000, damage: 0, healing: 0 },
+        ],
+      }),
+    ];
+
+    for (const overview of fixtures) {
+      const result = computeAwards(overview, { name: "Test Boss", outcome: null });
+      expect(result.awards.length).toBeLessThanOrEqual(MAX_AWARDS_SHOWN);
+      for (const row of result.awards) {
+        expect(row.stat.length, `${row.id} stat`).toBeGreaterThan(0);
+        expect(row.winners.length, `${row.id} winners`).toBeGreaterThanOrEqual(1);
+        expect(row.winners.length, `${row.id} winners`).toBeLessThanOrEqual(MAX_WINNER_NAMES);
+      }
+    }
+  });
+
+  it("sorts stably — computing awards twice on the same input returns identical id order", () => {
+    const overview = realOverview();
+    const first = computeAwards(overview, { name: "Test Boss", outcome: null });
+    const second = computeAwards(overview, { name: "Test Boss", outcome: null });
+    expect(second.awards.map((a) => a.id)).toEqual(first.awards.map((a) => a.id));
+  });
+
+  it("does not mutate the RaidOverviewResult it is given", () => {
+    const overview = realOverview();
+    const snapshot = structuredClone(overview);
+    computeAwards(overview, { name: "Test Boss", outcome: null });
+    expect(overview).toEqual(snapshot);
+  });
+});
