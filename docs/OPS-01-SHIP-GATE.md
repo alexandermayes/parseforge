@@ -1708,3 +1708,153 @@ claim. This matches the plan's own flagged MONY-01 assumption verbatim.
 
 No application source was read for numbers and none was modified to produce this section. Nothing
 above is a per-visitor row, an address, a session-recording link, or a credential.
+
+---
+
+## Part 5 — Phase 3 evidence
+
+Phase 3 (03-share-loop) shipped the awards engine and its `/og?view=awards` card, per-player
+receipts on the `PlayerCard` OG image and a "Share my parse" primary button, the Raid tab awards
+panel with its real inline `/og` preview, the header Share normalization + landing-attribution
+funnel, and the `docs/PROTECTED-ELEMENTS.md` checklist plus its `scripts/protected-elements.mjs`
+gate (SHARE-01, SHARE-02, SHARE-03, OPS-01). This section records this plan's (03-06) own
+gate-run evidence — the **preview half** of the gate. Nothing here is a sign-off; the production
+deploy and its own live-traffic check are 03-07's job.
+
+### Local gate output (2026-09-16, Task 1, this session)
+
+A pre-existing gap was found and fixed before this gate could run at all — recorded as a deviation
+below (Rule 3, blocking issue), not silently worked around: ESLint's flat config
+(`eslint.config.mjs`) does not honor `.gitignore`, so the bare `npm run lint` invocation was
+sweeping the untracked `.claude/`/`.codex/`/`.agents/`/`.gsd/`/`.impeccable/`/`.planning/`
+directories (GSD tooling, out of scope per CLAUDE.md), producing ~1698 findings and 80+ seconds of
+output — the exact condition that stalled the previous attempt at this gate. Fixed by adding those
+six directories to `eslint.config.mjs`'s `globalIgnores` array (commit `4409a0a`, ahead of Task 1).
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+
+$ npm run lint
+✖ 1 problem (0 errors, 1 warning)
+— the single pre-existing app/components/CastTimeline.tsx no-img-element warning (documented lint
+  debt per CLAUDE.md, untouched by this phase). Exit 0.
+
+$ npm test
+ Test Files  18 passed (18)
+      Tests  226 passed (226)
+
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+
+$ npm run token-audit
+- Total findings: 64
+- Allowlisted: 64
+- Non-allowlisted (gate-relevant): 0
+- Missing required @theme categories: none
+
+$ npm run protected-elements
+PASS  attr:awards-panel  found in app/components/RaidOverview.tsx
+PASS  attr:awards-preview  found in app/components/RaidOverview.tsx
+PASS  attr:share-awards  found in app/components/RaidOverview.tsx
+PASS  attr:share-discord  found in app/components/ComparisonSummary.tsx
+PASS  attr:share-header  found in app/analyze/[reportCode]/AnalyzeClient.tsx
+PASS  attr:share-player  found in app/components/ComparisonSummary.tsx
+PASS  route:analyze-canonical  canonical=https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ
+PASS  route:og-awards  200 image/png
+PASS  route:og-player  200 image/png
+PASS  route:og-report  200 image/png
+
+10 passed, 0 failed
+```
+
+All six local-gate commands exit 0 by the gate-relevant measure. (The `token-audit` finding count,
+64, is higher than Phase 2's 57 — the delta is new Satori-only hex mirrors this phase's OG card
+work added to `app/og/route.tsx`/`lib/constants.ts`, all allowlisted for the same
+cannot-resolve-a-custom-property reason as every prior OG-route finding; 0 non-allowlisted.) The
+`protected-elements` run above is a base-URL-default run against production
+(`https://parseforge.gg`) — it proves the route contract's fallback safety net (an unrecognized or
+outdated card branch still returns a 2xx image), not that this phase's new card content is live in
+production yet; the preview-deployment run in the next section is the one that exercises the new
+code.
+
+### SEO invariants (2026-09-16, local dev server on port 3987)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npm run seo-invariants -- --base http://localhost:3987
+/: no-data (production returned fetch failed)
+/analyze/ZjKgNYxVcAqR8pGJ: diff-report-only — canonical (non-failing: local dev server has no WCL_CLIENT_ID/SECRET (Vercel-only secret) — cannot fetch real report data locally, so this is a local-environment artifact, not a code regression): local="https://parseforge.gg" prod="https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ"; robots (non-failing: same caveat): local="noindex" prod="index, follow"; title (non-failing): local="Report ZjKgNYxVcAqR8pGJ | ParseForge" prod="SSC / TK — WoW Classic Raid Analysis | ParseForge"; description (non-failing): local="WoW Classic raid performance analysis — DPS percentiles, gear audits, buff tracking, and improvement suggestions." prod="Player-by-player analysis of SSC / TK in SSC / TK — DPS/HPS percentiles, gear and enchant audits, buff uptime, and improvement tips for 27 raiders."; ogTitle (non-failing): local="ParseForge raid analysis" prod="SSC / TK — WoW Classic Raid Analysis"
+/guides: same (canonical/robots/structured-data match production)
+/guides/how-to-analyze-wow-classic-logs: same (canonical/robots/structured-data match production)
+/guides/improve-dps-wow-classic: same (canonical/robots/structured-data match production)
+/guides/raid-preparation-checklist: same (canonical/robots/structured-data match production)
+/guides/warcraft-logs-vs-parseforge: same (canonical/robots/structured-data match production)
+/guides/wow-classic-loot-council-tools: same (canonical/robots/structured-data match production)
+/privacy: same (canonical/robots/structured-data match production)
+/tbc-audit: same (canonical/robots/structured-data match production)
+/terms: same (canonical/robots/structured-data match production)
+
+seo-invariants exit: 0
+```
+
+Recorded honestly rather than silently omitted: the `/` row shows `no-data (production returned
+fetch failed)` — a single transient network failure reaching `https://parseforge.gg/` for that
+one route's diff comparison during this run, not a regression in this phase's code (this phase
+touches no `page.tsx` route or its metadata; `/analyze/[reportCode]/page.tsx`'s canonical/robots
+logic is confirmed unchanged by `git log`, same as every prior Part in this document). Every other
+route reports `same` or the same pair of non-failing local-environment caveats (missing WCL
+credentials, per-host `og:image`) this document has recorded since Part 2. Exit 0 — no
+canonical/robots/structured-data regression.
+
+### PostHog instrumentation (pre-deploy grep evidence)
+
+```
+$ grep -rn 'kind: "report_link"' app --include='*.tsx' --include='*.ts'
+app/analyze/[reportCode]/AnalyzeClient.tsx:125:        kind: "report_link",
+$ grep -rn 'kind: "player_link"' app --include='*.tsx' --include='*.ts'
+app/components/ComparisonSummary.tsx:235:      kind: "player_link",
+$ grep -rn 'kind: "awards_link"' app --include='*.tsx' --include='*.ts'
+app/components/RaidOverview.tsx:286:        kind: "awards_link",
+$ grep -rn 'kind: "discord_text"' app --include='*.tsx' --include='*.ts'
+app/components/ComparisonSummary.tsx:221:      kind: "discord_text",
+$ grep -rn 'posthog.capture("share_landing"' app --include='*.tsx' --include='*.ts'
+app/analyze/[reportCode]/AnalyzeClient.tsx:161:      posthog.capture("share_landing", { ref: resolvedRef, report_code: reportCode });
+$ grep -rn 'posthog.capture("share_link_copied"' app --include='*.tsx' --include='*.ts'
+app/analyze/[reportCode]/AnalyzeClient.tsx:123:      posthog.capture("share_link_copied", { report_code: reportCode, url });
+$ grep -rn 'posthog.capture("discord_copied"' app --include='*.tsx' --include='*.ts'
+app/components/ComparisonSummary.tsx:212:    posthog.capture("discord_copied", {
+```
+
+Each of the four `share_action` kinds (`report_link`, `player_link`, `awards_link`,
+`discord_text`) has exactly one call site, as does `share_landing`. The two legacy events
+(`share_link_copied`, `discord_copied`) also each have exactly one call site and keep firing this
+phase per D-14, so the pre-existing ~2.8% baseline series is not broken by this phase's dual-emit.
+
+### Award pool for review (D-04)
+
+The full fifteen-row pool, transcribed verbatim from `03-02-SUMMARY.md` (the exact shipped pool,
+not a description of it) for the developer's tone review at this gate:
+
+| priority | id | title | icon | tone | fires when | stat shown |
+|---|---|---|---|---|---|---|
+| 1 | first-to-die | First to Die | 💀 | jab | someone died this fight | "{time} in" |
+| 2 | top-dps | Meter Lord | ⚔️ | praise | highest-throughput non-healer | "{n} dps" |
+| 3 | top-hps | Triage Master | ✨ | praise | highest-hps healer | "{n} hps" |
+| 4 | flaskless | Flaskless Wonder | 🧪 | jab | any player without a flask | "no flask" |
+| 5 | best-prepared | Best Prepared | 🛡️ | praise | fully flasked/fed/enchanted/weapon-enhanced, highest ilvl among them | "flask + food + weapon + full enchants" |
+| 6 | graveyard-shift | Graveyard Shift | ⚰️ | jab | someone died 2+ times (names everyone tied at the max) | "{n} deaths" |
+| 7 | gcd-tourist | GCD Tourist | 🕰️ | jab | lowest-activity non-healer with throughput is below 80% active | "{pct} active" |
+| 8 | fire-dancer | Standing in the Fire | 🔥 | jab | max avoidable damage taken is >=1.5x the raid's median | "{n} taken" |
+| 9 | naked-slots | Enchants? Never Heard of Her | 🔧 | jab | someone is missing 3+ enchants (names everyone, ranked by count) | "{n} missing enchants" |
+| 10 | skipped-breakfast | Skipped Breakfast | 🍖 | jab | someone has no food buff (names everyone) | "no food buff" |
+| 11 | dull-blade | Dull Blade | 🗡️ | jab | a melee/tank has no weapon enhancement (casters never qualify) | "no weapon enhancement" |
+| 12 | iron-man | Iron Man | 🪨 | praise | the raid had a death but this player had zero, highest damage-taken among survivors | "0 deaths · {n} taken" |
+| 13 | watering-the-garden | Watering the Garden | 💧 | jab | a healer overhealed 50%+ | "{pct}% overheal" |
+| 14 | kept-them-breathing | Kept Them Breathing | 💚 | praise | a healer was 85%+ active | "{pct}% healing uptime" |
+| 15 | punching-up | Punching Up | 🎯 | praise | the lowest-ilvl non-healer (in a 10+ ilvl spread) kept pace at/above the raid's median throughput | "ilvl {n} · {n} dps" |
+
+This table is the exact artifact the developer's D-04 tone review (below, in
+`### Developer review (preview)`) checks against — praise alongside light jabs, every jab tied to
+a measurable stat, nothing insulting about a named real raider, no single worst-player headline.
