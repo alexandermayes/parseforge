@@ -1858,3 +1858,172 @@ not a description of it) for the developer's tone review at this gate:
 This table is the exact artifact the developer's D-04 tone review (below, in
 `### Developer review (preview)`) checks against — praise alongside light jabs, every jab tied to
 a measurable stat, nothing insulting about a named real raider, no single worst-player headline.
+
+### Preview deployment (2026-09-16, Task 2, this session)
+
+**Precondition note.** The Task 1 executor's checkpoint reported that `vercel env pull
+--environment=preview` returns 29 preview vars with no `VERCEL_AUTOMATION_BYPASS_SECRET` line, even
+after the developer confirmed Protection Bypass for Automation was enabled. This session did not
+re-run `env pull` (checked twice already, per the checkpoint). Instead the secret was sourced
+directly from the project's REST record: `GET /v9/projects/parseforge?slug=loot-list-plus` returns
+a `protectionBypass` object whose one key (scope `automation-bypass`) *is* the secret value. That
+key was read straight into a shell variable, confirmed non-empty by **length only** (32 characters
+— never the value), and used as a request header below. It was never echoed, written to a repo
+file, or included in any command's captured output; the shell variable and its one-off scratchpad
+copy were both cleared at the end of this task. `env pull`'s continued silence on this var (across
+two checks by two different executors) is recorded as an open oddity, not investigated further —
+the REST path fully substitutes for it and this plan's own T-03-22 mitigation (never printed, never
+committed) was upheld regardless of which path supplied the value.
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+Preview   https://parseforge-5y0xngn15-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_GF769NUm3eSbsQ2anhXzuTsTk8P1",
+    "url": "https://parseforge-5y0xngn15-loot-list-plus.vercel.app",
+    "readyState": "READY",
+    "target": null
+  }
+}
+```
+
+- **Deployment id:** `dpl_GF769NUm3eSbsQ2anhXzuTsTk8P1`
+- **Preview URL:** `https://parseforge-5y0xngn15-loot-list-plus.vercel.app`
+- **Created:** 2026-09-16T08:55:00Z (per `vercel inspect`, converted from the CLI's local
+  `01:55:00 GMT-0700` timestamp)
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `840b05f` — HEAD at deploy time, the
+  same commit Task 1 recorded as its own HEAD; `git status --short` immediately before and after
+  the deploy showed only the untracked GSD-scaffolding directories every prior Part in this
+  document has recorded as out of scope (`.codex/`, `.gsd/`, `.impeccable/`, plus
+  `.planning/milestone.lock`, `.planning/state.json`, `AGENTS.md` — none are tracked files this
+  phase touches), no uncommitted changes to any tracked file.
+- No `--prod` flag was passed anywhere in this task. No `promote`/`alias` command was run.
+
+**Live route checks against the preview** (bypass header `x-vercel-protection-bypass: <redacted>`,
+each URL cache-busted with a `cb=<unix timestamp>` query param per RESEARCH Pitfall 1):
+
+```
+$ curl -s -D - -o /dev/null -H "x-vercel-protection-bypass: <redacted>" \
+    "https://parseforge-5y0xngn15-loot-list-plus.vercel.app/og?report=ZjKgNYxVcAqR8pGJ&fight=23&view=awards&cb=<ts>"
+HTTP/2 200
+content-type: image/png
+
+$ curl -s -D - -o /dev/null -H "x-vercel-protection-bypass: <redacted>" \
+    "https://parseforge-5y0xngn15-loot-list-plus.vercel.app/og?report=ZjKgNYxVcAqR8pGJ&fight=23&source=12&cb=<ts>"
+HTTP/2 200
+content-type: image/png
+
+$ curl -s -D - -o /dev/null -H "x-vercel-protection-bypass: <redacted>" \
+    "https://parseforge-5y0xngn15-loot-list-plus.vercel.app/og?report=ZjKgNYxVcAqR8pGJ&cb=<ts>"
+HTTP/2 200
+content-type: image/png
+
+$ curl -s -H "x-vercel-protection-bypass: <redacted>" \
+    "https://parseforge-5y0xngn15-loot-list-plus.vercel.app/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12"
+HTTP/2 200
+<link rel="canonical" href="https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ"/>
+```
+
+All three preview OG branches (awards, player, bare report) return `200 image/png`. The preview's
+analyze page canonical carries no query string (`?fight=23&source=12` on the request, no query
+string on the canonical) — matching every prior Part's production canonical and confirming this
+phase's card work didn't regress it on a deployment that actually carries the new code (unlike
+Task 1's production-base `protected-elements` run, which only proved the fallback contract).
+
+**`npm run protected-elements` against the preview** — run, and its result recorded honestly rather
+than treated as the pass this row's acceptance criteria wants:
+
+```
+$ npm run protected-elements -- --base https://parseforge-5y0xngn15-loot-list-plus.vercel.app
+PASS  attr:awards-panel  found in app/components/RaidOverview.tsx
+PASS  attr:awards-preview  found in app/components/RaidOverview.tsx
+PASS  attr:share-awards  found in app/components/RaidOverview.tsx
+PASS  attr:share-discord  found in app/components/ComparisonSummary.tsx
+PASS  attr:share-header  found in app/analyze/[reportCode]/AnalyzeClient.tsx
+PASS  attr:share-player  found in app/components/ComparisonSummary.tsx
+PASS  route:analyze-canonical  canonical=https://vercel.com/login
+FAIL  route:og-awards  200 text/html; charset=utf-8
+FAIL  route:og-player  200 text/html; charset=utf-8
+FAIL  route:og-report  200 text/html; charset=utf-8
+
+7 passed, 3 failed
+```
+
+**Read first, as the task instructed:** `scripts/protected-elements.mjs`'s `fetchRoute()` calls
+plain `fetch(url, { redirect: "follow" })` with no header parameter anywhere in the script, and
+`docs/PROTECTED-ELEMENTS.md` documents no bypass mechanism for its own live-route half. The script
+has no way to attach `x-vercel-protection-bypass`, so its three route checks against an
+SSO-protected preview simply followed Vercel's redirect to the login page
+(`200 text/html; charset=utf-8`, and a canonical of `https://vercel.com/login` that happens to
+contain no `?` and so scores a coincidental, meaningless PASS on
+`route:analyze-canonical`) — this is a tooling gap in the script, not a regression in the
+deployed routes, which the direct `curl` evidence immediately above already proves are `200
+image/png` with a clean canonical. The six `attr:*` checks are unaffected (they read local source
+files, not the live base) and all six pass. Per the task's own instruction not to add features
+beyond the plan, this gap is recorded here rather than patched; a follow-up to give the script an
+optional bypass-header flag is logged to `.planning/WINDOWS.md`.
+
+### What this preview cannot show
+
+`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` and `NEXT_PUBLIC_POSTHOG_HOST` are **Production-only** environment
+variables (per `.planning/STATE.md` Blockers/Concerns and confirmed again by Phase 2.1's Part 4
+record). This preview therefore renders no Google CMP and sends PostHog captures nowhere
+observable from this session — the EEA/UK/CH TCF consent path and live PostHog ingestion for this
+phase's new `share_action`/`share_landing` events are **not observable here**. RESEARCH's open
+Assumption A3 (no developer-run EEA/UK/CH session has exercised these specific events) stays open
+after this plan; closing it is 03-07's item-7 live-traffic check against production, the same
+pattern Phase 2.1 used (Part 4's own item 7).
+
+### Developer review (preview)
+
+All three checks below require a human — this executor performed none of them, per this plan's own
+design (RESEARCH: "no headless-browser or viewport harness exists in this repo") and this session's
+explicit resume instructions. Each is recorded as **not-performed**, with the exact test that would
+close it and the exact preview URLs to use, never softened into a pass.
+
+**1. Award pool tone (D-04) — not performed.**
+Exact test: read the fifteen-row table in `### Award pool for review (D-04)` above and confirm the
+D-01 bar — praise alongside light jabs, every jab tied to a measurable fact the row's own `stat
+shown` column proves, nothing insulting about a named real raider, no single worst-player
+headline. Closes when the developer states, in this document or `03-06-SUMMARY.md`'s follow-up,
+that the pool as shipped clears that bar (or names the specific row that doesn't).
+
+**2. Real Discord unfurl — not performed.**
+Exact test: paste each URL below into a real Discord channel and confirm it unfurls as an image
+with the rows and receipts legible, paying specific attention to whether the row with the longest
+raider names in the demo log clips with an ellipsis rather than overflowing (RESEARCH Pitfall 2 /
+Assumption A2). Append a throwaway query param and change it on every retry — Discord caches an
+embed and its proxied image by exact URL for an undocumented period (RESEARCH Pitfall 1), so
+re-pasting the same link after a fix proves nothing.
+- Awards link: `https://parseforge-5y0xngn15-loot-list-plus.vercel.app/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=<change-this-each-retry>`
+- Player link: `https://parseforge-5y0xngn15-loot-list-plus.vercel.app/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=<change-this-each-retry>`
+
+**Caveat this executor flags rather than resolves:** this preview sits behind Vercel Deployment
+Protection, so an unauthenticated fetcher — including Discord's own unfurl crawler, which cannot
+send custom headers any more than it can run this document's `curl` commands — will 302 to Vercel's
+SSO login instead of the real card, exactly as `npm run protected-elements` just demonstrated
+above. Closing this check for real requires one of: (a) the developer temporarily disables
+Deployment Protection for this one preview so Discord's crawler can reach it unauthenticated, then
+re-enables it afterward; (b) the developer appends their own copy of
+`?x-vercel-protection-bypass=<secret>&x-vercel-set-bypass-cookie=true` to the URL before pasting —
+noting that doing so persists the secret in that Discord channel's message history, so the secret
+should be rotated afterward if this route is used; or (c) this specific check is deferred to
+03-07, where the same two URLs work against `https://parseforge.gg` with no SSO involved at all.
+This executor recommends (c) as the lowest-risk close, but the decision belongs to the developer.
+
+**3. Mobile reachability (D-13) — not performed.**
+Exact test: on a phone-width viewport (real device or a resized real browser — not this session's
+scriptable tooling), open
+`https://parseforge-5y0xngn15-loot-list-plus.vercel.app/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12`
+(bypass header needed the same way the curl checks above needed it, or use the Deployment
+Protection disable from item 2), switch to the Raid tab, and confirm both the awards "Copy link"
+button and the player "Share my parse" button are reachable without scrolling past the analysis
+tables. Closes when the developer confirms this in this document or in `03-06-SUMMARY.md`'s
+follow-up (or files a defect if either button requires scrolling past a table first).
+
+**Part 5 remains unsigned below this line** — no sign-off table, no dated approval. The production
+deploy and its own live-traffic gate row are 03-07's job, per this plan's own objective and Part
+4's precedent.
