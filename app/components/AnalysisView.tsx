@@ -97,7 +97,13 @@ export default function AnalysisView({
       </div>
 
       {/* Summary always visible */}
-      <ComparisonSummary data={data} previousSnapshot={previousSnapshot} />
+      <ComparisonSummary
+        data={data}
+        previousSnapshot={previousSnapshot}
+        reportCode={reportCode}
+        fightId={fightId}
+        sourceId={sourceId}
+      />
 
       {/* Tabbed analysis sections */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">

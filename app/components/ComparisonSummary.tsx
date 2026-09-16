@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { AnalysisResult, ImprovementSuggestion, MetricPercentileAnalysis } from "@/lib/wcl-types";
 import { AnalysisSnapshot } from "@/lib/analysis-history";
 import { GRADE_COLORS, PerformanceGrade } from "@/lib/constants";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Link2 } from "lucide-react";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import { buildPlayerShareUrl } from "@/lib/share-links";
 import posthog from "posthog-js";
 
 const priorityStyles: Record<string, string> = {
@@ -179,13 +180,33 @@ function formatForDiscord(data: AnalysisResult, shareUrl?: string): string {
   return `${scorecard}${metricsLine}\n\n**Suggestions**\n${lines.join("\n\n")}${linkLine}`;
 }
 
-export default function ComparisonSummary({ data, previousSnapshot }: { data: AnalysisResult; previousSnapshot?: AnalysisSnapshot | null }) {
+export default function ComparisonSummary({
+  data,
+  previousSnapshot,
+  reportCode,
+  fightId,
+  sourceId,
+}: {
+  data: AnalysisResult;
+  previousSnapshot?: AnalysisSnapshot | null;
+  reportCode: string;
+  fightId: number | null;
+  sourceId: number | null;
+}) {
   const [copied, setCopied] = useState(false);
+  const [sharedPlayer, setSharedPlayer] = useState(false);
+
+  // The one normalized permalink for this player's parse (D-09) — built from
+  // explicit props, never the browser's current URL, so a stale tab or other
+  // param can never ride along. Shared by both share surfaces below so no
+  // surface in this component ever reads the browser's current location.
+  const playerShareUrl =
+    fightId != null && sourceId != null && typeof window !== "undefined"
+      ? buildPlayerShareUrl(window.location.origin, { reportCode, fightId, sourceId })
+      : undefined;
 
   const handleCopyDiscord = async () => {
-    const shareUrl =
-      typeof window !== "undefined" ? window.location.href : undefined;
-    const text = formatForDiscord(data, shareUrl);
+    const text = formatForDiscord(data, playerShareUrl);
     await navigator.clipboard.writeText(text);
     setCopied(true);
     posthog.capture("discord_copied", {
@@ -194,9 +215,29 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
       encounter: data.encounterName,
       percentile: data.dps.percentile,
       overall_grade: data.metricPercentiles?.overallGrade,
-      has_link: !!shareUrl,
+      has_link: !!playerShareUrl,
+    });
+    posthog.capture("share_action", {
+      kind: "discord_text",
+      report_code: reportCode,
+      fight_id: fightId,
+      tab: "player",
     });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // "Share my parse" — the primary action (D-09/D-11).
+  const handleSharePlayer = async () => {
+    if (!playerShareUrl) return;
+    await navigator.clipboard.writeText(playerShareUrl);
+    setSharedPlayer(true);
+    posthog.capture("share_action", {
+      kind: "player_link",
+      report_code: reportCode,
+      fight_id: fightId,
+      tab: "player",
+    });
+    setTimeout(() => setSharedPlayer(false), 2000);
   };
 
   const metricLabel = data.playerRole === "healer" ? "HPS" : "DPS";
@@ -223,24 +264,46 @@ export default function ComparisonSummary({ data, previousSnapshot }: { data: An
         duration={12}
       />
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-lg">Player Scorecard</CardTitle>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleCopyDiscord}
-            className="gap-1.5"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4" /> Copied!
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4" /> Copy for Discord
-              </>
+          <div className="flex flex-wrap items-center gap-2">
+            {fightId != null && sourceId != null && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleSharePlayer}
+                className="gap-1.5"
+                data-protected="share-player"
+              >
+                {sharedPlayer ? (
+                  <>
+                    <Check className="w-4 h-4" /> Copied!
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="w-4 h-4" /> Share my parse
+                  </>
+                )}
+              </Button>
             )}
-          </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyDiscord}
+              className="gap-1.5"
+              data-protected="share-discord"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" /> Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" /> Copy for Discord
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
