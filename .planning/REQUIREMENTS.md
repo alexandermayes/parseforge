@@ -190,3 +190,60 @@ above.
 **MONY-01's live proof therefore stays outstanding.** ROADMAP SC2 and `02.1-VERIFICATION.md`
 Truth 4 stay behaviour-unverified for the same reason. This addendum does not change the MONY-01
 traceability row above; it appends the live-proof status the row itself does not carry.
+
+### OPS-01 Addendum 3 (2026-09-16, Phase 3 gate 03-07)
+
+This addendum records the standing gate's next phase re-run (Phase 3, `03-share-loop`) — it does
+not touch Addendum 2's Phase 2.1 sign-off, which stays in place unedited.
+
+Phase 3 ran its own re-run of the standing OPS-01 gate against production deployment
+`dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx` (`docs/OPS-01-SHIP-GATE.md` Part 5). Per the developer's own
+**2026-09-16T16:47Z "Record now, leave open"** decision, Part 5 ends with `### Part 5 status update
+(2026-09-16, 03-07 final continuation) — Sign-off: LEFT OPEN — not signed` rather than a dated
+sign-off. The item-7 live-traffic check scored threshold 1 FAIL (7 pageviews, need 20), threshold 2
+PASS (2 non-consent-region countries: UA, US), threshold 3 NOT EVALUABLE (the personal Vercel CLI
+token exposes no Web Analytics endpoint); the D-14 share-rate figure read 0.0% as a first reading
+(0 `share_action` sessions / 19 `analysis_complete` sessions, against a ~2.8% baseline); Search
+Console and the three developer-only backstops (D-04 tone, real Discord unfurl, D-13 mobile) remain
+NOT PERFORMED. Nine outstanding items and their exact closing tests are recorded in
+`docs/OPS-01-SHIP-GATE.md`'s final `### Part 5 status update` table.
+
+**OPS-01's Phase 3 re-run is therefore not met.** The traceability row above still reflects Phase
+1's own original closure plus the Phase 2.1 correction (Addenda 1–2); this addendum records, per the
+same pattern, that the Phase 3 re-run specifically remains open. It stays open until a future
+session re-measures item 7 on a busier UTC hour, re-runs the share-rate HogQL on or after
+2026-09-23T09:15Z, and completes the Search Console pass and the three developer backstops, closing
+with a dated sign-off in `docs/OPS-01-SHIP-GATE.md` Part 5.
+
+### SHARE-01 / SHARE-02 / SHARE-03 Addendum (2026-09-16, Phase 3 gate 03-07)
+
+The SHARE-01, SHARE-02 and SHARE-03 rows above already read "Complete" — that marking was applied
+by 03-06's `update_requirements` step (commit `adaea2f`), before 03-07 (a sibling plan in the same
+phase directory that also declares all three IDs) had produced a `03-07-SUMMARY.md`. This plan's
+own frontmatter states the intended rule explicitly: *"docs/OPS-01-SHIP-GATE.md Part 5 is the
+single record of this phase's gate; its sign-off is what marks SHARE-01, SHARE-02 and SHARE-03 and
+the OPS-01 re-run as met."* Part 5 was left explicitly unsigned at 03-07's close (OPS-01 Addendum 3
+above), so by the plan's own stated rule these three requirements are not yet fully met, even
+though the checkboxes above already read complete.
+
+**What is proven.** All three requirements' underlying code capability is live in production and
+directly confirmed this session: the awards OG card, the per-player OG card and the bare report OG
+card all return `200 image/png` from `https://parseforge.gg`; the production analyze canonical
+carries no query string; and `npm run protected-elements` exits 0 with all ten rows PASS against
+production (`docs/OPS-01-SHIP-GATE.md`, `### Post-deploy production route-contract evidence`).
+
+**What is not yet proven.** The plan's own `must_haves.truths` backstop — *"Live PostHog shows at
+least one `share_action` and at least one `share_landing` from real traffic, each carrying a
+`consent_gate_path` value"* — is unobserved: zero `share_action` and zero `share_landing` events
+exist in either the item-7 60-minute window or the D-14 7-day window counted this session. The
+three developer-only checks (D-04 tone, real Discord unfurl, D-13 mobile reachability) also remain
+NOT PERFORMED.
+
+**These checkboxes are left as-is** (not reverted) because the underlying capability genuinely works
+in production, and reverting a checked box without new evidence of a regression would misrepresent
+what changed. This addendum instead makes the ledger honest: SHARE-01/02/03 should be read as
+*capability confirmed live in production; the phase's own live-traffic and human-review backstops
+remain open* — not as fully verified per the plan's own sign-off rule. Closes when a future session
+observes at least one real `share_action`/`share_landing` event with `consent_gate_path` present and
+the three developer backstops are performed, at which point `docs/OPS-01-SHIP-GATE.md` Part 5 can be
+signed and this addendum superseded.
