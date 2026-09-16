@@ -207,7 +207,7 @@ Plans:
 
 **Goal**: ParseForge earns ad revenue without the paste-and-analyze flow getting measurably worse
 **Mode:** mvp
-**Depends on**: Phase 1 (consent), Phase 3 (protected-elements checklist)
+**Depends on**: Phase 1 (consent), `docs/PROTECTED-ELEMENTS.md` (Phase 3)
 **Requirements**: MONY-02, MONY-03
 **Success Criteria** (what must be TRUE):
 
@@ -220,7 +220,7 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7). Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal.
+**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7). Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal. The ad-placement whitelist must be checked against `docs/PROTECTED-ELEMENTS.md` — no ad slot may cover, push down, or delay an element that file names — and `npm run protected-elements` must stay green.
 
 ### Phase 5: Community & Cross-Promotion
 
@@ -277,7 +277,7 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-**Notes**: Rollout order is low-traffic routes first, high-traffic (`/`, `/analyze/*`, `/tbc-audit`) last. Uses the project's `impeccable` skill for the design work. OPS-02 lands at the very end of the milestone, after every ad/CMP source has been discovered through report-only violation reports.
+**Notes**: Rollout order is low-traffic routes first, high-traffic (`/`, `/analyze/*`, `/tbc-audit`) last. Uses the project's `impeccable` skill for the design work. OPS-02 lands at the very end of the milestone, after every ad/CMP source has been discovered through report-only violation reports. The redesign may not remove any element listed in `docs/PROTECTED-ELEMENTS.md`, and `npm run protected-elements` is part of the per-route gate.
 
 ## Progress
 

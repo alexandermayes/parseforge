@@ -102,6 +102,20 @@ not add a duplicate row.
    of this gate (D-08).** Evidence: the grep count pre-deploy; item 7 supplies the post-deploy
    proof this item no longer can.
 
+   **Share-rate figure (Phase 3 / D-14).** Share rate is the count of distinct sessions with any
+   `share_action` event divided by the count of distinct sessions with an `analysis_complete`
+   event, over the measurement window, compared against the ~2.8% baseline. The exact HogQL,
+   run verbatim against PostHog project `337485`:
+   ```sql
+   SELECT
+     (SELECT count(DISTINCT $session_id) FROM events WHERE event = 'share_action' AND timestamp >= now() - INTERVAL 7 DAY) AS sessions_with_share,
+     (SELECT count(DISTINCT $session_id) FROM events WHERE event = 'analysis_complete' AND timestamp >= now() - INTERVAL 7 DAY) AS sessions_with_analysis,
+     sessions_with_share * 100.0 / nullif(sessions_with_analysis, 0) AS share_rate_pct
+   ```
+   The legacy `share_link_copied` and `discord_copied` events keep firing this phase (dual-emit
+   alongside `share_action`) so the ~2.8% baseline series is not broken — retiring them is
+   deferred to a later phase, not part of this gate.
+
 5. **Search Console** — after deploy, URL-inspect the affected routes and confirm indexability
    and metadata are unchanged. Evidence: the inspection result per route (`no-data` if GSC hasn't
    crawled it yet).
@@ -164,6 +178,26 @@ not add a duplicate row.
 
    **What to paste as evidence:** the query output verbatim (country rows and gate-path rows),
    the Vercel Analytics figure it was compared against, and the netlog grep output.
+
+8. **Protected elements (Phase 3 / D-15)** — run `npm run protected-elements`, with the evidence
+   being the printed row table (one row per `data-protected` attribute plus the four `/og`/canonical
+   route-contract rows). A fatal exit (2) means the gate could not see its subject — a missing or
+   empty checklist, an owner file that no longer exists, or an unreachable base URL — and is never
+   recorded as a pass; only a clean run with every row printed `PASS` and exit 0 counts. This item
+   is a hard input to Phase 4's ad-placement whitelist (an ad may not cover, push down, or delay
+   any element this checklist names) and to Phase 7's per-route SEO gate (a redesign may not
+   remove any element the checklist names).
+
+   **Carried-forward items (from STATE.md Blockers/Concerns, open — not resolved by this gate):**
+   - The deployment `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5`'s own item-7 row is unsigned (Phase 2.1's
+     re-measurement landed on a low-traffic UTC hour: thresholds 1 and 2 FAILed, threshold 3 was
+     NOT EVALUABLE). Action needed: re-measure a full 60-minute window against this same
+     deployment on a busier UTC hour, with a window-granularity Vercel Web Analytics read (the
+     CLI API only exposes an hour-rounded aggregate).
+   - Google Search Console reports `/` as "Crawled – currently not indexed" (crawl 2026-09-05,
+     predating the Phase 2 deploy) — pre-existing and unexplained for the homepage. Action needed:
+     investigate via GSC (recrawl request, check for a competing canonical or a robots
+     directive) and confirm whether it resolves after this phase's deploy.
 
 **Recording rules (what makes this a gate, not a habit):**
 - A row is marked passing only with the evidence that produced it recorded alongside it.
