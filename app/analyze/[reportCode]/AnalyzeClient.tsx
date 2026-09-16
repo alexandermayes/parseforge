@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import { useReportMeta, useFightPlayers } from "./hooks/useReportMeta";
 import { useRaidOverview } from "./hooks/useRaidOverview";
 import { usePlayerAnalysis } from "./hooks/usePlayerAnalysis";
 import { useCLA } from "./hooks/useCLA";
+import { buildReportShareUrl } from "@/lib/share-links";
 
 type TabMode = "player" | "raid" | "cla";
 
@@ -80,6 +81,13 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const player = usePlayerAnalysis(reportCode, selectedFight, selectedSource, activeTab, report);
   const cla = useCLA(reportCode, report, selectedFight, activeTab);
 
+  // The Raid tab's awards panel needs the selected fight's kill/wipe outcome;
+  // this is the only source of that context (D-06).
+  const selectedFightEntry = useMemo(
+    () => report?.fights.find((f) => f.id === selectedFight) ?? null,
+    [report, selectedFight]
+  );
+
   // Player quick-jump handler: switch to player tab + select player
   const handlePlayerClick = useCallback(
     (sourceId: number) => {
@@ -97,13 +105,19 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleShareLink = useCallback(() => {
-    const url = window.location.href;
+    const url = buildReportShareUrl(window.location.origin, { reportCode, fightId: selectedFight });
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       posthog.capture("share_link_copied", { report_code: reportCode, url });
+      posthog.capture("share_action", {
+        kind: "report_link",
+        report_code: reportCode,
+        fight_id: selectedFight,
+        tab: activeTab,
+      });
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [reportCode]);
+  }, [reportCode, selectedFight, activeTab]);
 
   // A report that passes URL validation but fails to load (most often a
   // private/permission-gated log) was previously a silent drop-off. Capture it
@@ -150,6 +164,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
             size="sm"
             onClick={handleShareLink}
             className="shrink-0"
+            data-protected="share-header"
           >
             {copied ? (
               <>
@@ -343,7 +358,12 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
           {raid.loading && <RaidOverviewLoading />}
           {raid.result && !raid.loading && (
-            <RaidOverview data={raid.result} onPlayerClick={handlePlayerClick} />
+            <RaidOverview
+              data={raid.result}
+              onPlayerClick={handlePlayerClick}
+              reportCode={reportCode}
+              fight={selectedFightEntry}
+            />
           )}
         </>
       )}
@@ -385,34 +405,6 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
         </>
       )}
-      {/* Share CTA — surface sharing on every tab where users finish reading,
-          not just the player scorecard's "Copy for Discord". */}
-      {(player.result || raid.result || cla.result) && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg glass px-4 py-3">
-          <p className="text-sm text-muted-foreground">
-            Found this useful? Share it with your guild.
-          </p>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleShareLink}
-            className="shrink-0"
-          >
-            {copied ? (
-              <>
-                <Check className="size-3.5 text-status-good" />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Link2 className="size-3.5" />
-                Share link
-              </>
-            )}
-          </Button>
-        </div>
-      )}
-
       {/* Guide links — cross-link to SEO content */}
       {(player.result || raid.result || cla.result) && (
         <div className="border-t border-white/[0.06] pt-6 mt-8">
