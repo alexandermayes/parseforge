@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Share Loop
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-09-16T06:03:49.553Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-09-16T06:16:49.974Z"
 last_activity: 2026-09-15
 last_activity_desc: Phase 03 execution started
-state_head: 7502190fe9c2448e413df2ca14a85f3f74528b8a
+state_head: 6c1d3c455b4713dc5d15b0770609ab8f4cd4857d
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 33
-  completed_plans: 29
+  completed_plans: 30
   percent: 38
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-15 after Phase 2.1)
 ## Current Position
 
 Phase: 03 (Share Loop) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-09-15 — Phase 03 execution started
 
@@ -89,6 +89,7 @@ Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans 
 | Phase 03 P01 | 12min | 2 tasks | 7 files |
 | Phase 03-share-loop P02 | 12min | 2 tasks | 3 files |
 | Phase 03 P03 | 8min | 2 tasks | 3 files |
+| Phase 03 P04 | 11min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -121,6 +122,7 @@ Recent decisions affecting current work:
 - [Phase 03]: [Phase 03 / 03-01]: Shipped the phase tracer - lib/awards-engine.ts (5-rule seed pool: first-to-die, top-dps, top-hps, flaskless, best-prepared) is the single source of truth for both the OG image and (03-04) the in-app panel; app/og/route.tsx's view=awards branch falls back to ReportCard on any failure or a thin award set; lib/share-links.ts is now the one tested module every later share button in this phase builds its URL from. — Local next dev has no WCL credentials (Vercel-only per CLAUDE.md), so the awards-card render path itself is unverified against real data locally - the plan's own must_haves flags this exact truth as a backstop verification item, closed on the first preview/prod deploy.
 - [Phase 03]: [Phase 03 / 03-02]: AWARD_POOL filled to the full 15-rule D-02 pool (priorities 6-15 appended); pool-wide invariant tests (unique ids, contiguous priorities, no unconditional firing, stat/winner shape, cap, stable sort, non-mutation) lock the contract for future rule additions. Full 15-row pool recorded in 03-02-SUMMARY.md for the developer's D-04 tone review at the 03-06 preview gate.
 - [Phase 03]: [Phase 03 / 03-03]: Player OG card gained D-10 receipts (Kill/Wipe, fight length, vs-top-N, one healer/DPS proof line) reading only data.healer and the metricPercentiles activeTime entry; Share my parse is now the primary button on the player scorecard (data-protected=share-player), Copy for Discord demoted to secondary (data-protected=share-discord), both dual-emitting share_action. Local next dev still lacks WCL credentials, so the receipts render path is unverified against real data locally (same gap as 03-01/03-02) — closes on first preview/prod deploy.
+- [Phase 03]: [Phase 03 / 03-04]: Raid tab AwardsPanel wired to computeAwards over the in-memory RaidOverviewResult and the real /og preview image; header Share normalized off buildReportShareUrl (no more raw location.href); bottom "Found this useful?" bar removed; landing rules open Player tab on source-present and scroll the awards panel into view on view=awards; one guarded mount effect captures share_landing for an allowlisted ref then strips it from the address bar. — Local next dev lacks WCL credentials (Vercel-only per CLAUDE.md), so the panel's real-data render and the two landing-behavior truths remain unverified locally — same gap already recorded by 03-01/03-02/03-03, closed at the 03-06 preview gate per the plan's own must_haves backstop entries.
 
 ### Pending Todos
 
@@ -171,6 +173,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T06:03:49.332Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-09-16T06:16:49.770Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None
