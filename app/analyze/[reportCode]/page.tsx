@@ -33,10 +33,12 @@ export async function generateMetadata({
   const sp = await searchParams;
   const fight = first(sp.fight);
   const source = first(sp.source);
+  const view = first(sp.view);
 
   const ogParams = new URLSearchParams({ report: reportCode });
   if (fight) ogParams.set("fight", fight);
   if (source) ogParams.set("source", source);
+  if (view) ogParams.set("view", view);
   const ogUrl = `/og?${ogParams.toString()}`;
 
   const result = await getReportMeta(reportCode);

@@ -509,6 +509,37 @@ export interface RaidOverviewResult {
   healerMetrics: HealerMetrics[];
 }
 
+// ─── Awards Types (lib/awards-engine.ts) ─────────────────────────────
+
+export interface AwardWinner {
+  name: string;
+  className: string;
+  sourceId: number;
+}
+
+/** `praise` for a positive award, `jab` for a gentle roast (D-01). */
+export type AwardTone = "praise" | "jab";
+
+export interface AwardRow {
+  id: string;
+  title: string;
+  icon: string;
+  priority: number;
+  tone: AwardTone;
+  winners: AwardWinner[];
+  /** Winners beyond MAX_WINNER_NAMES, truncated from the `winners` list. */
+  extraWinnerCount: number;
+  /** The stat that earned the award, e.g. "0:42 in" or "no flask". */
+  stat: string;
+}
+
+export interface AwardsResult {
+  encounterName: string;
+  /** Null when the caller has no fight outcome — the card renders no Kill/Wipe pill. */
+  outcome: { kill: boolean; bossPercentage: number } | null;
+  awards: AwardRow[];
+}
+
 // ─── Healer Metrics Types ─────────────────────────────────────────────
 // HealerTableRow narrows the un-scoped per-player Healing row (`healingByPlayer`
 // in lib/wcl-queries.ts) to what the shared healer helper reads — the scoped

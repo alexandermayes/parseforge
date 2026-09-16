@@ -2,7 +2,8 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CLASS_COLORS_HEX } from "@/lib/constants";
 import { isValidReportCode } from "@/lib/api-utils";
-import type { AnalysisResult, ReportMeta } from "@/lib/wcl-types";
+import type { AnalysisResult, ReportMeta, RaidOverviewResult, AwardsResult } from "@/lib/wcl-types";
+import { computeAwards, MIN_AWARDS_FOR_CARD } from "@/lib/awards-engine";
 
 // Dynamic Open Graph image for shared analyze links. Only hit by link unfurlers
 // (Discord/Reddit/etc.), so the analysis fetch here is fine — it reuses the
@@ -142,6 +143,113 @@ function PlayerCard({ data }: { data: AnalysisResult }) {
   );
 }
 
+function AwardsCard({ awards }: { awards: AwardsResult }) {
+  const outcome = awards.outcome;
+  return (
+    <Shell>
+      <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span
+            style={{
+              fontSize: "44px",
+              fontWeight: 800,
+              color: "#fafafa",
+              maxWidth: "780px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {awards.encounterName}
+          </span>
+          {outcome != null && (
+            outcome.kill ? (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#4ade80",
+                  background: "#4ade801a",
+                  border: "2px solid #4ade8066",
+                }}
+              >
+                KILL
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#f87171",
+                  background: "#f871711a",
+                  border: "2px solid #f8717166",
+                }}
+              >
+                {`WIPE ${(outcome.bossPercentage / 100).toFixed(1)}%`}
+              </div>
+            )
+          )}
+        </div>
+        <span style={{ fontSize: "20px", color: GOLD, fontWeight: 600, letterSpacing: "1px" }}>
+          RAID AWARDS
+        </span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "8px", marginTop: "20px" }}>
+        {awards.awards.map((award) => (
+          <div key={award.id} style={{ display: "flex", alignItems: "center", height: "52px", gap: "18px" }}>
+            <span style={{ display: "flex", width: "40px", fontSize: "30px" }}>{award.icon}</span>
+            <span
+              style={{
+                fontSize: "26px",
+                fontWeight: 700,
+                color: "#fafafa",
+                width: "300px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {award.title}
+            </span>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                maxWidth: "430px",
+                gap: "6px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              {award.winners.map((w, i) => (
+                <span
+                  key={w.sourceId}
+                  style={{ fontSize: "26px", fontWeight: 600, color: CLASS_COLORS_HEX[w.className] ?? "#FFFFFF" }}
+                >
+                  {w.name}
+                  {i < award.winners.length - 1 ? ", " : ""}
+                </span>
+              ))}
+              {award.extraWinnerCount > 0 && (
+                <span style={{ fontSize: "26px", fontWeight: 600, color: MUTED }}>+{award.extraWinnerCount}</span>
+              )}
+            </div>
+            <span style={{ fontSize: "22px", color: MUTED, marginLeft: "auto", whiteSpace: "nowrap" }}>
+              {award.stat}
+            </span>
+          </div>
+        ))}
+      </div>
+    </Shell>
+  );
+}
+
 function ReportCard({ meta, reportCode }: { meta: ReportMeta | null; reportCode: string }) {
   // WCL report titles are user-supplied and often junk ("??", blank). Fall back
   // to the zone, then a generic label, so the card never shows noise.
@@ -189,6 +297,7 @@ export async function GET(request: NextRequest) {
     const reportCode = searchParams.get("report");
     const fightRaw = searchParams.get("fight");
     const sourceRaw = searchParams.get("source");
+    const view = searchParams.get("view");
     // Fetch our own API by an absolute origin. Pin to the canonical host in
     // production (an attacker can't steer us via a spoofed Host/origin), and
     // only fall back to the request origin in local dev.
@@ -202,9 +311,33 @@ export async function GET(request: NextRequest) {
       return new ImageResponse(<ReportCard meta={null} reportCode="" />, { ...size, headers });
     }
 
-    // Player scorecard only when fight + source are valid non-negative integers.
     const fightId = fightRaw != null ? Number.parseInt(fightRaw, 10) : NaN;
     const sourceId = sourceRaw != null ? Number.parseInt(sourceRaw, 10) : NaN;
+
+    // Awards card: an exact-literal check on `view`, before any fetch (ASVS
+    // V5 — an unrecognised value falls through to the branches below rather
+    // than reaching a network call).
+    if (view === "awards" && Number.isInteger(fightId) && fightId >= 0) {
+      const [overview, meta] = await Promise.all([
+        fetchJson<RaidOverviewResult>(`${origin}/api/raid-overview`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ reportCode, fightId }),
+        }),
+        fetchJson<ReportMeta>(`${origin}/api/report/${reportCode}`),
+      ]);
+      const fightMeta = meta?.fights.find((f) => f.id === fightId);
+      const outcome = fightMeta ? { kill: fightMeta.kill, bossPercentage: fightMeta.bossPercentage } : null;
+      const encounterName = fightMeta?.name ?? overview?.encounterName ?? "";
+      const awards = computeAwards(overview, { name: encounterName, outcome });
+      if (overview && awards.awards.length >= MIN_AWARDS_FOR_CARD) {
+        return new ImageResponse(<AwardsCard awards={awards} />, { ...size, headers });
+      }
+      // Falls through to the existing ReportCard branch below — the awards
+      // card never fails the unfurl, it just isn't ready yet.
+    }
+
+    // Player scorecard only when fight + source are valid non-negative integers.
     if (
       Number.isInteger(fightId) && fightId >= 0 &&
       Number.isInteger(sourceId) && sourceId >= 0
