@@ -57,8 +57,16 @@ function formatNumber(n: number): string {
   return Math.round(n).toString();
 }
 
-// plan 03-02 appends priorities 6 through 15 — these five keep their
-// positions.
+/** Sorted-middle median, used by fire-dancer's and punching-up's thresholds. */
+function median(values: number[]): number {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+
+// Priorities 1-5 (the 03-01 tracer pool) and 6-15 (this plan) together form
+// the full fixed-priority pool (D-02).
 export const AWARD_POOL: AwardRule[] = [
   {
     id: "first-to-die",
@@ -148,6 +156,187 @@ export const AWARD_POOL: AwardRule[] = [
       return {
         winners: [{ name: top.name, className: top.className, sourceId: top.sourceId, rank: top.avgItemLevel }],
         stat: "flask + food + weapon + full enchants",
+      };
+    },
+  },
+  {
+    id: "graveyard-shift",
+    title: "Graveyard Shift",
+    icon: "⚰️",
+    priority: 6,
+    tone: "jab",
+    evaluate: (overview) => {
+      const maxDeaths = overview.players.reduce((max, p) => Math.max(max, p.deaths), 0);
+      if (maxDeaths < 2) return null;
+      const candidates = overview.players.filter((p) => p.deaths === maxDeaths);
+      return {
+        winners: candidates.map((p) => ({ name: p.name, className: p.className, sourceId: p.sourceId, rank: 0 })),
+        stat: `${maxDeaths} deaths`,
+      };
+    },
+  },
+  {
+    id: "gcd-tourist",
+    title: "GCD Tourist",
+    icon: "🕰️",
+    priority: 7,
+    tone: "jab",
+    evaluate: (overview) => {
+      const candidates = overview.players.filter((p) => p.role !== "Healer" && p.throughput > 0);
+      if (candidates.length === 0) return null;
+      const lowest = candidates.reduce((min, p) => (p.activityPercent < min.activityPercent ? p : min));
+      if (lowest.activityPercent >= 80) return null;
+      return {
+        winners: [{ name: lowest.name, className: lowest.className, sourceId: lowest.sourceId, rank: 0 }],
+        stat: `${lowest.activityPercent.toFixed(1)} active`,
+      };
+    },
+  },
+  {
+    id: "fire-dancer",
+    title: "Standing in the Fire",
+    icon: "🔥",
+    priority: 8,
+    tone: "jab",
+    evaluate: (overview) => {
+      const values = overview.players.map((p) => p.avoidableDamage);
+      const max = Math.max(...values);
+      if (!(max > 0)) return null;
+      const med = median(values);
+      if (!(max >= 1.5 * med)) return null;
+      const candidates = overview.players.filter((p) => p.avoidableDamage === max);
+      return {
+        winners: candidates.map((p) => ({
+          name: p.name,
+          className: p.className,
+          sourceId: p.sourceId,
+          rank: p.avoidableDamage,
+        })),
+        stat: `${formatNumber(max)} taken`,
+      };
+    },
+  },
+  {
+    id: "naked-slots",
+    title: "Enchants? Never Heard of Her",
+    icon: "🔧",
+    priority: 9,
+    tone: "jab",
+    evaluate: (overview) => {
+      const candidates = overview.players.filter((p) => p.missingEnchants >= 3);
+      if (candidates.length === 0) return null;
+      const maxMissing = Math.max(...candidates.map((p) => p.missingEnchants));
+      return {
+        winners: candidates.map((p) => ({
+          name: p.name,
+          className: p.className,
+          sourceId: p.sourceId,
+          rank: p.missingEnchants,
+        })),
+        stat: `${maxMissing} missing enchants`,
+      };
+    },
+  },
+  {
+    id: "skipped-breakfast",
+    title: "Skipped Breakfast",
+    icon: "🍖",
+    priority: 10,
+    tone: "jab",
+    evaluate: (overview) => {
+      const candidates = overview.players.filter((p) => !p.consumables.food);
+      if (candidates.length === 0) return null;
+      return {
+        winners: candidates.map((p) => ({ name: p.name, className: p.className, sourceId: p.sourceId, rank: 0 })),
+        stat: "no food buff",
+      };
+    },
+  },
+  {
+    id: "dull-blade",
+    title: "Dull Blade",
+    icon: "🗡️",
+    priority: 11,
+    tone: "jab",
+    evaluate: (overview) => {
+      const candidates = overview.players.filter(
+        (p) => (p.role === "Physical" || p.role === "Tank") && !p.consumables.weaponEnhancement,
+      );
+      if (candidates.length === 0) return null;
+      return {
+        winners: candidates.map((p) => ({ name: p.name, className: p.className, sourceId: p.sourceId, rank: 0 })),
+        stat: "no weapon enhancement",
+      };
+    },
+  },
+  {
+    id: "iron-man",
+    title: "Iron Man",
+    icon: "🪨",
+    priority: 12,
+    tone: "praise",
+    evaluate: (overview) => {
+      if (overview.deathTimeline.length === 0) return null;
+      const candidates = overview.players.filter((p) => p.deaths === 0);
+      if (candidates.length === 0) return null;
+      const top = candidates.reduce((best, p) => (p.avoidableDamage > best.avoidableDamage ? p : best));
+      return {
+        winners: [{ name: top.name, className: top.className, sourceId: top.sourceId, rank: 0 }],
+        stat: `0 deaths · ${formatNumber(top.avoidableDamage)} taken`,
+      };
+    },
+  },
+  {
+    id: "watering-the-garden",
+    title: "Watering the Garden",
+    icon: "💧",
+    priority: 13,
+    tone: "jab",
+    evaluate: (overview) => {
+      const candidates = overview.healerMetrics.filter((h) => h.totalHealing > 0 && h.overhealPercent >= 50);
+      if (candidates.length === 0) return null;
+      const top = candidates.reduce((best, h) => (h.overhealPercent > best.overhealPercent ? h : best));
+      return {
+        winners: [{ name: top.name, className: top.className, sourceId: top.sourceId, rank: 0 }],
+        stat: `${Math.round(top.overhealPercent)}% overheal`,
+      };
+    },
+  },
+  {
+    id: "kept-them-breathing",
+    title: "Kept Them Breathing",
+    icon: "💚",
+    priority: 14,
+    tone: "praise",
+    evaluate: (overview) => {
+      const candidates = overview.healerMetrics.filter((h) => h.totalHealing > 0 && h.activityPercent >= 85);
+      if (candidates.length === 0) return null;
+      const top = candidates.reduce((best, h) => (h.activityPercent > best.activityPercent ? h : best));
+      return {
+        winners: [{ name: top.name, className: top.className, sourceId: top.sourceId, rank: 0 }],
+        stat: `${Math.round(top.activityPercent)}% healing uptime`,
+      };
+    },
+  },
+  {
+    id: "punching-up",
+    title: "Punching Up",
+    icon: "🎯",
+    priority: 15,
+    tone: "praise",
+    evaluate: (overview) => {
+      const nonHealers = overview.players.filter((p) => p.role !== "Healer");
+      const geared = nonHealers.filter((p) => p.avgItemLevel > 0);
+      if (geared.length < 2) return null;
+      const maxIlvl = Math.max(...geared.map((p) => p.avgItemLevel));
+      const minIlvl = Math.min(...geared.map((p) => p.avgItemLevel));
+      if (maxIlvl - minIlvl < 10) return null;
+      const lowest = geared.reduce((min, p) => (p.avgItemLevel < min.avgItemLevel ? p : min));
+      const medianThroughput = median(nonHealers.map((p) => p.throughput));
+      if (!(lowest.throughput >= medianThroughput)) return null;
+      return {
+        winners: [{ name: lowest.name, className: lowest.className, sourceId: lowest.sourceId, rank: 0 }],
+        stat: `ilvl ${lowest.avgItemLevel} · ${formatNumber(lowest.throughput)} dps`,
       };
     },
   },
