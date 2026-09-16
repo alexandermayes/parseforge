@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Share Loop
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-09-16T06:16:49.974Z"
+stopped_at: Completed 03-05-PLAN.md
+last_updated: "2026-09-16T06:25:32.911Z"
 last_activity: 2026-09-15
 last_activity_desc: Phase 03 execution started
-state_head: 6c1d3c455b4713dc5d15b0770609ab8f4cd4857d
+state_head: 2c87af3bbdab3679da13c71c6a75b014acca9d16
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 33
-  completed_plans: 30
+  completed_plans: 31
   percent: 38
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-15 after Phase 2.1)
 ## Current Position
 
 Phase: 03 (Share Loop) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-09-15 — Phase 03 execution started
 
@@ -90,6 +90,7 @@ Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans 
 | Phase 03-share-loop P02 | 12min | 2 tasks | 3 files |
 | Phase 03 P03 | 8min | 2 tasks | 3 files |
 | Phase 03 P04 | 11min | 3 tasks | 2 files |
+| Phase 03 P05 | 10min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,7 @@ Recent decisions affecting current work:
 - [Phase 03]: [Phase 03 / 03-02]: AWARD_POOL filled to the full 15-rule D-02 pool (priorities 6-15 appended); pool-wide invariant tests (unique ids, contiguous priorities, no unconditional firing, stat/winner shape, cap, stable sort, non-mutation) lock the contract for future rule additions. Full 15-row pool recorded in 03-02-SUMMARY.md for the developer's D-04 tone review at the 03-06 preview gate.
 - [Phase 03]: [Phase 03 / 03-03]: Player OG card gained D-10 receipts (Kill/Wipe, fight length, vs-top-N, one healer/DPS proof line) reading only data.healer and the metricPercentiles activeTime entry; Share my parse is now the primary button on the player scorecard (data-protected=share-player), Copy for Discord demoted to secondary (data-protected=share-discord), both dual-emitting share_action. Local next dev still lacks WCL credentials, so the receipts render path is unverified against real data locally (same gap as 03-01/03-02) — closes on first preview/prod deploy.
 - [Phase 03]: [Phase 03 / 03-04]: Raid tab AwardsPanel wired to computeAwards over the in-memory RaidOverviewResult and the real /og preview image; header Share normalized off buildReportShareUrl (no more raw location.href); bottom "Found this useful?" bar removed; landing rules open Player tab on source-present and scroll the awards panel into view on view=awards; one guarded mount effect captures share_landing for an allowlisted ref then strips it from the address bar. — Local next dev lacks WCL credentials (Vercel-only per CLAUDE.md), so the panel's real-data render and the two landing-behavior truths remain unverified locally — same gap already recorded by 03-01/03-02/03-03, closed at the 03-06 preview gate per the plan's own must_haves backstop entries.
+- [Phase 03]: [Phase 03 / 03-05]: Shipped the protected-elements checklist (docs/PROTECTED-ELEMENTS.md, all 6 shipped data-protected attributes) and the third node-script gate (scripts/protected-elements.mjs, seo-invariants/token-audit shape) — 10/10 checks pass live against production. OPS-01 gained item 8 plus the D-14 share-rate HogQL under item 4; ROADMAP Phase 4/7 entries now name the checklist as a hard input.
 
 ### Pending Todos
 
@@ -173,6 +175,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T06:16:49.770Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-09-16T06:25:32.701Z
+Stopped at: Completed 03-05-PLAN.md
 Resume file: None
