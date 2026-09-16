@@ -175,7 +175,7 @@ Plans:
   3. Share actions are reachable without hunting on the analyze page on both desktop and mobile, and a protected-elements checklist naming the share CTA and OG pipeline exists for Phases 4 and 7 to honor.
   4. PostHog reports share rate per analysis against the ~2.8% baseline, and GSC verification confirms the new share routes/OG changes did not disturb indexing or canonicals (OPS-01 gate).
 
-**Plans**: 1/7 plans executed
+**Plans**: 3/7 plans executed
 **UI hint**: yes
 
 Plans:
@@ -186,7 +186,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 03-02-PLAN.md — Fill the award pool to fifteen conditional, stat-backed rules and lock the pool-wide invariants
-- [ ] 03-03-PLAN.md — Per-player permalink: OG receipts (Kill/Wipe, length, vs-top-N, proof line) and the Share my parse button
+- [x] 03-03-PLAN.md — Per-player permalink: OG receipts (Kill/Wipe, length, vs-top-N, proof line) and the Share my parse button
 - [ ] 03-04-PLAN.md — Analyze-page share surfaces: Raid-tab awards panel with its real preview, normalized header Share, bottom bar removed, landing rules and `ref` attribution
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -289,7 +289,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
 | 2.1. PostHog Consent Gate Hotfix (INSERTED) | 8/8 | Complete    | 2026-09-15 |
-| 3. Share Loop | 1/7 | In Progress|  |
+| 3. Share Loop | 3/7 | In Progress|  |
 | 4. Ads Live | 0/TBD | Not started | - |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
 | 6. Discoverability & Content | 0/TBD | Not started | - |
