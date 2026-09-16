@@ -2202,6 +2202,103 @@ these queries are run. Never fabricated, never estimated from Query 3 above alon
 window is item 7's 60-minute window, not this HogQL's 7-day window — the two are not
 interchangeable).
 
+### Item 7 — counted result (2026-09-16, 03-07 final continuation)
+
+**Developer decision recorded, verbatim.** At 2026-09-16T16:47Z the developer was asked how to
+close the item-7 row and chose, verbatim option label: **"Record now, leave open"** — described as:
+"Final continuation writes today's counted results into Part 5 as FAIL/PENDING with the exact
+re-measure test; 03-07 completes with Part 5 explicitly unsigned; phase goes to verification with
+OPS-01 honestly open." This section and the one that follows are that recording; the closing
+sign-off decision this decision governs is at the end of this Part.
+
+**Source:** PostHog project `337485`, via MCP `execute-sql`, run 2026-09-16T16:36–16:40Z (project
+timezone UTC). Every figure below is an exact query result, transcribed verbatim — not rounded, not
+extrapolated, and not combined with any other deployment's numbers.
+
+**Window:** `2026-09-16T09:14:57Z` → `2026-09-16T10:14:57Z` (the 60 minutes following this
+deployment) — the same window opened above.
+
+Query 1 (`$pageview` by country):
+
+| country | pageviews |
+|---|---|
+| UA | 6 |
+| US | 1 |
+
+**Total: 7 pageviews, 2 distinct countries.**
+
+Query 2 (all events by `consent_gate_path`):
+
+| consent_gate_path | count |
+|---|---|
+| geo-non-consent-region | 38 |
+
+No other `consent_gate_path` value is present in the window — capture is flowing entirely under the
+server-side geo opt-in.
+
+Query 3 (this phase's new and legacy share events, with `consent_gate_path`): **0 rows.** None of
+`share_action`, `share_landing`, `share_link_copied`, `discord_copied` fired in this window. PostHog
+taxonomy note: `share_action` and `share_landing` are not yet registered as event definitions in
+project 337485 — consistent with zero ingestions since the deploy that introduced them.
+
+**Threshold evaluation (Part 1 item 7's own thresholds, applied exactly as written, unmodified):**
+
+| Threshold | Rule | Counted | Result |
+|---|---|---|---|
+| 1 | ≥ 20 `$pageview` events | 7 | **FAIL** |
+| 2 | ≥ 2 distinct non-consent-region countries | 2 (UA, US) | **PASS** |
+| 3 | PostHog `$pageview` ≥ 50% of Vercel Web Analytics for the same window | not read | **NOT EVALUABLE** — the personal Vercel CLI token (`~/.vercel-personal`) exposes no Web Analytics endpoint, the same limitation Part 4 recorded at the line reading "The personal Vercel CLI token (`~/.vercel-personal`) exposes no Web Analytics endpoint"; the developer did not supply a dashboard read this session |
+
+**Overall, this deployment's item-7 row is: threshold 1 FAIL, threshold 2 PASS, threshold 3 NOT
+EVALUABLE — not a pass, and not signed.**
+
+**The exact re-measure test that would close this row** (recorded per the developer's decision
+above, not executed further this session): a full 60-minute window against deployment
+`dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx` (or a successor deployment carrying the same code) on a busier
+UTC hour, using the same three HogQL statements in `### Item 7 — post-deploy live-traffic check`
+above (with the window's timestamps substituted), plus a window-granularity Vercel Web Analytics
+dashboard read for threshold 3.
+
+**Hourly production `$pageview` counts since this deploy** (`toStartOfHour`, UTC — recorded to make
+the re-measure test's "busier hour" concrete, not to substitute for a full-window re-run):
+
+| hour (UTC) | pageviews | distinct countries | countries | unique visitors |
+|---|---|---|---|---|
+| 09:00 | 1 | 1 | US | 1 |
+| 10:00 | 7 | 2 | UA, US | 2 |
+| 11:00 | 1 | 1 | US | 1 |
+| 12:00 | 16 | 1 | US | 2 |
+| 13:00 | 14 | 3 | ID, US, AU | 3 |
+| 14:00 | 22 | 1 | US | 1 |
+
+No full hour since the deploy clears thresholds 1 and 2 together — 14:00 clears threshold 1 (22 ≥
+20) but from a single US visitor, failing threshold 2. For reference, the previous build showed 24
+pageviews at 22:00Z on 2026-09-14 (Part 4) — a plausibly busier hour worth targeting for the
+re-measure.
+
+### Share-rate figure — counted result (2026-09-16, 03-07 final continuation)
+
+**Source:** the same PostHog session as above, running the exact D-14 HogQL recorded in Part 1 item
+4 and this Part's own `### Share-rate figure (D-14)` block, trailing 7 days to 2026-09-16T16:38Z.
+
+- `sessions_with_share` (distinct `$session_id` with any `share_action`): **0**
+- `sessions_with_analysis` (distinct `$session_id` with `analysis_complete`): **19**
+- `share_rate_pct`: **0.0**
+- Baseline comparison: ~2.8% (the legacy `share_link_copied`/`discord_copied` series) — this reading,
+  0.0%, is below that baseline.
+- `share_landing` by `properties.ref`, same 7-day window: **0 rows.**
+
+**Read this as a first reading, not a regression signal.** The new `share_action` instrumentation
+has been live in production for only ~7.5 hours of this 7-day window (deployed
+`2026-09-16T09:14:57Z`; query run `2026-09-16T16:38Z`), and the legacy events also show 0 in the
+post-deploy hour queried above — a true first reading with almost no exposure window, not evidence
+the mechanism regressed. `consent_gate_path` presence on `share_action`/`share_landing` (RESEARCH
+A3) is **NOT YET OBSERVED** — zero events of either kind exist to inspect the property on.
+
+**The exact re-run test:** the full 7-day HogQL block above, run again on or after
+**2026-09-23T09:15Z** (a full 7 days of live `share_action` exposure), for the first share-rate
+comparison that means anything.
+
 ### Carried-forward item: `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` item-7 row — **superseded**
 
 That deployment (Part 4's unsigned item-7 row, thresholds 1/2 FAIL, threshold 3 NOT EVALUABLE) is
@@ -2239,6 +2336,10 @@ limitation Part 3 recorded for its own dispatch). The exact test that would clos
 **Status: PENDING.** No inspection was run this session. Recorded as PENDING with the exact test
 above, not as `no-data` folded silently into a pass, and not skipped.
 
+**Still PENDING as of the 03-07 final continuation (2026-09-16).** No `gscServer` MCP tool or
+developer-supplied Search Console read was available to this continuation either. The exact test
+above is unchanged and still the closing test for all three Search Console rows.
+
 ### Developer review backstops — production URLs (rewritten from 03-06's preview URLs)
 
 The three developer-only checks 03-06 recorded as not-performed against the preview remain
@@ -2270,6 +2371,10 @@ confirm both the awards "Copy link" button and the player "Share my parse" butto
 without scrolling past the analysis tables. Closes when the developer confirms this in this
 document or in `03-07-SUMMARY.md`'s follow-up (or files a defect).
 
+**Confirmed still not performed as of the 03-07 final continuation (2026-09-16).** The developer
+supplied no results for any of these three checks this session either. Each remains open with the
+exact test recorded above, not softened into a pass and not marked done on an assumption.
+
 ### Part 5 status — outstanding items (NOT YET SIGNED)
 
 Part 5 is **not signed** as of this session. Every item below has a name and an exact closing test —
@@ -2291,3 +2396,35 @@ Rows already closed by this session: the production deploy itself, all three pro
 contracts, the production canonical, and `npm run protected-elements` against production (all
 recorded with evidence above), and the `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` item-7 row (recorded
 superseded, not re-scored).
+
+### Part 5 status update (2026-09-16, 03-07 final continuation) — Sign-off: LEFT OPEN — not signed
+
+**Developer decision governing this close-out**, recorded verbatim in `### Item 7 — counted result`
+above: at 2026-09-16T16:47Z the developer chose **"Record now, leave open"** for the item-7 row.
+Applying the same honesty standard to every other row this Part still had open when this
+continuation started, Part 5 closes plan 03-07 in exactly the following state:
+
+| # | Item | Status | Evidence / closing test |
+|---|---|---|---|
+| 1 | Item 7 live-traffic thresholds (`09:14:57Z`–`10:14:57Z` window, this deployment) | **Threshold 1 FAIL (7) / Threshold 2 PASS (2) / Threshold 3 NOT EVALUABLE** | Counted in `### Item 7 — counted result` above. Closing test: re-measure a full 60-minute window on a busier UTC hour (candidate: the ~22:00Z hour, which showed 24 pageviews on 2026-09-14) against this deployment or its successor, plus a window-granularity Vercel Web Analytics read |
+| 2 | Share-rate figure (D-14) | **0.0% first reading (0/19)**, below the ~2.8% baseline | Counted in `### Share-rate figure — counted result` above. Closing test: re-run the same 7-day HogQL on/after 2026-09-23T09:15Z, once a full 7 days of live `share_action` exposure exists |
+| 3 | RESEARCH A3 — `consent_gate_path` on `share_action`/`share_landing` | **NOT YET OBSERVED** (zero of either event exist to inspect) | Closes automatically once item 1's re-measure or item 2's re-run captures a real `share_action`/`share_landing` event with the property present |
+| 4 | Search Console — `/` no-regression + recrawl status | PENDING | URL-inspect `/` via `sc-domain:parseforge.gg`; record coverage state, crawl date, and whether a recrawl was requested |
+| 5 | Search Console — `/analyze/ZjKgNYxVcAqR8pGJ` no-regression | PENDING | URL-inspect the route; confirm indexability/metadata unchanged |
+| 6 | Search Console — no separately-indexed awards/ref permutation | PENDING | Pages report / site: search for `?view=awards`, `?ref=awards`, `?ref=parse` variants of the analyze route |
+| 7 | D-04 award-pool tone review | NOT PERFORMED | Developer reads `### Award pool for review (D-04)` and states a verdict |
+| 8 | Real Discord unfurl (production URLs) | NOT PERFORMED | Paste the two production links in `### Developer review backstops` into a real Discord channel, changing `v=` each retry |
+| 9 | D-13 mobile reachability (production URL) | NOT PERFORMED | Phone-width viewport pass on the production analyze page's Raid tab |
+
+Rows already closed and not repeated here (see the sections above for evidence): the production
+deploy itself, all three production OG-route contracts, the production canonical,
+`npm run protected-elements` against production, and the `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` item-7
+row (superseded).
+
+**Sign-off: LEFT OPEN — not signed.** No item above is presented as passed when it is not, no
+threshold was lowered or reinterpreted, and no count or window was borrowed from any other
+deployment or phase. Nine items remain open, each with the exact test that closes it, per the table
+above. Phase 3 (03-share-loop) goes to verification with OPS-01's Phase 3 re-run honestly open, and
+with SHARE-01/02/03's live-traffic backstop truth (item 3 above) unobserved — see
+`.planning/REQUIREMENTS.md`'s SHARE-01/02/03 and OPS-01 addenda for how this status is carried into
+the requirements ledger.
