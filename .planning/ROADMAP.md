@@ -175,8 +175,31 @@ Plans:
   3. Share actions are reachable without hunting on the analyze page on both desktop and mobile, and a protected-elements checklist naming the share CTA and OG pipeline exists for Phases 4 and 7 to honor.
   4. PostHog reports share rate per analysis against the ~2.8% baseline, and GSC verification confirms the new share routes/OG changes did not disturb indexing or canonicals (OPS-01 gate).
 
-**Plans**: TBD
+**Plans**: 7 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Awards tracer: fight → awards engine → OG image → forwarded metadata, plus the one normalized share-link module
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — Fill the award pool to fifteen conditional, stat-backed rules and lock the pool-wide invariants
+- [ ] 03-03-PLAN.md — Per-player permalink: OG receipts (Kill/Wipe, length, vs-top-N, proof line) and the Share my parse button
+- [ ] 03-04-PLAN.md — Analyze-page share surfaces: Raid-tab awards panel with its real preview, normalized header Share, bottom bar removed, landing rules and `ref` attribution
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-05-PLAN.md — `docs/PROTECTED-ELEMENTS.md`, the `protected-elements` gate script, and the OPS-01 item plus share-rate HogQL
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 03-06-PLAN.md — Full local gate, preview deploy, and the developer's award-pool / Discord-unfurl / mobile review (OPS-01 Part 5, unsigned)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 03-07-PLAN.md — Approval-gated production deploy, the item-7 live-traffic and share-rate measurement, GSC pass, and an honest Part 5 sign-off
 
 **Notes**: Built on the existing `/og/route.tsx` infrastructure. The protected-elements checklist produced here is a hard input to the Phase 4 ad placement whitelist.
 
