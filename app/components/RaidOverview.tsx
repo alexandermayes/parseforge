@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import type { RaidOverviewResult, RaidPlayerMetrics, RaidRole, DeathDetail, RaidBuffCoverage, HealerMetrics } from "@/lib/wcl-types";
 import { roleColor, roleColorAlpha, classColor, overhealColor, activityColor } from "@/lib/constants";
 import { formatFightTime } from "@/lib/utils";
-import { Check, X } from "lucide-react";
+import { Check, X, Link2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { computeAwards, MIN_AWARDS_FOR_CARD } from "@/lib/awards-engine";
+import { buildAwardsShareUrl, buildAwardsOgPath } from "@/lib/share-links";
+import posthog from "posthog-js";
 import SortableTableHead from "./SortableTableHead";
 import RoleBadge from "./RoleBadge";
 
@@ -68,9 +72,12 @@ export function RaidOverviewLoading() {
 interface RaidOverviewProps {
   data: RaidOverviewResult;
   onPlayerClick?: (sourceId: number) => void;
+  reportCode: string;
+  fight: { id: number; name: string; kill: boolean; bossPercentage: number } | null;
+  openAwards?: boolean;
 }
 
-export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps) {
+export default function RaidOverview({ data, onPlayerClick, reportCode, fight, openAwards }: RaidOverviewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("role");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -172,6 +179,10 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
         </div>
       </div>
 
+      {/* Raid Awards — first interactive element under the header so the
+          Copy awards link button sits above the fold on a phone (D-13). */}
+      <AwardsPanel data={data} reportCode={reportCode} fight={fight} openAwards={openAwards} />
+
       {/* Raid Buff Coverage */}
       {data.raidBuffCoverage && data.raidBuffCoverage.length > 0 && (
         <RaidBuffBar buffs={data.raidBuffCoverage} />
@@ -219,6 +230,131 @@ export default function RaidOverview({ data, onPlayerClick }: RaidOverviewProps)
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+function AwardsPanel({
+  data,
+  reportCode,
+  fight,
+  openAwards,
+}: {
+  data: RaidOverviewResult;
+  reportCode: string;
+  fight: { id: number; name: string; kill: boolean; bossPercentage: number } | null;
+  openAwards?: boolean;
+}) {
+  const [copied, setCopied] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hasScrolledRef = useRef(false);
+
+  // Same pure function app/og/route.tsx calls for the /og image — the panel
+  // and the image can never disagree, and no extra network round trip is
+  // made (D-06/D-08).
+  const awardsResult = useMemo(
+    () =>
+      fight
+        ? computeAwards(data, {
+            name: fight.name,
+            outcome: { kill: fight.kill, bossPercentage: fight.bossPercentage },
+          })
+        : null,
+    [data, fight]
+  );
+
+  // Scroll into view exactly once on mount when arriving from an awards
+  // permalink — never re-triggered by later prop changes.
+  useEffect(() => {
+    if (openAwards && containerRef.current && !hasScrolledRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      hasScrolledRef.current = true;
+    }
+    // Intentionally runs once on mount only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!fight || !awardsResult || awardsResult.awards.length < MIN_AWARDS_FOR_CARD) {
+    return null;
+  }
+
+  const handleCopyAwardsLink = () => {
+    const url = buildAwardsShareUrl(window.location.origin, { reportCode, fightId: fight.id });
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      posthog.capture("share_action", {
+        kind: "awards_link",
+        report_code: reportCode,
+        fight_id: fight.id,
+        tab: "raid",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const ogPath = buildAwardsOgPath({ reportCode, fightId: fight.id });
+
+  return (
+    <div ref={containerRef} className="glass rounded-lg p-3 space-y-2" data-protected="awards-panel">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="text-heading-sm">Raid Awards</h3>
+          <span className="text-xs text-muted-foreground">
+            {fight.name} &middot; {fight.kill ? "Kill" : `Wipe (${Math.round(fight.bossPercentage / 100)}%)`}
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleCopyAwardsLink}
+          className="gap-1.5 shrink-0"
+          data-protected="share-awards"
+        >
+          {copied ? (
+            <>
+              <Check className="w-4 h-4" /> Copied!
+            </>
+          ) : (
+            <>
+              <Link2 className="w-4 h-4" /> Copy awards link
+            </>
+          )}
+        </Button>
+      </div>
+
+      <div className="space-y-1.5">
+        {awardsResult.awards.map((award) => (
+          <div key={award.id} className="flex items-center gap-3 text-sm">
+            <span className="shrink-0">{award.icon}</span>
+            <span className="font-medium shrink-0">{award.title}</span>
+            <span className="flex-1 min-w-0 truncate">
+              {award.winners.map((w, i) => (
+                <span key={w.sourceId}>
+                  {i > 0 && ", "}
+                  <span style={{ color: classColor(w.className) }}>{w.name}</span>
+                </span>
+              ))}
+              {award.extraWinnerCount > 0 && (
+                <span className="text-muted-foreground"> +{award.extraWinnerCount}</span>
+              )}
+            </span>
+            <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+              {award.stat}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={ogPath}
+        width={1200}
+        height={630}
+        alt={`Raid awards card for ${fight.name}`}
+        loading="lazy"
+        className="w-full h-auto rounded-md"
+        data-protected="awards-preview"
+      />
     </div>
   );
 }
