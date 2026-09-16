@@ -185,7 +185,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — Fill the award pool to fifteen conditional, stat-backed rules and lock the pool-wide invariants
+- [x] 03-02-PLAN.md — Fill the award pool to fifteen conditional, stat-backed rules and lock the pool-wide invariants
 - [ ] 03-03-PLAN.md — Per-player permalink: OG receipts (Kill/Wipe, length, vs-top-N, proof line) and the Share my parse button
 - [ ] 03-04-PLAN.md — Analyze-page share surfaces: Raid-tab awards panel with its real preview, normalized header Share, bottom bar removed, landing rules and `ref` attribution
 
