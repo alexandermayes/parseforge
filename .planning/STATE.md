@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Share Loop
 status: executing
-stopped_at: Completed 03-05-PLAN.md
-last_updated: "2026-09-16T06:25:32.911Z"
+stopped_at: Completed 03-06-PLAN.md (preview deploy + Part 5 preview-half evidence, unsigned)
+last_updated: "2026-09-16T09:04:49.198Z"
 last_activity: 2026-09-15
 last_activity_desc: Phase 03 execution started
-state_head: 2c87af3bbdab3679da13c71c6a75b014acca9d16
+state_head: 84e67aeb8adf65c4610b54dae2275779fbe87b9e
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 33
-  completed_plans: 31
+  completed_plans: 32
   percent: 38
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-15 after Phase 2.1)
 ## Current Position
 
 Phase: 03 (Share Loop) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-09-15 — Phase 03 execution started
 
@@ -91,6 +91,7 @@ Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans 
 | Phase 03 P03 | 8min | 2 tasks | 3 files |
 | Phase 03 P04 | 11min | 3 tasks | 2 files |
 | Phase 03 P05 | 10min | 3 tasks | 5 files |
+| Phase 03 P06 | 25min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -125,6 +126,9 @@ Recent decisions affecting current work:
 - [Phase 03]: [Phase 03 / 03-03]: Player OG card gained D-10 receipts (Kill/Wipe, fight length, vs-top-N, one healer/DPS proof line) reading only data.healer and the metricPercentiles activeTime entry; Share my parse is now the primary button on the player scorecard (data-protected=share-player), Copy for Discord demoted to secondary (data-protected=share-discord), both dual-emitting share_action. Local next dev still lacks WCL credentials, so the receipts render path is unverified against real data locally (same gap as 03-01/03-02) — closes on first preview/prod deploy.
 - [Phase 03]: [Phase 03 / 03-04]: Raid tab AwardsPanel wired to computeAwards over the in-memory RaidOverviewResult and the real /og preview image; header Share normalized off buildReportShareUrl (no more raw location.href); bottom "Found this useful?" bar removed; landing rules open Player tab on source-present and scroll the awards panel into view on view=awards; one guarded mount effect captures share_landing for an allowlisted ref then strips it from the address bar. — Local next dev lacks WCL credentials (Vercel-only per CLAUDE.md), so the panel's real-data render and the two landing-behavior truths remain unverified locally — same gap already recorded by 03-01/03-02/03-03, closed at the 03-06 preview gate per the plan's own must_haves backstop entries.
 - [Phase 03]: [Phase 03 / 03-05]: Shipped the protected-elements checklist (docs/PROTECTED-ELEMENTS.md, all 6 shipped data-protected attributes) and the third node-script gate (scripts/protected-elements.mjs, seo-invariants/token-audit shape) — 10/10 checks pass live against production. OPS-01 gained item 8 plus the D-14 share-rate HogQL under item 4; ROADMAP Phase 4/7 entries now name the checklist as a hard input.
+- [Phase 03]: 03-06: Sourced VERCEL_AUTOMATION_BYPASS_SECRET from the Vercel project REST record (protectionBypass key) when `vercel env pull` didn't surface it; confirmed non-empty by length only, never printed.
+- [Phase 03]: 03-06: protected-elements.mjs has no bypass-header support and cannot gate an SSO-protected preview directly; recorded the gap (WINDOWS #8) and used curl for the real preview route evidence instead.
+- [Phase 03]: 03-06: D-04 award-pool tone review, real Discord unfurl, and D-13 mobile reachability left not-performed by the executor per resume instructions; recorded in OPS-01-SHIP-GATE.md Part 5 with exact closing tests and preview URLs (WINDOWS #9).
 
 ### Pending Todos
 
@@ -153,6 +157,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - ~~[Phase 2.1 close] OPS-01 gate NOT signed / five review fixes not in production~~ resolved: gate signed 2026-09-15 (02.1-05, ratio 25/23); the five fix commits shipped in `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` (02.1-07).
 - [Phase 2.1 carry-forward → Phase 3 gate] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
 - ~~[Phase 02.1 close] ROADMAP SC2 / Truth 4 / MONY-01 behaviour-unverified~~ resolved 2026-09-15: the developer ran the EEA/UK/CH VPN session (reject, full opt-in, CMP re-confirm) and passed it as `02.1-UAT.md` Test 1; `consent_resolved` fired once (WR-03 dedupe holds in-browser).
+- [Phase 3 gate] Three developer-only backstops from 03-06 remain open before 03-07 production: D-04 award-pool tone confirmation, a real Discord unfurl of the preview awards+player links, and D-13 phone-width reachability of both share buttons — exact tests and URLs in docs/OPS-01-SHIP-GATE.md Part 5.
 
 ### Quick Tasks Completed
 
@@ -175,6 +180,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T06:25:32.701Z
-Stopped at: Completed 03-05-PLAN.md
+Last session: 2026-09-16T09:04:48.185Z
+Stopped at: Completed 03-06-PLAN.md (preview deploy + Part 5 preview-half evidence, unsigned)
 Resume file: None

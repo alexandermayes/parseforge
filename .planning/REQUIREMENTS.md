@@ -17,8 +17,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Viral Loop
 
-- [ ] **SHARE-01**: User can generate a roast/award-style shareable card per fight (auto-generated awards, Discord-shareable image built on existing OG infra)
-- [ ] **SHARE-02**: User can share a per-player permalink with a player-specific OG image ("look at MY parse")
+- [x] **SHARE-01**: User can generate a roast/award-style shareable card per fight (auto-generated awards, Discord-shareable image built on existing OG infra)
+- [x] **SHARE-02**: User can share a per-player permalink with a player-specific OG image ("look at MY parse")
 - [x] **SHARE-03**: Share actions are prominent in the analyze UI and protected from ad/redesign crowding (share CTA + OG unfurl on the protected-elements checklist)
 - [ ] **SHARE-04**: New public reports can auto-post to Discord via bot/webhook (sequenced after COMM-01 exists)
 
@@ -92,8 +92,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEO-03 | Phase 6 | Pending |
 | SEO-04 | Phase 6 | Pending |
 | SEO-05 | Phase 7 | Pending |
-| SHARE-01 | Phase 3 | Pending |
-| SHARE-02 | Phase 3 | Pending |
+| SHARE-01 | Phase 3 | Complete |
+| SHARE-02 | Phase 3 | Complete |
 | SHARE-03 | Phase 3 | Complete |
 | SHARE-04 | Phase 5 | Pending |
 | DSGN-01 | Phase 1 | Complete |

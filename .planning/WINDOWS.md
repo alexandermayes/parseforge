@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 7
+open_count: 9
 waived_count: 0
 fixed_count: 0
-total_count: 7
-last_updated: 2026-09-14T22:02:16.645Z
+total_count: 9
+last_updated: 2026-09-16T09:02:42.606Z
 ---
 
 # Broken Windows Ledger
@@ -22,6 +22,8 @@ last_updated: 2026-09-14T22:02:16.645Z
 | 5 | 02 | deviation | lib/generated/game-data-overrides.json |  | Cata weapon-enhancement consumable ids 96264 (Pyrium Weapon Chain) and 96294 (Pyrium Shield Spike) resolve to a SpellName value that looks unrelated to the curated item and could not be corroborated against another era; preserved via override pending a future human/ItemSparse-based verification pass. | open |  | 2026-09-08T02:21:38.992Z |  |
 | 6 | 02 | deviation | lib/generated/game-data.consumables.ts |  | Consumable-name derivation via direct SpellName.Name_lang per-id lookup resolved only 48/178 (27%) names reliably; the remaining 130 needed a consumableNames override (prefix loss, generic buff-aura collapse, or unresolvable era coverage) — a future item-name-based (ItemSparse) derivation pass could raise the wago-verified ratio for this map. | open |  | 2026-09-08T02:21:39.073Z |  |
 | 7 | 02.1 | todo | docs/OPS-01-SHIP-GATE.md |  | Part 1 item 7's browser-level netlog sub-item needs a --user-agent override (or opt_out_useragent_filter:true in posthog.init) - posthog-js's built-in bot filter silently drops all captures for any UA containing HeadlessChrome, producing a false negative regardless of app correctness (found 02.1-03). | open |  | 2026-09-14T22:02:16.645Z |  |
+| 8 | 03 | deviation | scripts/protected-elements.mjs |  | protected-elements has no bypass-header/query-param support, so its live route checks cannot verify an SSO-protected preview deploy (302s to Vercel login instead); direct curl with x-vercel-protection-bypass is the workaround used in 03-06 Part 5 | open |  | 2026-09-16T08:59:20.886Z |  |
+| 9 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview) | open |  | 2026-09-16T09:02:42.606Z |  |
 
 ````json
 [
@@ -107,6 +109,30 @@ last_updated: 2026-09-14T22:02:16.645Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-14T22:02:16.645Z",
+    "resolved_at": null
+  },
+  {
+    "id": 8,
+    "kind": "deviation",
+    "phase": "03",
+    "file": "scripts/protected-elements.mjs",
+    "line": null,
+    "description": "protected-elements has no bypass-header/query-param support, so its live route checks cannot verify an SSO-protected preview deploy (302s to Vercel login instead); direct curl with x-vercel-protection-bypass is the workaround used in 03-06 Part 5",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-16T08:59:20.886Z",
+    "resolved_at": null
+  },
+  {
+    "id": 9,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview)",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-16T09:02:42.606Z",
     "resolved_at": null
   }
 ]
