@@ -175,7 +175,7 @@ Plans:
   3. Share actions are reachable without hunting on the analyze page on both desktop and mobile, and a protected-elements checklist naming the share CTA and OG pipeline exists for Phases 4 and 7 to honor.
   4. PostHog reports share rate per analysis against the ~2.8% baseline, and GSC verification confirms the new share routes/OG changes did not disturb indexing or canonicals (OPS-01 gate).
 
-**Plans**: 7/7 plans executed
+**Plans**: 10 plans — 7 executed; 03-08 through 03-10 are gap closure for the OPS-01 / GSC half of success criterion 4 (pending)
 **UI hint**: yes
 
 Plans:
@@ -200,6 +200,18 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 
 - [x] 03-07-PLAN.md — Approval-gated production deploy, the item-7 live-traffic and share-rate measurement, GSC pass, and an honest Part 5 sign-off
+
+**Wave 6** *(gap closure — blocked on Wave 5 completion)*
+
+- [ ] 03-08-PLAN.md — The Search Console pass that was never run, plus the three developer-only backstops (Part 5 rows 4-9)
+
+**Wave 7** *(gap closure — blocked on Wave 6 completion)*
+
+- [ ] 03-09-PLAN.md — Item-7 re-measure on a fully elapsed busier UTC window, the Web Analytics read for threshold 3, and the RESEARCH A3 consent-path disposition (Part 5 rows 1 and 3)
+
+**Wave 8** *(gap closure — blocked on Wave 7 completion)*
+
+- [ ] 03-10-PLAN.md — The date-gated share-rate row (on/after 2026-09-23T09:15Z), the Part 5 close-out and its single sign-off, REQUIREMENTS Addendum 4, and the WINDOWS ledger dispositions (Part 5 row 2)
 
 **Notes**: Built on the existing `/og/route.tsx` infrastructure. The protected-elements checklist produced here is a hard input to the Phase 4 ad placement whitelist.
 
