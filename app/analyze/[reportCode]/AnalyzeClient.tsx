@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,17 +25,29 @@ import { useReportMeta, useFightPlayers } from "./hooks/useReportMeta";
 import { useRaidOverview } from "./hooks/useRaidOverview";
 import { usePlayerAnalysis } from "./hooks/usePlayerAnalysis";
 import { useCLA } from "./hooks/useCLA";
-import { buildReportShareUrl } from "@/lib/share-links";
+import { buildReportShareUrl, parseShareRef } from "@/lib/share-links";
 
 type TabMode = "player" | "raid" | "cla";
+
+const TAB_MODES: readonly TabMode[] = ["player", "raid", "cla"] as const;
+
+function isTabMode(value: string | null): value is TabMode {
+  return value != null && (TAB_MODES as readonly string[]).includes(value);
+}
 
 export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<TabMode>(
-    (searchParams.get("tab") as TabMode) || "raid"
-  );
+  // `tab` wins when present and valid; otherwise a `source` param means the
+  // visitor arrived via a player permalink, so the Player tab opens straight
+  // into that player's analysis (D-12). Everything else about tab state is
+  // unchanged.
+  const [activeTab, setActiveTab] = useState<TabMode>(() => {
+    const tabParam = searchParams.get("tab");
+    if (isTabMode(tabParam)) return tabParam;
+    return searchParams.get("source") ? "player" : "raid";
+  });
 
   const [selectedFight, setSelectedFight] = useState<number | null>(
     searchParams.get("fight") ? parseInt(searchParams.get("fight")!, 10) : null
@@ -130,6 +142,28 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
       });
     }
   }, [reportError, reportCode]);
+
+  // Inbound attribution (D-16): capture exactly one `share_landing` for a
+  // recognised `ref` value, then strip `ref` from the address bar so it never
+  // rides along into a link the visitor copies next. Guarded by a ref (not
+  // state) so this runs exactly once per mount even though stripping the
+  // param changes `searchParams` on the next render.
+  const refCaptureRanRef = useRef(false);
+  useEffect(() => {
+    if (refCaptureRanRef.current) return;
+    refCaptureRanRef.current = true;
+
+    const rawRef = searchParams.get("ref");
+    if (rawRef === null) return;
+
+    const resolvedRef = parseShareRef(rawRef);
+    if (resolvedRef !== null) {
+      posthog.capture("share_landing", { ref: resolvedRef, report_code: reportCode });
+    }
+    updateUrlParam("ref", null);
+    // Intentionally runs once on mount only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="py-6 space-y-6">
@@ -363,6 +397,10 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
               onPlayerClick={handlePlayerClick}
               reportCode={reportCode}
               fight={selectedFightEntry}
+              // True when the visitor arrived via an awards permalink (D-12) —
+              // the Raid tab is already the default in that case; the panel
+              // scrolls itself into view once this is true.
+              openAwards={searchParams.get("view") === "awards"}
             />
           )}
         </>
