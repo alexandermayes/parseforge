@@ -203,7 +203,7 @@ Plans:
 
 **Wave 6** *(gap closure — blocked on Wave 5 completion)*
 
-- [ ] 03-08-PLAN.md — The Search Console pass that was never run, plus the three developer-only backstops (Part 5 rows 4-9)
+- [x] 03-08-PLAN.md — The Search Console pass that was never run, plus the three developer-only backstops (Part 5 rows 4-9)
 
 **Wave 7** *(gap closure — blocked on Wave 6 completion)*
 
