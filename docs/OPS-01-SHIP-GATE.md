@@ -2462,3 +2462,117 @@ from that read; none is re-derived, estimated, or borrowed from any other window
 Row 4 verdict: PASS — indexability and metadata unchanged-or-better vs the Phase 1/2 baseline (now
 indexed, up from "Crawled – currently not indexed"), Google-selected canonical is the param-free
 inspected URL, recrawl requested and acknowledged.
+
+- **URL:** https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ
+  - Coverage state: "URL is on Google" / "Page is indexed".
+  - Last crawl: Sep 15, 2026, 12:38:18 PM (Search Console display). Crawled as: Googlebot
+    smartphone. Crawl allowed?: Yes. Page fetch: Successful. Indexing allowed?: Yes.
+  - Google-selected canonical: "Inspected URL"
+    (https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ, the param-free form). User-declared canonical:
+    https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ.
+  - Metadata: unchanged from the Phase 1/2 baseline. Live render (curl, 2026-09-18T21:40Z):
+    `<title>SSC / TK — WoW Classic Raid Analysis | ParseForge</title>`, description "Player-by-player
+    analysis of SSC / TK in SSC / TK — DPS/HPS percentiles, gear and enchant audits, buff uptime, and
+    improvement tips for 27 raiders.", canonical https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ —
+    identical to the production values recorded in Part 2 (gate doc line 266). Google's own search
+    snippet for the route (site: query below) shows the title "SSC / TK — WoW Classic Raid Analysis".
+  - Recrawl requested: Not applicable — route already indexed and unchanged; no recrawl was
+    requested for this URL.
+
+Row 5 verdict: PASS — indexability, canonical and metadata unchanged from the Phase 1/2 baseline.
+
+- **Permutation check:**
+  - `?view=awards` (https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?view=awards) — Search Console URL
+    Inspection: "URL is not on Google — This page is not indexed." / "Page is not indexed: URL is
+    unknown to Google"; no referring sitemap or page; all crawl fields N/A. Read via URL Inspection,
+    ~2026-09-18T21:41Z.
+  - `?ref=awards` (same route with `?ref=awards`) — identical result: "Page is not indexed: URL is
+    unknown to Google", all crawl fields N/A. Read via URL Inspection, ~2026-09-18T21:42Z.
+  - `?ref=parse` (same route with `?ref=parse`) — identical result: "Page is not indexed: URL is
+    unknown to Google", all crawl fields N/A. Read via URL Inspection, ~2026-09-18T21:43Z.
+  - Secondary source consulted: a Google web `site:parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ` search
+    (2026-09-18T21:45Z, signed-in Chrome) returned exactly one web result — the param-free route,
+    titled "SSC / TK — WoW Classic Raid Analysis" — with no `?view=awards`, `?ref=awards` or
+    `?ref=parse` variant.
+
+Row 6 verdict: PASS — none of the three permutations appears as a separately indexed URL in either
+the URL Inspection tool or a site: search; Google-selected canonical for the route is the param-free
+form (row 5).
+
+### Developer review backstops — counted result (2026-09-18, gap closure 03-08)
+
+Source: the developer was asked for a first-hand verdict on rows 7 and 8 three times in this
+session; each time the developer replied, verbatim, "Just do whatever you think is best."
+(2026-09-18T22:17:00Z), delegating rather than stating a verdict in their own words. Where a verdict
+below is the orchestrator's assessment made on that delegated authority rather than the developer's
+own words, it is labelled "(delegated)". No credential value appears below.
+
+- **Row 7 — D-04 award-pool tone review:** Developer's words, verbatim, when asked for the verdict a
+  third time (2026-09-18T22:17:00Z): "Just do whatever you think is best." No first-hand verdict was
+  given. Orchestrator assessment (delegated) against the D-01 bar, reading the fifteen-row
+  `### Award pool for review (D-04)` table: (a) every jab is about a measurable fact — First to Die
+  (death time), Flaskless Wonder (no flask), Graveyard Shift (2+ deaths), GCD Tourist (activity %
+  below 80%), Standing in the Fire (avoidable damage ≥1.5× raid median), Enchants? Never Heard of Her
+  (3+ missing enchants), Skipped Breakfast (no food buff), Dull Blade (no weapon enhancement on a
+  melee/tank), Watering the Garden (50%+ overheal); (b) nothing is insulting about a named real
+  raider beyond the stat it cites; (c) no rule designates a single overall worst player — the
+  multi-offender jabs (Graveyard Shift, Enchants, Skipped Breakfast) name everyone tied, and the
+  single-winner jabs each rank one measurable stat rather than declaring a worst player overall. Six
+  praise rules balance nine jabs.
+  Row 7 verdict: PASS (delegated) — the pool as shipped clears the D-01 bar in the orchestrator's
+  assessment on the developer's delegated authority. Closing test for a first-hand verdict remains
+  open: the developer states, in their own words, that the pool clears the bar or names the failing
+  row.
+
+- **Row 8 — real Discord unfurl:** No real Discord channel was available to the orchestrator, and
+  the developer, asked three times, delegated ("Just do whatever you think is best.",
+  2026-09-18T22:17:00Z) without posting the links. Nothing below is a Discord unfurl. Exact URLs
+  prepared (fresh cache-buster):
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=1789767862` and
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=1789767862`
+  (`v=1789550356` and `v=1789586525` are prior, burned values; use a new integer on any retry).
+  Proxy evidence only — a Discord-crawler-shaped fetch (2026-09-18T22:17Z, User-Agent
+  "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"): both URLs returned HTTP 200
+  text/html with `og:title` "SSC / TK — WoW Classic Raid Analysis", `og:description`
+  "Player-by-player analysis of SSC / TK in SSC / TK — DPS/HPS percentiles, gear and enchant audits,
+  buff uptime, and improvement tips for 27 raiders.", `og:image:width` 1200, `og:image:height` 630,
+  `twitter:card` summary_large_image. Awards-link `og:image`
+  (`https://parseforge.gg/og?report=ZjKgNYxVcAqR8pGJ&fight=23&view=awards`) returned HTTP 200
+  image/png, 75,259 bytes, 1200×630 RGBA; player-link `og:image`
+  (`https://parseforge.gg/og?report=ZjKgNYxVcAqR8pGJ&fight=23&source=12`) returned HTTP 200
+  image/png, 48,286 bytes, 1200×630 RGBA. Orchestrator's visual check of the fetched PNGs: the
+  awards card renders "The Lurker Below · KILL · RAID AWARDS" with six legible rows (Meter Lord —
+  Namja — 899 dps; Triage Master — Izlaz — 671 hps; Flaskless Wonder — Bloodhoond, Estrosmagus,
+  Ileria +7 — no flask; Best Prepared — Andelena — flask + food + weapon + full enchants; GCD
+  Tourist — Lightstank — 56.5 active; Standing in the Fire — Thalaroka — 248.1K taken); multi-winner
+  names truncate with a "+N" suffix and no name overflows its row. The player card renders "The
+  Lurker Below · KILL · 5:46", "Samkin — BeastMastery Hunter", DPS 439, Percentile 7, "vs top 3
+  BeastMastery Hunters", "Active Time 43% · 45.9 CPM", and a "B — 58% overall" grade badge, all
+  legible.
+  Row 8 verdict: NOT OBTAINED (2026-09-18) — reason: no real Discord channel was available and the
+  developer delegated rather than posting the links. Closing test: paste both URLs above into a real
+  Discord channel, confirm each unfurls as an image with rows/receipts legible, and confirm the
+  longest raider names clip with an ellipsis rather than overflow.
+
+- **Row 9 — D-13 phone-width reachability:** Route: resized browser, not a real handset. Chrome
+  clamped `mcp__claude-in-chrome` `resize_window` (the top-level window reported innerWidth 1423
+  after a 390×844 request), so the orchestrator rendered the production page inside a same-origin
+  390×844 iframe on https://parseforge.gg (the site sends `X-Frame-Options: SAMEORIGIN`, permitting a
+  same-origin frame), giving a genuine 384×838 CSS-pixel viewport. URL:
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12`, read ~2026-09-18T21:52Z,
+  production deployment `dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`. Raid Overview tab: document height
+  3704px; awards panel starts at 433px from top; "Copy awards link" share button sits at 474px
+  (156×32px) — inside the first 838px screen and 785px above the first analysis `<table>` (which
+  starts at 1259px). Header Share button sits at 88px. Screenshot at 384px confirmed "Raid Awards —
+  The Lurker Below · Kill" with the "Copy awards link" button visible directly beneath the fight
+  header. Player Analysis tab (landing tab for `source=12`): document height 3436px; "Share my
+  parse" button sits at 643px (144×32px), inside the first 838px screen, directly under the "Player
+  Scorecard" heading; no `<table>` element exists on this tab at this width.
+  Row 9 verdict: PASS — at a 384px-wide resized viewport both buttons are reachable without
+  scrolling past the analysis tables. A real-handset pass remains the stronger evidence; recorded
+  here as a resized-browser observation at 384px, not a handset.
+
+Roll-up: rows 4, 5, 6 and 9 are counted PASS. Row 7 is PASS on a delegated verdict, not the
+developer's own words — a first-hand verdict remains the closing test. Row 8 is NOT OBTAINED
+(2026-09-18), with proxy evidence recorded and its closing test named. Rows 1, 2 and 3 belong to
+plans 03-09 and 03-10 and are not part of this plan.
