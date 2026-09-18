@@ -207,7 +207,7 @@ Plans:
 
 **Wave 7** *(gap closure — blocked on Wave 6 completion)*
 
-- [ ] 03-09-PLAN.md — Item-7 re-measure on a fully elapsed busier UTC window, the Web Analytics read for threshold 3, and the RESEARCH A3 consent-path disposition (Part 5 rows 1 and 3)
+- [x] 03-09-PLAN.md — Item-7 re-measure on a fully elapsed busier UTC window, the Web Analytics read for threshold 3, and the RESEARCH A3 consent-path disposition (Part 5 rows 1 and 3)
 
 **Wave 8** *(gap closure — blocked on Wave 7 completion)*
 
