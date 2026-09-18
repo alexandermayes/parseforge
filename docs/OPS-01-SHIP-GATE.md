@@ -2428,3 +2428,37 @@ above. Phase 3 (03-share-loop) goes to verification with OPS-01's Phase 3 re-run
 with SHARE-01/02/03's live-traffic backstop truth (item 3 above) unobserved — see
 `.planning/REQUIREMENTS.md`'s SHARE-01/02/03 and OPS-01 addenda for how this status is carried into
 the requirements ledger.
+
+### Search Console pass — counted result (2026-09-18, gap closure 03-08)
+
+Source: property `sc-domain:parseforge.gg`. Ladder rung 2 — browser-driven Search Console
+(`mcp__claude-in-chrome`) in the developer's signed-in session, driven by the execute-phase
+orchestrator with the developer's explicit agreement ("drive it"). Read by the orchestrator at
+approximately 2026-09-18T21:38Z (row 4) and 2026-09-18T21:40Z (row 5). Rung 1 (`gscServer` MCP) was
+probed first and found not connected in this session. Every figure below is transcribed verbatim
+from that read; none is re-derived, estimated, or borrowed from any other window or session.
+
+- **URL:** https://parseforge.gg/
+  - Coverage state: "URL is on Google — It can appear in Google Search results (if not subject to a
+    manual action or removal request) with all relevant enhancements." Page indexing row: "Page is
+    indexed".
+  - Last crawl: Sep 17, 2026, 3:33:17 AM (Search Console display). Crawled as: Googlebot smartphone.
+    Crawl allowed?: Yes. Page fetch: Successful. Indexing allowed?: Yes.
+  - Google-selected canonical: "Inspected URL" (https://parseforge.gg/). User-declared canonical:
+    https://parseforge.gg/.
+  - Metadata: unchanged from the Phase 1/2 baseline. Google's crawled HTML ("View crawled page")
+    carries the meta description beginning "Paste a Warcraft Logs URL to audit your TBC or Classic
+    raid in seconds — compare DPS and HPS against…", identical to the live render; the `<title>`
+    default "Free WoW Classic & TBC Log Analyzer — ParseForge" and og:title "ParseForge — Free WoW
+    Classic & TBC Log Analyzer" are both defined in app/layout.tsx and unchanged in git since commit
+    390b2d9 (2026-08-06) — before every Phase 1/2/3 deploy.
+  - Recrawl requested: Yes — the orchestrator clicked "Request indexing" in URL Inspection at
+    2026-09-18T21:47Z; Search Console responded "Indexing requested — URL was added to a priority
+    crawl queue. Submitting a page multiple times will not change its queue position or priority."
+  - Baseline comparison: STATE.md baseline was "Crawled – currently not indexed", crawl date
+    2026-09-05. Current state "Page is indexed", crawled 2026-09-17 — the state improved; no
+    regression.
+
+Row 4 verdict: PASS — indexability and metadata unchanged-or-better vs the Phase 1/2 baseline (now
+indexed, up from "Crawled – currently not indexed"), Google-selected canonical is the param-free
+inspected URL, recrawl requested and acknowledged.
