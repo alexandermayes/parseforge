@@ -2576,3 +2576,173 @@ Roll-up: rows 4, 5, 6 and 9 are counted PASS. Row 7 is PASS on a delegated verdi
 developer's own words — a first-hand verdict remains the closing test. Row 8 is NOT OBTAINED
 (2026-09-18), with proxy evidence recorded and its closing test named. Rows 1, 2 and 3 belong to
 plans 03-09 and 03-10 and are not part of this plan.
+
+### Item 7 — re-measured counted result (2026-09-18, gap closure 03-09)
+
+**Source:** PostHog project `337485` ("ParseForge", us.posthog.com), reached via `mcp__posthog__exec`
+after `switch-project 337485` (the connector's default project is `LootList+ App` `310668`, per the
+gate doc's standing warning). Queries run verbatim from `### Item 7 — post-deploy live-traffic
+check` above (lines 2126–2160) with only the window timestamps substituted, by the execute-phase
+orchestrator (the executor running this plan holds no PostHog or Vercel tool). Every figure below is
+transcribed verbatim from the orchestrator's supplied evidence — not rounded, not extrapolated, and
+not combined with any other deployment's or window's numbers.
+
+**Window (UTC):** `2026-09-17T06:00:00Z` → `2026-09-17T07:00:00Z` (exactly 60 minutes, fully elapsed
+before any query ran). This hour was chosen over the original `09:14:57Z`–`10:14:57Z` window per the
+closing test recorded above, which named the candidate ~22:00Z hour. A fresh hourly read of every
+full hour since the deployment (table below) showed the 22:00Z hours on this deployment at only 18
+pageviews (US-only, 2026-09-16) and 4 pageviews (RS-only, 2026-09-17) — the earlier ~22:00Z candidate
+did not hold up on this deployment's own traffic. `2026-09-17 06:00Z` was instead the busiest
+fully-elapsed hour on the deployment (87 pageviews, 3 countries, 5 unique visitors), so the
+orchestrator chose it as an input, stated here, not a guess. Observation recorded alongside, not used
+to adjust anything: 37 of the 87 pageviews came from KZ with ≤5 unique visitors in the hour, i.e. the
+traffic is concentrated; the thresholds below are applied exactly as written regardless.
+
+**Query run (UTC):** `2026-09-18T22:10:48Z` (PostHog queries 1–3); Vercel Web Analytics read at
+approximately `2026-09-18T22:26Z`. Both are later than the window end, proving a full window was
+scored rather than a partial one.
+
+**Deployment:** `dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx` (created `2026-09-16T09:14:57Z`) — confirmed via
+`vercel inspect` on 2026-09-18 as the newest production deployment, still aliased to
+`https://parseforge.gg` and `https://www.parseforge.gg`; no successor deployment exists, so the
+window sits against this deployment's code.
+
+Query 1 (`$pageview` by country):
+
+| country | pageviews |
+|---|---|
+| US | 48 |
+| KZ | 37 |
+| UA | 2 |
+
+**Total: 87 pageviews, 3 distinct countries** (US, KZ, UA — none an EEA/UK/CH consent-region
+country, so distinct non-consent-region countries = 3).
+
+Query 2 (all events by `consent_gate_path`):
+
+| consent_gate_path | count |
+|---|---|
+| geo-non-consent-region | 290 |
+
+Every event in the window carries `consent_gate_path = geo-non-consent-region`; no other value and
+no null bucket was returned.
+
+Query 3 (this phase's new events, with `consent_gate_path`):
+
+| event | consent_gate_path | count |
+|---|---|---|
+| share_landing | geo-non-consent-region | 2 |
+
+No `share_action`, `share_link_copied` or `discord_copied` rows exist in this window. Two real
+`share_landing` events exist, both carrying `consent_gate_path = geo-non-consent-region`.
+
+**Threshold 3 input — Vercel Web Analytics** (team `loot-list-plus`, project `parseforge`,
+production), read via the Vercel MCP `aggregate_pageviews` tool broken down by hour over
+`2026-09-17T05:00Z`–`08:00Z`:
+
+| hour bucket (UTC) | visitors | pageviews |
+|---|---|---|
+| 05:00 | 3 | 5 |
+| 06:00 | 14 | 27 |
+| 07:00 | 15 | 27 |
+| 08:00 | 9 | 14 |
+
+The 06:00Z hourly bucket is exactly the 60-minute window, so the Vercel figure for the window is
+**27 page views (14 visitors)** — a window-granularity figure, not an hour-rounded upper bound. This
+is the first time this row has been readable at window granularity; Part 4 and Part 5 previously
+recorded it NOT EVALUABLE / upper-bound only. For the record: the Vercel MCP `count_pageviews`
+endpoint rounds the requested range to whole days (it returned `since=until=2026-09-17T00:00:00Z`
+with 0 pageviews) and is unusable for a 60-minute window; the hourly `aggregate_pageviews` breakdown
+is the route that works.
+
+**Threshold evaluation (Part 1 item 7's own thresholds, applied exactly as written, unmodified):**
+
+| Threshold | Rule | Counted | Result |
+|---|---|---|---|
+| 1 | ≥ 20 `$pageview` events | 87 | **PASS** |
+| 2 | ≥ 2 distinct non-consent-region countries | 3 (US, KZ, UA) | **PASS** |
+| 3 | PostHog `$pageview` ≥ 50% of Vercel Web Analytics for the same window | PostHog 87 vs. Vercel 27 (50% bar = 13.5); 87/27 = 322% | **PASS** |
+
+Note for the record, not an adjustment: PostHog counting more than Vercel here is consistent with
+client-side `$pageview` firing on in-app tab/fight navigation and with the KZ traffic concentration
+noted above. Part 4's 2026-09-15 reading (25 PostHog vs. 23 Vercel, ratio ~108.7%) shows the same
+direction on a much smaller gap.
+
+**Row 1 verdict:** **PASS** — all three thresholds pass on counted data for a fully elapsed 60-minute
+window (`2026-09-17T06:00:00Z`–`07:00:00Z`), superseding the original deployment window's FAIL/PASS/
+NOT EVALUABLE result recorded in `### Item 7 — counted result` above (that record is left unmodified;
+this is the closing re-measure the developer's "Record now, leave open" decision called for).
+
+**Row 3 verdict (RESEARCH A3):** **YES** — two real `share_landing` events were captured inside the
+window, both carrying `consent_gate_path = "geo-non-consent-region"` (Query 3 above). No
+`share_action` fell inside this particular hour, but item 3's own test is satisfied by either event
+carrying the property, so row 3 closes here rather than staying open.
+
+**Supporting context (not part of the scored window, recorded so the roll-up is honest):** a
+diagnostic read of the same four events over the whole deployment lifetime
+(`2026-09-16T09:14:57Z`–`2026-09-18T22:10Z`) returned: `share_action` / `geo-non-consent-region` /
+`ref=(null)` — 3 events, 2 sessions, first `2026-09-16T19:25:40Z`, last `2026-09-17T22:09:27Z`;
+`share_landing` / `geo-non-consent-region` / `ref=share` — 6 events, 4 sessions
+(`2026-09-17T06:50:36Z`–`13:55:25Z`); `share_landing` / `tcf-timeout` / `ref=share` — 2 events, 1
+session (`2026-09-17T18:53:18Z`–`18:54:16Z`); `share_landing` / `geo-non-consent-region` /
+`ref=awards` — 1 event, 1 session (`2026-09-16T19:25:44Z`). Every captured `share_action` and
+`share_landing` carries a `consent_gate_path` value. No `ref=parse` landing has been captured yet.
+
+**Hourly `$pageview` table since the deploy** (fresh read at `2026-09-18T22:10Z`, `toStartOfHour`,
+UTC; hours with zero pageviews omitted by the query) — the basis for the window choice above:
+
+| hour (UTC) | pageviews | distinct countries | countries | unique visitors |
+|---|---|---|---|---|
+| 2026-09-16 09:00 | 1 | 1 | US | 1 |
+| 2026-09-16 10:00 | 7 | 2 | UA,US | 2 |
+| 2026-09-16 11:00 | 1 | 1 | US | 1 |
+| 2026-09-16 12:00 | 16 | 1 | US | 2 |
+| 2026-09-16 13:00 | 14 | 3 | AU,ID,US | 3 |
+| 2026-09-16 14:00 | 22 | 1 | US | 1 |
+| 2026-09-16 16:00 | 11 | 1 | US | 2 |
+| 2026-09-16 17:00 | 40 | 1 | US | 3 |
+| 2026-09-16 18:00 | 1 | 1 | US | 1 |
+| 2026-09-16 19:00 | 38 | 2 | UA,US | 2 |
+| 2026-09-16 20:00 | 7 | 1 | US | 1 |
+| 2026-09-16 21:00 | 78 | 3 | CA,RS,US | 5 |
+| 2026-09-16 22:00 | 18 | 1 | US | 2 |
+| 2026-09-16 23:00 | 18 | 1 | US | 2 |
+| 2026-09-17 00:00 | 6 | 1 | US | 2 |
+| 2026-09-17 02:00 | 3 | 2 | AU,US | 3 |
+| 2026-09-17 03:00 | 1 | 1 | KR | 1 |
+| 2026-09-17 04:00 | 2 | 2 | CN,US | 2 |
+| 2026-09-17 05:00 | 1 | 1 | US | 1 |
+| 2026-09-17 06:00 | 87 | 3 | KZ,UA,US | 5 |
+| 2026-09-17 07:00 | 30 | 1 | KZ | 1 |
+| 2026-09-17 08:00 | 12 | 4 | GE,IL,TR,UA | 4 |
+| 2026-09-17 10:00 | 1 | 1 | US | 1 |
+| 2026-09-17 11:00 | 24 | 2 | RU,US | 2 |
+| 2026-09-17 12:00 | 1 | 1 | UA | 1 |
+| 2026-09-17 13:00 | 3 | 2 | RO,US | 2 |
+| 2026-09-17 15:00 | 4 | 3 | AZ,US,VN | 4 |
+| 2026-09-17 16:00 | 1 | 1 | VN | 1 |
+| 2026-09-17 17:00 | 3 | 1 | AU | 1 |
+| 2026-09-17 18:00 | 4 | 2 | RO,US | 2 |
+| 2026-09-17 19:00 | 25 | 1 | US | 3 |
+| 2026-09-17 20:00 | 12 | 2 | CA,US | 4 |
+| 2026-09-17 21:00 | 1 | 1 | US | 1 |
+| 2026-09-17 22:00 | 4 | 1 | RS | 1 |
+| 2026-09-17 23:00 | 27 | 2 | CA,US | 4 |
+| 2026-09-18 00:00 | 1 | 1 | TN | 1 |
+| 2026-09-18 02:00 | 7 | 2 | BR,US | 2 |
+| 2026-09-18 03:00 | 8 | 1 | US | 1 |
+| 2026-09-18 12:00 | 1 | 1 | US | 1 |
+| 2026-09-18 13:00 | 3 | 3 | AU,CA,TN | 3 |
+| 2026-09-18 14:00 | 1 | 1 | US | 1 |
+| 2026-09-18 15:00 | 1 | 1 | US | 1 |
+| 2026-09-18 17:00 | 34 | 1 | US | 1 |
+| 2026-09-18 18:00 | 29 | 1 | US | 2 |
+| 2026-09-18 19:00 | 2 | 2 | MO,US | 2 |
+| 2026-09-18 20:00 | 15 | 1 | US | 2 |
+
+**Roll-up (state after this plan):** Row 1 (item-7 live-traffic thresholds) is now counted **PASS**
+on all three thresholds. Row 3 (RESEARCH A3) is now **closed** on two real `share_landing` events
+carrying `consent_gate_path`. Rows 4, 5, 6 and 9 remain counted PASS (plan 03-08). Row 7 remains PASS
+on a delegated verdict, not the developer's own words (plan 03-08). Row 8 remains NOT OBTAINED
+(2026-09-18) (plan 03-08). Row 2 (D-14 share-rate figure) remains open — its re-run is date-gated to
+on/after `2026-09-23T09:15Z` and was **not run** in this plan; it belongs to plan 03-10.
