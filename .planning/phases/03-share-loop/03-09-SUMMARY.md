@@ -125,3 +125,10 @@ Row 1 (item-7 live-traffic thresholds) and row 3 (RESEARCH A3) are now counted, 
 ---
 *Phase: 03-share-loop*
 *Completed: 2026-09-18*
+
+## Self-Check: PASSED
+
+- FOUND: `docs/OPS-01-SHIP-GATE.md`
+- FOUND: `.planning/phases/03-share-loop/03-09-SUMMARY.md`
+- FOUND: commit `7a06fd6` (Task 2)
+- FOUND: commit `eaa4287` (SUMMARY docs commit, self-referential check on prior commit content)
