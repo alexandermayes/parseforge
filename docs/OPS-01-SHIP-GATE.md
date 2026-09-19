@@ -2746,3 +2746,85 @@ carrying `consent_gate_path`. Rows 4, 5, 6 and 9 remain counted PASS (plan 03-08
 on a delegated verdict, not the developer's own words (plan 03-08). Row 8 remains NOT OBTAINED
 (2026-09-18) (plan 03-08). Row 2 (D-14 share-rate figure) remains open — its re-run is date-gated to
 on/after `2026-09-23T09:15Z` and was **not run** in this plan; it belongs to plan 03-10.
+
+### Part 5 close-out (2026-09-19, gap closure 03-10)
+
+**Task 1 decision, quoted verbatim.** The execute-phase orchestrator presented the checkpoint at
+2026-09-19T00:5xZ with the full nine-row state table (rows 1, 3, 4, 5, 6, 9 counted PASS; row 7 PASS
+(delegated); row 8 NOT OBTAINED with proxy evidence and a closing test; row 2 first reading
+standing, re-run date-gated) and the three plan options, recommending `sign-now-conditional`.
+
+- Developer reply 1, verbatim, recorded at **2026-09-19T00:59:20Z**: **"sign-now"**.
+- Developer reply 2, verbatim, immediately after, while the orchestrator was preparing dispatch:
+  **"you call"**.
+- **Orchestrator resolution:** on the developer's deferral, the orchestrator selected its
+  recommended option, **`sign-now-conditional`** — the same signature the developer chose, plus the
+  recorded obligation to append the scheduled re-read as a dated confirmation or correction. The
+  developer chose to sign now; the conditional obligation is the orchestrator's addition on
+  delegated authority.
+
+**Chosen option id: `sign-now-conditional`.** No share-rate query result is supplied in this plan and
+none was run.
+
+**Nine-row closing table, restated with counted outcomes and evidence pointers:**
+
+| # | Item | Status | Evidence / closing test |
+|---|---|---|---|
+| 1 | Item 7 live-traffic thresholds | **PASS** — re-measured window 2026-09-17T06:00:00Z–07:00:00Z on `dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`: threshold 1 PASS (87 `$pageview`), threshold 2 PASS (3 distinct non-consent-region countries: US, KZ, UA), threshold 3 PASS (PostHog 87 vs. Vercel 27 for the 06:00Z hourly bucket → 322% ≥ 50%; window-granularity figure via the Vercel MCP `aggregate_pageviews` tool) | `### Item 7 — re-measured counted result (2026-09-18, gap closure 03-09)` |
+| 2 | Share-rate figure (D-14) | **STANDING FIRST READING** — 0 `share_action` sessions / 19 `analysis_complete` sessions = 0.0%, below the ~2.8% baseline, ~7.5h of live exposure inside the 7-day window; re-run date-gated to on/after **2026-09-23T09:15Z** and NOT run in this plan; accepted as a dated re-deferral under the `sign-now-conditional` decision above | `### Share-rate figure — counted result (2026-09-16, 03-07 final continuation)`; closing test: the 7-day HogQL re-run on/after 2026-09-23T09:15Z, tracked as `.planning/WINDOWS.md #11` |
+| 3 | RESEARCH A3 — `consent_gate_path` on `share_action`/`share_landing` | **PASS** — two real `share_landing` events in the re-measured window, both carrying `consent_gate_path = geo-non-consent-region` | `### Item 7 — re-measured counted result (2026-09-18, gap closure 03-09)` |
+| 4 | Search Console — `/` no-regression + recrawl | **PASS** — "URL is on Google" / "Page is indexed", last crawl Sep 17, 2026 3:33:17 AM, Google-selected canonical = inspected URL, metadata unchanged; recrawl requested 2026-09-18T21:47Z ("Indexing requested") | `### Search Console pass — counted result (2026-09-18, gap closure 03-08)` |
+| 5 | Search Console — analyze route no-regression | **PASS** — indexed, last crawl Sep 15, 2026 12:38:18 PM, canonical = param-free inspected URL, metadata unchanged | `### Search Console pass — counted result (2026-09-18, gap closure 03-08)` |
+| 6 | Search Console — no separately indexed permutation | **PASS** — `?view=awards`, `?ref=awards`, `?ref=parse` each read "URL is unknown to Google"; a `site:` query returns only the param-free route | `### Search Console pass — counted result (2026-09-18, gap closure 03-08)` |
+| 7 | D-04 award-pool tone review | **PASS (delegated)** — developer delegated the verdict ("Just do whatever you think is best.", 2026-09-18T22:17:00Z); orchestrator assessed the pool clears the D-01 bar against the fifteen-row table; a first-hand developer verdict remains the closing test for a non-delegated PASS | `### Developer review backstops — counted result (2026-09-18, gap closure 03-08)` |
+| 8 | Real Discord unfurl (production URLs) | **NOT OBTAINED (2026-09-18)** — accepted as a dated re-deferral under the `sign-now-conditional` decision above; proxy evidence recorded (Discordbot-UA fetch, both `og:image` routes 200, rendered cards legible, multi-winner names truncate with a "+N" suffix) | `### Developer review backstops — counted result (2026-09-18, gap closure 03-08)`; closing test: paste `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=<fresh>` and `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=<fresh>` into a real Discord channel |
+| 9 | D-13 mobile reachability | **PASS** — resized-browser observation at a 384px CSS-pixel viewport (not a real handset): "Copy awards link" reachable at 474px, 785px above the first analysis `<table>` at 1259px; "Share my parse" reachable at 643px | `### Developer review backstops — counted result (2026-09-18, gap closure 03-08)` |
+
+**Cross-phase follow-up dispositions** (Task 3 mutates `.planning/WINDOWS.md` to match these lines):
+
+- `WINDOWS.md #9` (03-06 developer-only backstops: D-04 tone, real Discord unfurl, D-13 mobile) —
+  **remains OPEN (2026-09-19).** D-04 is counted only as a delegated verdict, not the developer's
+  own words (row 7); the real Discord unfurl is NOT OBTAINED (row 8). D-13 itself is counted PASS
+  (row 9), but this ledger entry covers all three backstops as a group and does not close until each
+  of the three carries its own first-hand or real-device closing evidence. Closing tests: (a) the
+  developer states, in their own words, that the award pool clears the D-01 bar or names the failing
+  row; (b) paste both production URLs above into a real Discord channel and confirm the unfurl.
+- `WINDOWS.md #10` (03-07 item-7 re-measure) — **CLOSED.** All three thresholds counted PASS on the
+  fully elapsed 2026-09-17T06:00Z–07:00Z window, threshold 3 read at window granularity. See row 1
+  above for the evidence pointer.
+- `WINDOWS.md #11` (03-07 share-rate re-run) — **remains OPEN (2026-09-19)** by construction under
+  `sign-now-conditional`: the re-read is date-gated to on/after 2026-09-23T09:15Z and carries the
+  recorded obligation (below) to append a dated confirmation or correction to this Part. See row 2
+  above for the evidence pointer.
+
+### Phase 3 Sign-off — SIGNED (2026-09-19, gap closure 03-10)
+
+Part 5 is signed under the `sign-now-conditional` decision recorded above. Of the nine rows, seven
+are counted PASSes resting on their own evidence (rows 1, 3, 4, 5, 6, 7 and 9 — row 7 explicitly on
+a delegated verdict, not the developer's own words, per the still-open first-hand closing test named
+in `WINDOWS.md #9`'s disposition above). Two rows are explicit, accepted, dated re-deferrals rather
+than passes, each with its own closing test named: row 2 (the D-14 share-rate figure, standing at
+its first reading, re-read date-gated to on/after 2026-09-23T09:15Z) and row 8 (the real Discord
+unfurl, NOT OBTAINED 2026-09-18, with proxy evidence recorded and a closing test named). No threshold
+was lowered or reinterpreted anywhere in this table, and no count, window or verdict was borrowed or
+re-dated from another deployment, window, session or phase — every figure above is transcribed
+verbatim from the dated subsection its Evidence column points to.
+
+This signature covers exactly what the table above states: the seven counted passes plus the row-2
+and row-8 re-deferrals, each carrying its own closing test, and the `WINDOWS.md #9`/`#11`
+dispositions recorded above. It does **not** cover `03-REVIEW.md`'s findings WR-01, WR-02, WR-03 or
+IN-01, which remain deferred to `/gsd-code-review --fix` per this plan's
+`<out_of_scope_recorded_deferral>` and are untouched by this closure.
+
+**Conditional obligation (per `sign-now-conditional`).** The D-14 share-rate re-read, once performed
+on or after 2026-09-23T09:15Z, must append a dated confirmation or correction to this Part —
+whatever the HogQL actually returns, not a repetition of this row's first reading. `.planning/WINDOWS.md`
+`#11` stays open until that dated append exists; this signature does not close it and does not
+substitute for it.
+
+**Decision provenance, for the record.** The developer's first reply, "sign-now"
+(2026-09-19T00:59:20Z), chose to sign; the developer's second reply, "you call" (immediately after,
+while dispatch was being prepared), deferred the remaining choice; the orchestrator resolved that
+deferral by selecting its own recommended option, `sign-now-conditional`, adding the
+conditional-obligation language above on delegated authority. Both replies and the resolution are
+quoted verbatim at the top of this close-out.
