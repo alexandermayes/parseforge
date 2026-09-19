@@ -247,3 +247,72 @@ remain open* — not as fully verified per the plan's own sign-off rule. Closes 
 observes at least one real `share_action`/`share_landing` event with `consent_gate_path` present and
 the three developer backstops are performed, at which point `docs/OPS-01-SHIP-GATE.md` Part 5 can be
 signed and this addendum superseded.
+
+### OPS-01 Addendum 4 (2026-09-19, Phase 3 gap closure 03-10)
+
+This addendum supersedes `### OPS-01 Addendum 3 (2026-09-16, Phase 3 gate 03-07)` above it, which
+stays in place unedited; it does not touch Addendum 2's Phase 2.1 sign-off.
+
+Plan 03-10 closed the eight-of-nine-counted state that Addendum 3 recorded as left open, per
+`docs/OPS-01-SHIP-GATE.md`'s new `### Part 5 close-out (2026-09-19, gap closure 03-10)` subsection:
+
+- Item 7's live-traffic thresholds were re-measured on a fully elapsed 60-minute window
+  (`2026-09-17T06:00:00Z`–`07:00:00Z`, deployment `dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`): threshold 1
+  PASS (87 `$pageview` events), threshold 2 PASS (3 distinct non-consent-region countries: US, KZ,
+  UA), threshold 3 PASS (PostHog 87 vs. Vercel 27 for the same hourly bucket, 322% ≥ 50%).
+- The D-14 share-rate figure remains a standing first reading — 0 `share_action` sessions / 19
+  `analysis_complete` sessions = 0.0%, below the ~2.8% baseline, from ~7.5h of live exposure —
+  accepted, not improved, under the developer's `sign-now-conditional` decision (quoted verbatim in
+  the gate document); the re-run stays date-gated to on/after 2026-09-23T09:15Z and was not
+  performed in this plan.
+- Search Console showed no regression on either route: `/` improved from "Crawled – currently not
+  indexed" to "Page is indexed" (last crawl 2026-09-17), with a recrawl requested at
+  2026-09-18T21:47Z; the analyze route remained indexed and unchanged (last crawl 2026-09-15); none
+  of the `?view=awards`, `?ref=awards` or `?ref=parse` permutations appears separately indexed.
+- The three developer-only backstops read: D-04 tone review PASS on a delegated verdict (not the
+  developer's own words); the real Discord unfurl NOT OBTAINED (2026-09-18), with Discordbot-UA
+  proxy evidence recorded; D-13 mobile reachability PASS from a resized 384px-viewport observation.
+
+**OPS-01's Phase 3 re-run is met on 2026-09-19** against production deployment
+`dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx`, with `docs/OPS-01-SHIP-GATE.md` Part 5 signed accordingly:
+`### Phase 3 Sign-off — SIGNED (2026-09-19, gap closure 03-10)`. That signature is explicitly
+conditional: the D-14 re-read, once run on or after 2026-09-23T09:15Z, must append a dated
+confirmation or correction to Part 5, and `.planning/WINDOWS.md #11` stays open until it does.
+`.planning/WINDOWS.md #9` also stays open — the D-04 verdict is delegated rather than first-hand,
+and the real Discord unfurl was not obtained.
+
+### SHARE-01 / SHARE-02 / SHARE-03 Addendum 2 (2026-09-19, Phase 3 gap closure 03-10)
+
+This addendum supersedes `### SHARE-01 / SHARE-02 / SHARE-03 Addendum (2026-09-16, Phase 3 gate
+03-07)` above it, which stays in place unedited.
+
+Of the backstops that addendum listed as open, the following are now closed with counted evidence:
+
+- **The live-PostHog backstop** — two real `share_landing` events were captured in the re-measured
+  `2026-09-17T06:00Z`–`07:00Z` window, both carrying `consent_gate_path = geo-non-consent-region`
+  (RESEARCH A3; `docs/OPS-01-SHIP-GATE.md` `### Item 7 — re-measured counted result (2026-09-18, gap
+  closure 03-09)`).
+- **D-13 phone-width reachability** — a resized-browser observation at a 384px CSS-pixel viewport
+  found both the "Copy awards link" and "Share my parse" buttons reachable without scrolling past
+  the analysis tables (`### Developer review backstops — counted result (2026-09-18, gap closure
+  03-08)`).
+
+The following remain open:
+
+- **The real Discord unfurl of both production share links** (SHARE-01's awards-link case and
+  SHARE-02's player-link case) — NOT OBTAINED (2026-09-18); no real Discord channel was available.
+  Closing test: paste
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=<fresh>` and
+  `https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=<fresh>` into a
+  real Discord channel and confirm each unfurls with rows/receipts legible and the longest names
+  clipped with an ellipsis rather than overflowing.
+- **A first-hand (non-delegated) D-04 tone verdict** — the developer delegated the verdict three
+  times ("Just do whatever you think is best.") rather than stating one in their own words. Closing
+  test: the developer states, in their own words, that the award pool clears the D-01 bar or names
+  the failing row.
+
+With `docs/OPS-01-SHIP-GATE.md` Part 5 now signed (`### Phase 3 Sign-off — SIGNED (2026-09-19, gap
+closure 03-10)`), SHARE-01, SHARE-02 and SHARE-03's underlying capability and their live-traffic
+backstop now rest on their own counted evidence rather than a sibling plan's premature marking. The
+Discord-unfurl and first-hand-D-04 backstops above remain open and are tracked in
+`.planning/WINDOWS.md #9`; nothing here reverts or edits the checkbox lines above.
