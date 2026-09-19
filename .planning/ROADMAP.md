@@ -211,7 +211,7 @@ Plans:
 
 **Wave 8** *(gap closure — blocked on Wave 7 completion)*
 
-- [ ] 03-10-PLAN.md — The date-gated share-rate row (on/after 2026-09-23T09:15Z), the Part 5 close-out and its single sign-off, REQUIREMENTS Addendum 4, and the WINDOWS ledger dispositions (Part 5 row 2)
+- [x] 03-10-PLAN.md — The date-gated share-rate row (on/after 2026-09-23T09:15Z), the Part 5 close-out and its single sign-off, REQUIREMENTS Addendum 4, and the WINDOWS ledger dispositions (Part 5 row 2)
 
 **Notes**: Built on the existing `/og/route.tsx` infrastructure. The protected-elements checklist produced here is a hard input to the Phase 4 ad placement whitelist.
 
