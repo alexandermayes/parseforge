@@ -230,7 +230,17 @@ Plans:
   4. LCP/INP/CLS on `/`, `/analyze/*`, and `/tbc-audit` are captured before ad code ships and re-measured after, with a written rollback trigger that has been agreed before launch.
   5. AdSense reports revenue on live traffic, PostHog tracks ad-slot impact on analyze completion, and GSC shows no ranking movement attributable to the change (OPS-01 gate).
 
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — R0-1 approval request + the pre-ad CWV baseline and rollback trigger (OPS-01 Part 6)
+- [ ] 04-02-PLAN.md — R0-2: rankings + rate-limit fixtures via the extended WCL recorder
+- [ ] 04-03-PLAN.md — **Tracer**: one reserved, consent-gated ad slot end-to-end, plus CSP hosts, /ads.txt and the protected-elements slot gate
+- [ ] 04-04-PLAN.md — R0-3: rankings blob types, pure parse-lens engine, Redis rate-budget gate (no UI)
+- [ ] 04-05-PLAN.md — the remaining three D-02 placements, the /privacy disclosure, and AdSense account configuration
+- [ ] 04-06-PLAN.md — preview deploy: netlog proof of the consent gate, measured boxes, CSP harvest, human passes
+- [ ] 04-07-PLAN.md — approval-gated production ads deploy + post-deploy OPS-01 evidence and sign-off
+
 **UI hint**: yes
 
 **Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7).
