@@ -233,12 +233,26 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 04-01-PLAN.md — R0-1 approval request + the pre-ad CWV baseline and rollback trigger (OPS-01 Part 6)
 - [ ] 04-02-PLAN.md — R0-2: rankings + rate-limit fixtures via the extended WCL recorder
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 04-03-PLAN.md — **Tracer**: one reserved, consent-gated ad slot end-to-end, plus CSP hosts, /ads.txt and the protected-elements slot gate
 - [ ] 04-04-PLAN.md — R0-3: rankings blob types, pure parse-lens engine, Redis rate-budget gate (no UI)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 04-05-PLAN.md — the remaining three D-02 placements, the /privacy disclosure, and AdSense account configuration
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 04-06-PLAN.md — preview deploy: netlog proof of the consent gate, measured boxes, CSP harvest, human passes
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 04-07-PLAN.md — approval-gated production ads deploy + post-deploy OPS-01 evidence and sign-off
 
 **UI hint**: yes
