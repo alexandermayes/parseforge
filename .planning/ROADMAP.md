@@ -27,6 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Community & Cross-Promotion** - Dedicated Discord, LootList+ two-way links, auto-posted reports
 - [ ] **Phase 6: Discoverability & Content** - Programmatic pages, fixed guides, CTR metadata, structured data
 - [ ] **Phase 7: Redesign, De-bloat & Hardening** - Route-by-route visual overhaul behind an SEO gate; CSP enforcing
+- [ ] **Phase 8: WoW Forever Readiness (F0)** - Data-free prep so Forever support becomes "add rows + record fixtures" once WCL/wago expose it (queued 2026-09-19; unblocked, may be pulled forward)
 
 ## Phase Details
 
@@ -220,7 +221,7 @@ Plans:
 **Goal**: ParseForge earns ad revenue without the paste-and-analyze flow getting measurably worse
 **Mode:** mvp
 **Depends on**: Phase 1 (consent), `docs/PROTECTED-ELEMENTS.md` (Phase 3)
-**Requirements**: MONY-02, MONY-03
+**Requirements**: MONY-02, MONY-03 (+ R0 contract scope from `.planning/research/PARSEFORGE-RANKINGS-SPEC.md` §7, folded in 2026-09-19 — no new v1 requirement ID)
 **Success Criteria** (what must be TRUE):
 
   1. A visitor sees ads only in whitelisted slots; the paste box, analysis tables, and share CTA are never covered, pushed down, or delayed by ad loading.
@@ -232,7 +233,9 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7). Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal. The ad-placement whitelist must be checked against `docs/PROTECTED-ELEMENTS.md` — no ad slot may cover, push down, or delay an element that file names — and `npm run protected-elements` must stay green.
+**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7).
+
+**R0 — WCL contract & approval (folded into this phase, decided 2026-09-19):** the RPGLogs API Terms make advertising "commercial" use that needs prior written approval, so Phase 4's first plan must (R0-1) save dated copies of the ToS + API-docs pages to `.planning/research/`, send the approval request (AdSense on the analyzer + the planned rankings lens + expected volume + Redis caching) and record the thread; the ads deploy plan is **gated on that reply**. Also in scope: (R0-2) extend `scripts/record-wcl-fixtures.mjs` to record `rateLimitData`, `report.rankings`, `zoneRankings`/`encounterRankings`, `characterRankings`/`fightRankings` page 1 and guild `members`/`attendance` for the public demo entities as `lib/__fixtures__/rankings-*.json`; (R0-3) `lib/wcl-types.ts` rankings types, a pure `lib/rankings/parse-lens.ts` (blob → per-player parse rows, honouring `hidden`) and a `rateLimitData`→Redis budget reader with a 90% gate — tests only, **no UI** (R1+ stay un-executed until the approval reply). `/privacy` must mention WCL-sourced data and ad sharing before ads ship. Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal. The ad-placement whitelist must be checked against `docs/PROTECTED-ELEMENTS.md` — no ad slot may cover, push down, or delay an element that file names — and `npm run protected-elements` must stay green.
 
 ### Phase 5: Community & Cross-Promotion
 
@@ -291,10 +294,29 @@ Plans:
 
 **Notes**: Rollout order is low-traffic routes first, high-traffic (`/`, `/analyze/*`, `/tbc-audit`) last. Uses the project's `impeccable` skill for the design work. OPS-02 lands at the very end of the milestone, after every ad/CMP source has been discovered through report-only violation reports. The redesign may not remove any element listed in `docs/PROTECTED-ELEMENTS.md`, and `npm run protected-elements` is part of the per-route gate.
 
+### Phase 8: WoW Forever Readiness (F0)
+
+**Goal**: Every *structural* blocker to supporting World of Warcraft Forever is removed now, so the gated F1/F2 phases become data-only work the day WCL exposes Forever logs (raids from 9 Dec 2026)
+**Mode:** mvp
+**Depends on**: Phase 2 (generated game data, fixtures recorder)
+**Requirements**: none of the 24 v1 IDs — prep queued by the developer on 2026-09-19 from `.planning/research/WOW-FOREVER.md` §5 (F0-1…F0-4); F1/F2 stay outside this milestone until the upstream signal fires (re-check 4 Nov / 9 Dec 2026)
+**Success Criteria** (what must be TRUE):
+
+  1. `scripts/probe-wcl-game-versions.mjs` lists WCL `worldData` expansions/zones/partitions from env credentials without printing secrets, snapshots them into `docs/WCL-GAME-VERSIONS.md`, and exits 1 when a Forever zone appears (the unblock detector).
+  2. `npm run regen-game-data -- --report` accepts a fourth, report-only `forever` era descriptor with `hasGems:false` tolerated, while Classic+TBC/WotLK/Cata output is byte-identical (audit diff = build line only).
+  3. Domain-scoped lookups (`lookupEnchantName/lookupGem…/lookupConsumable(id, domain)`) exist with tests; `lib/cla-constants.ts` re-exports stay byte-compatible; pinned facts 2667/3003/32196 unchanged.
+  4. A single WCL link helper maps domain → subdomain and replaces the hard-coded `classic.warcraftlogs.com` links; a low-cardinality `expansion_domain` PostHog property ships with the change (OPS-01).
+  5. Full `npm test`, `npx tsc --noEmit`, `npm run lint` green with no new findings.
+
+**Plans**: TBD
+**UI hint**: no
+
+**Notes**: Deliberately data-free — no `game-data.forever.ts` is written by default (`--enable-forever` flag only). R0-2's fixtures extension and F0-1's probe are **one script, two consumers** (see PARSEFORGE-RANKINGS-SPEC §7 R0-2); if Phase 4 lands R0-2 first, F0-1 extends it rather than duplicating it.
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7 → 8 (Phase 8 is unblocked and may be pulled forward at the developer's call)
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -306,6 +328,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
 | 6. Discoverability & Content | 0/TBD | Not started | - |
 | 7. Redesign, De-bloat & Hardening | 0/TBD | Not started | - |
+| 8. WoW Forever Readiness (F0) | 0/TBD | Not started | - |
 
 ## Requirement Coverage
 
@@ -320,6 +343,7 @@ All 24 v1 requirements mapped to exactly one phase. No orphans, no duplicates.
 | 5. Community & Cross-Promotion | COMM-01, COMM-02, SHARE-04 | 3 |
 | 6. Discoverability & Content | SEO-01, SEO-02, SEO-03, SEO-04 | 4 |
 | 7. Redesign, De-bloat & Hardening | DSGN-02, DSGN-04, SEO-05, OPS-02 | 4 |
+| 8. WoW Forever Readiness (F0) | — (prep; no v1 requirement) | 0 |
 | **Total** | | **24** |
 
 ## Sequencing Constraints Honored
