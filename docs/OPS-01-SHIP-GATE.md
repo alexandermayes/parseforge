@@ -2828,3 +2828,12 @@ while dispatch was being prepared), deferred the remaining choice; the orchestra
 deferral by selecting its own recommended option, `sign-now-conditional`, adding the
 conditional-obligation language above on delegated authority. Both replies and the resolution are
 quoted verbatim at the top of this close-out.
+
+### Part 5 post-sign-off update (2026-09-19, verify-work UAT)
+
+Recorded after the SIGNED sign-off above; additive only, nothing above is altered.
+
+- **Row 8 (real Discord unfurl) — CLOSED.** The developer pasted both production links into a real Discord channel and passed `03-UAT.md` test 1 on 2026-09-19: both cards unfurled as images with rows/receipts legible. This replaces the 2026-09-18 NOT OBTAINED disposition; `.planning/WINDOWS.md #9` closed via `gsd-tools windows fixed 9`.
+- **Row 7 (D-04 tone) — first-hand verdict obtained.** The developer reviewed the fifteen-row pool with each row's stat line and passed `03-UAT.md` test 2 on 2026-09-19 in their own words; the "delegated" qualifier above no longer applies.
+- **Row 2 (D-14 share-rate re-read) — STILL OPEN.** `03-UAT.md` test 3 was passed by the developer on 2026-09-19 without the reading (the re-read is date-gated to on/after 2026-09-23T09:15Z and was not run). The `sign-now-conditional` obligation stands unchanged: the re-read must append a dated confirmation or correction here; `.planning/WINDOWS.md #11` stays open until it does.
+- Phase 3 verification: `03-VERIFICATION.md` status `passed`; `03-SECURITY.md` ASVS L1, 50 threats closed / 0 open. `03-REVIEW.md` WR-01/02/03/IN-01 remain outside this record.

@@ -1,44 +1,44 @@
 ---
 gsd_state_version: 1.0
-current_phase: 3
-current_phase_name: Share Loop
-status: verifying
-stopped_at: Completed 03-10-PLAN.md
-last_updated: "2026-09-19T01:13:00.458Z"
-last_activity: 2026-09-15
-last_activity_desc: Phase 03 execution started
-state_head: 1d43ef71f605344b3de9fc992b6ea950d108f22d
+current_phase: 4
+current_phase_name: Ads Live
+status: planning
+stopped_at: Phase 03 complete, ready to plan Phase 4
+last_updated: "2026-09-19T20:18:11.114Z"
+last_activity: 2026-09-19
+last_activity_desc: Phase 03 complete, transitioned to Phase 4
+state_head: 1287841907b3462aa2beb55460e5fa54efb4e1b3
 progress:
   total_phases: 8
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 36
   completed_plans: 36
-  percent: 38
+  percent: 50
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-15 after Phase 2.1)
+See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 03 — Share Loop
+**Current focus:** Phase 04 — Ads Live
 
 ## Current Position
 
-Phase: 3 (Share Loop) — READY TO EXECUTE
-Plan: 7 of 7
-Status: Phase complete — ready for verification
-Last activity: 2026-09-15 — Phase 03 execution started
+Phase: 4 — Ads Live
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-19 — Phase 03 complete, transitioned to Phase 4
 
-Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans complete)
+Progress: [█████░░░░░] 50% (4/8 phases incl. 2.1; 36/36 planned plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 26
+- Total plans completed: 36
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -49,6 +49,7 @@ Progress: [████░░░░░░] 38% (3/8 phases; 26/26 planned plans 
 | 01 | 9 | - | - |
 | 02 | 9 | - | - |
 | 02.1 | 8 | - | - |
+| 03 | 10 | - | - |
 
 **Recent Trend:**
 
@@ -170,8 +171,11 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - ~~[Phase 2.1 close] OPS-01 gate NOT signed / five review fixes not in production~~ resolved: gate signed 2026-09-15 (02.1-05, ratio 25/23); the five fix commits shipped in `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` (02.1-07).
 - [Phase 2.1 carry-forward → Phase 3 gate] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
 - ~~[Phase 02.1 close] ROADMAP SC2 / Truth 4 / MONY-01 behaviour-unverified~~ resolved 2026-09-15: the developer ran the EEA/UK/CH VPN session (reject, full opt-in, CMP re-confirm) and passed it as `02.1-UAT.md` Test 1; `consent_resolved` fired once (WR-03 dedupe holds in-browser).
-- [Phase 3 gate] Three developer-only backstops from 03-06 remain open before 03-07 production: D-04 award-pool tone confirmation, a real Discord unfurl of the preview awards+player links, and D-13 phone-width reachability of both share buttons — exact tests and URLs in docs/OPS-01-SHIP-GATE.md Part 5.
-- [Phase 3 close] OPS-01 gate NOT signed for Phase 3 (docs/OPS-01-SHIP-GATE.md Part 5, LEFT OPEN per developer decision). Nine outstanding items: item-7 re-measure (busier UTC hour, candidate ~22:00Z), share-rate re-run (on/after 2026-09-23T09:15Z), three Search Console rows, and three developer-only backstops (D-04 tone, real Discord unfurl, D-13 mobile). SHARE-01/02/03 remain checked Complete in REQUIREMENTS.md (marked by sibling plan 03-06 before 03-07 finished) but their live-traffic/human-review backstop truth is unproven - see REQUIREMENTS.md addenda.
+- ~~[Phase 3 gate] Three developer-only backstops from 03-06 (D-04 tone, real Discord unfurl, D-13 mobile)~~ resolved: D-13 counted 2026-09-18 (384px viewport); real Discord unfurl and first-hand D-04 tone verdict passed by the developer in `03-UAT.md` tests 1–2 on 2026-09-19 (WINDOWS #9 closed).
+- ~~[Phase 3 close] OPS-01 gate NOT signed for Phase 3~~ resolved 2026-09-19: `docs/OPS-01-SHIP-GATE.md` Part 5 signed under `sign-now-conditional` (7/9 counted PASS, rows 2 and 8 accepted dated re-deferrals; row 8 since closed via UAT). Phase 3 verified `passed`, `03-SECURITY.md` 50/50 closed.
+- [Phase 3 carry-forward → 2026-09-23] **D-14 share-rate re-read obligation** (WINDOWS #11): run the 7-day HogQL on/after 2026-09-23T09:15Z and append a dated confirmation/correction to Part 5. UAT test 3 was passed by the developer on 2026-09-19 *without* the reading (noted in `03-UAT.md`), so this is Phase 3's only open evidence obligation — do not let it lapse.
+- [Phase 3 carry-forward] `03-REVIEW.md` WR-01, WR-02, WR-03, IN-01 remain deferred to `/gsd-code-review 03 --fix`; explicitly outside the Part 5 signature and the security review.
+- [Phase 4 dependency] RPGLogs/WCL API ToS requires approval for commercial/ads use (see `.planning/research/PARSEFORGE-RANKINGS-SPEC.md`) — send the approval request before Phase 4 ships ads.
 
 ### Quick Tasks Completed
 
@@ -189,11 +193,13 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| Validation | Nyquist validate-phase for Phase 3 (`03-VALIDATION.md` remains `draft`, `nyquist_compliant: false`) — `gsd-validate-phase` skill not installed in this profile (verify:post hook active, `Unknown skill`); vitest 226/226 green and `03-VERIFICATION.md` passed. Close via full-profile install + `/gsd-validate-phase 03` | Deferred | 2026-09-19 (Phase 3 close) | v1 growth |
+| UI review | Visual quality audit of Phase 3 frontend changes (share CTAs, AwardsPanel, OG cards) — `gsd-ui-review` skill not installed (verify:post hook active, `Unknown skill`). Close via full-profile install + `/gsd-ui-review 03`, or fold into the Phase 7 redesign | Deferred | 2026-09-19 (Phase 3 close) | v1 growth |
 | Security | Formal ASVS L1 security review of Phase 2 (`02-SECURITY.md`) — `gsd-secure-phase` still not installed in this profile (verify:post hook active, `Unknown skill`); per-plan STRIDE registers exist. Developer chose to defer at UAT close. Close via full-profile install + `/gsd-secure-phase 02` | Deferred | 2026-09-08 (Phase 2 close) | v1 growth |
 | Security | Formal ASVS L1 security review of Phase 1 (`01-SECURITY.md`) — gsd security tooling (gsd-secure-phase skill, gsd-security-auditor agent) not installed in this profile; per-plan STRIDE registers exist. Close via full-profile install + `/gsd-secure-phase 01` | Deferred | 2026-09-07 (Phase 1 close) | v1 growth |
 
 ## Session Continuity
 
 Last session: 2026-09-19T01:13:00.340Z
-Stopped at: Completed 03-10-PLAN.md
+Stopped at: Phase 03 complete, ready to plan Phase 4
 Resume file: None

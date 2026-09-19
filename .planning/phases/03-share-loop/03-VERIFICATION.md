@@ -1,7 +1,7 @@
 ---
 phase: 03-share-loop
 verified: 2026-09-18T18:30:00Z
-status: human_needed
+status: passed
 score: 5/6 must-haves verified
 behavior_unverified: 2
 overrides_applied: 0
@@ -13,12 +13,14 @@ re_verification:
   gaps_remaining: []
   regressions: []
 behavior_unverified_items:
+
   - truth: "A pasted /analyze/{code}?fight={id}&view=awards link, and a per-player permalink, each unfurl in a real Discord channel as an image with the awards/receipts legible (SHARE-01, SHARE-02 backstop truths)."
     test: "Paste https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&view=awards&ref=awards&v=<fresh> and https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&ref=parse&v=<fresh> into a real Discord channel (changing v= on every retry) and confirm both unfurl as images with the award rows / player receipts legible, specifically checking that the longest raider names clip with an ellipsis rather than overflow."
     expected: "Discord renders the linked og:image inline; award rows and player receipts are legible; long names clip cleanly."
     why_human: "No Discord-bot harness exists in this repo. docs/OPS-01-SHIP-GATE.md Part 5 row 8 records this as NOT OBTAINED (2026-09-18) — a Discordbot-UA proxy fetch confirmed the og:title/og:description/og:image contract and the served images render correct, legible, player-specific content (75,259 and 48,286-byte PNGs, 1200x630, visually inspected), but no real Discord channel was available to exercise Discord's own crawler/unfurl renderer. This verifier independently re-confirmed the underlying contract still holds (protected-elements gate 10/10 PASS re-run live against production, tsc/vitest clean) — what remains unverified is Discord's own rendering behavior specifically."
 coincidental_reliance_items: []
 human_verification:
+
   - test: "Paste the two production links above into a real Discord channel (cache-busted) and confirm the awards card and the per-player card both unfurl as images with rows/receipts legible and long names clipped cleanly."
     expected: "Both unfurl correctly in a real Discord embed."
     why_human: "External service (Discord's crawler/embed renderer) behavior; no harness in this repo. Code-side contract (og:image meta + served image content) independently re-confirmed correct by this verifier via a live regression run of the protected-elements gate."

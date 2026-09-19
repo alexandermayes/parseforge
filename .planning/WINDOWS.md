@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 10
+open_count: 9
 waived_count: 0
-fixed_count: 1
+fixed_count: 2
 total_count: 11
-last_updated: 2026-09-19T01:10:28.150Z
+last_updated: 2026-09-19T20:19:49.601Z
 ---
 
 # Broken Windows Ledger
@@ -23,7 +23,7 @@ last_updated: 2026-09-19T01:10:28.150Z
 | 6 | 02 | deviation | lib/generated/game-data.consumables.ts |  | Consumable-name derivation via direct SpellName.Name_lang per-id lookup resolved only 48/178 (27%) names reliably; the remaining 130 needed a consumableNames override (prefix loss, generic buff-aura collapse, or unresolvable era coverage) — a future item-name-based (ItemSparse) derivation pass could raise the wago-verified ratio for this map. | open |  | 2026-09-08T02:21:39.073Z |  |
 | 7 | 02.1 | todo | docs/OPS-01-SHIP-GATE.md |  | Part 1 item 7's browser-level netlog sub-item needs a --user-agent override (or opt_out_useragent_filter:true in posthog.init) - posthog-js's built-in bot filter silently drops all captures for any UA containing HeadlessChrome, producing a false negative regardless of app correctness (found 02.1-03). | open |  | 2026-09-14T22:02:16.645Z |  |
 | 8 | 03 | deviation | scripts/protected-elements.mjs |  | protected-elements has no bypass-header/query-param support, so its live route checks cannot verify an SSO-protected preview deploy (302s to Vercel login instead); direct curl with x-vercel-protection-bypass is the workaround used in 03-06 Part 5 | open |  | 2026-09-16T08:59:20.886Z |  |
-| 9 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview) | open |  | 2026-09-16T09:02:42.606Z |  |
+| 9 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview) | fixed |  | 2026-09-16T09:02:42.606Z | 2026-09-19T20:19:49.601Z |
 | 10 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 item-7 re-measure needed: dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx's 09:14:57Z-10:14:57Z window scored threshold 1 FAIL (7 pageviews), threshold 2 PASS (2 countries), threshold 3 NOT EVALUABLE (no Vercel Web Analytics endpoint on the personal token). Re-run the three HogQL queries against a full 60-minute window on a busier UTC hour (candidate ~22:00Z, 24 pageviews on 2026-09-14) plus a window-granularity Vercel Web Analytics dashboard read. | fixed |  | 2026-09-16T16:56:13.409Z | 2026-09-19T01:10:28.150Z |
 | 11 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 share-rate (D-14) re-run needed: 7-day trailing HogQL read 0.0% (0 share_action sessions / 19 analysis_complete sessions) as a first reading with only ~7.5h of live share_action exposure. Re-run the same HogQL on/after 2026-09-23T09:15Z for the first meaningful comparison against the ~2.8% baseline. | open |  | 2026-09-16T16:56:13.555Z |  |
 
@@ -132,10 +132,10 @@ last_updated: 2026-09-19T01:10:28.150Z
     "file": "docs/OPS-01-SHIP-GATE.md",
     "line": null,
     "description": "03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview)",
-    "status": "open",
+    "status": "fixed",
     "reason": "",
     "recorded_at": "2026-09-16T09:02:42.606Z",
-    "resolved_at": null
+    "resolved_at": "2026-09-19T20:19:49.601Z"
   },
   {
     "id": 10,

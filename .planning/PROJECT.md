@@ -41,6 +41,9 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - ✓ Phase 2 code-review findings (CR-01, WR-01..03) fixed and live (PR #16, 2026-09-14); Phase 2.1 review fixes (CR-01, WR-01..04 incl. `consent_resolved` dedupe) live in `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` — Phase 2 / 2.1
 - ✓ PostHog capture restored for every non-EEA/UK visitor: server-side geo opt-in via `/api/geo` (`x-vercel-ip-country`, fail-closed to the consent region), no `__tcfapi` dependency; EEA/UK/CH TCF gate byte-for-byte unchanged and confirmed in a real browser (reject / accept / CMP re-confirm, WR-03 dedupe live); every event carries `consent_gate_path` (MONY-01 preserved, OPS-01 re-verified) — Phase 2.1
 - ✓ OPS-01 gate hardened: mandatory post-deploy live-traffic check (item 7: HogQL thresholds, zero-events-is-a-FAIL, bounded netlog proof); Phase 1/2 records carry dated append-only addenda; Phase 2.1 signed 2026-09-15 on counted evidence (25 `$pageview` / 3 countries / 25:23 vs Vercel) — Phase 2.1
+- ✓ Share loop v2: fight-level roast/award cards (15-rule `computeAwards` pool held to the D-01 tone bar), per-player permalinks whose OG image shows that player's parse, normalized share CTAs reachable on desktop and at phone width, and a `ref=` landing funnel instrumented in PostHog (`share_action` / `share_landing` carrying `consent_gate_path`) — Phase 3
+- ✓ `docs/PROTECTED-ELEMENTS.md` checklist + `npm run protected-elements` machine check (6 protected DOM attributes, 4 route/canonical checks, exit 0/1/2 discipline) so Phases 4 and 7 cannot silently regress the share CTA or OG pipeline — Phase 3
+- ✓ OPS-01 Phase 3 gate signed (`docs/OPS-01-SHIP-GATE.md` Part 5, 2026-09-19, `sign-now-conditional`): GSC no-regression on `/` and `/analyze/*` with no separately indexed `?view=`/`?ref=` permutation, item-7 live-traffic thresholds re-measured PASS on a full hour; ASVS L1 security review `03-SECURITY.md` 50/50 threats closed — Phase 3
 
 ### Active
 
@@ -53,7 +56,7 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 - [ ] Indexing plumbing: structured data fixes (FAQPage not detected on `/tbc-audit`), sitemap health, recrawl nudges, internal links
 
 **Viral loop:**
-- [ ] Raise share rate from ~2.8% of analyses — share UX, shared-page landing experience
+- [ ] Raise share rate from ~2.8% of analyses — share UX and landing funnel shipped in Phase 3; first post-ship reading 0/19 on ~7.5h exposure; confirmatory 7-day re-read due on/after 2026-09-23T09:15Z (WINDOWS #11), then iterate
 
 **Design & UX:**
 - [ ] Site-wide design overhaul (via impeccable workflow) — current UI is "super messy"; reference top ~3 closest-matching styles from https://styles.refero.design/; full redesign allowed but must stay recognizably ParseForge (colors/identity preserved)
@@ -129,6 +132,8 @@ A player pastes a Warcraft Logs URL and instantly gets **accurate**, actionable 
 | Server-side geo opt-in for non-consent-region visitors, decided from `x-vercel-ip-country`, fail-closed to the TCF path | `cookieless_mode: "on_reject"` + `__tcfapi`-dependent opt-in dropped all PENDING-consent capture for fresh visitors; a boolean `/api/geo` keeps PII out of the request path and leaves EEA/UK semantics untouched | ✓ Good (Phase 2.1) — capture restored; TCF path confirmed in-browser at UAT |
 | OPS-01 gate can never pass on pre-deploy data: mandatory counted live-traffic check, zero events = FAIL, append-only corrections to past records | Phases 1 and 2 were both signed on event-definition presence while ingestion was ~0; the gate must measure visitors, not code | ✓ Good (Phase 2.1) — Phase 2.1 signed on counted evidence; 02.1-07 redeploy row honestly left unsigned |
 | Record "not performed" rather than infer a pass from unit tests or code review for the EEA/UK behaviour | An LLM cannot obtain an EEA egress; honesty about unobserved behaviour beats a manufactured pass | ✓ Good (Phase 2.1) — closed by a developer-run VPN session at UAT, 2026-09-15 |
+| Sign the Phase 3 OPS-01 gate with two dated re-deferrals (share-rate re-read, real Discord unfurl) rather than hold Phase 4 for the 7-day window | Every countable row was counted; holding would have blocked on a calendar date, not on evidence; the `sign-now-conditional` obligation keeps the re-read binding | ✓ Phase 3 — unfurl and first-hand tone verdict passed in UAT 2026-09-19; re-read due ≥2026-09-23 |
+| Run the ASVS L1 security review orchestrator-side when the `gsd-secure-phase` skill wrapper is missing (as Phase 2.1 did) | The gate blocks advancement; the workflow and template exist in gsd-core, only the skill is absent | ✓ Phase 3 — `03-SECURITY.md` 50/50 closed, 0 open |
 
 ## Evolution
 
@@ -148,4 +153,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-15 after Phase 2.1*
+*Last updated: 2026-09-19 after Phase 3*
