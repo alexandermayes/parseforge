@@ -82,8 +82,8 @@ Computed from consecutive `rateLimitData.pointsSpentThisHour` samples taken imme
 before and after each query type, in the same run, against the free-tier client-credentials
 key (`limitPerHour` observed at **18,000** at record time — already above the 3,600
 figure `[CITED]` above reports for the free tier, consistent with §2.2's note that the
-limit moves; read it at runtime, never assume either number). Two independent runs on
-2026-09-20 produced matching deltas for the first four query types (3.00, 3.01, 7.01, 2.00),
+limit moves; read it at runtime, never assume either number). Three independent runs on
+2026-09-20 produced identical deltas for all five query types (3.00, 3.01, 7.01, 2.00, 20.29),
 so these are treated as stable measurements, not one-off noise.
 
 | Query type (fixture) | Measured Δ`pointsSpentThisHour` | `limitPerHour` at time of measurement | Recorded |

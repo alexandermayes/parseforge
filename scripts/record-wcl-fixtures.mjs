@@ -481,7 +481,15 @@ async function main() {
     code: REPORT_CODE,
     fightIDs: [FIGHT_ID],
   });
-  writeFixture("rankings-report.json", rankingsReportData);
+  writeFixture("rankings-report.json", {
+    _provenance: {
+      query: "ReportRankings (reportData.report(code:).rankings(fightIDs:))",
+      recorded: new Date().toISOString(),
+      entity: `report ${REPORT_CODE}, fight ${FIGHT_ID}`,
+      api_host: "www.warcraftlogs.com",
+    },
+    ...rankingsReportData,
+  });
 
   // R0-2 rate-limit sample 2/3 — immediately after the rankings query above.
   rateLimitSamples.push(await sampleRateLimit(token, "after-report-rankings"));
@@ -713,7 +721,15 @@ async function main() {
 
   // R0-2 rate-limit sample 3/3 — at the very end of the run.
   rateLimitSamples.push(await sampleRateLimit(token, "end"));
-  writeFixture("rankings-ratelimit.json", { samples: rateLimitSamples });
+  writeFixture("rankings-ratelimit.json", {
+    _provenance: {
+      query: "RateLimitCheck (rateLimitData), sampled multiple times across this run",
+      recorded: new Date().toISOString(),
+      entity: "this run's own WCL client-credentials key budget (not report-specific)",
+      api_host: "www.warcraftlogs.com",
+    },
+    samples: rateLimitSamples,
+  });
 
   console.log("All fixtures recorded successfully.");
   process.exit(0);

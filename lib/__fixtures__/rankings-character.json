@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "query": "CharacterRankingsProbe (characterData.character.zoneRankings + encounterRankings)",
-    "recorded": "2026-09-20T00:27:08.065Z",
+    "recorded": "2026-09-20T00:31:01.690Z",
     "entity": "Effinore-Dreamscythe-US, zone 1056, partition 2",
     "api_host": "classic.warcraftlogs.com",
     "required_classic_host": true

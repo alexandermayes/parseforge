@@ -1,4 +1,10 @@
 {
+  "_provenance": {
+    "query": "ReportRankings (reportData.report(code:).rankings(fightIDs:))",
+    "recorded": "2026-09-20T00:31:01.082Z",
+    "entity": "report ZjKgNYxVcAqR8pGJ, fight 23",
+    "api_host": "www.warcraftlogs.com"
+  },
   "reportData": {
     "report": {
       "rankings": {

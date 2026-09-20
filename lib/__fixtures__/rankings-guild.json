@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "query": "GuildProbe (guildData.guild.members + attendance, reportData.reports)",
-    "recorded": "2026-09-20T00:27:08.688Z",
+    "recorded": "2026-09-20T00:31:02.284Z",
     "entity": "Sage (dreamscythe-US), guild id 816114",
     "api_host": "classic.warcraftlogs.com",
     "guild_choice": "fallback public guild — the demo report has no guild (reportData.report(code:).guild is null); see FALLBACK_GUILD_ID's comment above for how this guild was found and why it was chosen",
