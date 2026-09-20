@@ -3,9 +3,14 @@
 Recorded real Warcraft Logs GraphQL responses used by this repo's engine tests
 (`fixtures.test.ts`, `cla-engine.test.ts`, `raid-overview-engine.test.ts`,
 `timeline-engine.test.ts`, `healer-metrics.test.ts` — plans 02-01 through
-02-08). These are the exact shapes the engines consume in production, not
-hand-built mocks, so a shape-changing regression fails a test instead of
-silently drifting from reality.
+02-08; `rankings-*.json` — plan 04-02, R0-2). These are the exact shapes the
+engines consume in production, not hand-built mocks, so a shape-changing
+regression fails a test instead of silently drifting from reality.
+
+**A fixture must never be recorded from a report, character or guild that is
+not publicly viewable** — a committed fixture is permanent, world-readable
+data about named players who never consented to it. If any recorded entity
+ever becomes private, its fixture(s) must be deleted, not kept.
 
 ## Provenance
 
@@ -39,7 +44,10 @@ rm -f "$SCRATCH/.env.wcl"
 `$SCRATCH` is a throwaway directory outside the repo (e.g. the session
 scratchpad). Never copy the pulled env file into the repo tree, and always
 delete it once the recording run finishes — this is a live-credential file,
-not a fixture.
+not a fixture. The recorder needs no environment variables beyond
+`WCL_CLIENT_ID`/`WCL_CLIENT_SECRET` for the `rankings-*.json` fixtures below —
+the `classic.warcraftlogs.com` host they sometimes need is a hardcoded
+constant in the script, not a new required env var.
 
 ## Files
 
@@ -51,6 +59,38 @@ not a fixture.
 | `demo-raid-combatant-info.json` | `RAID_COMBATANT_INFO_QUERY` | Raid-wide `CombatantInfo` events (gear/talents at pull, for every player) |
 | `demo-raid-death-events.json` | `RAID_DEATH_EVENTS_QUERY` | Raid-wide death events. Fight 23 in this report has zero deaths, so `data` is a genuinely empty array — not a recording failure |
 | `demo-timeline-casts.json` | new probe (`events(dataType: Casts, ...)`, `table(dataType: Casts, ...)`, `masterData.actors`) | `pages`: every recorded page envelope verbatim (pagination contract, not flattened); `pageCount`, `truncatedByCap`; `castsTable`: the aggregated Casts table for the same player (guid → name/icon resolution); `masterData`: the full actor list with no type filter (cast targets include NPCs) |
+| `rankings-ratelimit.json` | `RATE_LIMIT_QUERY` (`rateLimitData`) | An array of labeled, timestamped budget samples taken before/after every new query type in one run — the shape 04-04's budget reader validates before writing to Redis, and the source data for §2.2.1's measured point-cost table |
+| `rankings-report.json` | `REPORT_RANKINGS_QUERY` (`report.rankings(fightIDs:)`) | The per-report rankings blob for the demo report/fight, recorded on its own (not as a PLAYER_FULL_DATA_QUERY by-product) — the single source of truth 04-04's `lib/rankings/parse-lens.ts` is written against |
+| `rankings-encounter.json` | `ENCOUNTER_RANKINGS_PROBE_QUERY` (`worldData.encounter(id:).characterRankings` + `.fightRankings`) | Page 1 of the boss leaderboard for the demo report's own encounter, scoped to the report's own `partition` (read from `rankings-report.json`, never a literal) |
+| `rankings-character.json` | `CHARACTER_RANKINGS_PROBE_QUERY` (`characterData.character(...).zoneRankings` + `.encounterRankings`) | Zone and encounter rankings for the demo report's featured DPS character, Effinore (Dreamscythe-US) — **required the `classic.warcraftlogs.com` API host**; the default `www.warcraftlogs.com` host resolves this character to `null` for identical arguments. Recorded in this fixture's own `_provenance.api_host` |
+| `rankings-zones.json` | `ZONES_PROBE_QUERY` (`worldData.zones`) | The bracket vocabulary (44 zones) any displayed percentile has to be labelled with; a small number of zones legitimately carry `brackets: null` |
+| `rankings-guild.json` | `GUILD_PROBE_QUERY` (`guildData.guild(...).members` + `.attendance`, `reportData.reports(guildID:)`) | Members/attendance/recent-reports for a public guild — see "Provenance" below for how it was chosen |
+
+## Character and guild choices (R0-2, plan 04-02)
+
+- **Character:** Effinore (Dreamscythe-US) — the first DPS character listed in
+  `rankings-report.json`'s `roles.dps.characters`, i.e. a real player from the
+  demo report itself. Confirmed publicly viewable by construction: she is a
+  named character in the demo report, which `demo-*` fixtures above already
+  established is publicly viewable.
+- **Guild:** the demo report itself resolves to no guild
+  (`reportData.report(code: ZjKgNYxVcAqR8pGJ).guild` is `null`, confirmed
+  2026-09-20) — an explicit finding, not an oversight (04-RESEARCH.md Open
+  Question 1). The fallback chosen is **Sage** (guild id 816114,
+  Dreamscythe-US), found via Effinore's own public `encounterRankings` — one
+  of her ranked kills lists this guild, i.e. a guild attributed on a real
+  public kill on the exact same realm and zone (SSC/TK) as the demo report.
+  **Public confirmation:** `reportData.reports(guildID: 816114)` returned
+  `visibility: "public"` for all 10 sampled reports on 2026-09-20. A
+  logged-out browser check of the guild's WCL page (the method used for the
+  original six fixtures above) was **not possible** for this recording: this
+  environment's direct HTTP requests to `warcraftlogs.com` return HTTP 403 to
+  automated readers regardless of actual visibility — confirmed by testing
+  the already-known-public demo report URL, which also returned 403. The
+  API's own `visibility` field is therefore the confirmation channel used
+  here, recorded verbatim in `rankings-guild.json`'s `_provenance` block. If
+  Sage's reports ever stop being public, `rankings-guild.json` must be
+  deleted, not kept, per the rule at the top of this file.
 
 ## Findings — RESEARCH.md Assumptions A1–A5
 

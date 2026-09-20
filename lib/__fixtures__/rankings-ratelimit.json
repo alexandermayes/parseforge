@@ -2,45 +2,52 @@
   "samples": [
     {
       "label": "before",
-      "recorded": "2026-09-20T00:23:31.147Z",
+      "recorded": "2026-09-20T00:27:07.175Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 138.21,
-      "pointsResetIn": 2287
+      "pointsSpentThisHour": 184.23,
+      "pointsResetIn": 2071
     },
     {
       "label": "after-report-rankings",
-      "recorded": "2026-09-20T00:23:31.712Z",
+      "recorded": "2026-09-20T00:27:07.562Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 141.21,
-      "pointsResetIn": 2287
+      "pointsSpentThisHour": 187.23,
+      "pointsResetIn": 2071
     },
     {
       "label": "after-encounter-rankings",
-      "recorded": "2026-09-20T00:23:31.985Z",
+      "recorded": "2026-09-20T00:27:07.788Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 144.22,
-      "pointsResetIn": 2287
+      "pointsSpentThisHour": 190.24,
+      "pointsResetIn": 2071
     },
     {
       "label": "after-character-rankings",
-      "recorded": "2026-09-20T00:23:32.341Z",
+      "recorded": "2026-09-20T00:27:08.164Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 151.23,
-      "pointsResetIn": 2286
+      "pointsSpentThisHour": 197.25,
+      "pointsResetIn": 2070
     },
     {
       "label": "after-zones",
-      "recorded": "2026-09-20T00:23:32.588Z",
+      "recorded": "2026-09-20T00:27:08.409Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 153.23,
-      "pointsResetIn": 2286
+      "pointsSpentThisHour": 199.25,
+      "pointsResetIn": 2070
+    },
+    {
+      "label": "after-guild-rankings",
+      "recorded": "2026-09-20T00:27:08.805Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 219.54,
+      "pointsResetIn": 2070
     },
     {
       "label": "end",
-      "recorded": "2026-09-20T00:23:34.337Z",
+      "recorded": "2026-09-20T00:27:10.600Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 183.23,
-      "pointsResetIn": 2284
+      "pointsSpentThisHour": 249.54,
+      "pointsResetIn": 2068
     }
   ]
 }

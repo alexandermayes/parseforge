@@ -321,6 +321,60 @@ const ZONES_PROBE_QUERY = `
   }
 `;
 
+// ─── R0-2 guild probe (Task 3) ─────────────────────────────────────────────
+
+// Probed first, at record time: does the demo report itself resolve to a
+// guild? (Confirmed this session: it does not — reportData.report(code:
+// ZjKgNYxVcAqR8pGJ).guild is null.)
+const REPORT_GUILD_QUERY = `
+  query ReportGuild($code: String!) {
+    reportData {
+      report(code: $code) {
+        guild {
+          id
+          name
+          server { slug region { compactName } }
+        }
+      }
+    }
+  }
+`;
+
+// Fallback public guild, used only because the demo report has no guild.
+// "Sage" (guild id 816114, Dreamscythe-US) was found via the demo report's
+// own featured character (Effinore)'s public encounterRankings — one of her
+// ranked kills lists this guild, i.e. a guild attributed on a real, public
+// kill on the exact same realm and zone (SSC/TK) as the demo report. Public
+// visibility is confirmed at record time below via reportData.reports()'s
+// own `visibility` field, not a logged-out browser check: this environment's
+// direct HTTP requests to warcraftlogs.com return 403 to automated readers
+// regardless of a report's actual visibility (confirmed against the
+// already-known-public demo report URL, which also 403s) — see README.md.
+const FALLBACK_GUILD_ID = 816114;
+
+const GUILD_PROBE_QUERY = `
+  query GuildProbe($guildID: Int!, $zoneID: Int) {
+    guildData {
+      guild(id: $guildID) {
+        id
+        name
+        server { slug region { compactName } }
+        members(page: 1) {
+          data { name guildRank classID }
+        }
+        attendance(page: 1) {
+          data { code startTime zone { id name } }
+        }
+      }
+    }
+    reportData {
+      reports(guildID: $guildID, zoneID: $zoneID, limit: 10, page: 1) {
+        data { code title zone { id name } startTime visibility }
+      }
+    }
+  }
+`;
+
 // ─── WCL HTTP plumbing (mirrors lib/wcl-client.ts's auth mechanics; not a
 //     shared import — see header comment) ──────────────────────────────────
 
@@ -497,6 +551,67 @@ async function main() {
     worldData: zonesData.worldData,
   });
   rateLimitSamples.push(await sampleRateLimit(token, "after-zones"));
+
+  // R0-2 (Task 3): choose the guild, explicitly. Probe the demo report's own
+  // guild first; only fall back to the hand-picked public guild above if the
+  // report has none.
+  const reportGuildData = await gqlQuery(
+    token,
+    REPORT_GUILD_QUERY,
+    { code: REPORT_CODE },
+    CLASSIC_API_URL,
+  );
+  const reportGuild = reportGuildData?.reportData?.report?.guild;
+  const guildID = reportGuild?.id ?? FALLBACK_GUILD_ID;
+  const guildChoiceReason = reportGuild
+    ? `the demo report's own guild (reportData.report(code:).guild)`
+    : "fallback public guild — the demo report has no guild " +
+      "(reportData.report(code:).guild is null); see FALLBACK_GUILD_ID's " +
+      "comment above for how this guild was found and why it was chosen";
+
+  const guildProbeData = await gqlQuery(
+    token,
+    GUILD_PROBE_QUERY,
+    { guildID, zoneID },
+    CLASSIC_API_URL,
+  );
+  const guild = guildProbeData.guildData.guild;
+  const guildReports = guildProbeData.reportData.reports;
+  const allReportsPublic =
+    guildReports.data.length > 0 &&
+    guildReports.data.every((r) => r.visibility === "public");
+
+  if (!allReportsPublic) {
+    console.error(
+      `Guild ${guildID} could not be confirmed public (reports() returned ` +
+        `${guildReports.data.length} reports, not all public) — never ` +
+        "recording an unconfirmed entity. Pick a different fallback guild " +
+        "and rerun.",
+    );
+    process.exit(2);
+  }
+
+  writeFixture("rankings-guild.json", {
+    _provenance: {
+      query: "GuildProbe (guildData.guild.members + attendance, reportData.reports)",
+      recorded: new Date().toISOString(),
+      entity: `${guild.name} (${guild.server.slug}-${guild.server.region.compactName}), guild id ${guild.id}`,
+      api_host: "classic.warcraftlogs.com",
+      guild_choice: guildChoiceReason,
+      public_confirmed: true,
+      public_confirmed_method:
+        `reportData.reports(guildID) returned visibility: "public" for all ` +
+        `${guildReports.data.length} sampled reports; a logged-out browser ` +
+        "check was not possible in this environment (warcraftlogs.com " +
+        "returns HTTP 403 to automated readers, confirmed against the " +
+        "already-public demo report URL too — see README.md)",
+      public_confirmed_date: new Date().toISOString().slice(0, 10),
+    },
+    members: guild.members,
+    attendance: guild.attendance,
+    reports: guildReports.data,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-guild-rankings"));
 
   // 1. DPS player data (fight 23, source 12)
   const dpsData = await gqlQuery(token, PLAYER_FULL_DATA_QUERY, {

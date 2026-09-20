@@ -1,0 +1,750 @@
+{
+  "_provenance": {
+    "query": "GuildProbe (guildData.guild.members + attendance, reportData.reports)",
+    "recorded": "2026-09-20T00:27:08.688Z",
+    "entity": "Sage (dreamscythe-US), guild id 816114",
+    "api_host": "classic.warcraftlogs.com",
+    "guild_choice": "fallback public guild — the demo report has no guild (reportData.report(code:).guild is null); see FALLBACK_GUILD_ID's comment above for how this guild was found and why it was chosen",
+    "public_confirmed": true,
+    "public_confirmed_method": "reportData.reports(guildID) returned visibility: \"public\" for all 10 sampled reports; a logged-out browser check was not possible in this environment (warcraftlogs.com returns HTTP 403 to automated readers, confirmed against the already-public demo report URL too — see README.md)",
+    "public_confirmed_date": "2026-09-20"
+  },
+  "members": {
+    "data": [
+      {
+        "name": "Arcfâult",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Ardiko",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Ardypal",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Aught",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Ayyohh",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Backdoorboss",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Bonzzeye",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Burnall",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Chirrasil",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Cleocritsra",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Clòud",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Crupi",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Cåpsaicin",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Dirtyangus",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Driñk",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Elyste",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Epinephren",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Everensahh",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Extramana",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Extrealt",
+        "guildRank": 2,
+        "classID": 8
+      },
+      {
+        "name": "Frostdjack",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Goobaahz",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Hurrixane",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Huzzakarai",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Itzuki",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Ixkik",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Jspades",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Kristaltear",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Lìebe",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Macewindy",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Manbullbear",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Maplemenace",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Maresca",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Mcflurryz",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Mentaux",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Michaelsling",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Mikkon",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Missydirect",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Moomoka",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Moonlanding",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Namja",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Nazgoul",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Nelkaria",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Nigork",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Ningeroff",
+        "guildRank": 2,
+        "classID": 8
+      },
+      {
+        "name": "Nomam",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Nyxisa",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Pantryraid",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Promithes",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Purfire",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Rickrambus",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Robinwiliams",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Saibal",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Samhaine",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Semisosa",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Setee",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Shadedgeth",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Shahrezad",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Shawns",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Shyhairline",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Sourstripss",
+        "guildRank": 2,
+        "classID": 3
+      },
+      {
+        "name": "Spretzel",
+        "guildRank": 2,
+        "classID": 6
+      },
+      {
+        "name": "Stunnamanz",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Swinggz",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Titainia",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Tortoisee",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Totemgigante",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Tùrtle",
+        "guildRank": 2,
+        "classID": 11
+      },
+      {
+        "name": "Warlockkekw",
+        "guildRank": 2,
+        "classID": 10
+      },
+      {
+        "name": "Weeve",
+        "guildRank": 2,
+        "classID": 4
+      },
+      {
+        "name": "Xoopal",
+        "guildRank": 2,
+        "classID": 2
+      },
+      {
+        "name": "Xossy",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Yeabutchill",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Yshv",
+        "guildRank": 2,
+        "classID": 7
+      },
+      {
+        "name": "Zefnar",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Zugsnothugs",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Årcfault",
+        "guildRank": 2,
+        "classID": 9
+      },
+      {
+        "name": "Çåp",
+        "guildRank": 2,
+        "classID": 8
+      },
+      {
+        "name": "Asterr",
+        "guildRank": 3,
+        "classID": 11
+      },
+      {
+        "name": "Billfknmurry",
+        "guildRank": 3,
+        "classID": 3
+      },
+      {
+        "name": "Bowforry",
+        "guildRank": 3,
+        "classID": 3
+      },
+      {
+        "name": "Brennain",
+        "guildRank": 3,
+        "classID": 4
+      },
+      {
+        "name": "Bullka",
+        "guildRank": 3,
+        "classID": 9
+      },
+      {
+        "name": "Buzzbeam",
+        "guildRank": 3,
+        "classID": 2
+      },
+      {
+        "name": "Chewtoi",
+        "guildRank": 3,
+        "classID": 8
+      },
+      {
+        "name": "Chrísto",
+        "guildRank": 3,
+        "classID": 7
+      },
+      {
+        "name": "Colordeaf",
+        "guildRank": 3,
+        "classID": 10
+      },
+      {
+        "name": "Commontaco",
+        "guildRank": 3,
+        "classID": 7
+      },
+      {
+        "name": "Cownaughtonj",
+        "guildRank": 3,
+        "classID": 11
+      },
+      {
+        "name": "Cowptainmuse",
+        "guildRank": 3,
+        "classID": 9
+      },
+      {
+        "name": "Cstydacaster",
+        "guildRank": 3,
+        "classID": 4
+      },
+      {
+        "name": "Cybelly",
+        "guildRank": 3,
+        "classID": 2
+      },
+      {
+        "name": "Davieante",
+        "guildRank": 3,
+        "classID": 8
+      },
+      {
+        "name": "Dozzier",
+        "guildRank": 3,
+        "classID": 2
+      },
+      {
+        "name": "Durandiel",
+        "guildRank": 3,
+        "classID": 4
+      },
+      {
+        "name": "Effinore",
+        "guildRank": 3,
+        "classID": 2
+      },
+      {
+        "name": "Estrosmagus",
+        "guildRank": 3,
+        "classID": 4
+      },
+      {
+        "name": "Evildew",
+        "guildRank": 3,
+        "classID": 8
+      },
+      {
+        "name": "Exadara",
+        "guildRank": 3,
+        "classID": 10
+      },
+      {
+        "name": "Extremissy",
+        "guildRank": 3,
+        "classID": 3
+      }
+    ]
+  },
+  "attendance": {
+    "data": [
+      {
+        "code": "Dzf37Z8JTh9YBnWm",
+        "startTime": 1789519104271,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "YqL1WBgXK2jFdJn6",
+        "startTime": 1789083540714,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "8BYtkhWT3pnHGAZm",
+        "startTime": 1789088143707,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "YF4mVHjKwTgaBqhM",
+        "startTime": 1788914856789,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "vyA8cPWRXV24QBxz",
+        "startTime": 1788914642596,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "wbxthjTgqRNBW1zy",
+        "startTime": 1788915457759,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "K6cbMLXBV23R1W8F",
+        "startTime": 1788482929054,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "WKLDYhCad2Aty4QV",
+        "startTime": 1788486189361,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "mbKWNakp9HyFCzfj",
+        "startTime": 1788312214796,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "HRGfdZnKcr92aYxy",
+        "startTime": 1788224775869,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "y6XbaqW8CRcMV1Dg",
+        "startTime": 1788224697040,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "WARjHpadGFDVxg9K",
+        "startTime": 1788224775869,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "bPf2HzGKDNjqv4xd",
+        "startTime": 1788137880188,
+        "zone": {
+          "id": 1056,
+          "name": "SSC / TK"
+        }
+      },
+      {
+        "code": "tjg1T6PQAVqrRn8G",
+        "startTime": 1787878850040,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "YVfjyCTBrpPHL4qG",
+        "startTime": 1787878117047,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      },
+      {
+        "code": "fCaMAbH3rW7XtjdY",
+        "startTime": 1787884919354,
+        "zone": {
+          "id": 1060,
+          "name": "BT / Hyjal"
+        }
+      }
+    ]
+  },
+  "reports": [
+    {
+      "code": "bPf2HzGKDNjqv4xd",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1788137880188,
+      "visibility": "public"
+    },
+    {
+      "code": "ZNHrmJVhKFbLztvR",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1787705909136,
+      "visibility": "public"
+    },
+    {
+      "code": "yHGVgnxQ4NDzYCwb",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1787705288441,
+      "visibility": "public"
+    },
+    {
+      "code": "XmA4g2jqfNFzPZQc",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1787705257101,
+      "visibility": "public"
+    },
+    {
+      "code": "qtvF8Bh3JnzArwGL",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1787360519960,
+      "visibility": "public"
+    },
+    {
+      "code": "hWPKNpqZvncLmrYC",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1787187944798,
+      "visibility": "public"
+    },
+    {
+      "code": "bkHMWwcyfqZjvxtz",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1786668587219,
+      "visibility": "public"
+    },
+    {
+      "code": "1LZpMa6RtNgxcKYW",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1786668398208,
+      "visibility": "public"
+    },
+    {
+      "code": "F6KakNZw4VvfrPXL",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1786495867405,
+      "visibility": "public"
+    },
+    {
+      "code": "PqN2DVr89AMwaQ3F",
+      "title": "SSC / TK",
+      "zone": {
+        "id": 1056,
+        "name": "SSC / TK"
+      },
+      "startTime": 1786496541246,
+      "visibility": "public"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import rankingsReport from "./rankings-report.json";
 import rankingsEncounter from "./rankings-encounter.json";
 import rankingsCharacter from "./rankings-character.json";
 import rankingsZones from "./rankings-zones.json";
+import rankingsGuild from "./rankings-guild.json";
 
 // Shape guard over every fixture recorded by scripts/record-wcl-fixtures.mjs
 // (02-01 Task 1). These assert the exact field names README.md documents
@@ -211,5 +212,24 @@ describe("WCL fixtures shape guard", () => {
       expect("brackets" in zone).toBe(true);
       expect(zone.brackets === null || typeof zone.brackets === "object").toBe(true);
     }
+  });
+
+  // ─── R0-2 Task 3: guild fixture with an explicit public-guild choice ────
+
+  it("Test 16: rankings-guild.json carries members, attendance and a report list, tolerating an empty page but not a missing key", () => {
+    expect(rankingsGuild).toHaveProperty("members");
+    expect(rankingsGuild).toHaveProperty("attendance");
+    expect(rankingsGuild).toHaveProperty("reports");
+    expect(Array.isArray(rankingsGuild.members?.data)).toBe(true);
+    expect(Array.isArray(rankingsGuild.attendance?.data)).toBe(true);
+    expect(Array.isArray(rankingsGuild.reports)).toBe(true);
+  });
+
+  it("Test 17: rankings-guild.json's _provenance records the guild, its server/region, and a public-visibility confirmation", () => {
+    const p = rankingsGuild._provenance;
+    expect(typeof p.entity).toBe("string");
+    expect(typeof p.recorded).toBe("string");
+    expect(p.public_confirmed).toBe(true);
+    expect(typeof p.public_confirmed_date).toBe("string");
   });
 });

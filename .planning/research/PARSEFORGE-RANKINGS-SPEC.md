@@ -73,8 +73,33 @@ Nothing found in the snippets *prohibits* showing rankings, caching responses, o
 |---|---|---|
 | Client-credentials API budget | **3,600 points / hour** (free). A Patreon/premium key was reported at **36,000 points / hour**; Gold and Platinum tiers advertise "more" / "even more API points". | `[CITED: forums.combatlogforums.com/t/api-v2-requests-limit-per-second-minute-hour/14659 (user keol quoting the profile page, 2024-01-05) read 2026-09-18; archon.gg subscriber-benefits via search]` |
 | Budget introspection | `rateLimitData { limitPerHour pointsSpentThisHour pointsResetIn }` | `[CITED: pkg.go.dev/github.com/math280h/go-wcl RateLimit type, read 2026-09-18]` |
-| Point cost per query | Not published in a form we could read; community reports say costs scale with query complexity (events/tables on long fights cost more; simple metadata ~1 point) and that 429s can arrive before the hourly budget is exhausted (a user reported 429 after 300–400 rapid requests, 2023-10-27). One GitHub project noted `limitPerHour` "moved from 9000 to 18000 mid-session", so **read the limit at runtime, never hard-code it**. | `[CITED: same forum thread; github.com/Erilla/SlashWho/issues/282 via search]` — costs `[ASSUMED — LOW]` |
+| Point cost per query | Not published in a form we could read; community reports say costs scale with query complexity (events/tables on long fights cost more; simple metadata ~1 point) and that 429s can arrive before the hourly budget is exhausted (a user reported 429 after 300–400 rapid requests, 2023-10-27). One GitHub project noted `limitPerHour` "moved from 9000 to 18000 mid-session", so **read the limit at runtime, never hard-code it**. For the five R0-2 rankings query types, this is now a **measured** value — see the sub-table below — rather than an assumption; the "not published"/`[ASSUMED]` characterization stands only for query types R0-2 did not probe (e.g. the pre-existing player/raid-overview/timeline queries). | `[CITED: same forum thread; github.com/Erilla/SlashWho/issues/282 via search]` — costs `[ASSUMED — LOW]` for unmeasured query types; `[MEASURED]` for the five below |
 | ParseForge's current spend profile | Per uncached `/api/analyze`: 1 player query (+1 healer re-query) + 1 rankings query + 1 actors query per top report + 1 top-player query × 3 ≈ 6–8 queries; `/api/cla` batches 12 players per buff query and caps at 15 fights; `/api/timeline` pages up to 20×. 5-minute in-process query cache, 10-minute Redis result cache, per-IP limits 10–60/min. | `[VERIFIED: app/api/analyze/route.ts, lib/constants.ts RATE_LIMITS / MAX_CLA_FIGHTS, lib/wcl-client.ts]` |
+
+#### 2.2.1 Measured point cost per query type — R0-2, recorded 2026-09-20
+
+Computed from consecutive `rateLimitData.pointsSpentThisHour` samples taken immediately
+before and after each query type, in the same run, against the free-tier client-credentials
+key (`limitPerHour` observed at **18,000** at record time — already above the 3,600
+figure `[CITED]` above reports for the free tier, consistent with §2.2's note that the
+limit moves; read it at runtime, never assume either number). Two independent runs on
+2026-09-20 produced matching deltas for the first four query types (3.00, 3.01, 7.01, 2.00),
+so these are treated as stable measurements, not one-off noise.
+
+| Query type (fixture) | Measured Δ`pointsSpentThisHour` | `limitPerHour` at time of measurement | Recorded |
+|---|---|---|---|
+| `report.rankings(fightIDs:)` (`rankings-report.json`) | **3.00** | 18,000 | 2026-09-20 |
+| `worldData.encounter(id:).characterRankings` + `.fightRankings`, page 1, partition-scoped (`rankings-encounter.json`) | **3.01** | 18,000 | 2026-09-20 |
+| `characterData.character(...).zoneRankings` + `.encounterRankings` (`rankings-character.json`, `classic.` host) | **7.01** | 18,000 | 2026-09-20 |
+| `worldData.zones` (all 44 zones, `rankings-zones.json`) | **2.00** | 18,000 | 2026-09-20 |
+| `guildData.guild(...).members` + `.attendance` + `reportData.reports(guildID:)`, one combined query (`rankings-guild.json`) | **20.29** | 18,000 | 2026-09-20 |
+
+No delta came back zero or negative for any of the five query types, so none is recorded as
+`inconclusive`. The guild query's higher cost is consistent with it being the only one of the
+five that fans out three paginated sub-resources (members, attendance, reports) in a single
+request. These deltas are `[MEASURED]` provenance, superseding the `[ASSUMED — LOW]` marker
+in the row above for these five query types only; the row's general "not published" framing
+stands for every other WCL query type this codebase issues, which R0-2 did not measure.
 
 **Implication.** 3,600 points/hour is enough to *decorate reports* and to *refresh a few hundred leaderboard slices a day*; it is nowhere near enough to *mirror* WCL's rankings. Back-of-envelope: TBC has ~45 raid encounters across zones × ~30 specs × 2 metrics × partitions ≈ 3,000+ (boss, spec, metric, partition) slices *per region*; refreshing each once a day at even 2 points is most of a day's budget, and paging beyond page 1 (100 rows) multiplies it. A rankings surface must therefore be **demand-driven and cached** (compute a slice when someone asks, serve it to everyone for hours), never a nightly crawl of everything. The existing single-flight lock + Redis result cache is exactly the right primitive `[VERIFIED: lib/api-utils.ts cachedApiHandler]`.
 

@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "query": "EncounterRankingsProbe (worldData.encounter.characterRankings + fightRankings)",
-    "recorded": "2026-09-20T00:23:31.882Z",
+    "recorded": "2026-09-20T00:27:07.693Z",
     "entity": "encounter 100624 (\"The Lurker Below\"), partition 2",
     "api_host": "www.warcraftlogs.com"
   },

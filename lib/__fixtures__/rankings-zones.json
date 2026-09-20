@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "query": "ZonesProbe (worldData.zones)",
-    "recorded": "2026-09-20T00:23:32.477Z",
+    "recorded": "2026-09-20T00:27:08.295Z",
     "entity": "all worldData.zones (bracket vocabulary, not report-specific)",
     "api_host": "www.warcraftlogs.com"
   },
