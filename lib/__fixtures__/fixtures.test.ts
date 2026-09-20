@@ -5,6 +5,8 @@ import demoRaidOverview from "./demo-raid-overview.json";
 import demoRaidCombatantInfo from "./demo-raid-combatant-info.json";
 import demoRaidDeathEvents from "./demo-raid-death-events.json";
 import demoTimelineCasts from "./demo-timeline-casts.json";
+import rankingsRatelimit from "./rankings-ratelimit.json";
+import rankingsReport from "./rankings-report.json";
 
 // Shape guard over every fixture recorded by scripts/record-wcl-fixtures.mjs
 // (02-01 Task 1). These assert the exact field names README.md documents
@@ -82,5 +84,70 @@ describe("WCL fixtures shape guard", () => {
     expect(
       demoRaidDeathEvents.reportData.report.deathEvents.data
     ).toBeInstanceOf(Array);
+  });
+
+  // ─── R0-2 rankings fixtures (PARSEFORGE-RANKINGS-SPEC.md §7) ────────────
+
+  it("Test 7: rankings-ratelimit.json carries at least three labeled, timestamped, numeric samples", () => {
+    expect(Array.isArray(rankingsRatelimit.samples)).toBe(true);
+    expect(rankingsRatelimit.samples.length).toBeGreaterThanOrEqual(3);
+    const labels = rankingsRatelimit.samples.map((s) => s.label);
+    for (const expected of ["before", "after-report-rankings", "end"]) {
+      expect(labels).toContain(expected);
+    }
+    for (const sample of rankingsRatelimit.samples) {
+      expect(typeof sample.limitPerHour).toBe("number");
+      expect(typeof sample.pointsSpentThisHour).toBe("number");
+      expect(typeof sample.pointsResetIn).toBe("number");
+    }
+  });
+
+  it("Test 8: rankings-report.json exposes at least one rankings entry with the fields the parse lens will read", () => {
+    const entries = rankingsReport.reportData.report.rankings.data;
+    expect(Array.isArray(entries)).toBe(true);
+    expect(entries.length).toBeGreaterThan(0);
+    const entry = entries[0];
+    expect(typeof entry.fightID).toBe("number");
+    expect(typeof entry.partition).toBe("number");
+    expect(typeof entry.bracketData).toBe("number");
+    expect(typeof entry.kill).toBe("number");
+    expect(typeof entry.encounter.id).toBe("number");
+    expect(typeof entry.encounter.name).toBe("string");
+    expect(entry.roles).toBeTruthy();
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      expect(Array.isArray(entry.roles[role].characters)).toBe(true);
+    }
+    expect(typeof entry.speed.rankPercent).toBe("number");
+    expect(typeof entry.execution.rankPercent).toBe("number");
+  });
+
+  it("Test 9: every character row in every role has a numeric id, a string name, and a numeric-or-null rankPercent", () => {
+    const entry = rankingsReport.reportData.report.rankings.data[0];
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      for (const character of entry.roles[role].characters) {
+        expect(typeof character.id).toBe("number");
+        expect(typeof character.name).toBe("string");
+        expect(
+          character.rankPercent === null || typeof character.rankPercent === "number"
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("Test 10: the `hidden` field's presence on character rows is recorded, never assumed absent", () => {
+    // README.md/2026-09-19 recording: no character row carried a `hidden`
+    // key at all. This is an explicit, non-fatal observation — 04-04's
+    // parse-lens engine must honour `hidden` when present without assuming
+    // it always is. If a future re-record starts returning `hidden`, this
+    // count changes and the comment above should be updated, not the
+    // assertion loosened to require absence.
+    const entry = rankingsReport.reportData.report.rankings.data[0];
+    let hiddenCount = 0;
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      for (const character of entry.roles[role].characters) {
+        if ("hidden" in character) hiddenCount += 1;
+      }
+    }
+    expect(typeof hiddenCount).toBe("number");
   });
 });

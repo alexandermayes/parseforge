@@ -25,12 +25,18 @@
 // code ZjKgNYxVcAqR8pGJ, fight 23. A committed fixture is permanent,
 // world-readable data — never point this script at a private report.
 //
+// R0-2 (PARSEFORGE-RANKINGS-SPEC.md §7) extends this recorder with rankings
+// fixtures: rankings-ratelimit.json (three rateLimitData samples per run —
+// before, after-report-rankings, end) and rankings-report.json (the
+// report.rankings(fightIDs:) blob for the demo report, recorded on its own).
+// Same secrets/public-entity discipline as the six fixtures above.
+//
 // Usage:
-//   node scripts/record-wcl-fixtures.mjs   -> records all six fixtures,
+//   node scripts/record-wcl-fixtures.mjs   -> records all eight fixtures,
 //                                              exits 0 on success.
 //
 // Exit codes:
-//   0  -> all six fixtures written successfully
+//   0  -> all fixtures written successfully
 //   1  -> a WCL query failed (network, GraphQL error, or unexpected shape)
 //   2  -> missing required environment variable(s), or no healer found in
 //         the target fight (never falls back to a damage-dealer source)
@@ -230,6 +236,33 @@ const MASTER_DATA_ACTORS_QUERY = `
   }
 `;
 
+// ─── R0-2 rankings probes (PARSEFORGE-RANKINGS-SPEC.md §7) ────────────────
+
+// Budget introspection — never hard-code limitPerHour, the spec's §2.2
+// records it changing mid-session.
+const RATE_LIMIT_QUERY = `
+  query RateLimitCheck {
+    rateLimitData {
+      limitPerHour
+      pointsSpentThisHour
+      pointsResetIn
+    }
+  }
+`;
+
+// The per-report rankings blob, recorded on its own (not as a by-product of
+// PLAYER_FULL_DATA_QUERY above) so rankings-report.json is a faithful,
+// independently-verifiable recording.
+const REPORT_RANKINGS_QUERY = `
+  query ReportRankings($code: String!, $fightIDs: [Int!]!) {
+    reportData {
+      report(code: $code) {
+        rankings(fightIDs: $fightIDs)
+      }
+    }
+  }
+`;
+
 // ─── WCL HTTP plumbing (mirrors lib/wcl-client.ts's auth mechanics; not a
 //     shared import — see header comment) ──────────────────────────────────
 
@@ -298,6 +331,17 @@ function writeFixture(filename, data) {
   console.log(`Wrote ${path.relative(REPO_ROOT, filePath)}`);
 }
 
+// Takes one rateLimitData sample, labeled and timestamped, for
+// rankings-ratelimit.json. Never writes the token — only the budget fields.
+async function sampleRateLimit(token, label) {
+  const data = await gqlQuery(token, RATE_LIMIT_QUERY, {});
+  return {
+    label,
+    recorded: new Date().toISOString(),
+    ...data.rateLimitData,
+  };
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -315,6 +359,20 @@ async function main() {
 
   console.log(`Recording fixtures for report ${REPORT_CODE}, fight ${FIGHT_ID}...`);
   const token = await getAccessToken(clientId, clientSecret);
+
+  // R0-2 rate-limit sample 1/3 — before any other query in this run.
+  const rateLimitSamples = [];
+  rateLimitSamples.push(await sampleRateLimit(token, "before"));
+
+  // R0-2: the per-report rankings blob, recorded on its own.
+  const rankingsReportData = await gqlQuery(token, REPORT_RANKINGS_QUERY, {
+    code: REPORT_CODE,
+    fightIDs: [FIGHT_ID],
+  });
+  writeFixture("rankings-report.json", rankingsReportData);
+
+  // R0-2 rate-limit sample 2/3 — immediately after the rankings query above.
+  rateLimitSamples.push(await sampleRateLimit(token, "after-report-rankings"));
 
   // 1. DPS player data (fight 23, source 12)
   const dpsData = await gqlQuery(token, PLAYER_FULL_DATA_QUERY, {
@@ -414,7 +472,11 @@ async function main() {
     masterData: masterDataActorsData?.reportData?.report?.masterData ?? null,
   });
 
-  console.log("All six fixtures recorded successfully.");
+  // R0-2 rate-limit sample 3/3 — at the very end of the run.
+  rateLimitSamples.push(await sampleRateLimit(token, "end"));
+  writeFixture("rankings-ratelimit.json", { samples: rateLimitSamples });
+
+  console.log("All fixtures recorded successfully.");
   process.exit(0);
 }
 

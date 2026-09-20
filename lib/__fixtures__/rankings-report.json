@@ -1,0 +1,489 @@
+{
+  "reportData": {
+    "report": {
+      "rankings": {
+        "data": [
+          {
+            "fightID": 23,
+            "partition": 2,
+            "zone": 1056,
+            "encounter": {
+              "id": 100624,
+              "name": "The Lurker Below"
+            },
+            "difficulty": 3,
+            "size": 25,
+            "kill": 1,
+            "duration": 346111,
+            "bracketData": 117,
+            "deaths": 0,
+            "damageTakenExcludingTanks": 1112760,
+            "roles": {
+              "tanks": {
+                "name": "Tanks",
+                "characters": [
+                  {
+                    "id": 108945299,
+                    "name": "Ileria",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Paladin",
+                    "spec": "Justicar",
+                    "amount": 136.82893638168,
+                    "bracketData": 120,
+                    "bracket": 0,
+                    "rank": "~19868",
+                    "best": "~18776",
+                    "totalParses": 21833,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 92981921,
+                    "name": "Thalaroka",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Protection",
+                    "amount": 299.30571406283,
+                    "bracketData": 121,
+                    "bracket": 0,
+                    "rank": "~7317",
+                    "best": "~6083",
+                    "totalParses": 8816,
+                    "rankPercent": 17
+                  }
+                ]
+              },
+              "healers": {
+                "name": "Healers",
+                "characters": [
+                  {
+                    "id": 110020970,
+                    "name": "Warark",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Holy",
+                    "amount": 4.3800977143171,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~24445",
+                    "best": "~12536",
+                    "totalParses": 31341,
+                    "rankPercent": 22
+                  },
+                  {
+                    "id": 110148012,
+                    "name": "Izlaz",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Holy",
+                    "amount": 0,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~29773",
+                    "best": "~15043",
+                    "totalParses": 31341,
+                    "rankPercent": 5
+                  },
+                  {
+                    "id": 106538766,
+                    "name": "Bullka",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 0,
+                    "bracketData": 123,
+                    "bracket": 0,
+                    "rank": "~20215",
+                    "best": "~15161",
+                    "totalParses": 33692,
+                    "rankPercent": 40
+                  },
+                  {
+                    "id": 108212056,
+                    "name": "Zulakeyah",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 0,
+                    "bracketData": 123,
+                    "bracket": 0,
+                    "rank": "~20215",
+                    "best": "~20215",
+                    "totalParses": 33692,
+                    "rankPercent": 40
+                  },
+                  {
+                    "id": 109627332,
+                    "name": "Ricoshams",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Restoration",
+                    "amount": 6.2003230177602,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~13139",
+                    "best": "~13139",
+                    "totalParses": 33692,
+                    "rankPercent": 61
+                  }
+                ]
+              },
+              "dps": {
+                "name": "Damage Dealers",
+                "characters": [
+                  {
+                    "id": 108405401,
+                    "name": "Effinore",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Balance",
+                    "amount": 614.43005278653,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~14524",
+                    "best": "~10450",
+                    "totalParses": 17713,
+                    "rankPercent": 18
+                  },
+                  {
+                    "id": 108212065,
+                    "name": "Shimshakamoo",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Feral",
+                    "amount": 757.93603786069,
+                    "bracketData": 117,
+                    "bracket": 0,
+                    "rank": "~14997",
+                    "best": "~8201",
+                    "totalParses": 23433,
+                    "rankPercent": 36
+                  },
+                  {
+                    "id": 108379175,
+                    "name": "Lacktoze",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Druid",
+                    "spec": "Feral",
+                    "amount": 752.5273683876,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~14997",
+                    "best": "~6795",
+                    "totalParses": 23433,
+                    "rankPercent": 36
+                  },
+                  {
+                    "id": 106163834,
+                    "name": "Samkin",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Hunter",
+                    "spec": "BeastMastery",
+                    "amount": 438.6540734042,
+                    "bracketData": 120,
+                    "bracket": 0,
+                    "rank": "~41880",
+                    "best": "~39699",
+                    "totalParses": 43626,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 110325031,
+                    "name": "Ninthstalker",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Hunter",
+                    "spec": "BeastMastery",
+                    "amount": 797.83075371774,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~36645",
+                    "best": "~36645",
+                    "totalParses": 43626,
+                    "rankPercent": 16
+                  },
+                  {
+                    "id": 107039868,
+                    "name": "Estrosmagus",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 557.98862214723,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~48323",
+                    "best": "~29195",
+                    "totalParses": 50337,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 108379176,
+                    "name": "Andelena",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 633.9555807241,
+                    "bracketData": 116,
+                    "bracket": 0,
+                    "rank": "~47316",
+                    "best": "~27181",
+                    "totalParses": 50337,
+                    "rankPercent": 6
+                  },
+                  {
+                    "id": 110972022,
+                    "name": "Mageyoublush",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Mage",
+                    "spec": "Arcane",
+                    "amount": 727.39670221403,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~45806",
+                    "best": "~29698",
+                    "totalParses": 50337,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 110626916,
+                    "name": "Lightstank",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Priest",
+                    "spec": "Shadow",
+                    "amount": 428.371245063,
+                    "bracketData": 111,
+                    "bracket": 0,
+                    "rank": "~21904",
+                    "best": "~21904",
+                    "totalParses": 22817,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 109696627,
+                    "name": "Bloodhoond",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Rogue",
+                    "spec": "Combat",
+                    "amount": 756.33250604575,
+                    "bracketData": 122,
+                    "bracket": 0,
+                    "rank": "~21850",
+                    "best": "~18766",
+                    "totalParses": 25707,
+                    "rankPercent": 15
+                  },
+                  {
+                    "id": 110033091,
+                    "name": "Evildew",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Rogue",
+                    "spec": "Combat",
+                    "amount": 671.21530376093,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~23393",
+                    "best": "~22108",
+                    "totalParses": 25707,
+                    "rankPercent": 9
+                  },
+                  {
+                    "id": 110177064,
+                    "name": "Threadonme",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Elemental",
+                    "amount": 501.28427007521,
+                    "bracketData": 114,
+                    "bracket": 0,
+                    "rank": "~28245",
+                    "best": "~27950",
+                    "totalParses": 29422,
+                    "rankPercent": 4
+                  },
+                  {
+                    "id": 108379181,
+                    "name": "Icuqt",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Shaman",
+                    "spec": "Enhancement",
+                    "amount": 731.4214226072,
+                    "bracketData": 115,
+                    "bracket": 0,
+                    "rank": "~26376",
+                    "best": "~17782",
+                    "totalParses": 29637,
+                    "rankPercent": 11
+                  },
+                  {
+                    "id": 108379171,
+                    "name": "Naalsuul",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warlock",
+                    "spec": "Destruction",
+                    "amount": 646.48335360621,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~43995",
+                    "best": "~30565",
+                    "totalParses": 46311,
+                    "rankPercent": 5
+                  },
+                  {
+                    "id": 110977797,
+                    "name": "Papapooey",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warlock",
+                    "spec": "Destruction",
+                    "amount": 679.30230475194,
+                    "bracketData": 111,
+                    "bracket": 0,
+                    "rank": "~43532",
+                    "best": "~43532",
+                    "totalParses": 46311,
+                    "rankPercent": 6
+                  },
+                  {
+                    "id": 107202323,
+                    "name": "Namja",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Fury",
+                    "amount": 898.90237524956,
+                    "bracketData": 119,
+                    "bracket": 0,
+                    "rank": "~23575",
+                    "best": "~18922",
+                    "totalParses": 31021,
+                    "rankPercent": 24
+                  },
+                  {
+                    "id": 111138277,
+                    "name": "Mâyhêm",
+                    "server": {
+                      "id": 5212,
+                      "name": "Dreamscythe",
+                      "region": "US"
+                    },
+                    "class": "Warrior",
+                    "spec": "Fury",
+                    "amount": 336.92948216035,
+                    "bracketData": 109,
+                    "bracket": 0,
+                    "rank": "~30090",
+                    "best": "~30090",
+                    "totalParses": 31021,
+                    "rankPercent": 3
+                  }
+                ]
+              }
+            },
+            "bracket": 0,
+            "reportsBlacklistForCharacters": [],
+            "speed": {
+              "rank": "~5438",
+              "best": "~5438",
+              "totalParses": 6043,
+              "rankPercent": 10
+            },
+            "execution": {
+              "rank": "~4290",
+              "best": "~5438",
+              "totalParses": 6043,
+              "rankPercent": 29
+            }
+          }
+        ]
+      }
+    }
+  }
+}

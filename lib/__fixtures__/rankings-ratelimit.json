@@ -1,0 +1,25 @@
+{
+  "samples": [
+    {
+      "label": "before",
+      "recorded": "2026-09-20T00:16:54.066Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 24.33,
+      "pointsResetIn": 2685
+    },
+    {
+      "label": "after-report-rankings",
+      "recorded": "2026-09-20T00:16:56.163Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 27.33,
+      "pointsResetIn": 2682
+    },
+    {
+      "label": "end",
+      "recorded": "2026-09-20T00:16:58.805Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 57.33,
+      "pointsResetIn": 2680
+    }
+  ]
+}
