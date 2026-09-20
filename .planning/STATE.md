@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-current_phase: 4
+current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Phase 4 context gathered
-last_updated: "2026-09-19T23:22:15.920Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-09-20T00:34:56.690Z"
 last_activity: 2026-09-19
-last_activity_desc: Phase 03 complete, transitioned to Phase 4
-state_head: d5448df9afb1de6c0bd8c7ad182441d141948dff
+last_activity_desc: Phase 04 execution started
+state_head: 0832091854061dc4a1e1e8c0e5ef63f69d1aea5d
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 36
+  completed_plans: 37
   percent: 44
 ---
 
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 
 ## Current Position
 
-Phase: 4 (Ads Live) — READY TO EXECUTE
-Plan: Not started
+Phase: 04 (Ads Live) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-09-19 — Phase 03 complete, transitioned to Phase 4
+Last activity: 2026-09-19 — Phase 04 execution started
 
-Progress: [█████░░░░░] 50% (4/8 phases incl. 2.1; 36/36 planned plans complete)
+Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 planned plans complete)
 
 ## Performance Metrics
 
@@ -97,6 +97,7 @@ Progress: [█████░░░░░] 50% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 03-share-loop P08 | 12min | 2 tasks | 2 files |
 | Phase 03-share-loop P09 | 8min | 1 tasks | 1 files |
 | Phase 03-share-loop P10 | 15min | 2 tasks | 3 files |
+| Phase 04 P02 | 35min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,7 @@ Recent decisions affecting current work:
 - [Phase 03-share-loop]: Item-7 live-traffic thresholds re-measured on a full 60-minute window (2026-09-17T06:00-07:00Z) -- all three PASS; RESEARCH A3 closed on two real share_landing events carrying consent_gate_path. — The original deployment window's quiet-hour FAIL/NOT EVALUABLE reading was superseded (not overwritten) by a busier-hour re-measure per the developer's 'Record now, leave open' decision; threshold 3 became readable for the first time via the Vercel MCP aggregate_pageviews hourly breakdown.
 - [Phase 3]: OPS-01 Phase 3 gate SIGNED (2026-09-19) under sign-now-conditional: 7/9 rows counted PASS, D-14 share-rate and real Discord unfurl recorded as accepted dated re-deferrals; D-14 re-read (on/after 2026-09-23T09:15Z) must append a dated confirmation/correction and WINDOWS.md #11 stays open until then.
 - [Phase 3]: WINDOWS.md #10 (item-7 re-measure) marked fixed; #9 (developer backstops) and #11 (share-rate re-run) left open with dated reasons recorded in the Part 5 close-out.
+- [Phase 04]: R0-2: recorded real WCL rankings/rate-limit/guild fixtures (6 files) with measured (not assumed) per-query point costs; demo report confirmed to have no guild, fallback guild Sage (Dreamscythe-US) found via a real public character ranking and confirmed public via the API's own visibility field (browser check blocked, 403, in this environment).
 
 ### Pending Todos
 
@@ -200,6 +202,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-19T21:49:32.276Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-ads-live/04-CONTEXT.md
+Last session: 2026-09-20T00:34:56.492Z
+Stopped at: Completed 04-02-PLAN.md
+Resume file: None
