@@ -2,24 +2,45 @@
   "samples": [
     {
       "label": "before",
-      "recorded": "2026-09-20T00:16:54.066Z",
+      "recorded": "2026-09-20T00:23:31.147Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 24.33,
-      "pointsResetIn": 2685
+      "pointsSpentThisHour": 138.21,
+      "pointsResetIn": 2287
     },
     {
       "label": "after-report-rankings",
-      "recorded": "2026-09-20T00:16:56.163Z",
+      "recorded": "2026-09-20T00:23:31.712Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 27.33,
-      "pointsResetIn": 2682
+      "pointsSpentThisHour": 141.21,
+      "pointsResetIn": 2287
+    },
+    {
+      "label": "after-encounter-rankings",
+      "recorded": "2026-09-20T00:23:31.985Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 144.22,
+      "pointsResetIn": 2287
+    },
+    {
+      "label": "after-character-rankings",
+      "recorded": "2026-09-20T00:23:32.341Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 151.23,
+      "pointsResetIn": 2286
+    },
+    {
+      "label": "after-zones",
+      "recorded": "2026-09-20T00:23:32.588Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 153.23,
+      "pointsResetIn": 2286
     },
     {
       "label": "end",
-      "recorded": "2026-09-20T00:16:58.805Z",
+      "recorded": "2026-09-20T00:23:34.337Z",
       "limitPerHour": 18000,
-      "pointsSpentThisHour": 57.33,
-      "pointsResetIn": 2680
+      "pointsSpentThisHour": 183.23,
+      "pointsResetIn": 2284
     }
   ]
 }

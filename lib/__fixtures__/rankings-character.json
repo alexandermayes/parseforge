@@ -1,0 +1,486 @@
+{
+  "_provenance": {
+    "query": "CharacterRankingsProbe (characterData.character.zoneRankings + encounterRankings)",
+    "recorded": "2026-09-20T00:23:32.219Z",
+    "entity": "Effinore-Dreamscythe-US, zone 1056, partition 2",
+    "api_host": "classic.warcraftlogs.com",
+    "required_classic_host": true
+  },
+  "id": 108405401,
+  "zoneRankings": {
+    "bestPerformanceAverage": 32.3401875,
+    "medianPerformanceAverage": 24.551958749999997,
+    "difficulty": 3,
+    "metric": "dps",
+    "partition": 2,
+    "zone": 1056,
+    "size": 25,
+    "allStars": [
+      {
+        "partition": 2,
+        "spec": "Balance",
+        "points": 358.058,
+        "possiblePoints": 960,
+        "rank": 12205,
+        "regionRank": 4284,
+        "serverRank": 1980,
+        "rankPercent": 37.44425649700138,
+        "total": 19509,
+        "rankTooltip": null
+      }
+    ],
+    "rankings": [
+      {
+        "encounter": {
+          "id": 100623,
+          "name": "Hydross the Unstable"
+        },
+        "rankPercent": 16.859,
+        "medianPercent": 9.92147,
+        "lockedIn": true,
+        "totalKills": 4,
+        "fastestKill": 214564,
+        "allStars": {
+          "points": 30.23,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 15151,
+          "regionRank": 5666,
+          "serverRank": 2700,
+          "rankPercent": 13.53726743522429,
+          "total": 17522
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 652.20226044042,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 85281314,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 652.20226044042,
+          "ilvl": 112,
+          "fight_metadata": 915136
+        }
+      },
+      {
+        "encounter": {
+          "id": 100624,
+          "name": "The Lurker Below"
+        },
+        "rankPercent": 44.9702,
+        "medianPercent": 19.8935,
+        "lockedIn": true,
+        "totalKills": 4,
+        "fastestKill": 192612,
+        "allStars": {
+          "points": 48.6,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 10370,
+          "regionRank": 3624,
+          "serverRank": 1661,
+          "rankPercent": 41.45446332787533,
+          "total": 17711
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 825.97138288372,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 110009819,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 825.97138288372,
+          "ilvl": 117,
+          "fight_metadata": 915137
+        }
+      },
+      {
+        "encounter": {
+          "id": 100625,
+          "name": "Leotheras the Blind"
+        },
+        "rankPercent": 50.4,
+        "medianPercent": 41.9144,
+        "lockedIn": true,
+        "totalKills": 3,
+        "fastestKill": 204935,
+        "allStars": {
+          "points": 54.95,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 9382,
+          "regionRank": 3293,
+          "serverRank": 1451,
+          "rankPercent": 46.01795373460698,
+          "total": 17378
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 893.71752018933,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 110009844,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 893.71752018933,
+          "ilvl": 117,
+          "fight_metadata": 915138
+        }
+      },
+      {
+        "encounter": {
+          "id": 100626,
+          "name": "Fathom-Lord Karathress"
+        },
+        "rankPercent": 27.1619,
+        "medianPercent": 22.658,
+        "lockedIn": true,
+        "totalKills": 3,
+        "fastestKill": 253844,
+        "allStars": {
+          "points": 28.25,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 13209,
+          "regionRank": 4570,
+          "serverRank": 2126,
+          "rankPercent": 22.287597081666274,
+          "total": 16996
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 812.28234663809,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 130722158,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 812.28234663809,
+          "ilvl": 118,
+          "fight_metadata": 915139
+        }
+      },
+      {
+        "encounter": {
+          "id": 100627,
+          "name": "Morogrim Tidewalker"
+        },
+        "rankPercent": 47.0417,
+        "medianPercent": 44.4638,
+        "lockedIn": true,
+        "totalKills": 3,
+        "fastestKill": 234050,
+        "allStars": {
+          "points": 61.15,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 9627,
+          "regionRank": 3407,
+          "serverRank": 1552,
+          "rankPercent": 44.00558431737537,
+          "total": 17191
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 1104.238410596,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 130722208,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 1104.238410596,
+          "ilvl": 118,
+          "fight_metadata": 915140
+        }
+      },
+      {
+        "encounter": {
+          "id": 100628,
+          "name": "Lady Vashj"
+        },
+        "rankPercent": 43.6025,
+        "medianPercent": 37.5756,
+        "lockedIn": true,
+        "totalKills": 2,
+        "fastestKill": 471489,
+        "allStars": {
+          "points": 0,
+          "possiblePoints": 0,
+          "partition": 2,
+          "rank": 9341,
+          "regionRank": 3018,
+          "serverRank": 1400,
+          "rankPercent": 43.448776943569875,
+          "total": 16516
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 642.69749235663,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 130722233,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 642.69749235663,
+          "ilvl": 118,
+          "fight_metadata": 915141
+        }
+      },
+      {
+        "encounter": {
+          "id": 100730,
+          "name": "Al'ar"
+        },
+        "rankPercent": 30.2998,
+        "medianPercent": 23.8002,
+        "lockedIn": true,
+        "totalKills": 2,
+        "fastestKill": 329817,
+        "allStars": {
+          "points": 53.58,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 12264,
+          "regionRank": 4198,
+          "serverRank": 1932,
+          "rankPercent": 28.70763327713505,
+          "total": 17201
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 742.52085247273,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 120811507,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 742.52085247273,
+          "ilvl": 118,
+          "fight_metadata": 915142
+        }
+      },
+      {
+        "encounter": {
+          "id": 100731,
+          "name": "Void Reaver"
+        },
+        "rankPercent": 21.3281,
+        "medianPercent": 21.3281,
+        "lockedIn": true,
+        "totalKills": 1,
+        "fastestKill": 231776,
+        "allStars": {
+          "points": 51.04,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 13408,
+          "regionRank": 4798,
+          "serverRank": 2258,
+          "rankPercent": 21.28346641615782,
+          "total": 17032
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 850.51515256109,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 132094758,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 850.51515256109,
+          "ilvl": 118,
+          "fight_metadata": 915143
+        }
+      },
+      {
+        "encounter": {
+          "id": 100732,
+          "name": "High Astromancer Solarian"
+        },
+        "rankPercent": 20.6608,
+        "medianPercent": 12.4362,
+        "lockedIn": true,
+        "totalKills": 2,
+        "fastestKill": 133142,
+        "allStars": {
+          "points": 30.25,
+          "possiblePoints": 120,
+          "partition": 2,
+          "rank": 14073,
+          "regionRank": 5040,
+          "serverRank": 2361,
+          "rankPercent": 20.68537932589336,
+          "total": 17742
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 777.4308767602,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 132105179,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 777.4308767602,
+          "ilvl": 118,
+          "fight_metadata": 915144
+        }
+      },
+      {
+        "encounter": {
+          "id": 100733,
+          "name": "Kael'thas Sunstrider"
+        },
+        "rankPercent": 68.3221,
+        "medianPercent": 68.3221,
+        "lockedIn": true,
+        "totalKills": 1,
+        "fastestKill": 490740,
+        "allStars": {
+          "points": 0,
+          "possiblePoints": 0,
+          "partition": 2,
+          "rank": 5559,
+          "regionRank": 1834,
+          "serverRank": 843,
+          "rankPercent": 66.22713738834538,
+          "total": 16457
+        },
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "bestAmount": 811.76998003016,
+        "rankTooltip": null,
+        "bestRank": {
+          "rank_id": 120854276,
+          "class": 2,
+          "spec": 1,
+          "per_second_amount": 811.76998003016,
+          "ilvl": 118,
+          "fight_metadata": 915145
+        }
+      }
+    ]
+  },
+  "encounterRankings": {
+    "bestAmount": 825.97138288372,
+    "medianPerformance": 19.893481801803624,
+    "averagePerformance": 23.703575004719024,
+    "totalKills": 4,
+    "fastestKill": 192612,
+    "difficulty": 3,
+    "metric": "dps",
+    "partition": 2,
+    "zone": 1056,
+    "ranks": [
+      {
+        "lockedIn": true,
+        "rankPercent": 44.97016010913002,
+        "historicalPercent": 44.97016010913002,
+        "todayPercent": 41.48320285015192,
+        "rankTotalParses": 14724,
+        "historicalTotalParses": 14724,
+        "todayTotalParses": 17711,
+        "guild": {
+          "id": 816114,
+          "name": "Sage",
+          "faction": 1
+        },
+        "report": {
+          "code": "nAZk37b698mH1qjT",
+          "startTime": 1784681227688,
+          "fightID": 17
+        },
+        "duration": 192612,
+        "startTime": 1784684269710,
+        "amount": 825.97138288372,
+        "bracketData": 117,
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "class": 2,
+        "faction": 1
+      },
+      {
+        "lockedIn": true,
+        "rankPercent": 19.547802912364862,
+        "historicalPercent": 19.547802912364862,
+        "todayPercent": 19.477347868802866,
+        "rankTotalParses": 17284,
+        "historicalTotalParses": 17284,
+        "todayTotalParses": 17711,
+        "guild": {
+          "id": 816114,
+          "name": "Sage",
+          "faction": 1
+        },
+        "report": {
+          "code": "hWPKNpqZvncLmrYC",
+          "startTime": 1787187944798,
+          "fightID": 16
+        },
+        "duration": 202816,
+        "startTime": 1787189941032,
+        "amount": 620.75477279899,
+        "bracketData": 118,
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "class": 2,
+        "faction": 1
+      },
+      {
+        "lockedIn": true,
+        "rankPercent": 20.23916069124239,
+        "historicalPercent": 20.23916069124239,
+        "todayPercent": 18.982000680875522,
+        "rankTotalParses": 13643,
+        "historicalTotalParses": 13643,
+        "todayTotalParses": 17711,
+        "guild": {
+          "id": null,
+          "name": null,
+          "faction": null
+        },
+        "report": {
+          "code": "pGVKQ9kjmgJZYcTA",
+          "startTime": 1783731063270,
+          "fightID": 6
+        },
+        "duration": 346101,
+        "startTime": 1783738423371,
+        "amount": 614.44780569834,
+        "bracketData": 117,
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "class": 2,
+        "faction": 1
+      },
+      {
+        "lockedIn": true,
+        "rankPercent": 10.057176306138834,
+        "historicalPercent": 10.057176306138834,
+        "todayPercent": 8.750931751139301,
+        "rankTotalParses": 10548,
+        "historicalTotalParses": 10548,
+        "todayTotalParses": 17711,
+        "guild": {
+          "id": null,
+          "name": null,
+          "faction": null
+        },
+        "report": {
+          "code": "wFncpv4hLb1QzrMG",
+          "startTime": 1781398787563,
+          "fightID": 14
+        },
+        "duration": 365885,
+        "startTime": 1781402295435,
+        "amount": 473.28532189076,
+        "bracketData": 112,
+        "spec": "Balance",
+        "bestSpec": "Balance",
+        "class": 2,
+        "faction": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,4027 @@
+{
+  "_provenance": {
+    "query": "EncounterRankingsProbe (worldData.encounter.characterRankings + fightRankings)",
+    "recorded": "2026-09-20T00:23:31.882Z",
+    "entity": "encounter 100624 (\"The Lurker Below\"), partition 2",
+    "api_host": "www.warcraftlogs.com"
+  },
+  "characterRankings": {
+    "page": 1,
+    "hasMorePages": true,
+    "count": 100,
+    "rankings": [
+      {
+        "name": "Skuggez",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 4048.6588673662,
+        "hardModeLevel": 0,
+        "duration": 72998,
+        "startTime": 1787165930170,
+        "report": {
+          "code": "rmwvfA6Tb7chaLg3",
+          "fightID": 34,
+          "startTime": 1787160046872
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Yeazy",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 4023.4042845939,
+        "hardModeLevel": 0,
+        "duration": 72679,
+        "startTime": 1786827761922,
+        "report": {
+          "code": "mpa3rj8qzdxLGVvQ",
+          "fightID": 13,
+          "startTime": 1786821143652
+        },
+        "guild": {
+          "id": 781238,
+          "name": "The Pond pug",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Kyphe",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3968.9685377447,
+        "hardModeLevel": 0,
+        "duration": 69639,
+        "startTime": 1784078819073,
+        "report": {
+          "code": "RmvbxLpr7nAdWtw9",
+          "fightID": 73,
+          "startTime": 1784069555802
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Ganickzed",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3960.6003255734,
+        "hardModeLevel": 0,
+        "duration": 75559,
+        "startTime": 1783048177888,
+        "report": {
+          "code": "gWGApHhbk6fw12xF",
+          "fightID": 59,
+          "startTime": 1783038451166
+        },
+        "guild": {
+          "id": 774887,
+          "name": "bipolar",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Skuggwhat",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3894.074489224,
+        "hardModeLevel": 0,
+        "duration": 78508,
+        "startTime": 1782676446915,
+        "report": {
+          "code": "C79JLX1DTfzatKRw",
+          "fightID": 53,
+          "startTime": 1782654312456
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 125,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Farmer",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3868.1591317973,
+        "hardModeLevel": 0,
+        "duration": 68924,
+        "startTime": 1783475646560,
+        "report": {
+          "code": "nBGP7Jyqmzjacp4H",
+          "fightID": 9,
+          "startTime": 1783474715974
+        },
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Slurpmesilly",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3847.7918997654,
+        "hardModeLevel": 0,
+        "duration": 77578,
+        "startTime": 1784079111749,
+        "report": {
+          "code": "A8rYKfW6TbC7vL3x",
+          "fightID": 20,
+          "startTime": 1784077100697
+        },
+        "guild": {
+          "id": 813341,
+          "name": "Bald",
+          "faction": 1
+        },
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Shunsui",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3844.4567180666,
+        "hardModeLevel": 0,
+        "duration": 66991,
+        "startTime": 1787187779636,
+        "report": {
+          "code": "yrnkVMwGaHQ6cNPf",
+          "fightID": 13,
+          "startTime": 1787186269732
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 126,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Adb",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3821.1394638806,
+        "hardModeLevel": 0,
+        "duration": 71402,
+        "startTime": 1786501079976,
+        "report": {
+          "code": "G64DRLbdY1gpwjFV",
+          "fightID": 62,
+          "startTime": 1786493851426
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Leetduff",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3805.3659192423,
+        "hardModeLevel": 0,
+        "duration": 66941,
+        "startTime": 1786583456544,
+        "report": {
+          "code": "nBKJQbyqxpGW3HkF",
+          "fightID": 25,
+          "startTime": 1786579700863
+        },
+        "guild": {
+          "id": 813411,
+          "name": "fiat currency",
+          "faction": 1
+        },
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Biscuits",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3794.5155124246,
+        "hardModeLevel": 0,
+        "duration": 68010,
+        "startTime": 1785282055681,
+        "report": {
+          "code": "Lj7n4aX1mYQ9kqDW",
+          "fightID": 24,
+          "startTime": 1785279435546
+        },
+        "guild": {
+          "id": 772198,
+          "name": "SQUAWK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Magepapi",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3788.2005987578,
+        "hardModeLevel": 0,
+        "duration": 67139,
+        "startTime": 1786672600840,
+        "report": {
+          "code": "bVX9gwYR1MK7zfPH",
+          "fightID": 38,
+          "startTime": 1786669163400
+        },
+        "guild": {
+          "id": 773794,
+          "name": "Smooth",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Amazedxd",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3783.9278913292,
+        "hardModeLevel": 0,
+        "duration": 86647,
+        "startTime": 1784224673205,
+        "report": {
+          "code": "yQJc8knGYVR2Pdb6",
+          "fightID": 27,
+          "startTime": 1784220736139
+        },
+        "server": {
+          "id": 5215,
+          "name": "Thunderstrike",
+          "region": "EU"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Egzod",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3783.7460241967,
+        "hardModeLevel": 0,
+        "duration": 67282,
+        "startTime": 1785987116281,
+        "report": {
+          "code": "R4N8hwzc6fV1PtbK",
+          "fightID": 71,
+          "startTime": 1785973814240
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Anarim",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3764.121782422,
+        "hardModeLevel": 0,
+        "duration": 73114,
+        "startTime": 1783104784456,
+        "report": {
+          "code": "myL31QH4q9d8gYVk",
+          "fightID": 34,
+          "startTime": 1783101657819
+        },
+        "guild": {
+          "id": 773985,
+          "name": "wiggle",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Hirok",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3759.8556227441,
+        "hardModeLevel": 0,
+        "duration": 63999,
+        "startTime": 1786045720479,
+        "report": {
+          "code": "TvLG8HCWwazVx7BP",
+          "fightID": 55,
+          "startTime": 1786033345826
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Blyth",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3749.5325715982,
+        "hardModeLevel": 0,
+        "duration": 67390,
+        "startTime": 1785904655574,
+        "report": {
+          "code": "TLWp6JNjf3DGQ4dt",
+          "fightID": 45,
+          "startTime": 1785898046245
+        },
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "트립",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3745.9532436044,
+        "hardModeLevel": 0,
+        "duration": 72589,
+        "startTime": 1787235046723,
+        "report": {
+          "code": "bPxfkY7w8qJ1Vn6M",
+          "fightID": 43,
+          "startTime": 1787225091624
+        },
+        "guild": {
+          "id": 813025,
+          "name": "Ensemble",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Tomsn",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3738.0118075345,
+        "hardModeLevel": 0,
+        "duration": 73343,
+        "startTime": 1784050593418,
+        "report": {
+          "code": "8pYXNKr7JWQTcAka",
+          "fightID": 22,
+          "startTime": 1784046942569
+        },
+        "guild": {
+          "id": 789468,
+          "name": "Spatha",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Ezclapfr",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3736.3165785082,
+        "hardModeLevel": 0,
+        "duration": 70706,
+        "startTime": 1787107951181,
+        "report": {
+          "code": "FNDa8tGVd13Yyh9A",
+          "fightID": 14,
+          "startTime": 1787099250257
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Kimchiimage",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3729.85892232,
+        "hardModeLevel": 0,
+        "duration": 85981,
+        "startTime": 1786675117313,
+        "report": {
+          "code": "dGpHwvc4fyAVLrj6",
+          "fightID": 68,
+          "startTime": 1786664525727
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Zuukka",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3724.7042953674,
+        "hardModeLevel": 0,
+        "duration": 80063,
+        "startTime": 1786038870271,
+        "report": {
+          "code": "qCDwk93PFfytZ2vM",
+          "fightID": 25,
+          "startTime": 1786035029275
+        },
+        "guild": {
+          "id": 803638,
+          "name": "Aeternum",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Cynide",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3705.3397824236,
+        "hardModeLevel": 0,
+        "duration": 62231,
+        "startTime": 1786499580356,
+        "report": {
+          "code": "dqJjrMFVW3yvtDYp",
+          "fightID": 7,
+          "startTime": 1786498449939
+        },
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Habibur",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3700.6007544358,
+        "hardModeLevel": 0,
+        "duration": 64419,
+        "startTime": 1786914771072,
+        "report": {
+          "code": "fqgvV7XaFyTPwYWH",
+          "fightID": 74,
+          "startTime": 1786902795760
+        },
+        "guild": {
+          "id": 773985,
+          "name": "wiggle",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Mörti",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3698.6628860534,
+        "hardModeLevel": 0,
+        "duration": 71946,
+        "startTime": 1785436644054,
+        "report": {
+          "code": "jgB8tndQmxFM4zbD",
+          "fightID": 16,
+          "startTime": 1785434308951
+        },
+        "guild": {
+          "id": 781238,
+          "name": "The Pond pug",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Herbie",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3696.2720006198,
+        "hardModeLevel": 0,
+        "duration": 77441,
+        "startTime": 1786672457869,
+        "report": {
+          "code": "rn3agXjQpYbCkfRV",
+          "fightID": 31,
+          "startTime": 1786668446661
+        },
+        "guild": {
+          "id": 774887,
+          "name": "bipolar",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Merkfest",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3687.8454923906,
+        "hardModeLevel": 0,
+        "duration": 73265,
+        "startTime": 1786498499384,
+        "report": {
+          "code": "cZJvbkTn4MPNW2D3",
+          "fightID": 9,
+          "startTime": 1786497101071
+        },
+        "guild": {
+          "id": 813099,
+          "name": "No Hard Feelings",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "霸儿大",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3680.9757995054,
+        "hardModeLevel": 0,
+        "duration": 71982,
+        "startTime": 1787486236025,
+        "report": {
+          "code": "NvWBLHwbqrFam1nf",
+          "fightID": 16,
+          "startTime": 1787481983937
+        },
+        "guild": {
+          "id": 828026,
+          "name": "loobs",
+          "faction": 1
+        },
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Rgier",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3676.6036266996,
+        "hardModeLevel": 0,
+        "duration": 74503,
+        "startTime": 1786881253853,
+        "report": {
+          "code": "7cTwNY2PMxWhr4XF",
+          "fightID": 16,
+          "startTime": 1786877469331
+        },
+        "guild": {
+          "id": 828026,
+          "name": "loobs",
+          "faction": 1
+        },
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Thebrutto",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3665.9786259542,
+        "hardModeLevel": 0,
+        "duration": 81875,
+        "startTime": 1786643466161,
+        "report": {
+          "code": "MtC6r9y1KP4GcnN2",
+          "fightID": 23,
+          "startTime": 1786640244254
+        },
+        "guild": {
+          "id": 816521,
+          "name": "NONSTOP",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Rain",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3649.9470977584,
+        "hardModeLevel": 0,
+        "duration": 81282,
+        "startTime": 1786280699376,
+        "report": {
+          "code": "4dyP6GNhvk7HncLb",
+          "fightID": 56,
+          "startTime": 1786275029928
+        },
+        "guild": {
+          "id": 813025,
+          "name": "Ensemble",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Buffpicante",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3643.8604327973,
+        "hardModeLevel": 0,
+        "duration": 80592,
+        "startTime": 1786413408140,
+        "report": {
+          "code": "3C2bnxX1pDfhqkFc",
+          "fightID": 51,
+          "startTime": 1786408318083
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Zoox",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3636.7079408559,
+        "hardModeLevel": 0,
+        "duration": 71554,
+        "startTime": 1787276854275,
+        "report": {
+          "code": "1m3qyXW9tgDjrJKG",
+          "fightID": 20,
+          "startTime": 1787273189248
+        },
+        "guild": {
+          "id": 774887,
+          "name": "bipolar",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Drte",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3630.6798822983,
+        "hardModeLevel": 0,
+        "duration": 64570,
+        "startTime": 1785377328856,
+        "report": {
+          "code": "NJV3mf2aA6DgyrMd",
+          "fightID": 57,
+          "startTime": 1785371783764
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "봉경이",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3622.7120780359,
+        "hardModeLevel": 0,
+        "duration": 72992,
+        "startTime": 1786883935059,
+        "report": {
+          "code": "XB3KHyhfcZgM2q1v",
+          "fightID": 42,
+          "startTime": 1786874168583
+        },
+        "guild": {
+          "id": 775013,
+          "name": "그그",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Whomst",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3618.4705390723,
+        "hardModeLevel": 0,
+        "duration": 76576,
+        "startTime": 1782234674416,
+        "report": {
+          "code": "pcPKtHGBvkrm371N",
+          "fightID": 7,
+          "startTime": 1782232465422
+        },
+        "guild": {
+          "id": 772611,
+          "name": "Progress",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Melee",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3615.4024722883,
+        "hardModeLevel": 0,
+        "duration": 68924,
+        "startTime": 1783475646560,
+        "report": {
+          "code": "nBGP7Jyqmzjacp4H",
+          "fightID": 9,
+          "startTime": 1783474715974
+        },
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 125,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Staedt",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3615.0384961504,
+        "hardModeLevel": 0,
+        "duration": 70007,
+        "startTime": 1787602122466,
+        "report": {
+          "code": "TWXR7fJAwdyFGPj4",
+          "fightID": 5,
+          "startTime": 1787591258206
+        },
+        "guild": {
+          "id": 772611,
+          "name": "Progress",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 132,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Crunemagi",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3606.0211339754,
+        "hardModeLevel": 0,
+        "duration": 68326,
+        "startTime": 1785982240276,
+        "report": {
+          "code": "y2HT34WP1MtDQG9Y",
+          "fightID": 24,
+          "startTime": 1785978688718
+        },
+        "guild": {
+          "id": 813411,
+          "name": "fiat currency",
+          "faction": 1
+        },
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Zokio",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3603.0863746069,
+        "hardModeLevel": 0,
+        "duration": 82038,
+        "startTime": 1782755888448,
+        "report": {
+          "code": "hFJ4a9DbQmWzHPvZ",
+          "fightID": 12,
+          "startTime": 1782755059324
+        },
+        "guild": {
+          "id": 784504,
+          "name": "Led Pugs",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Thomasive",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3601.5152292073,
+        "hardModeLevel": 0,
+        "duration": 78008,
+        "startTime": 1786040268310,
+        "report": {
+          "code": "mn1pzHcj26txLqd9",
+          "fightID": 2,
+          "startTime": 1786038379592
+        },
+        "guild": {
+          "id": 821964,
+          "name": "DEMONSLAYERS Pug",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "꿀티",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3584.4303494495,
+        "hardModeLevel": 0,
+        "duration": 83560,
+        "startTime": 1782997622880,
+        "report": {
+          "code": "Wyz3PFA8kB2f4GVN",
+          "fightID": 46,
+          "startTime": 1782990003804
+        },
+        "guild": {
+          "id": 817108,
+          "name": "Waves",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 125,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Atoz",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3582.2500073033,
+        "hardModeLevel": 0,
+        "duration": 68462,
+        "startTime": 1784685412794,
+        "report": {
+          "code": "gCYqc2XTakFPDtnQ",
+          "fightID": 12,
+          "startTime": 1784682929284
+        },
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Lethalhunt",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3579.2909905194,
+        "hardModeLevel": 0,
+        "duration": 68772,
+        "startTime": 1785296091705,
+        "report": {
+          "code": "Vbw7ht4NWDQ9n1mv",
+          "fightID": 27,
+          "startTime": 1785293269577
+        },
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Rainyxd",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3578.9119804401,
+        "hardModeLevel": 0,
+        "duration": 81800,
+        "startTime": 1782411855033,
+        "report": {
+          "code": "MJZd97axLc3fRqwV",
+          "fightID": 20,
+          "startTime": 1782407533936
+        },
+        "guild": {
+          "id": 810624,
+          "name": "Confrontation (Противостояние)",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Mandi",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3570.8061002179,
+        "hardModeLevel": 0,
+        "duration": 76194,
+        "startTime": 1785068156497,
+        "report": {
+          "code": "w3pyvPD8n2TMHFkB",
+          "fightID": 57,
+          "startTime": 1785059786804
+        },
+        "guild": {
+          "id": 775013,
+          "name": "그그",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Crmzon",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3570.2623754629,
+        "hardModeLevel": 0,
+        "duration": 76684,
+        "startTime": 1785088338359,
+        "report": {
+          "code": "b2WvV4tFNzHw691A",
+          "fightID": 15,
+          "startTime": 1785085004708
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "톰하딕",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3569.6082675035,
+        "hardModeLevel": 0,
+        "duration": 73928,
+        "startTime": 1782651121409,
+        "report": {
+          "code": "86VmPJKpnN7vGyAL",
+          "fightID": 78,
+          "startTime": 1782619246061
+        },
+        "guild": {
+          "id": 775013,
+          "name": "그그",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Keyvslocket",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3562.7405293609,
+        "hardModeLevel": 0,
+        "duration": 76394,
+        "startTime": 1787136088471,
+        "report": {
+          "code": "vabDB4rZndPtmkpR",
+          "fightID": 23,
+          "startTime": 1787131344412
+        },
+        "guild": {
+          "id": 823660,
+          "name": "ARE WE TROLLING",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "종범",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3555.5514660778,
+        "hardModeLevel": 0,
+        "duration": 81510,
+        "startTime": 1782397046414,
+        "report": {
+          "code": "1CAmaYMhVPdJWBDv",
+          "fightID": 57,
+          "startTime": 1782387491642
+        },
+        "guild": {
+          "id": 813025,
+          "name": "Ensemble",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Molasses",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3552.4410149874,
+        "hardModeLevel": 0,
+        "duration": 67390,
+        "startTime": 1785904655574,
+        "report": {
+          "code": "TLWp6JNjf3DGQ4dt",
+          "fightID": 45,
+          "startTime": 1785898046245
+        },
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "만수동노란멸치",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3549.1350098092,
+        "hardModeLevel": 0,
+        "duration": 72891,
+        "startTime": 1783174594154,
+        "report": {
+          "code": "mwfDg9qc632CBKNP",
+          "fightID": 68,
+          "startTime": 1783159809443
+        },
+        "guild": {
+          "id": 775013,
+          "name": "그그",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Dolphh",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3549.0656008395,
+        "hardModeLevel": 0,
+        "duration": 64801,
+        "startTime": 1786589466154,
+        "report": {
+          "code": "2Hzhkr3GXgYw7ZdL",
+          "fightID": 68,
+          "startTime": 1786580941622
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 132,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Coñetepeludo",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3545.4301108111,
+        "hardModeLevel": 0,
+        "duration": 81851,
+        "startTime": 1782331208243,
+        "report": {
+          "code": "G7fhAw6bTHvy1dVF",
+          "fightID": 54,
+          "startTime": 1782323572008
+        },
+        "guild": {
+          "id": 782553,
+          "name": "Gnomebusters",
+          "faction": 1
+        },
+        "server": {
+          "id": 5215,
+          "name": "Thunderstrike",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Deedsm",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3545.1999084286,
+        "hardModeLevel": 0,
+        "duration": 74259,
+        "startTime": 1785989245462,
+        "report": {
+          "code": "jZcALYDNRk8gftxQ",
+          "fightID": 44,
+          "startTime": 1785984707929
+        },
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Ickymage",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3541.5093533175,
+        "hardModeLevel": 0,
+        "duration": 70189,
+        "startTime": 1787281440727,
+        "report": {
+          "code": "QWDhmztX9ATbPkKn",
+          "fightID": 30,
+          "startTime": 1787277467698
+        },
+        "guild": {
+          "id": 813371,
+          "name": "II High",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Escõ",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3538.1405609833,
+        "hardModeLevel": 0,
+        "duration": 79325,
+        "startTime": 1785958437247,
+        "report": {
+          "code": "RZTgLb7XmyjHvJQB",
+          "fightID": 45,
+          "startTime": 1785950869179
+        },
+        "guild": {
+          "id": 824539,
+          "name": "Ice zone",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "黎明哥哥",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3536.2010385281,
+        "hardModeLevel": 0,
+        "duration": 77995,
+        "startTime": 1782577098040,
+        "report": {
+          "code": "BC2A4d1xPZrwvFqK",
+          "fightID": 98,
+          "startTime": 1782558008963
+        },
+        "server": {
+          "id": 5222,
+          "name": "铁血II",
+          "region": "CN"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Microcrankir",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3535.5562799795,
+        "hardModeLevel": 0,
+        "duration": 64419,
+        "startTime": 1786914771072,
+        "report": {
+          "code": "fqgvV7XaFyTPwYWH",
+          "fightID": 74,
+          "startTime": 1786902795760
+        },
+        "guild": {
+          "id": 773985,
+          "name": "wiggle",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 126,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Surv",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3531.6584620608,
+        "hardModeLevel": 0,
+        "duration": 64801,
+        "startTime": 1786589466154,
+        "report": {
+          "code": "2Hzhkr3GXgYw7ZdL",
+          "fightID": 68,
+          "startTime": 1786580941622
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 132,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Parqes",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3530.7633392903,
+        "hardModeLevel": 0,
+        "duration": 82257,
+        "startTime": 1784577738815,
+        "report": {
+          "code": "Hf3thwYprcCADzNk",
+          "fightID": 49,
+          "startTime": 1784569539027
+        },
+        "guild": {
+          "id": 774379,
+          "name": "Temporary",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Bsl",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3529.6877761887,
+        "hardModeLevel": 0,
+        "duration": 62231,
+        "startTime": 1786499580356,
+        "report": {
+          "code": "dqJjrMFVW3yvtDYp",
+          "fightID": 7,
+          "startTime": 1786498449939
+        },
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Swack",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3527.367615119,
+        "hardModeLevel": 0,
+        "duration": 63999,
+        "startTime": 1786045720479,
+        "report": {
+          "code": "TvLG8HCWwazVx7BP",
+          "fightID": 55,
+          "startTime": 1786033345826
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 126,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Adammage",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3526.8126930016,
+        "hardModeLevel": 0,
+        "duration": 90349,
+        "startTime": 1783533276175,
+        "report": {
+          "code": "39TvXPKcdAh1qCHz",
+          "fightID": 18,
+          "startTime": 1783531672270
+        },
+        "guild": {
+          "id": 814342,
+          "name": "Casuals",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Melodramatic",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3525.86240961,
+        "hardModeLevel": 0,
+        "duration": 75921,
+        "startTime": 1783444778187,
+        "report": {
+          "code": "G2FRX8mwKTJ7VZLc",
+          "fightID": 10,
+          "startTime": 1783443163972
+        },
+        "guild": {
+          "id": 772611,
+          "name": "Progress",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Aldys",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3524.8485760506,
+        "hardModeLevel": 0,
+        "duration": 79743,
+        "startTime": 1786803847490,
+        "report": {
+          "code": "ZC16jKNnBaTYdhwX",
+          "fightID": 33,
+          "startTime": 1786798805174
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Orctistic",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3524.5913444228,
+        "hardModeLevel": 0,
+        "duration": 69435,
+        "startTime": 1787275050501,
+        "report": {
+          "code": "naD6w8CXGmMpW7dj",
+          "fightID": 13,
+          "startTime": 1787274132611
+        },
+        "guild": {
+          "id": 785141,
+          "name": "bet",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Blobmage",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3522.1273990854,
+        "hardModeLevel": 0,
+        "duration": 83313,
+        "startTime": 1784749110954,
+        "report": {
+          "code": "LXvJAGBYab47RVx2",
+          "fightID": 29,
+          "startTime": 1784743597827
+        },
+        "guild": {
+          "id": 810376,
+          "name": "Unbuff",
+          "faction": 1
+        },
+        "server": {
+          "id": 5215,
+          "name": "Thunderstrike",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Rhizh",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3521.428165976,
+        "hardModeLevel": 0,
+        "duration": 70468,
+        "startTime": 1785867828813,
+        "report": {
+          "code": "YZJD17Tb3r6qmNdW",
+          "fightID": 15,
+          "startTime": 1785865850213
+        },
+        "guild": {
+          "id": 773985,
+          "name": "wiggle",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Miesty",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3513.073557839,
+        "hardModeLevel": 0,
+        "duration": 78632,
+        "startTime": 1787541506043,
+        "report": {
+          "code": "TRap9Mx1zwXHJhct",
+          "fightID": 1,
+          "startTime": 1787540466795
+        },
+        "guild": {
+          "id": 805531,
+          "name": "pedigree",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Woobai",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3510.2271428753,
+        "hardModeLevel": 0,
+        "duration": 78761,
+        "startTime": 1783024561637,
+        "report": {
+          "code": "C6cm42h3rxTvzfKL",
+          "fightID": 70,
+          "startTime": 1783013509017
+        },
+        "guild": {
+          "id": 774869,
+          "name": "Simplexity",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Anaa",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3504,
+        "hardModeLevel": 0,
+        "duration": 69875,
+        "startTime": 1785633336464,
+        "report": {
+          "code": "8yfvhF1JntQg4Rdz",
+          "fightID": 24,
+          "startTime": 1785630405046
+        },
+        "guild": {
+          "id": 775495,
+          "name": "based",
+          "faction": 0
+        },
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 0,
+        "size": 25
+      },
+      {
+        "name": "Gigademonx",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3500.7362069463,
+        "hardModeLevel": 0,
+        "duration": 69274,
+        "startTime": 1783190336510,
+        "report": {
+          "code": "PCvTtwQ6hWdXpyRV",
+          "fightID": 11,
+          "startTime": 1783169040350
+        },
+        "guild": {
+          "id": 781238,
+          "name": "The Pond pug",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Jonnybanana",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3489.6065136005,
+        "hardModeLevel": 0,
+        "duration": 76394,
+        "startTime": 1787136088471,
+        "report": {
+          "code": "vabDB4rZndPtmkpR",
+          "fightID": 23,
+          "startTime": 1787131344412
+        },
+        "guild": {
+          "id": 823660,
+          "name": "ARE WE TROLLING",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Yeazyx",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3488.4654232038,
+        "hardModeLevel": 0,
+        "duration": 74255,
+        "startTime": 1782326859476,
+        "report": {
+          "code": "QLnr694K28kWpMvy",
+          "fightID": 29,
+          "startTime": 1782323833954
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Basm",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3486.2723949907,
+        "hardModeLevel": 0,
+        "duration": 83445,
+        "startTime": 1783267305817,
+        "report": {
+          "code": "GJY84mB3pCzZr1vD",
+          "fightID": 10,
+          "startTime": 1783264344760
+        },
+        "guild": {
+          "id": 789468,
+          "name": "Spatha",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Dumhunterx",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3482.3197293811,
+        "hardModeLevel": 0,
+        "duration": 82182,
+        "startTime": 1787254990392,
+        "report": {
+          "code": "Y2nThAHfKvDRqy8p",
+          "fightID": 4,
+          "startTime": 1787254802148
+        },
+        "guild": {
+          "id": 811074,
+          "name": "Landsholdet",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Upsmana",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3481.1040822253,
+        "hardModeLevel": 0,
+        "duration": 79197,
+        "startTime": 1783362347183,
+        "report": {
+          "code": "Av9MJCVywXbLHRWY",
+          "fightID": 11,
+          "startTime": 1783360593043
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Bvrnm",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3473.6266938657,
+        "hardModeLevel": 0,
+        "duration": 82356,
+        "startTime": 1785524792434,
+        "report": {
+          "code": "nwpN3yTmkFc4gjMP",
+          "fightID": 31,
+          "startTime": 1785516501217
+        },
+        "guild": {
+          "id": 804145,
+          "name": "one guild",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "하이데른",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3473.2757691525,
+        "hardModeLevel": 0,
+        "duration": 83501,
+        "startTime": 1786621507949,
+        "report": {
+          "code": "PJt7b63dfKqHYh9F",
+          "fightID": 11,
+          "startTime": 1786620537034
+        },
+        "guild": {
+          "id": 814967,
+          "name": "Inomcence",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Mitschor",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3472.585447588,
+        "hardModeLevel": 0,
+        "duration": 88329,
+        "startTime": 1784744246781,
+        "report": {
+          "code": "rh4g96T87vQBcpaV",
+          "fightID": 16,
+          "startTime": 1784742931574
+        },
+        "guild": {
+          "id": 812017,
+          "name": "eXample",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Vynx",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3467.9138461538,
+        "hardModeLevel": 0,
+        "duration": 81250,
+        "startTime": 1786900086303,
+        "report": {
+          "code": "YQwHAKnygafNrZmP",
+          "fightID": 1,
+          "startTime": 1786896798530
+        },
+        "guild": {
+          "id": 775917,
+          "name": "KARMA",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Chunka",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3467.2519585822,
+        "hardModeLevel": 0,
+        "duration": 73012,
+        "startTime": 1783567460149,
+        "report": {
+          "code": "Z4RNj2CHxB9LX7GF",
+          "fightID": 50,
+          "startTime": 1783560138025
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 126,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Trollmalexd",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3466.2955253661,
+        "hardModeLevel": 0,
+        "duration": 81191,
+        "startTime": 1786991146244,
+        "report": {
+          "code": "C9Y2K6DAk3xNhT7B",
+          "fightID": 36,
+          "startTime": 1786987258370
+        },
+        "guild": {
+          "id": 810922,
+          "name": "whiny",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Cvcv",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3459.7323700846,
+        "hardModeLevel": 0,
+        "duration": 73086,
+        "startTime": 1787002124567,
+        "report": {
+          "code": "PXKLvk3CYVDNhBrM",
+          "fightID": 1,
+          "startTime": 1786997531304
+        },
+        "guild": {
+          "id": 772611,
+          "name": "Progress",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Trip",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3455.3014815376,
+        "hardModeLevel": 0,
+        "duration": 79242,
+        "startTime": 1785414062034,
+        "report": {
+          "code": "CnHjbAWXkh798fNz",
+          "fightID": 39,
+          "startTime": 1785410757476
+        },
+        "guild": {
+          "id": 813025,
+          "name": "Ensemble",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 123,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Dwagzz",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3452.181227125,
+        "hardModeLevel": 0,
+        "duration": 87978,
+        "startTime": 1783042555176,
+        "report": {
+          "code": "fyQd9V6FkLxpTzcG",
+          "fightID": 17,
+          "startTime": 1783041253528
+        },
+        "guild": {
+          "id": 813452,
+          "name": "unc status",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Waddle",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3450.9867932928,
+        "hardModeLevel": 0,
+        "duration": 67390,
+        "startTime": 1785904655574,
+        "report": {
+          "code": "TLWp6JNjf3DGQ4dt",
+          "fightID": 45,
+          "startTime": 1785898046245
+        },
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 129,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Kb",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3448.7550596346,
+        "hardModeLevel": 0,
+        "duration": 83257,
+        "startTime": 1784251991951,
+        "report": {
+          "code": "haxJCWN241Bkrqw7",
+          "fightID": 46,
+          "startTime": 1784245510378
+        },
+        "guild": {
+          "id": 816667,
+          "name": "SQUAWK RW",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Crmzn",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3442.6055450117,
+        "hardModeLevel": 0,
+        "duration": 75347,
+        "startTime": 1782761339522,
+        "report": {
+          "code": "4HC72qYBMVpJ1Gdy",
+          "fightID": 42,
+          "startTime": 1782754509740
+        },
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 125,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Entranced",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3438.9139175507,
+        "hardModeLevel": 0,
+        "duration": 82572,
+        "startTime": 1783967931552,
+        "report": {
+          "code": "rbJBMy3Khaft47WG",
+          "fightID": 42,
+          "startTime": 1783963141047
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Kelardi",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3438.1527158226,
+        "hardModeLevel": 0,
+        "duration": 76220,
+        "startTime": 1786556213874,
+        "report": {
+          "code": "Xf3c7KqzLmvtrg4A",
+          "fightID": 27,
+          "startTime": 1786553275256
+        },
+        "guild": {
+          "id": 816521,
+          "name": "NONSTOP",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 130,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Jacknumbers",
+        "class": "Warrior",
+        "spec": "Fury",
+        "amount": 3436.2567228397,
+        "hardModeLevel": 0,
+        "duration": 69725,
+        "startTime": 1784769249890,
+        "report": {
+          "code": "c4ZLkpmWxB2X68qy",
+          "fightID": 12,
+          "startTime": 1784767362913
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 126,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Imwaddle",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3435.7478102982,
+        "hardModeLevel": 0,
+        "duration": 87569,
+        "startTime": 1781840987340,
+        "report": {
+          "code": "BGXp43wFbC2HKmT8",
+          "fightID": 96,
+          "startTime": 1781826880330
+        },
+        "guild": {
+          "id": 806695,
+          "name": "gnf",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Slashar",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3434.6486846487,
+        "hardModeLevel": 0,
+        "duration": 72072,
+        "startTime": 1787187453598,
+        "report": {
+          "code": "zTD7wNm3qZVxAyLW",
+          "fightID": 23,
+          "startTime": 1787184155806
+        },
+        "guild": {
+          "id": 773780,
+          "name": "GG",
+          "faction": 1
+        },
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Sagelotis",
+        "class": "Hunter",
+        "spec": "BeastMastery",
+        "amount": 3432.6322124659,
+        "hardModeLevel": 0,
+        "duration": 64801,
+        "startTime": 1786589466154,
+        "report": {
+          "code": "2Hzhkr3GXgYw7ZdL",
+          "fightID": 68,
+          "startTime": 1786580941622
+        },
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 128,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Natwth",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3431.4505281134,
+        "hardModeLevel": 0,
+        "duration": 85493,
+        "startTime": 1783098663019,
+        "report": {
+          "code": "kHj7MLV4Rg2BbXfG",
+          "fightID": 5,
+          "startTime": 1783097491845
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Mmirroo",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3430.7990404134,
+        "hardModeLevel": 0,
+        "duration": 86704,
+        "startTime": 1782931288776,
+        "report": {
+          "code": "kN3XHwd1A6fJ9WyT",
+          "fightID": 10,
+          "startTime": 1782928482510
+        },
+        "guild": {
+          "id": 800577,
+          "name": "Croggers",
+          "faction": 1
+        },
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "자극사요",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3429.615876933,
+        "hardModeLevel": 0,
+        "duration": 86717,
+        "startTime": 1783742377754,
+        "report": {
+          "code": "aktv4hCXVjm3nF7p",
+          "fightID": 53,
+          "startTime": 1783734649521
+        },
+        "guild": {
+          "id": 828613,
+          "name": "Shot",
+          "faction": 1
+        },
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "bracketData": 127,
+        "faction": 1,
+        "size": 25
+      },
+      {
+        "name": "Deepro",
+        "class": "Mage",
+        "spec": "Arcane",
+        "amount": 3428.1041765991,
+        "hardModeLevel": 0,
+        "duration": 90193,
+        "startTime": 1787098243833,
+        "report": {
+          "code": "B4YAW37cT18Q6rMh",
+          "fightID": 24,
+          "startTime": 1787094335959
+        },
+        "guild": {
+          "id": 802661,
+          "name": "crimes",
+          "faction": 1
+        },
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "bracketData": 131,
+        "faction": 1,
+        "size": 25
+      }
+    ]
+  },
+  "fightRankings": {
+    "page": 1,
+    "hasMorePages": true,
+    "count": 50,
+    "rankings": [
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 62046,
+        "startTime": 1785291178307,
+        "report": {
+          "code": "GDKpjxwY8JWk1PmH",
+          "fightID": 2,
+          "startTime": 1785289266564
+        },
+        "damageTaken": 371390,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 13,
+        "ranged": 9,
+        "guild": {
+          "id": 828397,
+          "name": "TTK",
+          "faction": 1
+        },
+        "bracketData": 126.2,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 63999,
+        "startTime": 1786045720479,
+        "report": {
+          "code": "TvLG8HCWwazVx7BP",
+          "fightID": 55,
+          "startTime": 1786033345826
+        },
+        "damageTaken": 331540,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 14,
+        "ranged": 8,
+        "guild": {
+          "id": 816890,
+          "name": "is a problem",
+          "faction": 1
+        },
+        "bracketData": 126.84,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 64419,
+        "startTime": 1786914771072,
+        "report": {
+          "code": "fqgvV7XaFyTPwYWH",
+          "fightID": 74,
+          "startTime": 1786902795760
+        },
+        "damageTaken": 349961,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 13,
+        "ranged": 9,
+        "guild": {
+          "id": 773985,
+          "name": "wiggle",
+          "faction": 1
+        },
+        "bracketData": 126.44,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 64570,
+        "startTime": 1785377328856,
+        "report": {
+          "code": "NJV3mf2aA6DgyrMd",
+          "fightID": 57,
+          "startTime": 1785371783764
+        },
+        "damageTaken": 317307,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 14,
+        "ranged": 8,
+        "guild": {
+          "id": 811900,
+          "name": "BLEACH",
+          "faction": 1
+        },
+        "bracketData": 125.56,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 65771,
+        "startTime": 1787597509068,
+        "report": {
+          "code": "P7DQj3AgmHhvRBC1",
+          "fightID": 38,
+          "startTime": 1787591507664
+        },
+        "damageTaken": 361232,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 14,
+        "ranged": 8,
+        "guild": {
+          "id": 781238,
+          "name": "The Pond pug",
+          "faction": 1
+        },
+        "bracketData": 125.12,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 66941,
+        "startTime": 1786583456544,
+        "report": {
+          "code": "nBKJQbyqxpGW3HkF",
+          "fightID": 25,
+          "startTime": 1786579700863
+        },
+        "damageTaken": 307346,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 813411,
+          "name": "fiat currency",
+          "faction": 1
+        },
+        "bracketData": 125.2,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 67139,
+        "startTime": 1786672600840,
+        "report": {
+          "code": "bVX9gwYR1MK7zfPH",
+          "fightID": 38,
+          "startTime": 1786669163400
+        },
+        "damageTaken": 295643,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 773794,
+          "name": "Smooth",
+          "faction": 1
+        },
+        "bracketData": 125.08,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 67390,
+        "startTime": 1785904655574,
+        "report": {
+          "code": "TLWp6JNjf3DGQ4dt",
+          "fightID": 45,
+          "startTime": 1785898046245
+        },
+        "damageTaken": 360653,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 813465,
+          "name": "Refined",
+          "faction": 1
+        },
+        "bracketData": 125.24,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 68010,
+        "startTime": 1785282055681,
+        "report": {
+          "code": "Lj7n4aX1mYQ9kqDW",
+          "fightID": 24,
+          "startTime": 1785279435546
+        },
+        "damageTaken": 377598,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 11,
+        "ranged": 11,
+        "guild": {
+          "id": 772198,
+          "name": "SQUAWK",
+          "faction": 1
+        },
+        "bracketData": 124.2,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 69007,
+        "startTime": 1784563331299,
+        "report": {
+          "code": "d3hq1ymQ7cwHXbPA",
+          "fightID": 12,
+          "startTime": 1784561171094
+        },
+        "damageTaken": 315453,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 9,
+        "ranged": 13,
+        "guild": {
+          "id": 789468,
+          "name": "Spatha",
+          "faction": 1
+        },
+        "bracketData": 124.48,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 69435,
+        "startTime": 1787275050501,
+        "report": {
+          "code": "naD6w8CXGmMpW7dj",
+          "fightID": 13,
+          "startTime": 1787274132611
+        },
+        "damageTaken": 350102,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 785141,
+          "name": "bet",
+          "faction": 1
+        },
+        "bracketData": 124.92,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 69875,
+        "startTime": 1785633336464,
+        "report": {
+          "code": "8yfvhF1JntQg4Rdz",
+          "fightID": 24,
+          "startTime": 1785630405046
+        },
+        "damageTaken": 339701,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 14,
+        "ranged": 8,
+        "guild": {
+          "id": 775495,
+          "name": "based",
+          "faction": 0
+        },
+        "bracketData": 126.08,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 70007,
+        "startTime": 1787602122466,
+        "report": {
+          "code": "TWXR7fJAwdyFGPj4",
+          "fightID": 5,
+          "startTime": 1787591258206
+        },
+        "damageTaken": 238819,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 14,
+        "ranged": 7,
+        "guild": {
+          "id": 772611,
+          "name": "Progress",
+          "faction": 1
+        },
+        "bracketData": 126.24,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 70189,
+        "startTime": 1787281440727,
+        "report": {
+          "code": "QWDhmztX9ATbPkKn",
+          "fightID": 30,
+          "startTime": 1787277467698
+        },
+        "damageTaken": 398061,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 13,
+        "ranged": 9,
+        "guild": {
+          "id": 813371,
+          "name": "II High",
+          "faction": 1
+        },
+        "bracketData": 125.8,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 71554,
+        "startTime": 1787276854275,
+        "report": {
+          "code": "1m3qyXW9tgDjrJKG",
+          "fightID": 20,
+          "startTime": 1787273189248
+        },
+        "damageTaken": 316140,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 12,
+        "ranged": 10,
+        "guild": {
+          "id": 774887,
+          "name": "bipolar",
+          "faction": 1
+        },
+        "bracketData": 125.6,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "duration": 71982,
+        "startTime": 1787486236025,
+        "report": {
+          "code": "NvWBLHwbqrFam1nf",
+          "fightID": 16,
+          "startTime": 1787481983937
+        },
+        "damageTaken": 372073,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 9,
+        "ranged": 13,
+        "guild": {
+          "id": 828026,
+          "name": "loobs",
+          "faction": 1
+        },
+        "bracketData": 126.44,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 72072,
+        "startTime": 1787187453598,
+        "report": {
+          "code": "zTD7wNm3qZVxAyLW",
+          "fightID": 23,
+          "startTime": 1787184155806
+        },
+        "damageTaken": 373766,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 773780,
+          "name": "GG",
+          "faction": 1
+        },
+        "bracketData": 125.44,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 72207,
+        "startTime": 1786669461297,
+        "report": {
+          "code": "jDQFpXL2x9yA3ZVt",
+          "fightID": 31,
+          "startTime": 1786664850124
+        },
+        "damageTaken": 430408,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 13,
+        "ranged": 9,
+        "guild": {
+          "id": 805949,
+          "name": "Salt",
+          "faction": 0
+        },
+        "bracketData": 125.8,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 72571,
+        "startTime": 1785673825816,
+        "report": {
+          "code": "7g6WLdxBrNFVR24Y",
+          "fightID": 30,
+          "startTime": 1785665229828
+        },
+        "damageTaken": 380895,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 775013,
+          "name": "그그",
+          "faction": 1
+        },
+        "bracketData": 124.72,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 72589,
+        "startTime": 1787235046723,
+        "report": {
+          "code": "bPxfkY7w8qJ1Vn6M",
+          "fightID": 43,
+          "startTime": 1787225091624
+        },
+        "damageTaken": 367326,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 7,
+        "ranged": 15,
+        "guild": {
+          "id": 813025,
+          "name": "Ensemble",
+          "faction": 1
+        },
+        "bracketData": 126.04,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 73243,
+        "startTime": 1787272723298,
+        "report": {
+          "code": "v1d46mD2r83jHQYJ",
+          "fightID": 18,
+          "startTime": 1787270529240
+        },
+        "damageTaken": 375297,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 816667,
+          "name": "SQUAWK RW",
+          "faction": 1
+        },
+        "bracketData": 125.92,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 73265,
+        "startTime": 1786498499384,
+        "report": {
+          "code": "cZJvbkTn4MPNW2D3",
+          "fightID": 9,
+          "startTime": 1786497101071
+        },
+        "damageTaken": 417432,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 813099,
+          "name": "No Hard Feelings",
+          "faction": 1
+        },
+        "bracketData": 125.04,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 74171,
+        "startTime": 1786647674838,
+        "report": {
+          "code": "mgv9MdqX4bLDxVrR",
+          "fightID": 35,
+          "startTime": 1786643344735
+        },
+        "damageTaken": 359031,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 802830,
+          "name": "NeverBending",
+          "faction": 1
+        },
+        "bracketData": 125,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 74482,
+        "startTime": 1784312018630,
+        "report": {
+          "code": "fQCwgYTpyNM2vqm8",
+          "fightID": 7,
+          "startTime": 1784306577868
+        },
+        "damageTaken": 237608,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 12,
+        "ranged": 10,
+        "guild": {
+          "id": 804145,
+          "name": "one guild",
+          "faction": 1
+        },
+        "bracketData": 124.28,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 74867,
+        "startTime": 1785898018252,
+        "report": {
+          "code": "3f8qQwDWCdPJjT6r",
+          "fightID": 72,
+          "startTime": 1785890622109
+        },
+        "damageTaken": 412526,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 9,
+        "ranged": 12,
+        "guild": {
+          "id": 775964,
+          "name": "Food Court",
+          "faction": 1
+        },
+        "bracketData": 125.28,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "duration": 75336,
+        "startTime": 1782655252427,
+        "report": {
+          "code": "8kJznALxpmKGhP2B",
+          "fightID": 64,
+          "startTime": 1782644566090
+        },
+        "damageTaken": 417035,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 11,
+        "ranged": 10,
+        "guild": {
+          "id": 809525,
+          "name": "西南联合大学周年服",
+          "faction": 1
+        },
+        "bracketData": 125,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "duration": 75589,
+        "startTime": 1787315304288,
+        "report": {
+          "code": "KZYFty7bNjVhQ24J",
+          "fightID": 22,
+          "startTime": 1787311615285
+        },
+        "damageTaken": 320385,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 9,
+        "ranged": 13,
+        "guild": {
+          "id": 813855,
+          "name": "Believer Dagge",
+          "faction": 0
+        },
+        "bracketData": 125.88,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 76081,
+        "startTime": 1786652293766,
+        "report": {
+          "code": "96Xj1yhndPpvACtK",
+          "fightID": 66,
+          "startTime": 1786643075867
+        },
+        "damageTaken": 412402,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 9,
+        "ranged": 13,
+        "guild": {
+          "id": 808690,
+          "name": "VOID",
+          "faction": 1
+        },
+        "bracketData": 124.96,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 76220,
+        "startTime": 1786556213874,
+        "report": {
+          "code": "Xf3c7KqzLmvtrg4A",
+          "fightID": 27,
+          "startTime": 1786553275256
+        },
+        "damageTaken": 406050,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 816521,
+          "name": "NONSTOP",
+          "faction": 1
+        },
+        "bracketData": 124.16,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 76394,
+        "startTime": 1787136088471,
+        "report": {
+          "code": "vabDB4rZndPtmkpR",
+          "fightID": 23,
+          "startTime": 1787131344412
+        },
+        "damageTaken": 400099,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 11,
+        "ranged": 11,
+        "guild": {
+          "id": 823660,
+          "name": "ARE WE TROLLING",
+          "faction": 1
+        },
+        "bracketData": 124.72,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 76430,
+        "startTime": 1786267479362,
+        "report": {
+          "code": "HnWtdfD2rxXR6bc7",
+          "fightID": 23,
+          "startTime": 1786262982756
+        },
+        "damageTaken": 397377,
+        "deaths": 3,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 829801,
+          "name": "추추",
+          "faction": 0
+        },
+        "bracketData": 125.44,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 76892,
+        "startTime": 1785460643648,
+        "report": {
+          "code": "9MgtaBnGNkqJY6h4",
+          "fightID": 2,
+          "startTime": 1785457509281
+        },
+        "damageTaken": 380139,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 809575,
+          "name": "cartel",
+          "faction": 0
+        },
+        "bracketData": 125.16,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 76928,
+        "startTime": 1786714468697,
+        "report": {
+          "code": "FZHTvrdKM1XnzBkp",
+          "fightID": 61,
+          "startTime": 1786706902912
+        },
+        "damageTaken": 342999,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 772734,
+          "name": "Balance",
+          "faction": 0
+        },
+        "bracketData": 124.96,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 76968,
+        "startTime": 1786323215288,
+        "report": {
+          "code": "aygC7pw2tfkYvQjq",
+          "fightID": 1,
+          "startTime": 1786322617668
+        },
+        "damageTaken": 268223,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 12,
+        "ranged": 9,
+        "guild": {
+          "id": 773433,
+          "name": "Eternal",
+          "faction": 0
+        },
+        "bracketData": 125.52,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 76999,
+        "startTime": 1787103818370,
+        "report": {
+          "code": "BmF9fNnDLA7XM3gK",
+          "fightID": 54,
+          "startTime": 1787096819133
+        },
+        "damageTaken": 432906,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 13,
+        "ranged": 9,
+        "guild": {
+          "id": 773236,
+          "name": "NOC",
+          "faction": 0
+        },
+        "bracketData": 124.88,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 77092,
+        "startTime": 1787401822380,
+        "report": {
+          "code": "JYtMRKbHBQA83Lrz",
+          "fightID": 26,
+          "startTime": 1787397092895
+        },
+        "damageTaken": 424394,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 7,
+        "ranged": 15,
+        "guild": {
+          "id": 794890,
+          "name": "여행",
+          "faction": 0
+        },
+        "bracketData": 125.24,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5210,
+          "name": "铁血",
+          "region": "CN"
+        },
+        "duration": 77169,
+        "startTime": 1786716382674,
+        "report": {
+          "code": "8kAfaj24DQXWgCnr",
+          "fightID": 45,
+          "startTime": 1786708028823
+        },
+        "damageTaken": 352708,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 815297,
+          "name": "《晚星》",
+          "faction": 0
+        },
+        "bracketData": 126.12,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5212,
+          "name": "Dreamscythe",
+          "region": "US"
+        },
+        "duration": 77278,
+        "startTime": 1782876501915,
+        "report": {
+          "code": "jXDnwxP6JhY8K3B4",
+          "fightID": 51,
+          "startTime": 1782867706897
+        },
+        "damageTaken": 399925,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 11,
+        "ranged": 11,
+        "guild": {
+          "id": 813341,
+          "name": "Bald",
+          "faction": 1
+        },
+        "bracketData": 123.56,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 77340,
+        "startTime": 1787250518183,
+        "report": {
+          "code": "683cBLXRnPp7MZdT",
+          "fightID": 12,
+          "startTime": 1787246920119
+        },
+        "damageTaken": 398524,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 10,
+        "ranged": 12,
+        "guild": {
+          "id": 813756,
+          "name": "GOAT",
+          "faction": 0
+        },
+        "bracketData": 125.12,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5215,
+          "name": "Thunderstrike",
+          "region": "EU"
+        },
+        "duration": 77365,
+        "startTime": 1785180668889,
+        "report": {
+          "code": "QxW1c7MqYk2VtgnC",
+          "fightID": 58,
+          "startTime": 1785171028047
+        },
+        "damageTaken": 365134,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 10,
+        "ranged": 11,
+        "guild": {
+          "id": 801808,
+          "name": "Watch Clock",
+          "faction": 1
+        },
+        "bracketData": 124.36,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 77600,
+        "startTime": 1784863049538,
+        "report": {
+          "code": "mPygwfnBYdbzJLR3",
+          "fightID": 1,
+          "startTime": 1784850317146
+        },
+        "damageTaken": 218169,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 12,
+        "ranged": 9,
+        "guild": {
+          "id": 773392,
+          "name": "who",
+          "faction": 1
+        },
+        "bracketData": 125.44,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 77739,
+        "startTime": 1787505441817,
+        "report": {
+          "code": "tQJqHjPBa6GgpbZ1",
+          "fightID": 1,
+          "startTime": 1787502714650
+        },
+        "damageTaken": 321017,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 12,
+        "ranged": 9,
+        "guild": {
+          "id": 775917,
+          "name": "KARMA",
+          "faction": 1
+        },
+        "bracketData": 125.36,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5219,
+          "name": "펜구스의 흉포",
+          "region": "KR"
+        },
+        "duration": 77949,
+        "startTime": 1785763103866,
+        "report": {
+          "code": "zVvGdKcpWRfaJQPA",
+          "fightID": 55,
+          "startTime": 1785755803961
+        },
+        "damageTaken": 390353,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 7,
+        "ranged": 14,
+        "guild": {
+          "id": 817108,
+          "name": "Waves",
+          "faction": 1
+        },
+        "bracketData": 125.56,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 77949,
+        "startTime": 1786992142496,
+        "report": {
+          "code": "2z7GNKfw8qyaCXmY",
+          "fightID": 5,
+          "startTime": 1786991307508
+        },
+        "damageTaken": 267905,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 12,
+        "ranged": 9,
+        "guild": {
+          "id": 773751,
+          "name": "Praxis",
+          "faction": 1
+        },
+        "bracketData": 125.12,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5222,
+          "name": "铁血II",
+          "region": "CN"
+        },
+        "duration": 78003,
+        "startTime": 1782577097359,
+        "report": {
+          "code": "QXZVN1cBPanHGmJw",
+          "fightID": 103,
+          "startTime": 1782558200702
+        },
+        "damageTaken": 320518,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 824860,
+          "name": "嘉利速通团",
+          "faction": 1
+        },
+        "bracketData": 124.8,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 78008,
+        "startTime": 1786040268310,
+        "report": {
+          "code": "mn1pzHcj26txLqd9",
+          "fightID": 2,
+          "startTime": 1786038379592
+        },
+        "damageTaken": 316983,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 8,
+        "ranged": 13,
+        "guild": {
+          "id": 821964,
+          "name": "DEMONSLAYERS Pug",
+          "faction": 1
+        },
+        "bracketData": 125.04,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 78036,
+        "startTime": 1785954531045,
+        "report": {
+          "code": "cwzfX7nm4VtBJAbr",
+          "fightID": 19,
+          "startTime": 1785951036368
+        },
+        "damageTaken": 354810,
+        "deaths": 2,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 8,
+        "ranged": 14,
+        "guild": {
+          "id": 801687,
+          "name": "Benched",
+          "faction": 0
+        },
+        "bracketData": 124.84,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 78338,
+        "startTime": 1787510255579,
+        "report": {
+          "code": "kW2dRawzhGqQxMVH",
+          "fightID": 23,
+          "startTime": 1787506257188
+        },
+        "damageTaken": 332432,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 2,
+        "melee": 11,
+        "ranged": 11,
+        "guild": {
+          "id": 776245,
+          "name": "BND",
+          "faction": 1
+        },
+        "bracketData": 124.84,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5213,
+          "name": "Nightslayer",
+          "region": "US"
+        },
+        "duration": 78461,
+        "startTime": 1784858674831,
+        "report": {
+          "code": "HVzdWR7nGADjwkZK",
+          "fightID": 10,
+          "startTime": 1784856543040
+        },
+        "damageTaken": 403457,
+        "deaths": 0,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 11,
+        "ranged": 10,
+        "guild": {
+          "id": 773110,
+          "name": "Dense",
+          "faction": 0
+        },
+        "bracketData": 124.68,
+        "size": 25
+      },
+      {
+        "server": {
+          "id": 5216,
+          "name": "Spineshatter",
+          "region": "EU"
+        },
+        "duration": 78564,
+        "startTime": 1786386374851,
+        "report": {
+          "code": "2w8DNxzq3Tk6ZnrK",
+          "fightID": 38,
+          "startTime": 1786382329589
+        },
+        "damageTaken": 352698,
+        "deaths": 1,
+        "tanks": 1,
+        "healers": 3,
+        "melee": 9,
+        "ranged": 12,
+        "guild": {
+          "id": 810922,
+          "name": "whiny",
+          "faction": 1
+        },
+        "bracketData": 124.56,
+        "size": 25
+      }
+    ]
+  }
+}

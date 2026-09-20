@@ -263,6 +263,64 @@ const REPORT_RANKINGS_QUERY = `
   }
 `;
 
+// Boss leaderboard (page 1 of both the per-character and per-fight rankings),
+// scoped to the report's own partition — an unpartitioned read would compare
+// across raid phases (the "partition-unaware ranking query" anti-pattern).
+const ENCOUNTER_RANKINGS_PROBE_QUERY = `
+  query EncounterRankingsProbe($encounterID: Int!, $partition: Int) {
+    worldData {
+      encounter(id: $encounterID) {
+        characterRankings(partition: $partition, page: 1)
+        fightRankings(partition: $partition, page: 1)
+      }
+    }
+  }
+`;
+
+// A character's zone/encounter rankings. Confirmed by probing this session:
+// classic.warcraftlogs.com/api/v2/client is REQUIRED for this Classic
+// character to resolve — the default www.warcraftlogs.com host returns
+// `character: null` for the exact same name/serverSlug/serverRegion. This is
+// an explicit R0-2 finding, recorded in the fixture's own _provenance block
+// and in README.md, not just in this comment.
+const CLASSIC_API_URL = "https://classic.warcraftlogs.com/api/v2/client";
+const CHARACTER_RANKINGS_PROBE_QUERY = `
+  query CharacterRankingsProbe(
+    $name: String!
+    $serverSlug: String!
+    $serverRegion: String!
+    $zoneID: Int!
+    $encounterID: Int!
+    $partition: Int
+  ) {
+    characterData {
+      character(name: $name, serverSlug: $serverSlug, serverRegion: $serverRegion) {
+        id
+        zoneRankings(zoneID: $zoneID, partition: $partition)
+        encounterRankings(encounterID: $encounterID, partition: $partition)
+      }
+    }
+  }
+`;
+
+// The bracket vocabulary any displayed percentile has to be labelled with.
+const ZONES_PROBE_QUERY = `
+  query ZonesProbe {
+    worldData {
+      zones {
+        id
+        name
+        brackets {
+          min
+          max
+          bucket
+          type
+        }
+      }
+    }
+  }
+`;
+
 // ─── WCL HTTP plumbing (mirrors lib/wcl-client.ts's auth mechanics; not a
 //     shared import — see header comment) ──────────────────────────────────
 
@@ -287,8 +345,8 @@ async function getAccessToken(clientId, clientSecret) {
   return data.access_token;
 }
 
-async function gqlQuery(token, query, variables) {
-  const res = await fetch(WCL_API_URL, {
+async function gqlQuery(token, query, variables, apiUrl = WCL_API_URL) {
+  const res = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -373,6 +431,72 @@ async function main() {
 
   // R0-2 rate-limit sample 2/3 — immediately after the rankings query above.
   rateLimitSamples.push(await sampleRateLimit(token, "after-report-rankings"));
+
+  // R0-2 (Task 2): boss leaderboard, character and zone-bracket fixtures.
+  // Every id below is read from the just-recorded rankings-report.json blob,
+  // never a literal — including the partition, so the leaderboard read is
+  // scoped to the report's own raid phase.
+  const reportRankingEntry = rankingsReportData?.reportData?.report?.rankings?.data?.[0];
+  const encounterID = reportRankingEntry?.encounter?.id;
+  const encounterName = reportRankingEntry?.encounter?.name;
+  const partition = reportRankingEntry?.partition;
+  const zoneID = reportRankingEntry?.zone;
+  const targetCharacter = reportRankingEntry?.roles?.dps?.characters?.[0];
+
+  const encounterRankingsData = await gqlQuery(token, ENCOUNTER_RANKINGS_PROBE_QUERY, {
+    encounterID,
+    partition,
+  });
+  writeFixture("rankings-encounter.json", {
+    _provenance: {
+      query: "EncounterRankingsProbe (worldData.encounter.characterRankings + fightRankings)",
+      recorded: new Date().toISOString(),
+      entity: `encounter ${encounterID} ("${encounterName}"), partition ${partition}`,
+      api_host: "www.warcraftlogs.com",
+    },
+    ...encounterRankingsData.worldData.encounter,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-encounter-rankings"));
+
+  const characterRankingsData = await gqlQuery(
+    token,
+    CHARACTER_RANKINGS_PROBE_QUERY,
+    {
+      name: targetCharacter.name,
+      serverSlug: targetCharacter.server.name,
+      serverRegion: targetCharacter.server.region,
+      zoneID,
+      encounterID,
+      partition,
+    },
+    CLASSIC_API_URL,
+  );
+  writeFixture("rankings-character.json", {
+    _provenance: {
+      query: "CharacterRankingsProbe (characterData.character.zoneRankings + encounterRankings)",
+      recorded: new Date().toISOString(),
+      entity: `${targetCharacter.name}-${targetCharacter.server.name}-${targetCharacter.server.region}, zone ${zoneID}, partition ${partition}`,
+      api_host: "classic.warcraftlogs.com",
+      // R0-2 finding: this Classic character resolves to null on the
+      // default www.warcraftlogs.com host and requires the classic. host —
+      // confirmed by probing both hosts this session with identical args.
+      required_classic_host: true,
+    },
+    ...characterRankingsData.characterData.character,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-character-rankings"));
+
+  const zonesData = await gqlQuery(token, ZONES_PROBE_QUERY, {});
+  writeFixture("rankings-zones.json", {
+    _provenance: {
+      query: "ZonesProbe (worldData.zones)",
+      recorded: new Date().toISOString(),
+      entity: "all worldData.zones (bracket vocabulary, not report-specific)",
+      api_host: "www.warcraftlogs.com",
+    },
+    worldData: zonesData.worldData,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-zones"));
 
   // 1. DPS player data (fight 23, source 12)
   const dpsData = await gqlQuery(token, PLAYER_FULL_DATA_QUERY, {
