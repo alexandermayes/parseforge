@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-09-20T00:34:56.690Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-09-20T01:01:09.591Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: 0832091854061dc4a1e1e8c0e5ef63f69d1aea5d
+state_head: 1439f3759a51cb1a061dc1d6e1226022e0aab5c4
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 37
+  completed_plans: 38
   percent: 44
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 ## Current Position
 
 Phase: 04 (Ads Live) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-09-19 — Phase 04 execution started
 
@@ -98,6 +98,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 03-share-loop P09 | 8min | 1 tasks | 1 files |
 | Phase 03-share-loop P10 | 15min | 2 tasks | 3 files |
 | Phase 04 P02 | 35min | 3 tasks | 10 files |
+| Phase 04 P04 | 25min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,7 @@ Recent decisions affecting current work:
 - [Phase 3]: OPS-01 Phase 3 gate SIGNED (2026-09-19) under sign-now-conditional: 7/9 rows counted PASS, D-14 share-rate and real Discord unfurl recorded as accepted dated re-deferrals; D-14 re-read (on/after 2026-09-23T09:15Z) must append a dated confirmation/correction and WINDOWS.md #11 stays open until then.
 - [Phase 3]: WINDOWS.md #10 (item-7 re-measure) marked fixed; #9 (developer backstops) and #11 (share-rate re-run) left open with dated reasons recorded in the Part 5 close-out.
 - [Phase 04]: R0-2: recorded real WCL rankings/rate-limit/guild fixtures (6 files) with measured (not assumed) per-query point costs; demo report confirmed to have no guild, fallback guild Sage (Dreamscythe-US) found via a real public character ranking and confirmed public via the API's own visibility field (browser check blocked, 403, in this environment).
+- [Phase 04]: [Phase 04 / 04-04]: R0-3 shipped as tested, unwired engine code - lib/wcl-types.ts gained a new rankings-blob type family verified against 04-02's rankings-report.json fixture (deliberately not extending WCLRanking/WCLRankingsData, per 04-RESEARCH.md Pitfall 1); lib/rankings/parse-lens.ts and lib/rankings/budget.ts (Redis-backed 90%-of-runtime-read-limit gate) both pass full TDD RED/GREEN and are imported by nothing (D-13) - confirmed via zero app/ imports and unchanged protected-elements/seo-invariants gates.
 
 ### Pending Todos
 
@@ -202,6 +204,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-20T00:34:56.492Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-09-20T01:01:09.433Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None
