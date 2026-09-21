@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-09-21T18:25:28.501Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-09-21T18:53:05.905Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: 09eee20fd141db684aa0a3b997a3aa35431bdd39
+state_head: 15e1c8fc75caa28f17ceb0dee9655fc8bae00e15
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 39
+  completed_plans: 40
   percent: 44
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 ## Current Position
 
 Phase: 04 (Ads Live) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-09-19 — Phase 04 execution started
 
@@ -100,6 +100,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 04 P02 | 35min | 3 tasks | 10 files |
 | Phase 04 P04 | 25min | 2 tasks | 5 files |
 | Phase 04 P01 | 55min | 3 tasks | 5 files |
+| Phase 04 P03 | 45min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -151,6 +152,7 @@ Recent decisions affecting current work:
 - [Phase 04]: [Phase 04 / 04-01]: Developer deferred sending the RPGLogs commercial-use approval request on 2026-09-21 after supplying browser captures; Task 1 recorded PARTIAL, not rounded up.
 - [Phase 04]: [Phase 04 / 04-01]: vercel metrics --format json summary[] adopted as the Part 6 CWV baseline's number source (whole-window p75), distinct from the default text table's bucketed avg column, so 04-07's post-ship comparison reads the same statistic.
 - [Phase 04]: [Phase 04 / 04-01]: /analyze/[reportCode] pre-ad CLS p75 (0.2344 desktop / 0.4768 mobile) recorded as-is in the OPS-01 Part 6 baseline, not smoothed over — it is the baseline the ad rollout must not worsen, not a target.
+- [Phase 04]: [Phase 04 / 04-03]: Phase tracer shipped end-to-end on /tbc-audit — lib/consent.ts publishes the single resolved ConsentGatePath (PostHogProvider and the new ad gate both subscribe, neither re-derives it); lib/ads.ts's adsEnabled() (env flag + pub id) is split from adsConfigured() (adds the per-slot unit-wired check) so AdSlot reserves its exact box the moment ads are switched on even before a slot has a real AdSense unit id; scripts/protected-elements.mjs extended with a second machine-checked table for ad slot placements, proven with a real tamper test.
 
 ### Pending Todos
 
@@ -209,6 +211,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T18:25:28.312Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-09-21T18:52:34.826Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
