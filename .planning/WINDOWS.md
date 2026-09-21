@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 9
+open_count: 11
 waived_count: 0
 fixed_count: 2
-total_count: 11
-last_updated: 2026-09-19T20:19:49.601Z
+total_count: 13
+last_updated: 2026-09-21T20:15:47.035Z
 ---
 
 # Broken Windows Ledger
@@ -26,6 +26,8 @@ last_updated: 2026-09-19T20:19:49.601Z
 | 9 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview) | fixed |  | 2026-09-16T09:02:42.606Z | 2026-09-19T20:19:49.601Z |
 | 10 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 item-7 re-measure needed: dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx's 09:14:57Z-10:14:57Z window scored threshold 1 FAIL (7 pageviews), threshold 2 PASS (2 countries), threshold 3 NOT EVALUABLE (no Vercel Web Analytics endpoint on the personal token). Re-run the three HogQL queries against a full 60-minute window on a busier UTC hour (candidate ~22:00Z, 24 pageviews on 2026-09-14) plus a window-granularity Vercel Web Analytics dashboard read. | fixed |  | 2026-09-16T16:56:13.409Z | 2026-09-19T01:10:28.150Z |
 | 11 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 share-rate (D-14) re-run needed: 7-day trailing HogQL read 0.0% (0 share_action sessions / 19 analysis_complete sessions) as a first reading with only ~7.5h of live share_action exposure. Re-run the same HogQL on/after 2026-09-23T09:15Z for the first meaningful comparison against the ~2.8% baseline. | open |  | 2026-09-16T16:56:13.555Z |  |
+| 12 | 04 | deviation | app/components/AdSlot.tsx | 162 | Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07. | open |  | 2026-09-21T20:15:46.704Z |  |
+| 13 | 04 | deviation | app/components/ReportUrlForm.tsx | 95 | Pre-existing, non-ad-related: the example-URL <code> string has no wrap class, forcing the layout viewport wider than 384px on / and /tbc-audit (not /guides, not /analyze) at phone width; found while measuring ad-box adjacency in 04-06 Task 3. Out of Phase 4 scope to fix. | open |  | 2026-09-21T20:15:47.035Z |  |
 
 ````json
 [
@@ -159,6 +161,30 @@ last_updated: 2026-09-19T20:19:49.601Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-16T16:56:13.555Z",
+    "resolved_at": null
+  },
+  {
+    "id": 12,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "app/components/AdSlot.tsx",
+    "line": 162,
+    "description": "Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-21T20:15:46.704Z",
+    "resolved_at": null
+  },
+  {
+    "id": 13,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "app/components/ReportUrlForm.tsx",
+    "line": 95,
+    "description": "Pre-existing, non-ad-related: the example-URL <code> string has no wrap class, forcing the layout viewport wider than 384px on / and /tbc-audit (not /guides, not /analyze) at phone width; found while measuring ad-box adjacency in 04-06 Task 3. Out of Phase 4 scope to fix.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-21T20:15:47.035Z",
     "resolved_at": null
   }
 ]

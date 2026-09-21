@@ -3469,3 +3469,82 @@ absorbed into the existing allowlist and not silently dropped.
 
 **This subsection is preview evidence, not a gate sign-off** — the same distinction Parts 4 and 5
 draw for their own preview halves. No production deploy occurred in this task.
+
+### Developer review (Phase 4 preview, 2026-09-21) — automated half only, verdict awaiting the developer
+
+Per this plan's own design, Claude drives the browser and presents what it sees; the verdict is
+the developer's. This subsection records everything automatable — structural facts read directly
+from the live, rendered preview via the same CDP technique used above — and leaves every
+judgment-only line explicitly marked as **awaiting the developer**, not folded into a pass.
+
+**1. Both-theme structural check — `/tbc-audit` and the demo analyze page (raid + player tabs).**
+`next-themes` here is a pure `class="light"|"dark"` swap plus CSS custom-property values (no
+structural/layout difference between themes) — confirmed by forcing `localStorage.setItem('theme',
+...)` before navigation and reading `document.documentElement.className` back (`"light"` and
+`"dark"` both observed on the raid tab). The reserved ad box `<div>`'s own class list
+(`mx-auto w-[300px] h-[250px] md:w-[...] md:h-[...]`, no `border-*`/`bg-*` utility at all) and its
+live computed style (`backgroundColor: rgba(0, 0, 0, 0)`, `borderWidth: 0px`, read directly from
+the rendered DOM) hold in both themes — there is no border, background, or placeholder text on the
+reserved box in either theme, structurally. **Awaiting the developer:** an eyes-on confirmation
+that "no unstyled card," "legible tables and badges," and "readable class-coloured player names"
+(Part 1 item 2's own checklist) still hold with the boxes present — a visual-legibility judgment
+this session cannot make from computed styles alone.
+
+**2. Phone reachability, 384px viewport — six protected elements, distance to nearest ad box.**
+Measured via `getBoundingClientRect()` on both `/analyze/{demo}?tab=raid` and the player-tab
+default, dark theme, at exactly the 384px width Phase 3's D-13 pass used:
+
+| Element | Route/tab | Present | Reachable (no ad box overlaps or precedes it in scroll order) | Nearest ad box | Vertical clearance |
+|---|---|---|---|---|---|
+| `share-header` | either tab (header) | yes | yes — above the fold, `y=88` | `analyze-mid` | 220–284px below it |
+| `share-player` | player tab | yes | yes | `analyze-mid` (above), `analyze-end` (below, far) | 263px above `share-player` |
+| `share-discord` | player tab | yes | yes | `analyze-mid` (above) | ~303px above `share-discord` |
+| `awards-panel` | raid tab | yes | yes — reachable before the raid table's own scroll extent per this measurement | `analyze-mid` (above) | 117px above `awards-panel` |
+| `awards-preview` | raid tab | yes | yes (inside `awards-panel`) | `analyze-mid` | same panel, no separate box adjacency |
+| `share-awards` | raid tab | yes | yes (inside `awards-panel`) | `analyze-mid` | same panel, no separate box adjacency |
+
+No ad box's rect overlaps any protected element's rect on either tab; the smallest clearance
+observed is 117px (`analyze-mid` to `awards-panel`), well clear of touching or covering. Neither
+`analyze-mid` nor `analyze-end` forced horizontal scroll on the analyze page at 384px
+(`document.documentElement.clientWidth === scrollWidth === 384` on both tabs). **Awaiting the
+developer:** a first-hand phone-width confirmation that the header Share control is genuinely
+usable (tap target, not just numerically "above the fold") and that scrolling to the awards panel
+and player scorecard feels the same as it did pre-ads.
+
+**3. Adjacency read.** By the same rect data: no ad box sits inside a table (`inTable: false` on
+every `[data-ad-slot]` container checked), beside a share control, or between a share button and
+what it shares — `analyze-mid` sits below the header/tab bar and above the tab content on both
+tabs, `analyze-end` sits far below all interactive content (last child of `<main>`), matching the
+placement table in `docs/PROTECTED-ELEMENTS.md`. **Awaiting the developer:** confirmation by eye
+that this structural clearance also *reads* as clean, uncluttered spacing rather than merely
+passing a pixel-distance threshold.
+
+**4. Not this plan's ad boxes, but found while measuring them — a pre-existing horizontal-overflow
+issue on `/` and `/tbc-audit`, unrelated to any ad slot.** At the 384px viewport, both `/` and
+`/tbc-audit` (but not `/guides`, not either analyze tab) render wider than the viewport —
+`document.documentElement.clientWidth` stays the requested 384px but `scrollWidth`/`innerWidth`
+grow to ~498–523px. Traced to `app/components/ReportUrlForm.tsx`'s example-URL `<code>` element
+(`https://classic.warcraftlogs.com/reports/ABC123#fight=5&source=12`, ~60 unbroken characters, no
+wrap/break-all class), rendered on both routes via `<ReportUrlForm />` (`LandingHero.tsx` on `/`,
+directly on `/tbc-audit`). This is **pre-existing** (`ReportUrlForm.tsx` predates Phase 4 and is
+untouched by this plan's `files_modified`) and **unrelated to any ad box** — `/tbc-audit`'s ad
+slots sit well below this element and do not cause or worsen it. Recorded here because it was
+found while gathering this task's own phone-viewport evidence, not because it is this plan's ad
+work; not fixed (out of `docs/OPS-01-SHIP-GATE.md`-only scope), logged to `.planning/WINDOWS.md`.
+
+**A note on how this evidence was gathered, and one disclosure.** This session built a small,
+no-new-dependency CDP driver (Node's built-in `fetch` + `--experimental-websocket`'s global
+`WebSocket`, talking to `Google Chrome --headless=new --remote-debugging-port`) to drive the
+browser for this checklist, since no browser-automation tool exists in this repo (RESEARCH's own
+finding, carried forward from Phase 3). Its output never included a full bypass-secret-bearing
+URL in this session's own captured evidence *written to this document* — every excerpt above is
+either redacted counts/booleans or CSS/DOM facts with no secret in them. **One disclosure, in the
+interest of the same secrets-discipline this document holds every other session to:** during
+ad-hoc debugging of the horizontal-overflow finding above (item 4), one intermediate diagnostic
+command in this session's own tool-call transcript printed a preview URL that still carried the
+bypass query parameter in cleartext, before this session caught the pattern and stopped reusing
+it. That value was not written to any file, not committed, and not sent to any destination beyond
+this session's own tool output — but it did appear in this transcript, which this session cannot
+guarantee is not retained somewhere outside this repository. Recorded here rather than left
+unmentioned; the developer may wish to rotate the Vercel automation-bypass secret for this project
+out of caution, per the same T-04-30 threat this plan's own register names.
