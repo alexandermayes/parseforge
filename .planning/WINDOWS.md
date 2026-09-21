@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 11
+open_count: 12
 waived_count: 0
 fixed_count: 2
-total_count: 13
-last_updated: 2026-09-21T20:15:47.035Z
+total_count: 14
+last_updated: 2026-09-21T22:32:39.303Z
 ---
 
 # Broken Windows Ledger
@@ -28,6 +28,7 @@ last_updated: 2026-09-21T20:15:47.035Z
 | 11 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 share-rate (D-14) re-run needed: 7-day trailing HogQL read 0.0% (0 share_action sessions / 19 analysis_complete sessions) as a first reading with only ~7.5h of live share_action exposure. Re-run the same HogQL on/after 2026-09-23T09:15Z for the first meaningful comparison against the ~2.8% baseline. | open |  | 2026-09-16T16:56:13.555Z |  |
 | 12 | 04 | deviation | app/components/AdSlot.tsx | 162 | Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07. | open |  | 2026-09-21T20:15:46.704Z |  |
 | 13 | 04 | deviation | app/components/ReportUrlForm.tsx | 95 | Pre-existing, non-ad-related: the example-URL <code> string has no wrap class, forcing the layout viewport wider than 384px on / and /tbc-audit (not /guides, not /analyze) at phone width; found while measuring ad-box adjacency in 04-06 Task 3. Out of Phase 4 scope to fix. | open |  | 2026-09-21T20:15:47.035Z |  |
+| 14 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-06 Task 2 preview netlog/measured-box/CSP-harvest procedure could not be re-run against the second preview (dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV) after the box-size/dark-mode fixes: the one working method to source the Vercel SSO bypass secret was denied by the session's own Bash-permission auto-classifier (Credential Materialization). Closing test: re-run 04-06 Task 2's procedure against this preview once the bypass secret can be sourced in a session with permission. | open |  | 2026-09-21T22:32:39.303Z |  |
 
 ````json
 [
@@ -185,6 +186,18 @@ last_updated: 2026-09-21T20:15:47.035Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-21T20:15:47.035Z",
+    "resolved_at": null
+  },
+  {
+    "id": 14,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "04-06 Task 2 preview netlog/measured-box/CSP-harvest procedure could not be re-run against the second preview (dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV) after the box-size/dark-mode fixes: the one working method to source the Vercel SSO bypass secret was denied by the session's own Bash-permission auto-classifier (Credential Materialization). Closing test: re-run 04-06 Task 2's procedure against this preview once the bypass secret can be sourced in a session with permission.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-21T22:32:39.303Z",
     "resolved_at": null
   }
 ]
