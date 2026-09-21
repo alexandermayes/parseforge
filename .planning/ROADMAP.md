@@ -245,7 +245,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-05-PLAN.md — the remaining three D-02 placements, the /privacy disclosure, and AdSense account configuration
+- [x] 04-05-PLAN.md — the remaining three D-02 placements, the /privacy disclosure, and AdSense account configuration
 
 **Wave 4** *(blocked on Wave 3 completion)*
 

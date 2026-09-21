@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-09-21T18:53:05.905Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-09-21T19:43:00.503Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: 15e1c8fc75caa28f17ceb0dee9655fc8bae00e15
+state_head: a7e0e318a846791c797eed616f0f307c50f72d09
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 40
+  completed_plans: 41
   percent: 44
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 ## Current Position
 
 Phase: 04 (Ads Live) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-09-19 — Phase 04 execution started
 
@@ -101,6 +101,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 04 P04 | 25min | 2 tasks | 5 files |
 | Phase 04 P01 | 55min | 3 tasks | 5 files |
 | Phase 04 P03 | 45min | 3 tasks | 10 files |
+| Phase 04-ads-live P05 | 45min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,9 @@ Recent decisions affecting current work:
 - [Phase 04]: [Phase 04 / 04-01]: vercel metrics --format json summary[] adopted as the Part 6 CWV baseline's number source (whole-window p75), distinct from the default text table's bucketed avg column, so 04-07's post-ship comparison reads the same statistic.
 - [Phase 04]: [Phase 04 / 04-01]: /analyze/[reportCode] pre-ad CLS p75 (0.2344 desktop / 0.4768 mobile) recorded as-is in the OPS-01 Part 6 baseline, not smoothed over — it is the baseline the ad rollout must not worsen, not a target.
 - [Phase 04]: [Phase 04 / 04-03]: Phase tracer shipped end-to-end on /tbc-audit — lib/consent.ts publishes the single resolved ConsentGatePath (PostHogProvider and the new ad gate both subscribe, neither re-derives it); lib/ads.ts's adsEnabled() (env flag + pub id) is split from adsConfigured() (adds the per-slot unit-wired check) so AdSlot reserves its exact box the moment ads are switched on even before a slot has a real AdSense unit id; scripts/protected-elements.mjs extended with a second machine-checked table for ad slot placements, proven with a real tamper test.
+- [Phase 04]: checkAdSlotContainment's blanket owner-file rule (owner may never also own a data-protected element) was removed and replaced with the 15-line proximity scan alone, since AnalyzeClient.tsx legitimately owns both share-header and the two analyze slots far apart
+- [Phase 04]: NEXT_PUBLIC_ADSENSE_PUB_ID stores digits only (no ca-pub- prefix) because lib/ads.ts and AdSlot.tsx both build the ca-pub- prefix themselves
+- [Phase 04]: Auto ads OFF confirmed by the developer directly from the AdSense UI (2026-09-21); ads.txt status and the /privacy Privacy & messaging site-settings paste remain open, no code can observe either
 
 ### Pending Todos
 
@@ -187,6 +191,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - [Phase 3 carry-forward] `03-REVIEW.md` WR-01, WR-02, WR-03, IN-01 remain deferred to `/gsd-code-review 03 --fix`; explicitly outside the Part 5 signature and the security review.
 - [Phase 4 dependency] RPGLogs/WCL API ToS requires approval for commercial/ads use (see `.planning/research/PARSEFORGE-RANKINGS-SPEC.md`) — send the approval request before Phase 4 ships ads.
 - [Phase 4 dependency] R0-1 approval email deferred by developer on 2026-09-21 (not sent) — 04-07's production ad deploy checkpoint stays gated until a real 'sent' row with verbatim text lands in .planning/research/rpglogs-approval-request-2026-09-19.md's Thread table. Remaining: read WCL client name from warcraftlogs.com/api/clients, fill draft, send from info@lootlistplus.com to advertising@archon.gg.
+- 04-05: AdSense ads.txt status for parseforge.gg not confirmed by developer; the Phase 1 Privacy & messaging site-settings paste of https://parseforge.gg/privacy also not confirmed — STATE.md follow-up (1) stays open. Resolve before 04-07's production ad launch.
 
 ### Quick Tasks Completed
 
@@ -211,6 +216,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T18:52:34.826Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-09-21T19:42:59.928Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None
