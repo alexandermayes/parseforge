@@ -12,6 +12,7 @@ import AnalysisView, { AnalysisLoading } from "@/app/components/AnalysisView";
 import RaidOverview, { RaidOverviewLoading } from "@/app/components/RaidOverview";
 import CLAView, { CLALoading } from "@/app/components/CLAView";
 import PlayerQuickGrid from "@/app/components/PlayerQuickGrid";
+import AdSlot from "@/app/components/AdSlot";
 import { ShineBorder } from "@/components/ui/shine-border";
 import posthog from "posthog-js";
 import {
@@ -344,6 +345,13 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
         </div>
       )}
 
+      {/* Reserved ad slot — mounted inside the same `report &&` condition as
+          the tab switcher/selectors above, so the box appears the moment
+          the shell renders rather than arriving later and pushing the tab
+          body down after paint (D-02, D-06). One mount serves all three
+          tabs; it is not inside any tab-content block. */}
+      {report && <AdSlot id="analyze-mid" />}
+
       {/* Player Analysis tab content */}
       {activeTab === "player" && (
         <>
@@ -454,6 +462,11 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           </div>
         </div>
       )}
+
+      {/* Reserved ad slot — last child of <main>, after the guide-links
+          block, so nothing below it can shift when it collapses. Renders
+          unconditionally so it does not appear/disappear as results load. */}
+      <AdSlot id="analyze-end" />
     </main>
   );
 }

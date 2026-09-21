@@ -294,18 +294,19 @@ function checkAdSlotOwner(row) {
 }
 
 /**
- * The owner file owns no `data-protected` element, and no mount of this
- * slot sits within 15 lines of one anywhere under `app/`.
+ * No mount of this slot sits within 15 lines of a `data-protected` element
+ * anywhere under `app/` — including the owner file itself. A blanket
+ * "owner file may never also own a data-protected element" rule would be
+ * wrong from 04-05 onward: `AnalyzeClient.tsx` legitimately owns both
+ * `share-header` (line ~200) and the `analyze-mid`/`analyze-end` mounts
+ * (150+ lines away) — proximity, not mere file co-membership, is what
+ * actually threatens a protected element (D-02).
  */
 function checkAdSlotContainment(row) {
   const id = `adslot:${row.slotId}:containment`;
   const ownerPath = path.isAbsolute(row.ownerFile) ? row.ownerFile : path.join(REPO_ROOT, row.ownerFile);
   if (!existsSync(ownerPath)) {
     return { id, fatal: true, detail: `owner file ${row.ownerFile} does not exist` };
-  }
-  const ownerSrc = readFileSync(ownerPath, "utf8");
-  if (ownerSrc.includes("data-protected=")) {
-    return { id, pass: false, detail: `${row.ownerFile} owns a data-protected element as well as the ${row.slotId} slot` };
   }
 
   const mountRe = slotMountRegex(row.slotId);

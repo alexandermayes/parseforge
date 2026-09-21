@@ -38,15 +38,22 @@ that *mounts* the slot with this id — for `tbc-audit-end` that's the page, not
 | Slot id | Owner file | Position | Box (base) | Box (md) |
 |---|---|---|---|---|
 | `tbc-audit-end` | `app/tbc-audit/page.tsx` | Last child of `<main>`, after the final `<section>` | 300×250 | 336×280 |
+| `tbc-audit-mid` | `app/tbc-audit/page.tsx` | Between the "Gear checks" section and the "Consumable, buff & talent checks" section | 300×250 | 728×90 |
+| `analyze-mid` | `app/analyze/[reportCode]/AnalyzeClient.tsx` | Below the report header/tab bar/selectors block, above the tab-content blocks — one mount serves all three tabs | 300×250 | 728×90 |
+| `analyze-end` | `app/analyze/[reportCode]/AnalyzeClient.tsx` | Last child of `<main>`, after the guide-links block | 300×250 | 336×280 |
 
 1. A slot may only appear in the owner file its row names above — `checkAdSlotOwner` fails if that
    file doesn't mount it exactly once; `checkNoStraySlots` fails if any *other* file mounts it at
    all, which is what catches a slot drifting onto a route this table doesn't name.
-2. No slot may appear in a file that owns a `data-protected` element, nor inside a table, nor
-   between a share control and the thing it shares. `checkAdSlotContainment` enforces the
-   `data-protected` half mechanically (the owner file itself, and a 15-line proximity scan across
-   `app/`); the table/share-adjacency half is a human review rule recorded here, not something the
-   script can see structurally.
+2. No slot mount may fall within 15 lines of a `data-protected` element in any file, nor inside a
+   table, nor between a share control and the thing it shares. `checkAdSlotContainment` enforces
+   the proximity half mechanically with a 15-line scan across every file under `app/`, including
+   the owner file itself — a file may legitimately own both a `data-protected` element and a slot
+   mount, as `analyze-mid`/`analyze-end` and `share-header` do in `AnalyzeClient.tsx`, provided
+   they are far enough apart. Concretely, `analyze-mid` sits *below* the header Share control and
+   *above* the Raid tab's awards panel and the Player tab's scorecard — a future reader can check
+   that a redesign hasn't moved it by confirming that ordering still holds. The table/share-adjacency
+   half is a human review rule recorded here, not something the script can see structurally.
 3. A slot's reserved box dimensions in this table are the same numbers `lib/ads.ts`'s `AD_SLOTS`
    declares for that slot id. `checkAdSlotDeclared` treats a disagreement as a gate failure, not a
    documentation nit.
@@ -83,8 +90,8 @@ with `--base`): the awards, player, and bare report `/og` URLs for the demo repo
 A third half reads the `## Ad slot placements` table above and enforces it against `lib/ads.ts` and
 the component tree: `checkAdSlotDeclared` (the doc row's slot id and box dimensions agree with
 `AD_SLOTS`), `checkAdSlotOwner` (the named owner file mounts the slot exactly once),
-`checkAdSlotContainment` (the owner file owns no `data-protected` element, and no slot mount sits
-within 15 lines of one anywhere under `app/`), and `checkNoStraySlots` (no file outside the table's
+`checkAdSlotContainment` (no slot mount sits within 15 lines of a `data-protected` element anywhere
+under `app/`, including the owner file itself), and `checkNoStraySlots` (no file outside the table's
 owner files mounts a slot at all). It then fetches the raid-audit route and the demo report's
 analyze route live and confirms every `data-ad-slot="…"` marker present is one this table names — a
 page with none is a pass (ads may be switched off on the base being checked), a page with an unknown

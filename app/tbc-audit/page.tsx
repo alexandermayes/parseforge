@@ -201,6 +201,8 @@ export default function TbcAuditPage() {
         </ul>
       </section>
 
+      <AdSlot id="tbc-audit-mid" />
+
       <section className="space-y-5">
         <h2 className="text-xl font-bold tracking-tight text-foreground">
           Consumable, buff & talent checks

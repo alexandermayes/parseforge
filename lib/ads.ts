@@ -9,10 +9,11 @@
 import type { ConsentGatePath } from "@/lib/consent";
 
 /**
- * Slot ids this phase declares. 04-05 adds "tbc-audit-mid", "analyze-mid"
- * and "analyze-end"; this task ships only the end-of-page raid-audit slot.
+ * Slot ids this phase declares — the 04-03 tracer slot (`tbc-audit-end`)
+ * plus the three 04-05 adds to complete the D-02 placement map:
+ * `tbc-audit-mid`, `analyze-mid`, `analyze-end`.
  */
-export type AdSlotId = "tbc-audit-end";
+export type AdSlotId = "tbc-audit-end" | "tbc-audit-mid" | "analyze-mid" | "analyze-end";
 
 export interface AdSlotSpec {
   /** The route this slot renders on (informational only). */
@@ -42,6 +43,30 @@ export const UNCONFIGURED_UNIT = "PENDING";
 export const AD_SLOTS: Record<AdSlotId, AdSlotSpec> = {
   "tbc-audit-end": {
     route: "/tbc-audit",
+    base: { width: 300, height: 250 },
+    md: { width: 336, height: 280 },
+    boxClass: "w-[300px] h-[250px] md:w-[336px] md:h-[280px]",
+    unit: UNCONFIGURED_UNIT,
+    collapsible: true,
+  },
+  "tbc-audit-mid": {
+    route: "/tbc-audit",
+    base: { width: 300, height: 250 },
+    md: { width: 728, height: 90 },
+    boxClass: "w-[300px] h-[250px] md:w-[728px] md:h-[90px]",
+    unit: UNCONFIGURED_UNIT,
+    collapsible: false,
+  },
+  "analyze-mid": {
+    route: "/analyze/[reportCode]",
+    base: { width: 300, height: 250 },
+    md: { width: 728, height: 90 },
+    boxClass: "w-[300px] h-[250px] md:w-[728px] md:h-[90px]",
+    unit: UNCONFIGURED_UNIT,
+    collapsible: false,
+  },
+  "analyze-end": {
+    route: "/analyze/[reportCode]",
     base: { width: 300, height: 250 },
     md: { width: 336, height: 280 },
     boxClass: "w-[300px] h-[250px] md:w-[336px] md:h-[280px]",
