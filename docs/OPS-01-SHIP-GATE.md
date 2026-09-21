@@ -3081,3 +3081,150 @@ developer exactly these three options, per D-14:
 **Non-response is never treated as approval, in any of the three options above.** Nothing ships
 by default; the production ad deploy stays a `checkpoint:human-action` gated on the Thread table
 carrying real approval text, whichever of the three options the developer eventually picks.
+
+### Local gate output (Phase 4, 2026-09-21)
+
+Git HEAD at capture time: `3a5be52` (04-05's own metadata commit — the four real AdSense unit
+ids, the `/privacy` rewrite, and the AdSense account-configuration record are all present; no
+file under `app/`, `lib/` or `scripts/` was touched by this plan itself).
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+
+$ npm run lint
+✖ 1 problem (0 errors, 1 warning)
+app/components/CastTimeline.tsx:42 — <img> LCP warning (@next/next/no-img-element),
+pre-existing, unchanged by this phase.
+
+$ npm test
+ Test Files  21 passed (21)
+      Tests  284 passed (284)
+   Duration  840ms
+
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+
+$ npm run token-audit
+- Total findings: 64
+- Allowlisted: 64
+- Non-allowlisted (gate-relevant): 0
+- Missing required @theme categories: none
+```
+
+**Lint debt, recorded per Part 1 item 1's "say by how much and in which file" rule.**
+`eslint.config.mjs`'s `globalIgnores` block (comment: "GSD / agent tooling — not application
+code (Phase 3 gate fix)") already excludes `.codex/`, `.claude/`, `.agents/`, `.gsd/`,
+`.impeccable/` and `.planning/` from every `npm run lint` invocation, unscoped — the ~1697/1698-line
+scaffolding-noise figure Parts 2 through 4 recorded no longer applies to a bare `npm run lint`
+run; that fix predates this plan and is not something this plan changed. The two files CLAUDE.md
+names as carrying pre-existing lint debt (`components/ui/meteors.tsx`, `lib/analysis-engine.ts`)
+now report **zero** findings under a direct scoped check
+(`npx eslint components/ui/meteors.tsx lib/analysis-engine.ts` → exit 0, no output) — that debt
+was evidently resolved in an earlier phase; CLAUDE.md's text is stale on this point, not something
+this plan is responsible for updating (`CLAUDE.md` is gitignored, local-only, per its own text).
+The one remaining warning (`CastTimeline.tsx:42`) is the same pre-existing finding 02.1-07-era
+records already carried forward — unchanged in location or content by this plan.
+
+**Token-audit finding count moved 57 → 64** since Part 5's last recorded run. All 64 are
+allowlisted (`Non-allowlisted (gate-relevant): 0`), so the gate-relevant result is unchanged (pass);
+the raw count shift reflects `@theme`/Satori-mirror hex literals already present in `lib/constants.ts`
+and the vendored `components/ui/*` effect components at the time of this reading, none of which
+`files_modified` for this plan (`docs/OPS-01-SHIP-GATE.md` only) touches. Recorded here as a
+number that moved, not silently carried forward as "57" from a stale prior reading.
+
+**SEO invariants**, against a local dev server on port 3999 (fresh port; no conflict with any
+earlier phase's recorded port):
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npm run seo-invariants -- --base http://localhost:3999
+/: diff-report-only — ogImage (non-failing, per-host metadataBase)
+/analyze/ZjKgNYxVcAqR8pGJ: diff-report-only — canonical/robots/title/description/ogTitle
+  (non-failing: local dev server has no WCL_CLIENT_ID/SECRET — same caveat every prior Part records)
+/guides ... /privacy ... /tbc-audit ... /terms: same (canonical/robots/structured-data match production)
+exit 0
+```
+
+No canonical/robots/structured-data regression for any route — identical shape to every prior
+Part's recorded run, confirming the four new ad mounts (04-03/04-05) haven't disturbed any SEO
+surface.
+
+**Protected elements, against production** (per this task's own instruction — the live-route half
+has no bypass-header support, WINDOWS #8, so it is run against production rather than the
+SSO-protected preview; the preview's route contracts are gathered separately with `curl` in the
+next section):
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npm run protected-elements
+25 passed, 0 failed
+```
+
+All six `attr:*` rows, the four `route:*` rows, and all fifteen `adslot:*` rows (4 slots × 3
+declared/owner/containment checks = 12, plus `adslot:live-analyze-demo`, `adslot:live-tbc-audit`
+and `adslot:no-stray-slots` = 15) pass — 6 + 4 + 15 = 25. The two `adslot:live-*` rows report **no
+ad slot markers present** on production — expected and correct, since `NEXT_PUBLIC_ADS_ENABLED` /
+`NEXT_PUBLIC_ADSENSE_PUB_ID` were added to Vercel Preview and Production by 04-05 but "take effect
+on next deploy only" (04-05-SUMMARY.md) and no deploy carrying them has shipped to production yet.
+
+### PostHog instrumentation (Phase 4, pre-deploy grep evidence)
+
+Per Part 1 item 4, one grep-count row per new event name. All four call sites live in
+`app/components/AdSlot.tsx`:
+
+| Event | Literal `capture("event"` grep count | True call-site count | Where |
+|---|---|---|---|
+| `ad_slot_requested` | 1 | 1 | `AdSlot.tsx:138` |
+| `ad_slot_blocked` | 1 | 1 | `AdSlot.tsx:109` |
+| `ad_slot_filled` | 0 | 1 | `AdSlot.tsx:146` |
+| `ad_slot_empty` | 0 | 1 | `AdSlot.tsx:146` |
+
+```
+$ grep -rn '"ad_slot_requested"' app lib
+app/components/AdSlot.tsx:138:    posthog.capture("ad_slot_requested", eventProps);
+$ grep -rn '"ad_slot_blocked"' app lib
+app/components/AdSlot.tsx:109:        posthog.capture("ad_slot_blocked", {
+$ grep -rn '"ad_slot_filled"' app lib
+app/components/AdSlot.tsx:146:        posthog.capture(adStatus === "filled" ? "ad_slot_filled" : "ad_slot_empty", eventProps);
+$ grep -rn '"ad_slot_empty"' app lib
+app/components/AdSlot.tsx:146:        posthog.capture(adStatus === "filled" ? "ad_slot_filled" : "ad_slot_empty", eventProps);
+```
+
+**Notable non-deviation, recorded rather than silently worked around (same pattern as Part 2's
+`consent_resolved` two-branch case and 04-05-SUMMARY.md's `share_landing` note).** This task's own
+literal `<verify>` script (`grep -r "capture(\"$E\""`) reports `0` for `ad_slot_filled` and
+`ad_slot_empty` and would exit 1 as written, because both event names are emitted from a **single**
+`posthog.capture(adStatus === "filled" ? "ad_slot_filled" : "ad_slot_empty", eventProps)` call on
+one line — the literal-string grep pattern only matches an event name immediately followed by
+`capture("`, which is true for the two single-literal calls (`ad_slot_requested`, `ad_slot_blocked`)
+but not for the ternary. The repo-wide search above (`grep -rn '"$E"'`, no `capture(` anchor) shows
+each of the four event names appears in exactly **one** source line, all inside a `posthog.capture(
+...)` call, all in `AdSlot.tsx` — one logical call site per event, two of them sharing a single
+mutually-exclusive branch the same way `consent_resolved`'s two outcomes shared one `switch`
+registration in Part 2. This plan's `files_modified` is `docs/OPS-01-SHIP-GATE.md` only, so the
+plan's own gate script is recorded here, not edited, per the executor's scope boundary.
+
+**Property grep — exactly three low-cardinality properties, no report code / player name / full
+URL:**
+
+```
+$ sed -n '108,146p' app/components/AdSlot.tsx
+# eventProps = { route: normalizeRoute(...), slot_id: id, consent_gate_path: getConsentGatePath() }
+# — the same three-key object reused for all four capture sites (ad_slot_blocked's own inline
+#   object matches the shape exactly).
+$ grep -rn 'ad_slot_' app lib --include='*.ts' --include='*.tsx' | grep -cE 'report_code|reportCode|player_name|playerName|\$current_url'
+0
+```
+
+`route` is passed through `normalizeRoute()` (`lib/ads.ts`), which strips the query string and
+folds any `/analyze/{code}` path to the fixed pattern `/analyze/[reportCode]` before it ever
+reaches a `posthog.capture()` call — no report code, fight id, source id, or player name can reach
+an `ad_slot_*` event's properties. `slot_id` is one of the four fixed `AdSlotId` literals and
+`consent_gate_path` is one of the four fixed `ConsentGatePath` literals — both closed, low-cardinality
+enums, never a value a visitor supplies.
+
+**This is pre-deploy evidence only.** Per Part 1 item 4, an event's presence in source (or even in
+PostHog's event-definition list, once one exists) is not proof of current ingestion — proving that
+is item 7's job, run against a real production deployment in 04-07, not this preview-only plan.
