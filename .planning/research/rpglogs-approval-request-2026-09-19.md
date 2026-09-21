@@ -1,18 +1,18 @@
 # RPGLogs API commercial-use approval request — DRAFT (2026-09-19)
 
-Status: **DRAFT, not sent.** Send from the ParseForge operator address (the same identity as `/privacy` and `/terms`: info@lootlistplus.com), not a work account. Fill `<TO>` with the approval address printed on `articles.warcraftlogs.com/help/rpg-logs-api-terms-of-service` (the page 403s automated readers — read it in a browser and save a dated copy beside this file as `wcl-tos-2026-09-19.md`). Record the sent message and every reply verbatim below under "Thread".
+Status: **DRAFT — READY, NOT SENT.** Developer deferred sending on 2026-09-21; send from info@lootlistplus.com to advertising@archon.gg once the client name is filled in. The production ad deploy (04-07) remains gated on the approval reply (D-12).
 
 Consumers: ROADMAP Phase 4 (R0-1); PARSEFORGE-RANKINGS-SPEC §2.1 / §7 R0-1.
 
 ---
 
-To: <TO — approval address from the API ToS page>
+To: advertising@archon.gg
 From: info@lootlistplus.com
-Subject: API commercial-use approval request — ParseForge (parseforge.gg), client "<WCL client name>"
+Subject: API commercial-use approval request — ParseForge (parseforge.gg), client "<WCL client name — TBD, read from https://www.warcraftlogs.com/api/clients before sending>"
 
 Hi RPGLogs team,
 
-I run ParseForge (https://parseforge.gg), a free WoW Classic / TBC raid-log analyzer. A player pastes a public Warcraft Logs report URL and the site fetches that report through the v2 client API (OAuth client credentials, client name "<WCL client name>", registered to <account email>) and compares the raid's DPS/HPS, gear, consumables, buffs and talents against top-ranked parses. Every report page links back to the source report on warcraftlogs.com, and the site carries no Warcraft Logs branding.
+I run ParseForge (https://parseforge.gg), a free WoW Classic / TBC raid-log analyzer. A player pastes a public Warcraft Logs report URL and the site fetches that report through the v2 client API (OAuth client credentials, client name "<WCL client name — TBD, read from https://www.warcraftlogs.com/api/clients before sending>", registered to info@lootlistplus.com) and compares the raid's DPS/HPS, gear, consumables, buffs and talents against top-ranked parses. Every report page links back to the source report on warcraftlogs.com, and the site carries no Warcraft Logs branding.
 
 Your API Terms of Service state that use is considered commercial if the integration earns money, including through advertising, and that commercial use needs your approval. I am writing to request that approval before anything changes:
 
@@ -26,7 +26,7 @@ Could you confirm whether (1) and (2) are approved under the Terms, and let me k
 
 Thank you for running the API — ParseForge exists because of it.
 
-<Owner name>
+Alexander (Zev)
 Operator, ParseForge (parseforge.gg)
 info@lootlistplus.com
 
@@ -36,4 +36,4 @@ info@lootlistplus.com
 
 | Date (UTC) | Direction | Summary | Verbatim copy |
 |---|---|---|---|
-| — | — | not sent yet | — |
+| 2026-09-21 | deferred | developer deferred sending on 2026-09-21; captures completed | — |
