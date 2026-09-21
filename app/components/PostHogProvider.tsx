@@ -4,7 +4,11 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useEffect, useRef, useState, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { startConsentListener, deriveConsentGateOutcome } from "@/lib/consent";
+import {
+  startConsentListener,
+  deriveConsentGateOutcome,
+  publishConsentGatePath,
+} from "@/lib/consent";
 import type { ConsentAction } from "@/lib/consent";
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "";
@@ -98,7 +102,6 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
   const capturedGatePathRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!POSTHOG_KEY) return;
     let disposeConsentListener: (() => void) | undefined;
     let mounted = true;
 
@@ -138,10 +141,16 @@ export default function PostHogProvider({ children }: { children: React.ReactNod
     // replay when the outcome says to; then fire the outcome's event, if any.
     function applyOutcome(outcome: ReturnType<typeof deriveConsentGateOutcome>) {
       if (!outcome) return;
-      posthog.register({ consent_gate_path: outcome.gatePath });
-      if (outcome.optIn) posthog.opt_in_capturing({ captureEventName: false });
-      if (outcome.startReplay) posthog.startSessionRecording();
-      if (outcome.event && !capturedGatePathRef.current.has(outcome.gatePath)) {
+      // Each posthog.* call below is individually guarded so the SDK is
+      // never touched on a deployment with no PostHog key (previews, for
+      // one) — but the gate path is still published unconditionally right
+      // after the register call, because Phase 4's ad gate (lib/ads.ts)
+      // needs the decision regardless of whether PostHog itself is active.
+      if (POSTHOG_KEY) posthog.register({ consent_gate_path: outcome.gatePath });
+      publishConsentGatePath(outcome.gatePath);
+      if (POSTHOG_KEY && outcome.optIn) posthog.opt_in_capturing({ captureEventName: false });
+      if (POSTHOG_KEY && outcome.startReplay) posthog.startSessionRecording();
+      if (POSTHOG_KEY && outcome.event && !capturedGatePathRef.current.has(outcome.gatePath)) {
         capturedGatePathRef.current.add(outcome.gatePath);
         posthog.capture(outcome.event, outcome.eventProps);
       }

@@ -289,3 +289,41 @@ export function deriveConsentGateOutcome(
       };
   }
 }
+
+let publishedGatePath: ConsentGatePath | null = null;
+const gatePathSubscribers = new Set<(path: ConsentGatePath) => void>();
+
+/**
+ * Publishes the single resolved consent gate path (04-CONTEXT.md D-07, the
+ * 04-03 "promote" decision): `PostHogProvider` calls this once it resolves
+ * an outcome; any future consumer (the ad gate today, others later)
+ * subscribes via `subscribeConsentGatePath` below rather than deriving its
+ * own. A re-publish of the already-published value is a no-op — only a
+ * genuine decision change (e.g. a CMP re-confirmation flow) notifies.
+ */
+export function publishConsentGatePath(path: ConsentGatePath): void {
+  if (publishedGatePath === path) return;
+  publishedGatePath = path;
+  for (const callback of gatePathSubscribers) callback(path);
+}
+
+/** The last published consent gate path, or `null` if none has published yet. */
+export function getConsentGatePath(): ConsentGatePath | null {
+  return publishedGatePath;
+}
+
+/**
+ * Subscribes to the published consent gate path. If a path has already been
+ * published, `callback` fires synchronously with it immediately (a late
+ * mount must not miss the decision); it then fires again on every
+ * subsequent change. Returns a disposer that removes the subscription.
+ */
+export function subscribeConsentGatePath(
+  callback: (path: ConsentGatePath) => void,
+): () => void {
+  gatePathSubscribers.add(callback);
+  if (publishedGatePath !== null) callback(publishedGatePath);
+  return () => {
+    gatePathSubscribers.delete(callback);
+  };
+}
