@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-09-20T01:01:09.591Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-09-21T18:25:28.501Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: 1439f3759a51cb1a061dc1d6e1226022e0aab5c4
+state_head: 09eee20fd141db684aa0a3b997a3aa35431bdd39
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 38
+  completed_plans: 39
   percent: 44
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 ## Current Position
 
 Phase: 04 (Ads Live) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-09-19 — Phase 04 execution started
 
@@ -99,6 +99,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 03-share-loop P10 | 15min | 2 tasks | 3 files |
 | Phase 04 P02 | 35min | 3 tasks | 10 files |
 | Phase 04 P04 | 25min | 2 tasks | 5 files |
+| Phase 04 P01 | 55min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,9 @@ Recent decisions affecting current work:
 - [Phase 3]: WINDOWS.md #10 (item-7 re-measure) marked fixed; #9 (developer backstops) and #11 (share-rate re-run) left open with dated reasons recorded in the Part 5 close-out.
 - [Phase 04]: R0-2: recorded real WCL rankings/rate-limit/guild fixtures (6 files) with measured (not assumed) per-query point costs; demo report confirmed to have no guild, fallback guild Sage (Dreamscythe-US) found via a real public character ranking and confirmed public via the API's own visibility field (browser check blocked, 403, in this environment).
 - [Phase 04]: [Phase 04 / 04-04]: R0-3 shipped as tested, unwired engine code - lib/wcl-types.ts gained a new rankings-blob type family verified against 04-02's rankings-report.json fixture (deliberately not extending WCLRanking/WCLRankingsData, per 04-RESEARCH.md Pitfall 1); lib/rankings/parse-lens.ts and lib/rankings/budget.ts (Redis-backed 90%-of-runtime-read-limit gate) both pass full TDD RED/GREEN and are imported by nothing (D-13) - confirmed via zero app/ imports and unchanged protected-elements/seo-invariants gates.
+- [Phase 04]: [Phase 04 / 04-01]: Developer deferred sending the RPGLogs commercial-use approval request on 2026-09-21 after supplying browser captures; Task 1 recorded PARTIAL, not rounded up.
+- [Phase 04]: [Phase 04 / 04-01]: vercel metrics --format json summary[] adopted as the Part 6 CWV baseline's number source (whole-window p75), distinct from the default text table's bucketed avg column, so 04-07's post-ship comparison reads the same statistic.
+- [Phase 04]: [Phase 04 / 04-01]: /analyze/[reportCode] pre-ad CLS p75 (0.2344 desktop / 0.4768 mobile) recorded as-is in the OPS-01 Part 6 baseline, not smoothed over — it is the baseline the ad rollout must not worsen, not a target.
 
 ### Pending Todos
 
@@ -180,6 +184,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - [Phase 3 carry-forward → 2026-09-23] **D-14 share-rate re-read obligation** (WINDOWS #11): run the 7-day HogQL on/after 2026-09-23T09:15Z and append a dated confirmation/correction to Part 5. UAT test 3 was passed by the developer on 2026-09-19 *without* the reading (noted in `03-UAT.md`), so this is Phase 3's only open evidence obligation — do not let it lapse.
 - [Phase 3 carry-forward] `03-REVIEW.md` WR-01, WR-02, WR-03, IN-01 remain deferred to `/gsd-code-review 03 --fix`; explicitly outside the Part 5 signature and the security review.
 - [Phase 4 dependency] RPGLogs/WCL API ToS requires approval for commercial/ads use (see `.planning/research/PARSEFORGE-RANKINGS-SPEC.md`) — send the approval request before Phase 4 ships ads.
+- [Phase 4 dependency] R0-1 approval email deferred by developer on 2026-09-21 (not sent) — 04-07's production ad deploy checkpoint stays gated until a real 'sent' row with verbatim text lands in .planning/research/rpglogs-approval-request-2026-09-19.md's Thread table. Remaining: read WCL client name from warcraftlogs.com/api/clients, fill draft, send from info@lootlistplus.com to advertising@archon.gg.
 
 ### Quick Tasks Completed
 
@@ -204,6 +209,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-20T01:01:09.433Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-09-21T18:25:28.312Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None

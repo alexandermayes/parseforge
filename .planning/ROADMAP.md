@@ -230,12 +230,12 @@ Plans:
   4. LCP/INP/CLS on `/`, `/analyze/*`, and `/tbc-audit` are captured before ad code ships and re-measured after, with a written rollback trigger that has been agreed before launch.
   5. AdSense reports revenue on live traffic, PostHog tracks ad-slot impact on analyze completion, and GSC shows no ranking movement attributable to the change (OPS-01 gate).
 
-**Plans**: 2/7 plans executed
+**Plans**: 3/7 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — R0-1 approval request + the pre-ad CWV baseline and rollback trigger (OPS-01 Part 6)
+- [x] 04-01-PLAN.md — R0-1 approval request + the pre-ad CWV baseline and rollback trigger (OPS-01 Part 6)
 - [x] 04-02-PLAN.md — R0-2: rankings + rate-limit fixtures via the extended WCL recorder
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -348,7 +348,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7 �
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
 | 2.1. PostHog Consent Gate Hotfix (INSERTED) | 8/8 | Complete    | 2026-09-15 |
 | 3. Share Loop | 10/10 | Complete    | 2026-09-19 |
-| 4. Ads Live | 2/7 | In Progress|  |
+| 4. Ads Live | 3/7 | In Progress|  |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
 | 6. Discoverability & Content | 0/TBD | Not started | - |
 | 7. Redesign, De-bloat & Hardening | 0/TBD | Not started | - |
