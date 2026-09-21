@@ -2837,3 +2837,178 @@ Recorded after the SIGNED sign-off above; additive only, nothing above is altere
 - **Row 7 (D-04 tone) — first-hand verdict obtained.** The developer reviewed the fifteen-row pool with each row's stat line and passed `03-UAT.md` test 2 on 2026-09-19 in their own words; the "delegated" qualifier above no longer applies.
 - **Row 2 (D-14 share-rate re-read) — STILL OPEN.** `03-UAT.md` test 3 was passed by the developer on 2026-09-19 without the reading (the re-read is date-gated to on/after 2026-09-23T09:15Z and was not run). The `sign-now-conditional` obligation stands unchanged: the re-read must append a dated confirmation or correction here; `.planning/WINDOWS.md #11` stays open until it does.
 - Phase 3 verification: `03-VERIFICATION.md` status `passed`; `03-SECURITY.md` ASVS L1, 50 threats closed / 0 open. `03-REVIEW.md` WR-01/02/03/IN-01 remain outside this record.
+
+## Part 6 — Phase 4 evidence
+
+This baseline was captured before any ad code existed in the repository. Git HEAD at capture
+time: `9031c2ee28daea75a539694a1f01553e01fee6c3` (04-01 Task 1's own commit — `.planning/`/`docs/`
+only; no file under `app/`, `lib/` or `scripts/` had been touched by Phase 4 at this point).
+
+### CWV baseline — pre-ad (D-09)
+
+Captured 2026-09-21 via `vercel metrics` (CLI 56.3.1), querying Vercel Speed Insights RUM,
+`p75` aggregation, over the trailing 7 days, production environment only, split by route and
+device type, for the three routes this phase adds ads to plus the ad-free homepage anchor:
+
+```
+export PATH="$HOME/.local/node20/bin:$PATH"
+vercel metrics vercel.speed_insights.lcp_ms --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+vercel metrics vercel.speed_insights.inp_ms --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+vercel metrics vercel.speed_insights.cls --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+```
+
+Sample window for every row: **2026-09-14T18:18Z – 2026-09-21T18:18Z (7d, production only)**.
+
+| Route | Device | LCP p75 (ms) | INP p75 (ms) | CLS p75 | Sample window |
+|---|---|---|---|---|---|
+| `/` | desktop | 1556 | 64 | 0 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+| `/` | mobile | 1448 | 120 | 0 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+| `/analyze/[reportCode]` | desktop | 2416 | 88 | 0.2344 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+| `/analyze/[reportCode]` | mobile | 2388 | 152 | 0.4768 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+| `/tbc-audit` | desktop | 1212 | 64 | 0 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+| `/tbc-audit` | mobile | 772 | 168 | 0.0002 | 2026-09-14T18:18Z–2026-09-21T18:18Z |
+
+No cell is `no-data` — the CLI returned a real row for every (route, device) pair this phase
+needs.
+
+**Table values are the single p75 figure over the whole 7-day window (`--format json`'s
+`summary` array), not the human-readable table's `avg` column below.** The two are different
+statistics: the CLI's default text table prints, per group, the *average of the per-4h-bucket
+p75 values* (labelled `avg` in that table) alongside the bucket-level `min`/`max` — a smoothed
+view useful for the sparkline, not the single "p75 over the whole window" number D-09 asks for.
+The `--format json` invocation (same flags, `--format json` appended) returns that exact
+whole-window p75 in `summary[].vercel_speed_insights_<metric>_p75`, which is what the table
+above transcribes. 04-07's post-ship comparison must read this same whole-window p75, not the
+bucketed `avg` column, or the two will not be comparable. Both raw outputs are pasted below as
+the evidence block.
+
+**Notable pre-existing finding, recorded honestly (not this plan's job to fix):** `/analyze/[reportCode]`
+already runs CLS p75 0.2344 (desktop) / 0.4768 (mobile) **before any ad code ships** — both above
+the 0.1 rollback trigger this same Part states below. This is the pre-ad baseline the ad rollout
+must not make worse, not a target the ad rollout is expected to hit; D-10's rollback comparison is
+against *this* baseline, same route, same device class — not against the flat 0.1 figure. Root
+cause is out of this plan's scope (`files_modified` here is `.planning/` and `docs/` only) and is
+carried forward as a Phase 4 finding, not silently smoothed over.
+
+**Evidence — verbatim command output, human-readable table (`vercel metrics`, default format):**
+
+LCP:
+```
+> Metric: vercel.speed_insights.lcp_ms p75
+> Period: 2026-09-14 18:20 to 2026-09-21 18:20 (UTC)
+> Interval: 4h
+> Filter: environment eq 'production'
+> Order By: count desc (default)
+> Project: parseforge (loot-list-plus)
+> Units: ms
+> Groups: 10
+
+                                    route  device_type     avg          min                    max
+                                        /      desktop  1558.0  727.0 at 09-15 08:00  3512.0 at 09-21 16:00
+                    /analyze/[reportCode]      desktop  2236.5  20.0 at 09-18 08:00   8668.0 at 09-17 16:00
+                    /analyze/[reportCode]       mobile  2597.2  484.0 at 09-21 04:00  7632.0 at 09-16 16:00
+                                        /       mobile  1507.8  649.0 at 09-21 08:00  4004.0 at 09-17 16:00
+                               /tbc-audit      desktop   982.9  152.0 at 09-16 00:00  2864.0 at 09-18 08:00
+          /guides/improve-dps-wow-classic      desktop   294.3  80.0 at 09-16 00:00   448.0 at 09-20 12:00
+  /guides/how-to-analyze-wow-classic-logs      desktop   417.6  132.0 at 09-16 00:00  728.0 at 09-20 20:00
+                                  /guides      desktop  1821.8    0 at 09-20 20:00    7896.0 at 09-15 20:00
+       /guides/raid-preparation-checklist      desktop  1166.7  84.0 at 09-16 00:00   5208.0 at 09-14 16:00
+                               /tbc-audit       mobile   590.0  408.0 at 09-21 00:00  772.0 at 09-20 20:00
+```
+
+INP:
+```
+> Metric: vercel.speed_insights.inp_ms p75
+> Period: 2026-09-14 18:20 to 2026-09-21 18:20 (UTC)
+> Units: ms
+
+                                    route  device_type     avg          min                   max
+                                        /      desktop    79.3  16.0 at 09-17 04:00  592.0 at 09-16 04:00
+                    /analyze/[reportCode]      desktop   107.8  48.0 at 09-15 00:00  376.0 at 09-18 04:00
+                    /analyze/[reportCode]       mobile   146.8  56.0 at 09-20 04:00  480.0 at 09-16 08:00
+                                        /       mobile   113.1   0 at 09-14 20:00    440.0 at 09-17 04:00
+                               /tbc-audit      desktop    62.0  8.0 at 09-20 08:00   136.0 at 09-18 08:00
+          /guides/improve-dps-wow-classic      desktop    10.0   0 at 09-17 04:00     16.0 at 09-18 04:00
+  /guides/how-to-analyze-wow-classic-logs      desktop    30.4   0 at 09-15 16:00    120.0 at 09-17 20:00
+                                  /guides      desktop  3212.0  32.0 at 09-19 00:00  6392.0 at 09-16 12:00
+       /guides/raid-preparation-checklist      desktop    12.0  8.0 at 09-14 20:00    16.0 at 09-16 20:00
+                               /tbc-audit       mobile   130.7  40.0 at 09-15 08:00  184.0 at 09-20 16:00
+```
+
+CLS:
+```
+> Metric: vercel.speed_insights.cls p75
+> Period: 2026-09-14 18:20 to 2026-09-21 18:20 (UTC)
+> Units: score
+
+                                    route  device_type     avg           min                    max
+                                        /      desktop   0.029    0 at 09-14 16:00      0.19 at 09-18 08:00
+                    /analyze/[reportCode]      desktop    0.22  0.054 at 09-20 04:00    0.62 at 09-19 12:00
+                    /analyze/[reportCode]       mobile    0.21    0 at 09-14 16:00      0.79 at 09-17 12:00
+                                        /       mobile   0.019    0 at 09-15 20:00      0.17 at 09-17 08:00
+                               /tbc-audit      desktop   0.015    0 at 09-15 20:00      0.11 at 09-15 16:00
+          /guides/improve-dps-wow-classic      desktop       0    0 at 09-16 00:00       0 at 09-16 00:00
+  /guides/how-to-analyze-wow-classic-logs      desktop   0.036    0 at 09-15 16:00      0.14 at 09-20 20:00
+                                  /guides      desktop       0    0 at 09-15 20:00       0 at 09-15 20:00
+       /guides/raid-preparation-checklist      desktop       0    0 at 09-14 16:00       0 at 09-14 16:00
+                               /tbc-audit       mobile  0.0002  0.0002 at 09-20 16:00  0.0002 at 09-20 16:00
+```
+
+**Evidence — verbatim `summary` array, `--format json` (the whole-window p75 the baseline table transcribes):**
+
+```json
+// vercel.speed_insights.lcp_ms
+[
+  {"route":"/","vercel_speed_insights_lcp_ms_p75":1556,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_lcp_ms_p75":2416,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_lcp_ms_p75":2388,"device_type":"mobile"},
+  {"route":"/","vercel_speed_insights_lcp_ms_p75":1448,"device_type":"mobile"},
+  {"route":"/tbc-audit","vercel_speed_insights_lcp_ms_p75":1212,"device_type":"desktop"},
+  {"route":"/tbc-audit","vercel_speed_insights_lcp_ms_p75":772,"device_type":"mobile"}
+]
+// vercel.speed_insights.inp_ms
+[
+  {"route":"/","vercel_speed_insights_inp_ms_p75":64,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_inp_ms_p75":88,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_inp_ms_p75":152,"device_type":"mobile"},
+  {"route":"/","vercel_speed_insights_inp_ms_p75":120,"device_type":"mobile"},
+  {"route":"/tbc-audit","vercel_speed_insights_inp_ms_p75":64,"device_type":"desktop"},
+  {"route":"/tbc-audit","vercel_speed_insights_inp_ms_p75":168,"device_type":"mobile"}
+]
+// vercel.speed_insights.cls
+[
+  {"route":"/","vercel_speed_insights_cls_p75":0,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_cls_p75":0.2344,"device_type":"desktop"},
+  {"route":"/analyze/[reportCode]","vercel_speed_insights_cls_p75":0.4768,"device_type":"mobile"},
+  {"route":"/","vercel_speed_insights_cls_p75":0,"device_type":"mobile"},
+  {"route":"/tbc-audit","vercel_speed_insights_cls_p75":0,"device_type":"desktop"},
+  {"route":"/tbc-audit","vercel_speed_insights_cls_p75":0.0002,"device_type":"mobile"}
+]
+```
+
+(Rows for `/guides`, `/guides/*` and `/privacy` were also returned but are out of this phase's
+three-route scope and are omitted from the table above; the full unfiltered output is preserved
+in the human-readable evidence blocks above, which list all ten groups the CLI's default
+`--limit 10` returned.)
+
+### Lighthouse mobile lab reference (D-09)
+
+`npx lighthouse` is **not available in this environment**: the package is not installed locally
+(`which lighthouse` → not found) and `npx` in this non-interactive shell refuses to silently
+download an unconfirmed package (`npm error npx canceled due to missing packages and no YES
+option: ["lighthouse@12.8.2"]`) rather than proceeding unattended — network access to the npm
+registry itself is present (`registry.npmjs.org` reachable), so the block is the sandbox's
+install-confirmation policy, not a network failure. Per this plan's own instruction, `lighthouse`
+is **not** added to `package.json` to work around this.
+
+**Fallback, not yet run:** the Chrome DevTools Lighthouse panel (Lighthouse tab, Mobile device
+preset), run manually against the three production URLs — `https://parseforge.gg/`,
+`https://parseforge.gg/analyze/<demo-report-code>` (per `lib/demo-report.ts`), and
+`https://parseforge.gg/tbc-audit` — recording LCP, TBT, CLS and the Lighthouse version from each
+report. This is recorded here as an explicit gap per this plan's own `must_haves.truths` entry
+(`verification: backstop`), not skipped silently: the RUM p75 table above is the primary,
+already-complete D-09 evidence; the Lighthouse lab run remains open as a reproducible-reference
+backstop for a developer session with a real Chrome window.
