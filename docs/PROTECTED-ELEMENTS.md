@@ -29,6 +29,28 @@ Every shipped `data-protected` attribute, drawn from what plans 03-03 and 03-04 
 | `awards-preview` | `app/components/RaidOverview.tsx` | Inline `<img>` rendering the real `/og?view=awards` preview | D-06's "users see exactly what will unfurl before they paste" — must stay the same image Discord shows, never a separate render |
 | `share-awards` | `app/components/RaidOverview.tsx` | "Copy awards link" button beside the awards preview | The SHARE-01 awards share action — D-13 requires it reachable without scrolling past the raid table on mobile |
 
+## Ad slot placements
+
+Every declared `AdSlotId` from `lib/ads.ts` (`AD_SLOTS`), one row per slot. "Owner file" is the file
+that *mounts* the slot with this id — for `tbc-audit-end` that's the page, not `AdSlot.tsx` itself
+(which only defines the component every slot mounts through):
+
+| Slot id | Owner file | Position | Box (base) | Box (md) |
+|---|---|---|---|---|
+| `tbc-audit-end` | `app/tbc-audit/page.tsx` | Last child of `<main>`, after the final `<section>` | 300×250 | 336×280 |
+
+1. A slot may only appear in the owner file its row names above — `checkAdSlotOwner` fails if that
+   file doesn't mount it exactly once; `checkNoStraySlots` fails if any *other* file mounts it at
+   all, which is what catches a slot drifting onto a route this table doesn't name.
+2. No slot may appear in a file that owns a `data-protected` element, nor inside a table, nor
+   between a share control and the thing it shares. `checkAdSlotContainment` enforces the
+   `data-protected` half mechanically (the owner file itself, and a 15-line proximity scan across
+   `app/`); the table/share-adjacency half is a human review rule recorded here, not something the
+   script can see structurally.
+3. A slot's reserved box dimensions in this table are the same numbers `lib/ads.ts`'s `AD_SLOTS`
+   declares for that slot id. `checkAdSlotDeclared` treats a disagreement as a gate failure, not a
+   documentation nit.
+
 ## Route and URL contracts
 
 - The `/og` route (`app/og/route.tsx`) accepts four query params — `report`, `fight`, `source`,
@@ -58,6 +80,16 @@ separately fetches the live route contracts against a base URL (production by de
 with `--base`): the awards, player, and bare report `/og` URLs for the demo report each return a
 2xx image response, and the demo report's analyze page canonical is present and carries no `?`.
 
+A third half reads the `## Ad slot placements` table above and enforces it against `lib/ads.ts` and
+the component tree: `checkAdSlotDeclared` (the doc row's slot id and box dimensions agree with
+`AD_SLOTS`), `checkAdSlotOwner` (the named owner file mounts the slot exactly once),
+`checkAdSlotContainment` (the owner file owns no `data-protected` element, and no slot mount sits
+within 15 lines of one anywhere under `app/`), and `checkNoStraySlots` (no file outside the table's
+owner files mounts a slot at all). It then fetches the raid-audit route and the demo report's
+analyze route live and confirms every `data-ad-slot="…"` marker present is one this table names — a
+page with none is a pass (ads may be switched off on the base being checked), a page with an unknown
+marker is a failure.
+
 This file goes stale in exactly two ways, and both make the gate fail — which is the intended
 behaviour, not a bug to work around:
 
@@ -71,7 +103,12 @@ never reports a pass when it cannot see its subject.
 
 ## Change procedure
 
-Changing or removing a row in this file requires updating three things in the same change: this
-file, the component that owns the attribute, and the consuming phase's note in
+Changing or removing a row in the `## DOM attributes` table requires updating three things in the
+same change: this file, the component that owns the attribute, and the consuming phase's note in
 `.planning/ROADMAP.md` (the Phase 4 and Phase 7 entries that name this file). A row change that
 touches only one of the three is incomplete.
+
+Adding or moving a row in the `## Ad slot placements` table requires updating three things together:
+this table, `lib/ads.ts`'s `AD_SLOTS` entry for that slot id, and the owner component that mounts it.
+A change that touches only one or two of the three is incomplete — `checkAdSlotDeclared` and
+`checkAdSlotOwner` exist specifically to catch a change that drifted apart.
