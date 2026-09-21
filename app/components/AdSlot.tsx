@@ -49,6 +49,17 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
   const pathname = usePathname();
   const spec = AD_SLOTS[id];
   const [status, setStatus] = useState<SlotStatus>("reserved");
+  // Google's adsbygoogle.js mounts a blank iframe inside the <ins> the
+  // instant it starts processing a pushed unit — long before `data-ad-status`
+  // resolves to "filled" or "unfilled". That blank iframe paints white in
+  // both themes (the defect a developer caught on the Phase 4 preview: a
+  // visible white rectangle while the account was still in AdSense review).
+  // The reserved wrapper div always keeps its declared box size (zero layout
+  // shift, D-04); this flag independently controls only whether the `<ins>`
+  // paints anything. It starts hidden and is revealed ONLY on a confirmed
+  // "filled" status — an "unfilled" status, or the observe ceiling passing
+  // with no resolution at all, both leave it hidden.
+  const [filled, setFilled] = useState(false);
   const insRef = useRef<HTMLModElement>(null);
 
   const boxReserved = adsEnabled();
@@ -143,6 +154,7 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
       const adStatus = el.getAttribute("data-ad-status");
       if (adStatus === "filled" || adStatus === "unfilled") {
         captured = true;
+        setFilled(adStatus === "filled");
         posthog.capture(adStatus === "filled" ? "ad_slot_filled" : "ad_slot_empty", eventProps);
         observer.disconnect();
       }
@@ -159,16 +171,20 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
   if (!boxReserved || status === "collapsed") return null;
 
   return (
-    <div
-      data-ad-slot={id}
-      className={cn("mx-auto", spec.boxClass, className)}
-      style={{ width: spec.base.width, height: spec.base.height }}
-    >
+    <div data-ad-slot={id} className={cn("mx-auto", spec.boxClass, className)}>
       {status === "loaded" && (
         <ins
           ref={insRef}
           className="adsbygoogle"
-          style={{ display: "block", width: "100%", height: "100%" }}
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            // Hidden until a confirmed "filled" data-ad-status (see the
+            // `filled` state comment above) — never left visible while
+            // Google's blank iframe has no creative in it.
+            visibility: filled ? "visible" : "hidden",
+          }}
           data-ad-client={`ca-pub-${PUB_ID}`}
           data-ad-slot={spec.unit}
         />

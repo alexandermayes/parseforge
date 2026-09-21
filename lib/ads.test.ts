@@ -133,6 +133,27 @@ describe("AD_SLOTS", () => {
     }
   });
 
+  // 04-06 Task 3 defect fix (checkpoint round 2): AdSlot used to override
+  // these size classes with an inline `style={{width, height}}` set to the
+  // `base` dimensions only, so every box rendered at its mobile size on
+  // every viewport (never reaching the declared `md` size). AdSlot no
+  // longer sets that inline style — boxClass alone is the source of truth
+  // for rendered size — so this asserts the class list itself, independent
+  // of the component, carries a `max-w-full` safety net: the 728px-wide
+  // `-mid` banner slots sit in a container that is narrower than 728px
+  // between the `md` breakpoint (768px) and ~776px (max-w-7xl's
+  // `sm:px-6` layout padding leaves less than 728px of content width in
+  // that band), and `max-w-full` is what stops the box from overflowing
+  // its container in that gap instead of shrinking to fit it.
+  it("every slot's boxClass includes a max-w-full safety net against a narrower-than-declared container", () => {
+    for (const [slotId, spec] of Object.entries(AD_SLOTS)) {
+      expect(
+        spec.boxClass.split(/\s+/),
+        `slot ${slotId}'s boxClass is missing max-w-full`,
+      ).toContain("max-w-full");
+    }
+  });
+
   it("every collapsible slot's id ends with the end-of-document-order suffix, and no other slot is collapsible", () => {
     for (const [slotId, spec] of Object.entries(AD_SLOTS)) {
       expect(spec.collapsible).toBe(slotId.endsWith("-end"));
