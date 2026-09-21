@@ -3012,3 +3012,72 @@ report. This is recorded here as an explicit gap per this plan's own `must_haves
 (`verification: backstop`), not skipped silently: the RUM p75 table above is the primary,
 already-complete D-09 evidence; the Lighthouse lab run remains open as a reproducible-reference
 backstop for a developer session with a real Chrome window.
+
+### Rollback trigger (D-10)
+
+Fixed before launch, quoted here, and **not renegotiated after a breach is observed.** Every row
+compares the same route and the same device class's post-ship figure against *this Part's own
+baseline row above* for that exact route/device pair — never against a flat number, another
+route's row, or another device class's row.
+
+| # | Trigger | Applies to | Compared against |
+|---|---|---|---|
+| 1 | CLS p75 **> 0.1** | any of `/`, `/analyze/[reportCode]`, `/tbc-audit`, either device class | this Part's CWV baseline row for that exact route + device class |
+| 2 | LCP p75 worsens by **more than 20%** vs. baseline | same route, same device class, post-ship vs. pre-ad baseline above | this Part's CWV baseline row for that exact route + device class |
+| 3 | INP p75 **> 200 ms** | any of the three routes, either device class | absolute threshold — no baseline comparison needed, the number itself is the trigger |
+
+These three numbers are fixed now, before any ad code ships, and are **not** subject to
+re-scoping, loosening, or reinterpretation once a post-ship reading is in hand — a breach is a
+breach against the numbers above, not against whatever number would make the deploy look fine
+in hindsight.
+
+### Rollback runbook (D-08)
+
+An ordered procedure — the ordering itself is load-bearing (Pitfall 4, 04-RESEARCH.md): a runbook
+that starts with the env var is a runbook that leaves ads live for the length of a build.
+
+1. **AdSense-side pause (instant, no deploy).** Pause the ad units in the AdSense dashboard. The
+   reserved boxes render empty immediately — no code change, no build, no deploy. This is the
+   *only* instant lever; execute it first, always.
+2. **Code-side removal (redeploy-speed, minutes).** Set `NEXT_PUBLIC_ADS_ENABLED=0` in the Vercel
+   project env vars and run a new `vercel deploy --prod --global-config ~/.vercel-personal --scope
+   loot-list-plus` to remove the ad loader entirely from the next build. `NEXT_PUBLIC_*` values
+   bake into the client bundle at build time on this project (CLAUDE.md) — this step takes the
+   length of a build plus a deploy, not seconds, which is exactly why step 1 exists and runs
+   first. Never treat `NEXT_PUBLIC_ADS_ENABLED` as the real-time kill switch.
+3. **Record the breach.** Write the breach figures (which trigger fired, the post-ship p75, the
+   baseline p75 it was compared against, and the pause timestamp) back into this Part as a new
+   dated subsection, append-only, exactly as every other figure in this document is recorded.
+
+### Observation schedule and escalation clocks (D-11, D-14)
+
+Two independent clocks, both dated from real events — not from this plan's authoring date.
+
+**The CWV clock (D-11).** A day-2 early read and a day-7 full read, both counted from the
+production ad deploy date (not yet scheduled — gated on the RPGLogs approval reply per D-12/R0-1
+above). Each read re-runs the same three `vercel metrics` commands this Part's CWV baseline used
+and appends a comparison row against the baseline table above, for every (route, device class)
+pair. **Pre-agreed exception, binding now:** a CLS p75 above 0.1 on any route at either read is an
+**automatic AdSense pause**, executed immediately per the runbook above, without waiting for a
+developer reply. Every other breach (LCP +20%, INP > 200 ms) is presented to the developer with
+the exact numbers, and the developer decides whether to invoke the runbook.
+
+**The approval clock (D-14).** A day-14 deadline counted from the Thread table's *sent* date in
+`.planning/research/rpglogs-approval-request-2026-09-19.md`. **This clock has not started as of
+this capture (2026-09-21):** Task 1 of this same plan recorded that the developer deferred sending
+the approval email on 2026-09-21 (Thread table Direction = `deferred`, not `sent`) — there is no
+sent date to count 14 days from yet, and none is fabricated here. Once the email is actually sent,
+the day-14 deadline is `sent date + 14 days`, and that date must be appended to this Part as a
+dated addition when it becomes known, not silently assumed. At whatever day-14 deadline eventually
+applies — on decline, or on 14 days of silence after the actual send date — Claude brings the
+developer exactly these three options, per D-14:
+1. **Nudge email** — a single follow-up to `advertising@archon.gg`, referencing the original
+   thread.
+2. **Keep ads off, mark Phase 4 `blocked-external`** — monetization is re-planned without this
+   API's ad-approval path.
+3. **An explicitly recorded risk acceptance** — the developer accepts the ToS risk in writing,
+   recorded in this document, and ads ship without a reply on record.
+
+**Non-response is never treated as approval, in any of the three options above.** Nothing ships
+by default; the production ad deploy stays a `checkpoint:human-action` gated on the Thread table
+carrying real approval text, whichever of the three options the developer eventually picks.
