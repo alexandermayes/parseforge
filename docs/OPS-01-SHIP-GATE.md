@@ -3548,3 +3548,185 @@ this session's own tool output — but it did appear in this transcript, which t
 guarantee is not retained somewhere outside this repository. Recorded here rather than left
 unmentioned; the developer may wish to rotate the Vercel automation-bypass secret for this project
 out of caution, per the same T-04-30 threat this plan's own register names.
+
+### Defect fixes applied, checkpoint round 2 (Phase 4, 2026-09-21)
+
+Both defects the developer confirmed at the round-1 checkpoint, plus the CSP hosts this plan's own
+Task 2 harvest flagged, are fixed. This dispatch is authorized (developer, via the orchestrator, at
+the round-1 checkpoint) to edit `app/components/AdSlot.tsx`, `lib/ads.ts`, `lib/ads.test.ts` and
+`next.config.ts` even though this plan's own `files_modified` is `docs/OPS-01-SHIP-GATE.md` only —
+recorded here as that authorized deviation, with commit hashes, rather than silently expanding
+scope.
+
+**Defect A — box-size mismatch (`249058e`).** `AdSlot.tsx`'s reserved `<div>` no longer sets an
+inline `style={{ width: spec.base.width, height: spec.base.height }}`; size is controlled by
+`spec.boxClass` alone (the `w-[...]/h-[...] md:w-[...]/md:h-[...]` classes were always correct —
+only the inline style was outranking them). `lib/ads.ts`'s `AD_SLOTS.boxClass` also gains a
+`max-w-full` on every slot: the two 728px-wide `-mid` banner slots sit inside the site's global
+`max-w-7xl px-4 sm:px-6 lg:px-8` layout wrapper (`app/layout.tsx`), and between the `md` breakpoint
+(768px) and ~776px that wrapper's `sm:px-6` padding (24px/side) leaves only ~720–727px of content
+width — 1–8px short of 728px. Without a cap the box would overflow its container in that narrow
+band; `max-w-full` makes it shrink to fit instead. Neither test viewpoint this plan measures at
+(1280px, 390px) falls in that band, so this does not change either declared measurement, only
+closes the gap the developer asked this dispatch to check.
+
+**Defect B — visible white rectangle in dark mode when unfilled (`249058e`).** `AdSlot.tsx` now
+tracks a `filled` boolean (default `false`) and renders the mounted `<ins>` with
+`visibility: filled ? "visible" : "hidden"`. The `MutationObserver` that already watched
+`data-ad-status` now also sets `filled = (status === "filled")` on the moment it captures a
+terminal status; an `"unfilled"` status, or the existing 10-second observe ceiling passing with no
+resolution at all, both leave `filled` at its default `false` (hidden). The reserved wrapper `<div>`
+keeps its declared box size unconditionally either way (D-04, zero layout shift) — only the
+`<ins>`'s own paint is gated. Root cause, per the developer's own hypothesis at the checkpoint:
+Google's `adsbygoogle.js` mounts a blank iframe inside the `<ins>` the instant it starts processing
+a pushed unit, well before `data-ad-status` resolves — our transparent wrapper could not restyle
+that iframe's interior, so the blank iframe itself painted white in both themes while the account
+was still in AdSense review ("Getting ready," no creative served yet).
+
+**`lib/ads.test.ts`:** adds a unit test asserting every slot's `boxClass` carries `max-w-full`. No
+testing library was added for an `AdSlot.tsx`-level test of the fill/hide behavior — this repo's
+Vitest config runs `environment: "node"` with no React Testing Library or jsdom anywhere in the
+existing test suite (checked before writing anything), and this plan's own instruction was to
+follow the existing pattern rather than introduce one. The fill/hide behavior is verified by code
+review and by this round's local supplementary check below, not by an automated component test.
+
+**CSP report-only allowlist (`349c2e9`).** Adds `ep1.adtrafficquality.google` to `connect-src` and
+`ep2.adtrafficquality.google` to `script-src` and `frame-src` in `next.config.ts` — the exact
+directives this plan's own Task 2 harvest (above) recorded each host under. `www.google.com`,
+also observed on that harvest's admitted run, is deliberately **not** added: the harvest's own
+top-5 sample did not capture which directive it violated, and this plan's instruction was to add
+it only if a report named its directive. Policy stays report-only; promotion to enforcing is still
+Phase 7.
+
+**Gates re-run clean on the corrected build**, captured verbatim:
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+$ npm run lint
+✖ 1 problem (0 errors, 1 warning)   # app/components/CastTimeline.tsx:42 — pre-existing, unchanged
+$ npm test
+Test Files  21 passed (21)
+     Tests  285 passed (285)
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+$ npm run token-audit
+Total findings: 64 / Allowlisted: 64 / Non-allowlisted (gate-relevant): 0
+$ npm run protected-elements   # against production, per this plan's own WINDOWS #8 note
+25 passed, 0 failed
+```
+
+The four `ad_slot_*` event grep counts are unchanged from this plan's Task 1 evidence above
+(`ad_slot_requested`/`ad_slot_blocked` = 1 literal match each, `ad_slot_filled`/`ad_slot_empty` = 0
+literal matches for the documented ternary-call-site reason already recorded there) — this round's
+fixes did not touch those capture call sites.
+
+### Second preview deployment (Phase 4, 2026-09-21)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+Preview   https://parseforge-ccifsdcjf-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV",
+    "url": "https://parseforge-ccifsdcjf-loot-list-plus.vercel.app",
+    "readyState": "READY",
+    "target": null
+  }
+}
+```
+
+- **Deployment id:** `dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV`
+- **Preview URL:** `https://parseforge-ccifsdcjf-loot-list-plus.vercel.app`
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `349c2e9` (both this round's fix
+  commits, on top of the first preview's `96d46b6`).
+- No `--prod` flag was used anywhere in this task. No `promote`/`alias` command was run. No
+  project-protection setting was changed.
+- Confirmed still SSO-gated without a bypass: `curl -s -o /dev/null -w '%{http_code}' .../tbc-audit`
+  → `302`, the same redirect behavior every prior preview in this document shows.
+
+### Blocker: the preview-level netlog/measured-box/CSP re-verification could not run this session
+
+**This is a not-observed result with the exact cause and the exact test that would close it, per
+this plan's own discipline — not a proof that failed, and not softened into a pass.**
+
+The one method this plan's own Task 2 documented as working for sourcing the SSO bypass secret
+(`vercel project protection parseforge --scope loot-list-plus --format json`, which prints a
+`protectionBypass` object containing the secret) was denied in this session by the coding tool's
+own auto-mode Bash-permission classifier, with the stated reason `Credential Materialization` —
+an environment-level guard on this exact class of command, independent of this plan's own
+judgment. This dispatch's own instructions separately prohibit touching project-protection
+settings or rotating the secret, so no alternative invocation of that same command was attempted;
+retrying with different flags to reach the same secret would defeat the guard's evident intent, not
+work around an unrelated obstacle.
+
+`vercel env pull --environment=preview --global-config ~/.vercel-personal --scope loot-list-plus`
+(this plan's own `user_setup`-documented default source) was tried once, confirmed once more that
+`VERCEL_AUTOMATION_BYPASS_SECRET` is not among the pulled Preview variables — reproducing the same
+"open oddity" Parts 4, 5, and this plan's own Task 2 already recorded — and the pulled file was
+deleted immediately after that key-name-only check. This is not a new problem; it is simply that
+this session had no working fallback once the one method that does work was denied.
+
+**Consequence.** Without the bypass, every automated fetch of the new preview
+(`dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV`) reads a Vercel SSO redirect (confirmed: `302`) rather than the
+app. The following could **not** be re-run against the actual preview this session:
+- the two-direction netlog proof (admitted visitor / fail-closed visitor AdSense-host request
+  counts),
+- the measured-box table read from the live preview DOM,
+- the dark-mode `<ins>` visibility check against a real `data-ad-status` resolution on the preview,
+- the CSP violation harvest on the corrected build.
+
+**Closing test.** Re-run this plan's Task 2 procedure verbatim against
+`dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV` (or a fresh preview from the same commit) in a session where the
+bypass secret can be sourced — either an operator session with permission to run `vercel project
+protection`, or the developer supplying the secret's value out-of-band, never through this
+document. No bypass secret value appears anywhere above or below this paragraph.
+
+### Supplementary local-only evidence for the code-level fix (Phase 4, 2026-09-21) — NOT preview evidence, NOT a gate pass
+
+Because the preview-level check above was blocked, this session additionally ran a **local**
+`next dev` server (`NEXT_PUBLIC_ADS_ENABLED=1`, `NEXT_PUBLIC_ADSENSE_PUB_ID=2524016639017232` — the
+publisher id already public in `/ads.txt`, not a secret) against `/tbc-audit` only (a static
+server-rendered route with no WCL/Redis dependency, unlike the demo analyze page), driven by the
+same no-new-dependency CDP technique this document's Part 6 already uses (`Google Chrome
+--headless=new --remote-debugging-port`, Node's built-in `fetch` + `--experimental-websocket`).
+This is **explicitly not a substitute** for the preview-level proof above — it exercises the fixed
+component code, not a real deployment, and cannot exercise `/api/geo`'s real Vercel geolocation
+header at all.
+
+**Box sizes, read live from `getBoundingClientRect()`:**
+
+| Slot id | Viewport | Declared box | Measured box | Match |
+|---|---|---|---|---|
+| `tbc-audit-mid` | 1280×900 | 728×90 (`md`) | 728×90 | **yes** |
+| `tbc-audit-end` | 1280×900 | 336×280 (`md`) | 336×280 | **yes** |
+| `tbc-audit-mid` | 390×800 | 300×250 (`base`) | 300×250 | **yes** |
+| `tbc-audit-end` | 390×800 | 300×250 (`base`) | not rendered — see below | n/a |
+
+Every measured box now matches its declared size at both viewports, the opposite of the round-1
+MISMATCH recorded above — the fix works. `tbc-audit-end` (collapsible) is not present at all in the
+390px run: locally, `/api/geo`'s request had no real `x-vercel-ip-country` header, so the consent
+gate resolved a refusal, and per `AD_SLOTS`' own collapsible design a refused **collapsible** slot
+renders nothing while a refused **non-collapsible** slot (`tbc-audit-mid`) keeps its box reserved
+empty — exactly the D-04 behavior this component already implements, observed live rather than
+just read from source. Both reserved boxes' computed `backgroundColor` was `rgba(0, 0, 0, 0)`
+(transparent) in both light and a forced `prefers-color-scheme: dark` run; `borderStyle` reported
+`solid` with no border shown (Tailwind's border-utility default when no `border-width` class is
+present resolves to a 0px border, invisible either way).
+
+**Defect B's fill/hide behavior was not exercised live in this local run.** No `<ins>` ever
+mounted: with no real `x-vercel-ip-country` header, this build's consent gate refuses ads, so
+`status` never reaches `"loaded"`. Attempting to simulate an admitted decision by setting
+`Network.setExtraHTTPHeaders({'x-vercel-ip-country': 'US'})` before navigation hit an unrelated
+local-dev-server quirk — `/api/geo` returned `404` in the `next dev` log for reasons not
+investigated further (out of scope for this supplementary, non-blocking check; the route file
+itself is untouched by this plan and was not the object of this check). Defect B's fix is verified
+by code review (the `filled` state defaults to hidden and is only ever set `true` on a captured
+`"filled"` status) and is exactly what the closing test above will additionally confirm live, once
+the preview-level check can run.
+
+**This subsection is local, supplementary, code-level evidence only — not preview evidence and not
+a gate sign-off**, the same distinction every other preview subsection in this Part draws.
