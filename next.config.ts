@@ -25,14 +25,24 @@ import type { NextConfig } from "next";
 // tracker inside the creative) are to be discovered from report-only
 // violation reports after deploy, not guessed exhaustively; promoting this
 // policy to enforcing is Phase 7, out of scope here.
+//
+// ep1/ep2.adtrafficquality.google are AdSense's "sodar" ad-viewability/
+// anti-fraud beacon network — harvested from the Phase 4 preview's
+// report-only CSP violations (04-06 Task 2/3, docs/OPS-01-SHIP-GATE.md Part
+// 6 "CSP violation harvest"): ep1 was observed under connect-src, ep2 under
+// script-src and frame-src, both only on the admitted (ads-loading) run.
+// `www.google.com` was also observed on that run but its violated directive
+// was not captured in the harvest sample, so per that harvest's own
+// disposition it is deliberately NOT added here — added only once a report
+// names its directive.
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep2.adtrafficquality.google",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net",
-  "frame-src 'self' https://fundingchoicesmessages.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google",
+  "frame-src 'self' https://fundingchoicesmessages.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google",
   "worker-src 'self' blob:",
   "frame-ancestors 'self'",
   "base-uri 'self'",
