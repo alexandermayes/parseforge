@@ -46,7 +46,7 @@ export const AD_SLOTS: Record<AdSlotId, AdSlotSpec> = {
     base: { width: 300, height: 250 },
     md: { width: 336, height: 280 },
     boxClass: "w-[300px] h-[250px] md:w-[336px] md:h-[280px]",
-    unit: UNCONFIGURED_UNIT,
+    unit: "7875533232",
     collapsible: true,
   },
   "tbc-audit-mid": {
@@ -54,7 +54,7 @@ export const AD_SLOTS: Record<AdSlotId, AdSlotSpec> = {
     base: { width: 300, height: 250 },
     md: { width: 728, height: 90 },
     boxClass: "w-[300px] h-[250px] md:w-[728px] md:h-[90px]",
-    unit: UNCONFIGURED_UNIT,
+    unit: "8721711041",
     collapsible: false,
   },
   "analyze-mid": {
@@ -62,7 +62,7 @@ export const AD_SLOTS: Record<AdSlotId, AdSlotSpec> = {
     base: { width: 300, height: 250 },
     md: { width: 728, height: 90 },
     boxClass: "w-[300px] h-[250px] md:w-[728px] md:h-[90px]",
-    unit: UNCONFIGURED_UNIT,
+    unit: "7746259468",
     collapsible: false,
   },
   "analyze-end": {
@@ -70,7 +70,7 @@ export const AD_SLOTS: Record<AdSlotId, AdSlotSpec> = {
     base: { width: 300, height: 250 },
     md: { width: 336, height: 280 },
     boxClass: "w-[300px] h-[250px] md:w-[336px] md:h-[280px]",
-    unit: UNCONFIGURED_UNIT,
+    unit: "6900170941",
     collapsible: true,
   },
 };

@@ -164,8 +164,17 @@ describe("adsConfigured", () => {
   it("is false when the slot's unit id is still the unconfigured placeholder", () => {
     process.env.NEXT_PUBLIC_ADS_ENABLED = "1";
     process.env.NEXT_PUBLIC_ADSENSE_PUB_ID = "1234567890123456";
-    // tbc-audit-end's unit stays UNCONFIGURED_UNIT until 04-05 wires a real id.
-    expect(AD_SLOTS["tbc-audit-end"].unit).toBe(UNCONFIGURED_UNIT);
-    expect(adsConfigured("tbc-audit-end")).toBe(false);
+    // All four AD_SLOTS entries carry a real unit id as of 04-05 (Task 3).
+    // Simulate the pre-04-05 "placeholder still wired" state directly on the
+    // live record, restoring it after the assertion, so this test keeps
+    // covering the `unit === UNCONFIGURED_UNIT` branch of `adsConfigured`
+    // without asserting a real slot is unconfigured (it no longer is).
+    const original = AD_SLOTS["tbc-audit-end"].unit;
+    AD_SLOTS["tbc-audit-end"].unit = UNCONFIGURED_UNIT;
+    try {
+      expect(adsConfigured("tbc-audit-end")).toBe(false);
+    } finally {
+      AD_SLOTS["tbc-audit-end"].unit = original;
+    }
   });
 });
