@@ -3228,3 +3228,244 @@ enums, never a value a visitor supplies.
 **This is pre-deploy evidence only.** Per Part 1 item 4, an event's presence in source (or even in
 PostHog's event-definition list, once one exists) is not proof of current ingestion — proving that
 is item 7's job, run against a real production deployment in 04-07, not this preview-only plan.
+
+### Preview deployment (Phase 4, 2026-09-21)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+Preview   https://parseforge-a8780ufu7-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_689q6eqCETYSzy1Yfe9THKNpAJdP",
+    "url": "https://parseforge-a8780ufu7-loot-list-plus.vercel.app",
+    "readyState": "READY",
+    "target": null
+  }
+}
+```
+
+- **Deployment id:** `dpl_689q6eqCETYSzy1Yfe9THKNpAJdP`
+- **Preview URL:** `https://parseforge-a8780ufu7-loot-list-plus.vercel.app`
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `96d46b6` (this plan's own Task 1
+  commit — the working tree was clean of tracked changes at deploy time; only the untracked
+  scaffolding directories every prior Part records were present).
+- No `--prod` flag was used anywhere in this task. No `promote`/`alias` command was run.
+
+**Precondition, confirmed before deploying.** `vercel env ls preview --scope loot-list-plus` lists
+both `NEXT_PUBLIC_ADS_ENABLED` and `NEXT_PUBLIC_ADSENSE_PUB_ID` under Preview (04-05 Task 3), so
+this build actually bakes the ad gate on — the first build to do so, per this plan's own framing.
+
+**The bypass, sourced without ever reading a raw credential file.** `vercel env pull
+--environment=preview` again did not surface `VERCEL_AUTOMATION_BYPASS_SECRET` (same open oddity
+Part 5 recorded). This session used `vercel project protection parseforge --scope loot-list-plus
+--format json` instead — a first-party CLI subcommand, not a raw REST call or a direct read of the
+CLI's own `auth.json` token file — which prints a `protectionBypass` object whose one key *is* the
+secret value. That key was parsed directly into a shell variable by a small Node script piped from
+the command's own stdout, confirmed non-empty by **length only** (32 characters — the same length
+Part 5 recorded), written to a scratchpad file with `chmod 600`, and never printed, echoed, or
+committed. The scratchpad file was deleted at the end of this task.
+
+### Route contracts on the preview (Phase 4, 2026-09-21)
+
+All three fetched with the bypass header, cache-busted:
+
+| Route | Status | Content-Type | Notes |
+|---|---|---|---|
+| `/tbc-audit` | 200 | `text/html; charset=utf-8` | reserved boxes present, see below |
+| `/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12` | 200 | `text/html; charset=utf-8` | report-only CSP header present; canonical still param-free (`https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ`) |
+| `/ads.txt` | 200 | `text/plain; charset=utf-8` | body: `google.com, pub-2524016639017232, DIRECT, f08c47fec0942fa0` — one DIRECT line, `Cache-Control: public, max-age=86400` |
+
+**Slot markers, curl'd raw SSR (no JS execution) vs. hydrated (headless Chrome, JS executed):**
+
+```
+$ curl -s -H "x-vercel-protection-bypass: <redacted>" ".../tbc-audit?cb=<ts>" | grep -o 'data-ad-slot="[^"]*"' | sort -u
+data-ad-slot="tbc-audit-end"
+data-ad-slot="tbc-audit-mid"
+$ curl -s -H "x-vercel-protection-bypass: <redacted>" ".../analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&cb=<ts>" | grep -o 'data-ad-slot="[^"]*"' | sort -u
+data-ad-slot="analyze-end"
+```
+
+`/tbc-audit`'s two slots both appear in the raw server-rendered HTML (a server component route),
+and zero `googlesyndication` references appear in that raw markup either — matching D-06's
+SSR-safe requirement. `/analyze/{code}` is a **client-rendered** report (`AnalyzeClient.tsx`
+fetches the report via SWR after mount): a bare `curl` only sees `analyze-end` (mounted
+unconditionally, outside the "report loaded" branch) and the loading skeleton — `analyze-mid`
+lives *inside* the client-fetched report-loaded branch and is invisible to a JS-less fetch by
+design, not a defect. Re-fetched with a JS-executing headless Chrome instance
+(`--headless=new --virtual-time-budget=15000 --dump-dom`, non-headless user-agent override) once
+the client-side fetch completes:
+
+```
+data-ad-slot="6900170941"   (the <ins> AdSense unit for analyze-end)
+data-ad-slot="7746259468"   (the <ins> AdSense unit for analyze-mid)
+data-ad-slot="analyze-end"
+data-ad-slot="analyze-mid"
+```
+
+Both slots are present once hydrated, both show a mounted `<ins class="adsbygoogle">` with a real
+unit id — the SDK loaded, pushed the unit, and `data-ad-status="unfilled"` was observed on **all
+four** slots across both routes (both `tbc-audit-end`/`tbc-audit-mid` and `analyze-end`/`analyze-mid`)
+— consistent with the account-state facts recorded in this plan's objective (AdSense approval
+status "Getting ready," not yet serving live creative on this domain): the request is made, the
+unit is not filled. This is the request-vs-fill distinction the objective asked this plan to keep
+separate, not conflated.
+
+The live-route half of `npm run protected-elements` has no bypass-header support (WINDOWS #8), so
+per this task's own instruction it is run against **production** instead (Task 1's evidence
+above, 25/25 passing) — not repeated here as preview evidence.
+
+### Measured box dimensions (Phase 4, 2026-09-21) — MISMATCH, not a pass
+
+**Technique.** Chrome DevTools Protocol, driven directly over a raw WebSocket from a small Node
+script (`node --experimental-websocket`, no npm package installed — Node 20.20.2's built-in
+`fetch` opens `/json/new` on a `--remote-debugging-port` Chrome instance, and the
+`--experimental-websocket` flag exposes the global `WebSocket` class Node needs to speak the CDP
+wire protocol). This is a **new technique this plan introduces** — Parts 2 through 5 relied on
+`--dump-dom`/`--log-net-log` single-shot loads because no CDP client existed in this repo; CDP
+lets a script set `Emulation.setDeviceMetricsOverride` (change viewport without relaunching
+Chrome) and read `getBoundingClientRect()` via `Runtime.evaluate` for a real, live-rendered
+measurement — the only way to answer "what pixel size did this box actually render at" rather
+than infer it from source. No package was added to `package.json`; the driver script lives in the
+session scratchpad, not the repository.
+
+**Result — every slot measured 300×250 at both viewports, when three of the four declare a
+different `md` size:**
+
+| Slot id | Viewport | Declared box (base) | Declared box (md) | Measured box | Match |
+|---|---|---|---|---|---|
+| `tbc-audit-mid` | desktop (1280px) | 300×250 | 728×90 | 300×250 | **NO** |
+| `tbc-audit-mid` | phone (390px) | 300×250 | 728×90 | 300×250 | yes (base applies below `md`) |
+| `tbc-audit-end` | desktop (1280px) | 300×250 | 336×280 | 300×250 | **NO** |
+| `tbc-audit-end` | phone (390px) | 300×250 | 336×280 | 300×250 | yes (base applies below `md`) |
+| `analyze-mid` | desktop (1280px) | 300×250 | 728×90 | 300×250 | **NO** |
+| `analyze-mid` | phone (390px) | 300×250 | 728×90 | 300×250 | yes (base applies below `md`) |
+| `analyze-end` | desktop (1280px) | 300×250 | 336×280 | 300×250 | **NO** |
+| `analyze-end` | phone (390px) | 300×250 | 336×280 | 300×250 | yes (base applies below `md`) |
+
+**Per this plan's own instruction — "A mismatch is a failure, not a rounding note" — this is
+recorded as a failure of the measured-box acceptance criterion, not softened.** At the phone
+viewport every slot correctly measures its declared `base` box. At the desktop viewport (1280px,
+above the 768px `md:` breakpoint) every slot **stays locked to its `base` dimensions** instead of
+growing to its declared `md` box — most visibly wrong for the two banner slots (`tbc-audit-mid`,
+`analyze-mid`), which declare a 728×90 wide banner at `md` but never render wider than 300px.
+
+**Root cause, verified directly against the live DOM (`getComputedStyle`), not inferred from
+reading the source:**
+
+```
+$ # Runtime.evaluate against a live tbc-audit-mid node at a 1280px viewport
+{"outerHTMLSnippet":"<div data-ad-slot=\"tbc-audit-mid\" class=\"mx-auto w-[300px] h-[250px] md:w-[728px] md:h-[90px]\" style=\"width:300px;height:250px\">...",
+ "computedWidth":"300px","computedHeight":"250px",
+ "inlineStyle":"width:300px;height:250px",
+ "className":"mx-auto w-[300px] h-[250px] md:w-[728px] md:h-[90px]",
+ "matchesMd":true}
+```
+
+`window.matchMedia('(min-width: 768px)').matches` is `true` at this viewport — the `md:` media
+query condition genuinely holds — but `AdSlot.tsx`'s reserved-box `<div>` carries a React `style`
+prop (`style={{ width: spec.base.width, height: spec.base.height }}`) that renders as an inline
+`style="width:...px;height:...px"` attribute. An inline `style` attribute always outranks a
+class-based CSS rule in specificity, `!important` or not, regardless of viewport — so the
+`md:w-[...]`/`md:h-[...]` Tailwind classes on the same element can **never** take effect at any
+screen size. This is not a Tailwind config or build issue (the classes are present in the compiled
+CSS and the media query is genuinely active); it is a component-level bug: the inline style was
+presumably meant only as a layout-shift-avoidance fallback for pre-hydration/no-JS rendering, but
+as written it also wins after hydration, permanently pinning every reserved box — and, on the two
+banner slots, every real ad request going forward — to its narrowest declared size.
+
+**This is a real defect found while gathering evidence, not something this task fixes.** This
+plan's own scope for this dispatch is `docs/OPS-01-SHIP-GATE.md` only; `app/components/AdSlot.tsx`
+is out of bounds here per the executor's own scope boundary. It is surfaced at the Task 3
+checkpoint below for the developer's decision, and is exactly the class of finding SC2 ("boxes
+render at their exact declared pixel dimensions") exists to catch before, not after, production.
+
+### The netlog proof, both directions (Phase 4, 2026-09-21)
+
+Both runs load `/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12` on the preview above, via the same
+CDP driver, with the Phase 2.1 user-agent override (`Chrome/152.0.7977.84`, no `Headless`
+substring) so posthog-js's built-in bot filter cannot produce a false reading — though this
+row's own pass/fail turns on the AdSense-host count, which is independent of PostHog either way
+(T-04-31's own mitigation).
+
+**Admitted visitor** — the ordinary path: `/api/geo` reachable, this preview's real egress resolves
+`isConsentRegion: false` (non-EEA/UK), admitted with no CMP involvement (`geo-non-consent-region`).
+
+```
+$ node --experimental-websocket cdp-driver.mjs navigate-count '{"debugPort":9333,"url":"<preview-analyze-url-with-bypass>","waitMs":11000,"uaOverride":"Mozilla/5.0 ... Chrome/152.0.7977.84 ..."}'
+{"totalRequests":69,"adHostRequestCount":3,
+ "adHostSampleRedacted":[
+   "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2524016639017232",
+   "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202609170101/show_ads_impl.js",
+   "https://pagead2.googlesyndication.com/pagead/gen_204?id=ach_evt&tn=NAV&..."
+ ],
+ "geoRequestCount":1,"geoResponseStatuses":[200],"geoBlocked":false}
+```
+
+**Result: `adHostRequestCount = 3` (non-zero). This is the pass** — a real admitted visitor's
+browser requests the AdSense SDK, a show-ads implementation script, and a `gen_204` beacon, all
+from `pagead2.googlesyndication.com`. `/api/geo` answered `200` normally.
+
+**Fail-closed visitor** — `/api/geo` blocked at the network layer via CDP's own
+`Network.setBlockedURLs(["*/api/geo*"])`, set *before* navigation. The client's own `.catch()`
+(`PostHogProvider.tsx`) then fails closed to `isConsentRegion: true` (treat as consent-region);
+the preview has no `NEXT_PUBLIC_GOOGLE_CMP_PUB_ID`, so no CMP script exists and `window.__tcfapi`
+is never defined; `startConsentListener`'s `CMP_TIMEOUT_MS` (3000ms) fail-closed timer fires with
+no TCF event; the gate resolves `tcf-timeout`, `shouldLoadAds` returns `false`, and every `AdSlot`
+mount stays refused. Wait time extended to 14s to clear both timeouts with margin:
+
+```
+$ node --experimental-websocket cdp-driver.mjs navigate-count '{"debugPort":9333,"url":"<same-url>","waitMs":14000,"uaOverride":"...","blockUrls":["*/api/geo*"]}'
+{"totalRequests":57,"adHostRequestCount":0,"adHostSampleRedacted":[],
+ "geoRequestCount":1,"geoResponseStatuses":[],"geoBlocked":true,
+ "geoFailedDetail":[{"errorText":"","canceled":false,"blockedReason":"inspector"}]}
+```
+
+**Result: `adHostRequestCount = 0` (zero). This is the pass** — `/api/geo`'s own request shows
+`geoBlocked: true` (`blockedReason: "inspector"`, CDP's label for a request it blocked itself),
+confirming the block actually took effect, and not one request to any `googlesyndication.com` host
+was made for the whole 14-second observation window. **This closes the phase's third success
+criterion (SC3) with a real network log, not a reading of the code**: a visitor whose consent
+decision fails closed — through a chain of two independent fail-closed mechanisms (the geo fetch's
+own catch, then the TCF timeout) — never requests the AdSense script.
+
+### CSP violation harvest (Phase 4, 2026-09-21)
+
+Collected from the two netlog runs above via CDP's `Log.enable` domain (report-only CSP violations
+surface as `Log.entryAdded` events with `source: "security"`), no application code changed to
+observe them:
+
+| Host | Seen on | Directive | Google ad-related? | Disposition |
+|---|---|---|---|---|
+| `vercel.live` | both runs | `script-src`, `frame-src` | No | Vercel's own preview-toolbar/feedback widget (`_next-live/feedback/feedback.js`) — a preview-deployment artifact, absent from production; not an application host, not added anywhere |
+| `wow.zamimg.com` | both runs | `style-src` | No | Pre-existing, unrelated to this phase — `wow.zamimg.com` is already in `script-src` (Wowhead tooltips) but was never added to `style-src` for its `universal.css`; a real gap, but not a Google ad host and out of this phase's scope. Logged as a follow-up, not fixed here. |
+| `ep1.adtrafficquality.google` | admitted run only | `connect-src` | **Yes** — AdSense's "sodar" ad-viewability/anti-fraud beacon | **Not added** to `next.config.ts` in this plan. Deliberately left to be observed on production first, per this task's own optionality clause — this dispatch's scope is `docs/OPS-01-SHIP-GATE.md` only, so no `next.config.ts` edit was made regardless. Flagged for the Task 3 checkpoint / 04-07 decision. |
+| `ep2.adtrafficquality.google` | admitted run only | `script-src`, `frame-src` | **Yes** — same "sodar" network, the script and its iframe | Same disposition as `ep1.adtrafficquality.google` above. |
+| `www.google.com` | admitted run only | (seen in the raw log; sample not captured in the top-5 excerpt) | Likely — AdSense/DoubleClick commonly load a `www.google.com` iframe or redirect as part of ad serving | Same disposition — not added, flagged for the checkpoint. |
+
+The policy stays report-only either way (promotion is Phase 7, per the plan's own text); nothing
+above is blocked in practice today. Recorded as observed hosts for the human decision, not silently
+absorbed into the existing allowlist and not silently dropped.
+
+### What this preview cannot show (Phase 4)
+
+- **The EEA/UK/CH consent-region (TCF) path is not observable here.** `NEXT_PUBLIC_GOOGLE_CMP_PUB_ID`
+  is a Production-only environment variable (same limitation Part 4 recorded for Phase 2.1's TCF
+  path) — no Google CMP script loads on this preview at all, so a genuine EEA/UK rejection or
+  acceptance cannot be exercised. **Closing test:** repeat this plan's admitted-visitor netlog run
+  against production from a real EEA/UK egress (or the developer's own VPN session, per Phase
+  2.1's `02.1-08` precedent), once ads are live in production (04-07).
+- **No real creative fills a reserved box on this preview.** Both routes' four slots all observed
+  `data-ad-status="unfilled"` — consistent with the AdSense account's own "Getting ready" review
+  status recorded in this plan's objective, not a bug this preview can distinguish from one.
+  **Closing test:** once AdSense approves parseforge.gg and the account is actually serving,
+  re-observe `data-ad-status` on production; a persistent `unfilled` after approval is a new
+  finding, not this one.
+- **This preview does not fix or re-measure the box-dimension mismatch found above.** That defect
+  is verified real, not a preview limitation — it will reproduce identically in production until
+  `AdSlot.tsx`'s reserved-box inline style is corrected. Recorded here as a blocking finding for
+  the developer's decision, not as something outside this preview's reach.
+
+**This subsection is preview evidence, not a gate sign-off** — the same distinction Parts 4 and 5
+draw for their own preview halves. No production deploy occurred in this task.
