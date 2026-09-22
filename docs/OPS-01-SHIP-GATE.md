@@ -3947,3 +3947,199 @@ $ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
   bypass-secret gap #14 records is unresolved this session too. The developer checkpoint below is
   this round's verification path instead: a first-hand look at the actual preview, which needs no
   bypass secret for a human using a normal browser.
+
+### Round-4 diagnosis and fix — the cover's missing grain texture (Phase 4, 2026-09-21, round 4)
+
+**The developer looked at the third preview again.** The white block was gone (round 3 confirmed
+fixed), but a *different*, subtler box remained in the same spot (`analyze-mid`, dark theme, analyze
+page raid tab, between the Fight/Refresh row and the "Hydross the Unstable" heading): a flat rectangle
+reading as a slightly different shade than the surrounding page, not white.
+
+**This round achieved a real production build locally, unlike round 3.** `NEXT_PUBLIC_ADS_ENABLED=1
+NEXT_PUBLIC_ADSENSE_PUB_ID=2524016639017232 npx next build` succeeded outright (`/tbc-audit` renders
+as fully static, so it needs no WCL/Redis credentials at build time) and `npx next start` served it
+locally end to end. `/analyze/[reportCode]` still could not be exercised locally — it is
+server-rendered per-request and needs live WCL credentials this environment does not have (no `.env`
+beyond `.env.example`, same gap round 3 recorded) — so this round's local reproduction used
+`/tbc-audit`'s `tbc-audit-mid` slot instead, the same substitution round 3 made for the same reason.
+`AdSlot` is the identical component on every route, parameterized only by the `id` prop; the fix
+below is inside `AdSlot.tsx` itself and inherits the page-level `.bg-noise` treatment from
+`app/layout.tsx`'s `<body>` on every route identically, so the substitution carries no route-specific
+risk — but it is still a substitution, not the literal `analyze-mid` box the developer saw, and is
+recorded as such rather than rounded up to "the exact box verified."
+
+**Orchestrator's own hypothesis, going in:** `app/layout.tsx`'s `<body>` carries `bg-noise`, and
+`app/globals.css`'s `.bg-noise::before` paints a `position: fixed`, `opacity: 0.03` SVG-turbulence
+grain texture behind the page's real content (`.bg-noise > *` lifts direct children to `z-index: 1`
+so normal content paints above it; transparent gaps in that content reveal the grain beneath). Round
+3's occluding cover is a flat `bg-background` div with no grain — once it renders over the noise
+layer, it paints a textureless patch where the rest of the page has (barely visible, but real) grain.
+This was a hypothesis to confirm or refute empirically, not to accept on inspection alone.
+
+**Technique.** The existing no-new-dependency CDP driver recipe (Node's built-in `fetch` +
+`--experimental-websocket`'s global `WebSocket`, talking to `Google Chrome --headless=new
+--remote-debugging-port`), extended with a dependency-free PNG decoder (`node:zlib`'s
+`inflateSync` only, unfiltering standard PNG scanline filters 0–4) that reduces a screenshot clip to
+numbers — per-channel mean, per-channel stddev, max per-pixel delta between two regions — and prints
+only those numbers. No image byte, base64 string, or data URI was ever printed to this session's own
+context at any point; the decoder and its numeric summaries are the only things read back.
+
+**Two CDP/headless-Chrome quirks found and worked around this session, both empirically, before the
+real measurement could be trusted:**
+
+1. **`Page.captureScreenshot`'s `clip` parameter silently fails to see the fixed noise layer.**
+   Sampling the exact same pixel region two ways — a `clip`-scoped capture vs. cropping the same
+   region out of a full, unclipped viewport capture, decoded identically — produced *different*
+   results: the clipped capture read the flat background color with 0 stddev everywhere, including
+   in a control region with `opacity: 1` forced on the noise pseudo-element (which should have been
+   unmistakably grainy); the unclipped capture, cropped after decode, correctly showed the grain. This
+   was confirmed with a from-scratch reproduction (an isolated single-element data URI page, no site
+   code involved) that DID show grain via a clipped capture at position (0,0) — ruling out a decoder
+   bug — and by forcing `body > *` to `display:none` (isolating the pseudo alone) on the real page,
+   which also showed grain via a clipped capture. The failure is specific to a `position: fixed`
+   layer, a non-trivial (long, scrolled) document, and a `clip` param together, under this headless
+   Chrome + `--disable-gpu` (software rendering) setup — root cause not pinned down further, but the
+   workaround (always capture the full, unclipped viewport and crop numerically after decode) is
+   unconditionally reliable in every configuration tested and is what every number in this section
+   uses.
+2. **`Emulation.setDeviceMetricsOverride` desynced from the requested viewport at 390px width.**
+   `{width:390, height:800, deviceScaleFactor:1, mobile:true}` produced `window.innerWidth` readings
+   of 498–500, not 390 — silently rendering the "phone" pass at a materially different width. Isolated
+   by printing `window.innerWidth`/`devicePixelRatio` directly: `{deviceScaleFactor:0, mobile:false}`
+   (`0` is CDP's "don't override" sentinel) resolved to the exact requested `390`/`800` at
+   `devicePixelRatio:1`. Every phone-viewport number below uses the corrected override.
+
+**Hypothesis test — BEFORE the fix, production build, `tbc-audit-mid`, `x-vercel-ip-country: US`
+admitted (non-EEA), account still in AdSense review so the cover is permanently present (never
+reaches a confirmed-filled iframe):**
+
+| Theme | Viewport | Cover mean (RGB) | Cover stddev | Control mean (RGB) | Control stddev | Max Δ (RGB) | Mean Δ (RGB) |
+|---|---|---|---|---|---|---|---|
+| dark | 1280×900 | `(5, 7, 13)` | `(0, 0, 0)` | `(7.81, 9.8, 15.79)` | `(0.825, 0.806, 0.779)` | 6 | `(2.81, 2.80, 2.79)` |
+| light | 1280×900 | `(247, 248, 253)` | `(0, 0, 0)` | `(245.98, 246.97, 251.96)` | `(0.539, 0.561, 0.58)` | 3 | `(1.02, 1.03, 1.04)` |
+| dark | 390×800 | `(5, 7, 13)` | `(0, 0, 0)` | `(7.8, 9.79, 15.79)` | `(0.829, 0.81, 0.796)` | 6 | `(2.80, 2.79, 2.79)` |
+| light | 390×800 | `(247, 248, 253)` | `(0, 0, 0)` | `(245.98, 246.97, 251.97)` | `(0.549, 0.581, 0.581)` | 4 | `(1.02, 1.03, 1.03)` |
+
+**Hypothesis confirmed, cleanly, in all four configurations**: the cover reads back as *exactly* the
+flat `--background` token with zero measured variance (the literal proof of "no grain"); the control
+region — a same-width strip in the page's own `space-y-14` gap immediately above the slot, confirmed
+via `elementFromPoint` + ancestor-chain inspection to be genuinely transparent background, not a card
+— reads a small but real, consistently nonzero stddev (~0.5–0.83) and a mean 1–2.8 RGB levels warmer
+per channel than the flat cover. This is small in absolute magnitude but *systematic and repeatable*
+across both themes and both viewports, and it is exactly the shape of defect (`the flat cover is a
+measurably different, textureless patch against a faintly grainy page`) the developer's screenshot
+described. The mean-color match (dark: cover `(5,7,13)` vs control `≈(7.8,9.8,15.8)`) is close enough
+to read as "the same color" by eye, which is consistent with a developer describing it as "a slightly
+different shade" rather than an obviously wrong color — a subtle defect, not a re-run of Defect B.
+
+**Root cause, mechanically:** `app/layout.tsx`'s `<body>` carries `bg-noise` (confirmed via live
+`getComputedStyle(document.body, '::before')`: `position: fixed; inset: 0px; z-index: 0; opacity:
+0.03`; the same SVG turbulence `background-image` as `app/globals.css`). `.bg-noise > *` lifts
+`<body>`'s direct DOM children (the page's real content wrapper) to `position: relative; z-index: 1`,
+so normal content paints above the pseudo-element, and any *transparent* region within that content
+(confirmed live: the gap above `tbc-audit-mid` resolves through `<main>` — `background-color: rgba(0,
+0, 0, 0)`, no `background-image` — all the way to `<body>`'s own opaque background, itself painted
+*beneath* the pseudo) reveals the grain beneath it by ordinary alpha compositing. Round 3's occluding
+cover (`absolute inset-0 z-10 bg-background`) is opaque and sits *inside* that same content wrapper's
+stacking context, in front of the `<ins>` — so wherever it renders, it necessarily paints over (and
+therefore hides) whatever grain would otherwise have shown through that same rectangle, replacing it
+with a flat fill.
+
+**The fix.** `app/globals.css` gains `.ad-cover-noise::before` — the same SVG turbulence tile, the
+same `0.03` opacity, the same `256px 256px` tile size as `.bg-noise::before`, but `position: absolute`
+(not `fixed`) so it is scoped to its own nearest positioned ancestor (the cover `<div>` itself, which
+already carries `absolute inset-0`) rather than the viewport. `position: fixed` was deliberately
+avoided here per this round's own instruction: a `fixed` descendant nested this deep in the tree can
+escape an ancestor's `overflow: hidden` clip in some browsers — plain `overflow: hidden` does not by
+itself establish a containing block for `fixed` descendants — which would flood a full-viewport noise
+layer through the reserved ad box, a strictly worse regression than the one being fixed.
+`app/components/AdSlot.tsx`'s cover `<div>` now carries `ad-cover-noise` alongside its existing
+`bg-background`. `background-attachment` is left at its default (`scroll` — ties the tile's own
+origin to the cover element's box, not the viewport), which the plan's own instruction anticipated
+could leave up to a 1px tile-phase misalignment against the page's viewport-anchored grain; this is
+now a measured, not assumed, non-issue (see the AFTER table below).
+
+**Numeric re-verification — AFTER the fix, same production build rebuilt with the fix, same
+procedure, all four configurations:**
+
+| Theme | Viewport | Cover mean (RGB) | Cover stddev | Control mean (RGB) | Control stddev | Max Δ (RGB) | Mean Δ (RGB) |
+|---|---|---|---|---|---|---|---|
+| dark | 1280×900 | `(7.73, 9.69, 15.6)` | `(0.811, 0.792, 0.753)` | `(7.81, 9.8, 15.79)` | `(0.825, 0.806, 0.779)` | 4 | `(0.08, 0.11, 0.19)` |
+| light | 1280×900 | `(246.05, 247.04, 251.97)` | `(0.415, 0.445, 0.469)` | `(245.98, 246.97, 251.96)` | `(0.539, 0.561, 0.58)` | 3 | `(0.07, 0.07, 0.01)` |
+| dark | 390×800 | `(7.73, 9.7, 15.6)` | `(0.812, 0.799, 0.757)` | `(7.8, 9.79, 15.79)` | `(0.829, 0.81, 0.796)` | 4 | `(0.07, 0.09, 0.19)` |
+| light | 390×800 | `(246.06, 247.04, 251.97)` | `(0.435, 0.446, 0.466)` | `(245.98, 246.97, 251.97)` | `(0.549, 0.581, 0.581)` | 3 | `(0.08, 0.07, 0.00)` |
+
+The cover now matches its surrounding control region's mean within 0.0–0.19 RGB levels per channel
+(down from 1.02–2.81) and carries a near-identical stddev (down from a flat 0 to within ~0.01–0.17 of
+the control's own texture level) in every theme/viewport combination — a one-tile-phase misalignment,
+if present at all, is not measurable at this opacity against this pseudo-random pattern. Max
+per-pixel delta (3–4, down from 3–6) is now in the same range as the residual max delta *between two
+adjacent patches of the page's own grain* (compare the BEFORE table's control-vs-cover deltas, which
+were measuring the same defect) rather than a step change.
+
+**Gates re-run clean on the round-4 build**, captured verbatim:
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+$ npm run lint
+✖ 1 problem (0 errors, 1 warning)   # app/components/CastTimeline.tsx:42 — pre-existing, unchanged
+$ npm test
+Test Files  21 passed (21)
+     Tests  285 passed (285)
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+$ npm run token-audit
+Total findings: 64 / Allowlisted: 64 / Non-allowlisted (gate-relevant): 0
+$ npm run protected-elements   # against production, per this plan's own WINDOWS #8 note
+25 passed, 0 failed
+```
+
+No `ad_slot_*` capture call site was touched this round (styling-only change, same as round 3); the
+grep-counted evidence from Task 1 stands unchanged.
+
+**What this round's local reproduction still cannot show** (same discipline as every other "cannot
+show" subsection in this Part):
+- **The actual SSO-gated preview's netlog/measured-box/CSP procedure.** The bypass secret remained
+  unavailable this session, for the same reason #14 records — this dispatch's own instructions
+  additionally prohibited retrying the denied method or touching project-protection settings, so no
+  attempt was made. #14 stays open below, unresolved by this round.
+- **The literal `analyze-mid` box the developer's screenshot showed.** This round's local
+  reproduction used `tbc-audit-mid` instead (identical component, no WCL credentials available
+  locally for the analyze route) — the same substitution, and the same reason, round 3 recorded.
+- **A genuinely filled creative.** The account is still in AdSense review. **Closing test for all
+  three:** the developer's checkpoint review of the fourth preview below, plus 04-07's live-traffic
+  production check once the account leaves review.
+
+### Fourth preview deployment (Phase 4, 2026-09-21, round-4 fix)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+...
+  Preview         https://parseforge-7uvuqya8b-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_9hkgsvPz57brpYzdHdFf3x7GM56Z",
+    "url": "https://parseforge-7uvuqya8b-loot-list-plus.vercel.app",
+    "readyState": "READY",
+    "target": null
+  }
+}
+```
+
+- **Deployment id:** `dpl_9hkgsvPz57brpYzdHdFf3x7GM56Z`
+- **Preview URL:** `https://parseforge-7uvuqya8b-loot-list-plus.vercel.app`
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `cd623c6` (this round's grain-match
+  fix, on top of the third preview's `cfb6d05`/`2900e05`).
+- `"target": null` confirms this is a preview, not a production deployment. No `--prod` flag was
+  used anywhere in this task. No `promote`/`alias` command was run. No project-protection setting
+  was changed. No bypass secret was read, generated, rotated, or printed.
+- Confirmed still SSO-gated without a bypass: `curl -s -o /dev/null -w '%{http_code}'
+  .../tbc-audit` → `302`, the same redirect behavior every prior preview in this document shows.
+- **This preview has not been re-verified with the netlog/measured-box/CSP procedure** — the same
+  bypass-secret gap #14 records is unresolved this session too, and this round's own instructions
+  prohibited retrying it. The developer's first-hand look at this preview is this round's
+  verification path instead, exactly as round 3 recorded.

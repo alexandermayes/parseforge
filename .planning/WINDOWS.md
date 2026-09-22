@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 12
+open_count: 13
 waived_count: 0
 fixed_count: 3
-total_count: 15
-last_updated: 2026-09-22T05:01:37.732Z
+total_count: 16
+last_updated: 2026-09-22T05:35:19.731Z
 ---
 
 # Broken Windows Ledger
@@ -30,6 +30,7 @@ last_updated: 2026-09-22T05:01:37.732Z
 | 13 | 04 | deviation | app/components/ReportUrlForm.tsx | 95 | Pre-existing, non-ad-related: the example-URL <code> string has no wrap class, forcing the layout viewport wider than 384px on / and /tbc-audit (not /guides, not /analyze) at phone width; found while measuring ad-box adjacency in 04-06 Task 3. Out of Phase 4 scope to fix. | open |  | 2026-09-21T20:15:47.035Z |  |
 | 14 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-06 Task 2 preview netlog/measured-box/CSP-harvest procedure could not be re-run against the second preview (dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV) after the box-size/dark-mode fixes: the one working method to source the Vercel SSO bypass secret was denied by the session's own Bash-permission auto-classifier (Credential Materialization). Closing test: re-run 04-06 Task 2's procedure against this preview once the bypass secret can be sourced in a session with permission. | open |  | 2026-09-21T22:32:39.303Z |  |
 | 15 | 04 | deviation | app/components/AdSlot.tsx | 190 | Round-2's visibility:hidden fix for the white unfilled-frame defect (WINDOWS #12's sibling Defect B) did not hold on the second preview: adsbygoogle.js injects a child div (#aswift_N_host) inside the <ins> with its own explicit visibility:visible, which CSS lets override an ancestor's visibility:hidden regardless of tree depth. Round 3 replaced it with a wrapper-level occluding cover (a later sibling of the <ins>, absolute/inset-0/z-10/bg-background) verified via pixel-sampled local screenshots in both themes, both viewports (0% white-pixel deviation, exact page-background color match). Preview-level (SSO-gated) re-verification is still blocked by the same bypass-secret gap #14 records; closing test is the developer's first-hand review of the third preview (dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1). | open |  | 2026-09-22T05:01:37.732Z |  |
+| 16 | 04 | deviation | app/components/AdSlot.tsx | 228 | Round-3's flat bg-background occluding cover painted a textureless patch against the page's grainy .bg-noise background (developer caught it on the third preview as a subtle different-shade box). Confirmed numerically via pixel-sampled CDP screenshots on a production build (cover stddev 0 vs control ~0.5-0.8, mean ~1-2.8 RGB levels warmer, both themes/viewports); fixed with a local (position:absolute) grain-texture pseudo-element scoped to the cover, matching within ~0.1-0.2 RGB levels post-fix. Closing test: developer's first-hand review of the fourth preview (dpl_9hkgsvPz57brpYzdHdFf3x7GM56Z). | open |  | 2026-09-22T05:35:19.731Z |  |
 
 ````json
 [
@@ -211,6 +212,18 @@ last_updated: 2026-09-22T05:01:37.732Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-22T05:01:37.732Z",
+    "resolved_at": null
+  },
+  {
+    "id": 16,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "app/components/AdSlot.tsx",
+    "line": 228,
+    "description": "Round-3's flat bg-background occluding cover painted a textureless patch against the page's grainy .bg-noise background (developer caught it on the third preview as a subtle different-shade box). Confirmed numerically via pixel-sampled CDP screenshots on a production build (cover stddev 0 vs control ~0.5-0.8, mean ~1-2.8 RGB levels warmer, both themes/viewports); fixed with a local (position:absolute) grain-texture pseudo-element scoped to the cover, matching within ~0.1-0.2 RGB levels post-fix. Closing test: developer's first-hand review of the fourth preview (dpl_9hkgsvPz57brpYzdHdFf3x7GM56Z).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T05:35:19.731Z",
     "resolved_at": null
   }
 ]
