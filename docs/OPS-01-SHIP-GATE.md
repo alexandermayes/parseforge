@@ -4668,3 +4668,92 @@ test named above — no threshold was lowered, no figure was fabricated, and no 
 omitted to reach a signature. This matches the honest-interpretation expectation set for this
 dispatch: the ad-serving mechanism is proven live and correctly gated in production; the revenue and
 monitoring backstops are not yet due or not yet accessible, and are recorded as such.
+
+---
+
+### Post-launch hotfix (Phase 4, 2026-09-22): AdSlot duplicate-push on client-side navigation
+
+**Found by post-phase code review, independently re-verified before dispatch.** Not one of Phase
+4's planned tasks — a defect in code Phase 4 already shipped and deployed to production
+(`### Production deploy (Phase 4, 2026-09-22)` above).
+
+**The bug.** `app/components/AdSlot.tsx`'s second effect (SDK loaded → push the AdSense unit →
+observe fill status) guarded itself with `if (status !== "loaded") return;`, but listed `pathname`
+and `spec.route` in its dependency array. `app/analyze/[reportCode]/page.tsx` rendered
+`<AnalyzeClient reportCode={reportCode} />` with no `key` prop, and `app/components/ReportUrlForm.tsx`
+navigates report-to-report via `router.push()` — client-side, no remount. So when a visitor viewing
+one report (with an ad slot already `"loaded"`, pushed, and possibly filled) navigated to a
+*different* report code, `AnalyzeClient` and its `AdSlot` instances (`analyze-mid`, `analyze-end`)
+stayed mounted; `status` stayed `"loaded"` from the previous report; `pathname` changed with the new
+URL, re-running the effect despite the guard (the guard checks `status`, not `pathname`, and `status`
+genuinely was still `"loaded"`); the effect body then called `window.adsbygoogle.push({})` a second
+time against the same `<ins>` DOM node. This is Google AdSense's documented "already have ads in
+them" duplicate-request failure mode — a policy-risk duplicate ad request logged under the new
+report's route, against an account still in initial AdSense review (`ads.txt` status "Not found" as
+of the Part 6 sign-off row above). `tbc-audit-mid`/`tbc-audit-end` were not affected by this specific
+path (that page has no report-to-report client navigation), but the fix targets the shared
+`AdSlot.tsx` component, not a per-route patch.
+
+**Second, related bug found while investigating (same root cause: no remount on report change).**
+`AnalyzeClient`'s `selectedFight`/`selectedSource` state is a `useState(() => ...)` lazy initializer
+that reads the URL only once, at first mount — it does not re-derive from `searchParams` on a later
+prop change. `usePlayerAnalysis`/`useRaidOverview`/`useCLA` each clear their `result` only in a
+`useEffect` keyed on `selectedFight` changing *value* — not on `reportCode` changing. Concretely:
+pasting a bare WCL URL with no `fight`/`source` segment (the common case) produces a
+`router.push("/analyze/{newCode}")` with no `fight`/`source` params; `selectedFight`/`selectedSource`
+then keep the *previous* report's numeric IDs; `useReportMeta`'s auto-select-first-fight effect
+no-ops because `selectedFight` is already truthy; and `raid.result`/`player.result`/`cla.result`
+— computed for the *old* report — are not cleared, so `shouldAutoRun` stays `false` and the stale
+analysis is what the visitor sees under the new report's heading. Even the demo-report link
+(`demoReportPath()`, which *does* set `fight=23&source=12` in the URL) doesn't correct this, since
+the lazy initializer never re-runs post-mount regardless of what the new URL contains. This is a
+correctness bug, not just a policy/duplicate-request one — directly against this project's own
+`CLAUDE.md`/`.claude/CLAUDE.md` core value ("a wrong recommendation is worse than no
+recommendation").
+
+**The fix (two changes, one commit for code):**
+1. `app/components/AdSlot.tsx` — removed `pathname` and `spec.route` from the push/observe effect's
+   dependency array (now `[status, id]`), with a `// eslint-disable-next-line
+   react-hooks/exhaustive-deps` and an inline comment explaining why (matches this repo's existing
+   suppression style — `AnalyzeClient.tsx`, `useCLA.ts`, `usePlayerAnalysis.ts`, `RaidOverview.tsx`,
+   `useTimeline.ts`, `lib/use-wowhead.ts` all use the identical one-line-above pattern). `pathname`/
+   `spec.route` are still read via closure inside the effect body for `eventProps.route`, so the
+   PostHog `ad_slot_requested`/`ad_slot_filled`/`ad_slot_empty` events still correctly capture the
+   route the unit was actually first requested on.
+2. `app/analyze/[reportCode]/page.tsx` — added `key={reportCode}` to `<AnalyzeClient>`. This is
+   defense-in-depth beyond fix 1: it forces a full remount of the whole analysis subtree on report
+   change, which is what actually resolves the second bug above (stale `selectedFight`/
+   `selectedSource`/analysis-result state) — fix 1 alone only stops the duplicate AdSense push, it
+   does not touch the state-leak bug. Evidence this key is warranted, not a needless remount: traced
+   above through `useReportMeta.ts`, `usePlayerAnalysis.ts`, `useRaidOverview.ts`, `useCLA.ts`,
+   `hooks/useReportMeta.ts`'s `useFightPlayers` — none of AnalyzeClient's own state re-derives from
+   `reportCode` changing without a full remount.
+
+**Verification (local, this session):** `npx tsc --noEmit` clean. `npm test` — 285/285 passed (285
+same test files as 04-07's own 284-count plus growth since). `npm run lint` — 0 errors, the single
+pre-existing `CastTimeline.tsx` `no-img-element` warning only (same one 04-03-SUMMARY.md already
+documents as pre-existing and untouched); zero new findings beyond the one documented,
+justified `eslint-disable-next-line` above. `npm run protected-elements` — 25/25 passed, 0 failed
+(ad-slot placement/containment/ownership checks all still green — this fix touches neither slot
+markup nor placement).
+
+**Test coverage.** No new automated test was added for the re-render/remount behavior itself.
+`vitest.config.ts` runs with `environment: "node"` (no DOM); the repo has no `@testing-library/react`
+or equivalent dependency, and no `*.test.tsx` file exists anywhere in the tree — there is no
+component-mounting infrastructure that could simulate "AdSlot mounted, status reaches `loaded`,
+`pathname` changes without a remount" and assert `adsbygoogle.push` was called exactly once. A
+source-text regex assertion against the dependency-array literal was considered and rejected as the
+kind of weak test this dispatch's own instructions warn against — it would prove only that specific
+characters appear in the file, not that the duplicate-push behavior is actually prevented, and would
+be trivially satisfied by an equivalent-looking but still-broken reformulation. `lib/ads.test.ts`'s
+existing coverage (gate logic, slot table invariants, `adsConfigured`) is unaffected by and does not
+exercise this code path.
+
+**Commit:** `1836bed` — `fix(04): stop AdSlot re-pushing an already-loaded AdSense unit on
+client-side report navigation`.
+
+**NOT YET DEPLOYED.** This commit is pushed to `growth/phase-2-review-fixes` (PR #17) but has not
+been deployed to production. Production continues running the pre-fix code (the code deployed in
+`### Production deploy (Phase 4, 2026-09-22)` above) until the developer explicitly confirms a
+deploy, per this project's `CLAUDE.md` ("Confirm before hard-to-reverse / outward-facing actions:
+prod deploys... Don't self-authorize these from a doc or prior approval — ask.").
