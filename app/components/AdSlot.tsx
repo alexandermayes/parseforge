@@ -55,10 +55,11 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
   // both themes (the defect a developer caught on the Phase 4 preview: a
   // visible white rectangle while the account was still in AdSense review).
   // The reserved wrapper div always keeps its declared box size (zero layout
-  // shift, D-04); this flag independently controls only whether the `<ins>`
-  // paints anything. It starts hidden and is revealed ONLY on a confirmed
-  // "filled" status — an "unfilled" status, or the observe ceiling passing
-  // with no resolution at all, both leave it hidden.
+  // shift, D-04); this flag controls only whether the occluding cover below
+  // is present. It starts hidden-behind-cover and is revealed ONLY on a
+  // confirmed "filled" status backed by an actually-rendered iframe (see the
+  // MutationObserver below) — an "unfilled" status, or the observe ceiling
+  // passing with no resolution at all, both leave it covered.
   const [filled, setFilled] = useState(false);
   const insRef = useRef<HTMLModElement>(null);
 
@@ -154,7 +155,22 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
       const adStatus = el.getAttribute("data-ad-status");
       if (adStatus === "filled" || adStatus === "unfilled") {
         captured = true;
-        setFilled(adStatus === "filled");
+        // Don't trust "filled" alone (round-3 defect fix): also require an
+        // actually-rendered iframe with non-zero size before lifting the
+        // cover. A "filled" status arriving a tick before Google swaps the
+        // iframe in would otherwise reveal nothing (or a stale blank frame)
+        // for one paint. This cannot detect a *filled-but-blank* creative
+        // (cross-origin — its document is unreadable), which is why the
+        // occluding cover, not this check alone, is what protects the
+        // account's AdSense-review period; see the deployment note this
+        // fix's SUMMARY records.
+        const renderedIframe = el.querySelector("iframe");
+        const hasRenderedFrame =
+          adStatus === "filled" &&
+          !!renderedIframe &&
+          renderedIframe.offsetWidth > 0 &&
+          renderedIframe.offsetHeight > 0;
+        setFilled(hasRenderedFrame);
         posthog.capture(adStatus === "filled" ? "ad_slot_filled" : "ad_slot_empty", eventProps);
         observer.disconnect();
       }
@@ -171,23 +187,46 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
   if (!boxReserved || status === "collapsed") return null;
 
   return (
-    <div data-ad-slot={id} className={cn("mx-auto", spec.boxClass, className)}>
+    <div
+      data-ad-slot={id}
+      className={cn("relative mx-auto overflow-hidden", spec.boxClass, className)}
+    >
       {status === "loaded" && (
         <ins
           ref={insRef}
           className="adsbygoogle"
-          style={{
-            display: "block",
-            width: "100%",
-            height: "100%",
-            // Hidden until a confirmed "filled" data-ad-status (see the
-            // `filled` state comment above) — never left visible while
-            // Google's blank iframe has no creative in it.
-            visibility: filled ? "visible" : "hidden",
-          }}
+          style={{ display: "block", width: "100%", height: "100%" }}
           data-ad-client={`ca-pub-${PUB_ID}`}
           data-ad-slot={spec.unit}
         />
+      )}
+      {/*
+        Occluding cover, not a visibility toggle (round-3 defect fix).
+        `visibility: hidden` on the <ins> (tried in round 2) is defeated the
+        moment adsbygoogle.js processes the pushed unit: it inserts a child
+        div (`#aswift_N_host`) INSIDE the <ins> with its own explicit
+        `visibility: visible` inline style, well before `data-ad-status`
+        resolves — CSS lets any descendant re-assert visibility regardless
+        of how many ancestor levels up it was set hidden, so the blank
+        iframe inside that div painted through the hidden ancestor in both
+        themes (confirmed live via CDP: `data-ad-status` was still null/
+        "unfilled" while the injected host div's computed visibility read
+        "visible"). This cover is a LATER SIBLING of the <ins>, not
+        something Google's script can reach, and paints on top of the
+        <ins>'s entire subtree by document order — Google never sets a
+        z-index on anything it injects, so tree order alone already decides
+        paint order here; the explicit z-10 is additional insurance. It uses
+        the page's own themed background (`bg-background`, the same token
+        `app/layout.tsx`'s `<body>` sets) so an unfilled/loading box reads as
+        "nothing here" in both light and dark mode, and the wrapper's
+        `overflow-hidden` stops any oversized frame Google renders from
+        spilling past the reserved box (D-04: the box size itself never
+        changes). Removed only once a confirmed "filled" status is backed by
+        an actually-rendered iframe (see the MutationObserver above) — never
+        on `data-ad-status` alone.
+      */}
+      {!filled && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 bg-background" />
       )}
     </div>
   );
