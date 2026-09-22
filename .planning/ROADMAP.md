@@ -253,7 +253,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 04-07-PLAN.md — approval-gated production ads deploy + post-deploy OPS-01 evidence and sign-off
+- [x] 04-07-PLAN.md — approval-gated production ads deploy + post-deploy OPS-01 evidence and sign-off
 
 **UI hint**: yes
 

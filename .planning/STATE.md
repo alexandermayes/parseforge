@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
-status: executing
-stopped_at: Completed 04-06-PLAN.md
-last_updated: "2026-09-22T09:07:36.853Z"
+status: verifying
+stopped_at: Completed 04-07-PLAN.md (Task 3 only; Tasks 1-2 done in prior dispatches)
+last_updated: "2026-09-22T19:58:21.223Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: 0fa6c75a5b5c7b9a04acd647bf9e5ddcf3d95305
+state_head: b7b5f4fa783a32a3c1d705fc8c20499624688872
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 42
+  completed_plans: 43
   percent: 44
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 
 Phase: 04 (Ads Live) — EXECUTING
 Plan: 7 of 7
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-19 — Phase 04 execution started
 
 Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 planned plans complete)
@@ -103,6 +103,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 04 P03 | 45min | 3 tasks | 10 files |
 | Phase 04-ads-live P05 | 45min | 3 tasks | 7 files |
 | Phase 04 P06 | 12min | 3 tasks | 1 files |
+| Phase 04-ads-live P07 | 55min | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -160,6 +161,7 @@ Recent decisions affecting current work:
 - [Phase 04]: Auto ads OFF confirmed by the developer directly from the AdSense UI (2026-09-21); ads.txt status and the /privacy Privacy & messaging site-settings paste remain open, no code can observe either
 - [Phase 04]: [Phase 04 / 04-06] Developer confirmed the fourth preview's ad-box visual defect (box sizing then occluding-cover mismatch) fully fixed in both themes, and confirmed /privacy reads true, closing this plan
 - [Phase 04]: [Phase 04 / 04-06] Vercel automation-bypass secret briefly appeared in a diagnostic tool-call transcript during round-1 debugging (never committed); developer explicitly declined rotation when asked
+- [Phase 04-ads-live]: OPS-01 item 7 and Search Console recorded NOT EVALUABLE/no-data for the Phase 4 post-deploy check (no PostHog/GSC access this dispatch); Phase 4 sign-off recorded NOT SIGNED with every open row named — No PostHog MCP or curl/API channel and no GSC tool were available to the executor; the project's own convention treats an unreadable figure as not-evaluable, never a fabricated pass
 
 ### Pending Todos
 
@@ -220,6 +222,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-22T09:07:25.403Z
-Stopped at: Completed 04-06-PLAN.md
+Last session: 2026-09-22T19:58:20.628Z
+Stopped at: Completed 04-07-PLAN.md (Task 3 only; Tasks 1-2 done in prior dispatches)
 Resume file: None
