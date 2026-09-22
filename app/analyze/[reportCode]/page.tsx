@@ -109,7 +109,21 @@ export default async function AnalyzePage({ params }: { params: Params }) {
 
   return (
     <>
-      <AnalyzeClient reportCode={reportCode} />
+      {/* Keyed by reportCode so a client-side report-to-report navigation
+          (ReportUrlForm's router.push, both the custom-URL and demo-report
+          paths) fully remounts this subtree instead of re-rendering it in
+          place. Without this key, AnalyzeClient's own `selectedFight`/
+          `selectedSource` state (lazily initialized once from the URL at
+          first mount — see AnalyzeClient.tsx) and its analysis-result hooks
+          (usePlayerAnalysis/useRaidOverview/useCLA, which only clear their
+          `result` when `selectedFight` itself changes value) carry over
+          from the previous report. When the new report's URL doesn't
+          happen to change those values, the old report's analysis result
+          stays displayed under the new report's heading — a real accuracy
+          bug, not just AdSlot's duplicate-push defect (see
+          app/components/AdSlot.tsx's own dependency-array fix, which
+          remains necessary in its own right as defense-in-depth). */}
+      <AnalyzeClient key={reportCode} reportCode={reportCode} />
       {result.status === "ok" && (
         <ReportSummary meta={result.meta} reportCode={reportCode} />
       )}

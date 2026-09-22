@@ -182,7 +182,18 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
       observer.disconnect();
       clearTimeout(ceiling);
     };
-  }, [status, id, pathname, spec.route]);
+    // `pathname`/`spec.route` are intentionally excluded. This component
+    // instance is not remounted on client-side report-to-report navigation
+    // (no `key` change upstream — see AnalyzeClient's own guard), so
+    // `pathname` changing on navigation would otherwise re-run this effect
+    // while `status` is still "loaded" from the previous report, pushing the
+    // same already-loaded `<ins>` node to `adsbygoogle` a second time —
+    // Google's documented "already have ads in them" duplicate-request
+    // failure mode. `pathname`/`spec.route` are still read via closure for
+    // `eventProps.route` below, so the PostHog events correctly capture the
+    // route this unit was actually first requested on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, id]);
 
   if (!boxReserved || status === "collapsed") return null;
 
