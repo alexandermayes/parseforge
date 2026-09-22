@@ -4398,3 +4398,273 @@ rather than silently edited away. Task 3 (the OPS-01 item 7 live-traffic count, 
 rows, CSP production harvest, the day-2/day-7 clock records, and the Phase 4 sign-off row) is out
 of scope for this dispatch and requires roughly an hour of live traffic to measure meaningfully —
 it is dispatched separately.
+
+### Item 7 — attempted counted result, PostHog access limitation (Phase 4, 2026-09-22)
+
+**When this ran.** `2026-09-22T19:34Z`–`19:51Z`, ~10h14m after the production deploy
+(`2026-09-22T09:23:24Z`) — well past the 60-minute minimum this task's own precondition names, so a
+full window is available to measure, not merely a partial one.
+
+**PostHog access limitation, checked directly, not assumed.** This dispatch's tool set carries no
+PostHog MCP connector (`mcp__posthog__*`) and no other query-capable PostHog channel: the repo's
+`.env*` carries only the client-side `NEXT_PUBLIC_POSTHOG_KEY` (a capture key, not a HogQL-query
+key), no `.env.local`/`.env.production` file exists in this working tree, and no PostHog personal
+API key is present in this session's shell environment (`env | grep -i posthog` — empty). This is
+the same limitation the 03-09 gap closure recorded for its own executor dispatch — "the executor
+running this plan holds no PostHog or Vercel tool" — except that closure had an orchestrator able to
+supply the queried evidence from its own MCP session; no such supply channel reached this dispatch.
+**The three OPS-01 item 7 PostHog thresholds and the ad_slot breakdown below are therefore NOT
+EVALUABLE this session — not a pass, not a FAIL, and not silently dropped** — per this Part's own
+prohibition ("an unreadable figure is recorded as no-data or not-evaluable... never as a pass, and
+never omitted").
+
+**What is measurable without PostHog, gathered as supporting context, not a substitute for the
+required thresholds.** Vercel Web Analytics (`vercel.analytics_pageview.count`) is a fully separate
+tool this session does have working CLI access to, via the same personal global config Task 2 used:
+
+```
+vercel metrics vercel.analytics_pageview.count --aggregation sum --prod --granularity 1h \
+  --since 2026-09-22T09:00:00Z --until 2026-09-22T19:34:00Z --project parseforge \
+  --global-config ~/.vercel-personal --scope loot-list-plus --format json
+```
+
+| hour (UTC) | Vercel pageviews | fully elapsed? |
+|---|---|---|
+| 09:00 | 5 | partial (deploy landed 09:23:24Z mid-hour) |
+| 10:00 | 4 | yes |
+| 11:00 | 11 | yes — busiest fully-elapsed hour |
+| 12:00 | 7 | yes |
+| 13:00 | 8 | yes |
+| 14:00 | 10 | yes |
+| 15:00 | 1 | yes |
+| 16:00 | 7 | yes |
+| 17:00 | 5 | yes |
+| 18:00 | 9 | yes |
+| 19:00 | 2 | partial (query run 19:34Z) |
+
+**This table is Vercel Web Analytics, not PostHog** — the two systems have diverged before on this
+project (PostHog counting 1.1x–3.2x Vercel across prior deployments, Part 5) — so it is recorded
+here only as the best available signal for choosing a busy candidate window for the re-measure
+below, not as a stand-in for item 7's own PostHog-sourced thresholds. Traffic across every
+fully-elapsed hour today stays well under the historical hours that cleared threshold 1 on prior
+deployments (22–87 PostHog pageviews) — consistent with this being a genuinely quiet first day, the
+same class of problem this document's own Part 1 item 7 names three times before, not evidence this
+reading would fail if it could be run.
+
+**Threshold evaluation:**
+
+| Threshold | Rule | Result |
+|---|---|---|
+| 1 | ≥ 20 `$pageview` events | **NOT EVALUABLE** — no PostHog query channel available to this session |
+| 2 | ≥ 2 distinct non-consent-region countries | **NOT EVALUABLE** — same reason |
+| 3 | PostHog `$pageview` ≥ 50% of Vercel Web Analytics for the same window | **NOT EVALUABLE** — same reason (the Vercel half of this ratio is readable per the table above; the PostHog half is not) |
+
+**Phase-specific row — `ad_slot_requested` / `ad_slot_filled` / `ad_slot_empty` / `ad_slot_blocked`,
+by `consent_gate_path`:** **NOT EVALUABLE** — same PostHog access limitation. Recorded distinctly
+from a genuine zero-count FAIL: no query ran at all, so there is no counted zero to fail on — the
+same "could not run" vs. "ran and returned zero" distinction Part 5 drew for its own unreadable
+Vercel figure (`### Item 7 — counted result (2026-09-16...)`, threshold 3).
+
+**Property-allowlist assertion — pre-deploy source evidence only, not the live proof this row calls
+for.** Per item 4's own precedent ("the grep count pre-deploy; item 7 supplies the post-deploy proof
+this item no longer can" — the same trade this Part cannot fully make this session), the source
+itself was re-read directly against the deployed commit: `app/components/AdSlot.tsx`'s shared
+`eventProps` object is the single object passed to all four `posthog.capture` calls
+(`ad_slot_blocked` line 121, `ad_slot_requested` line 150, `ad_slot_filled`/`ad_slot_empty` line
+174) and carries exactly three keys — `route`, `slot_id`, `consent_gate_path` — no report code,
+player name, character name, server or full URL anywhere in the object. This confirms intent in the
+deployed source, not behavior on live events; T-04-36's own mitigation calls specifically for the
+live-query proof, which stays open until a session with PostHog access runs this check.
+
+**The exact re-measure test that would close this row:** run the three HogQL statements in Part 1
+item 7 verbatim against PostHog project `337485`, plus the phase-specific ad_slot breakdown by
+`consent_gate_path`, for a full 60-minute window — `2026-09-22T11:00:00Z`–`12:00:00Z` is recorded
+above as today's best candidate, but per this document's own standing rule the response to a quiet
+reading is always a busier window, so a session with real PostHog access should re-run the hourly
+table above (or PostHog's own hourly breakdown, which prior sessions found runs 1.1x–3.2x the
+Vercel figure) and choose the busiest fully-elapsed hour at the time it runs, not necessarily this
+one.
+
+**A note on what live traffic is actually doing, network-level, gathered this session (not a
+substitute for the PostHog thresholds above).** A real headless-Chrome visit to both production
+routes from this machine (via a small CDP driver script, same technique 04-06 used for its netlog
+proof, rebuilt fresh this session since no earlier driver persisted across sessions) shows the ad
+request mechanism is genuinely live: 12 requests to
+`googlesyndication.com`/`doubleclick.net`/`adtrafficquality.google` fired on each route, including a
+real slot-scoped ad call (`googleads.g.doubleclick.net/pagead/ads?...&slotname=8721711041...
+&format=300x250...` on `/tbc-audit`, and `...&slotname=7746259468...` on the analyze page) — the SDK
+loaded, pushed the unit, and requested a real creative. This is a single synthetic visit from this
+session, not organic traffic, and it observes network requests, not the `data-ad-status` DOM
+attribute or the PostHog `ad_slot_filled`/`ad_slot_empty` split itself (neither read this session) —
+so it proves only the request half of "request vs. fill" the plan's own objective asks to keep
+separate, consistent with the developer's direct AdSense-dashboard check the same day (account
+status "Getting ready", `ads.txt` status "Not found", per this dispatch's own briefing) — a request
+that very plausibly comes back unfilled from Google's side, not a broken gate. **Recorded as context
+only; this is not, and does not substitute for, a query of the `ad_slot_*` events themselves.**
+
+---
+
+### Search Console (Phase 4, 2026-09-22)
+
+No `gscServer` MCP tool (or any other Search Console access) is available to this session — the
+same limitation Part 3 and Part 5 recorded for their own dispatches, unresolved since. Per Part 1
+item 5 and this Part 1's own recording rule ("a route Search Console has no data for is recorded as
+`no-data`, never as a pass, never dropped"):
+
+| Route | Indexability | Canonical | Coverage | Status |
+|---|---|---|---|---|
+| `/tbc-audit` | not inspected | not inspected | not inspected | **no-data (session has no GSC access)** |
+| `/analyze/ZjKgNYxVcAqR8pGJ` (demo analyze page) | not inspected | not inspected | not inspected | **no-data (session has no GSC access)** |
+| `/privacy` | not inspected | not inspected | not inspected | **no-data (session has no GSC access)** |
+
+A ranking-movement read this soon after a deploy (~10h) would not be meaningful even with GSC access
+— Search Console's own ranking data lags real-world crawling and indexing by days, and the SC5
+ranking-movement claim this Part's `must_haves` names is explicitly a later, separately-scheduled
+reading, not this one.
+
+**The exact closing test:** URL-inspect all three routes via `sc-domain:parseforge.gg`, record
+indexability, the Google-selected canonical, and coverage state per route, exactly as Part 5's own
+`### Search Console pass — counted result (2026-09-18, gap closure 03-08)` did for its routes, in a
+session with GSC access.
+
+---
+
+### CSP report-only violations (production, Phase 4, 2026-09-22)
+
+**Technique.** The same CDP-over-raw-WebSocket approach 04-06 introduced for the preview
+(`Log.enable` domain, `Log.entryAdded` events with `source: "security"` are the browser's own
+report-only CSP violation notices) — rebuilt fresh this session as a small `csp-driver.mjs` script
+(no npm package added, lives in the session scratchpad, not the repository), since no earlier driver
+persisted across sessions. Run against **production** (not preview) — headless Chrome
+(`--headless=new --remote-debugging-port`), a fresh profile, both routes, ~13s dwell each, this
+machine's real (non-EEA/UK) egress, `2026-09-22T19:4x` Z:
+
+| Host | Seen on | Directive | Google ad-related? | Disposition |
+|---|---|---|---|---|
+| `wow.zamimg.com` | both production routes | `style-src` (fallback from unset `style-src-elem`) | No | Pre-existing, same gap 04-06 recorded for the preview — `wow.zamimg.com` is already in `script-src` but never added to `style-src`; not fixed here, out of this dispatch's scope (`docs/OPS-01-SHIP-GATE.md` only) |
+| `www.google.com` (via `ep2.adtrafficquality.google`'s own frame context) | both production routes | `frame-src` | **Yes** — AdSense's "sodar" anti-fraud iframe attempts to frame `www.google.com`, which is not itself in the `frame-src` allowlist | Confirms 04-06's preview finding on real production traffic; **not added** to `next.config.ts` in this dispatch (scope boundary, same as 04-06); flagged as a Phase 7 promotion-work follow-up, same disposition 04-06 recorded |
+
+**Not observed this run, and why that's a methodology difference, not a regression:** `vercel.live`
+(04-06's own disposition already called this preview-only, absent from production — confirmed absent
+here) and a standalone `ep1.adtrafficquality.google` `connect-src` violation (present in 04-06's
+preview harvest, not reproduced by this session's shorter single-visit dwell and narrower capture
+method — a `Log.entryAdded`-only capture, not the full netlog-file grep 04-06 used — so its absence
+here is a methodology difference, not evidence the underlying request stopped happening; the
+`ep1.adtrafficquality.google` sodar config/beacon calls were directly observed in this session's own
+ad-host request list above, so the connection is real, just not logged as a distinct CSP violation
+by this narrower capture).
+
+The policy stays report-only (promotion is Phase 7, per this plan's own text); nothing above is
+blocked in practice today, on preview or on production.
+
+---
+
+### Scheduled re-reads (day-2 and day-7 CWV) and today's informal readability check (D-11)
+
+**The two dated obligations, unchanged from Part 6's own `### Observation schedule and escalation
+clocks (D-11, D-14)` above, now dated against the real deploy time (`2026-09-22T09:23:24Z`):**
+
+- **Day-2 early read: on or after `2026-09-24T09:23:24Z`.**
+- **Day-7 full read: on or after `2026-09-29T09:23:24Z`.**
+
+Each read re-runs the same three commands the pre-ad baseline used, and appends a comparison row
+against the baseline table above, for every (route, device class) pair:
+
+```
+export PATH="$HOME/.local/node20/bin:$PATH"
+vercel metrics vercel.speed_insights.lcp_ms --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+vercel metrics vercel.speed_insights.inp_ms --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+vercel metrics vercel.speed_insights.cls --aggregation p75 --group-by route --group-by device_type \
+  --since 7d --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+```
+
+Scored against the three D-10 numbers stated above (CLS p75 > 0.1 any route/device; LCP p75 worsens
+by more than 20% vs. this Part's own baseline row for the same route+device; INP p75 > 200ms
+absolute). **The pre-agreed automatic AdSense pause for a CLS breach is restated, unchanged: a CLS
+p75 above 0.1 on any route at either read triggers the pause immediately per the D-08 runbook
+above, without waiting for a developer reply.**
+
+**Today's informal readability check — NOT the day-2 or day-7 read, and not scored against D-10 as a
+final result.** Task 3's own second `<automated>` verify block requires only that the post-ship
+metrics command runs and returns a `/tbc-audit` row — it does, confirming the read pipeline itself
+works, which is the entire point of this row (a 1-day CLS *readability* proof, per this task's own
+`<verify>` text, not a rollback determination):
+
+```
+$ vercel metrics vercel.speed_insights.cls --aggregation p75 --group-by route --since 1d \
+  --project parseforge --prod --global-config ~/.vercel-personal --scope loot-list-plus
+...
+                                    route   avg          min                   max
+                                        /  0.01    0 at 09-21 19:00    0.11 at 09-22 18:00
+                    /analyze/[reportCode]  0.14  0.014 at 09-22 11:00  0.28 at 09-22 07:00
+          /guides/improve-dps-wow-classic     0    0 at 09-21 20:00     0 at 09-21 20:00
+  /guides/how-to-analyze-wow-classic-logs    --           --                   --
+                               /tbc-audit    --           --                   --
+       /guides/raid-preparation-checklist     0    0 at 09-22 07:00     0 at 09-22 07:00
+   /guides/wow-classic-loot-council-tools     0    0 at 09-22 14:00     0 at 09-22 14:00
+postship-metrics-readable-ok
+```
+
+`/tbc-audit`'s `--` is a real absence, not a script error — the route has too little post-deploy CLS
+sample volume yet for a p75 figure (consistent with the low hourly traffic recorded above), and is
+**not** a `no-data` finding being softened into anything — it is simply too early. The gate's own
+requirement (a `/tbc-audit` row present in the output, any value) is met, since the row itself
+prints.
+
+**Same-day, since-deploy whole-window p75 (`--format json`, `--since 2026-09-22T09:23:24Z`, by
+route+device, read `2026-09-22T19:51Z`), recorded for context only, explicitly NOT the day-2 or
+day-7 scored comparison:**
+
+| Route | Device | LCP p75 (ms) | Δ vs. baseline | INP p75 (ms) | CLS p75 | Baseline CLS |
+|---|---|---|---|---|---|---|
+| `/` | desktop | 1696 | +9.0% | 24 | 0 | 0 |
+| `/` | mobile | 2235 | +54.4% | no-data | no-data | 0 |
+| `/analyze/[reportCode]` | desktop | 4538 | +87.8% | 80 | 0.1471 | 0.2344 |
+| `/analyze/[reportCode]` | mobile | 1131 | −52.6% | 88 | no-data | 0.4768 |
+| `/tbc-audit` | desktop | 992 | −18.2% | no-data | no-data | 0 |
+
+**Read this as a first same-day snapshot with a very small sample, not a trend.** Total traffic
+since deploy across the whole site stays under 11 Vercel-counted pageviews in any single
+fully-elapsed hour (table above); split further by route and device class, several cells here rest
+on a literal handful of Core Web Vital samples, at which p75 is close to "the single worst reading
+so far," not a stable statistic — the ±50%+ LCP swings above (both up and down) are exactly what
+that instability looks like, not a signal either way. **No CLS cell here exceeds the 0.1
+automatic-pause trigger, and none exceeds its own pre-ad baseline** — `/analyze/[reportCode]`
+desktop's 0.1471 reads above the flat 0.1 number but below its own 0.2344 pre-ad baseline, the
+comparison Part 6's own rollback-trigger text says governs this route (`### Rollback trigger (D-10)`
+above: "not against the flat 0.1 figure"). **No automatic AdSense pause is triggered by this
+snapshot.** The human-check this task's `<verify>` names is answered here: the deploy should stand;
+nothing in today's reading — at this sample size — indicates the D-10 pause condition, and the two
+dated obligations above are what will actually decide this with a meaningful sample.
+
+---
+
+### Phase 4 sign-off row
+
+| # | Item | Status | Evidence / closing test |
+|---|---|---|---|
+| 1 | RPGLogs written approval (R0-1) | **NOT OBTAINED — deployed on a recorded developer operator-override instead** | `### Deploy decision (Phase 4, 2026-09-22)` above; R0-1's own gating purpose (approval before deploy) was not met — the developer explicitly and knowingly authorized shipping without it, with the real consequence (API-client revocation risk) stated to them beforehand; not tracked in `.planning/REQUIREMENTS.md`'s traceability table at all (pre-existing gap, confirmed by 04-04-SUMMARY.md) |
+| 2 | Developer's at-the-time deploy go-ahead | **PASS** — verbatim "deploy", 2026-09-22, recorded with timestamp | `### Production deploy (Phase 4, 2026-09-22)` above |
+| 3 | `npm run protected-elements` against production | **PASS** — 25/25 rows | `### Post-deploy production route-contract evidence` above |
+| 4 | Four reserved boxes on both whitelisted routes, `/ads.txt` DIRECT, param-free canonical | **PASS** — corrected-count-verified (grep-line-count false negative diagnosed and cross-confirmed, not a real defect) | `### Post-deploy production route-contract evidence` above |
+| 5 | `npm run seo-invariants` against production | **PASS** — every route `same` | `### Post-deploy production route-contract evidence` above |
+| 6 | Item 7 live-traffic thresholds (PostHog) | **NOT EVALUABLE** — no PostHog query channel in this session | `### Item 7 — attempted counted result...` above; closing test: re-run the three HogQL statements against project 337485 in a session with PostHog access |
+| 7 | `ad_slot` event breakdown by `consent_gate_path`, property allowlist | **NOT EVALUABLE** (live) / **PASS** (pre-deploy source grep only) | same section; closing test: same PostHog re-run, plus the phase-specific ad_slot HogQL |
+| 8 | Search Console — `/tbc-audit`, demo analyze page, `/privacy` | **no-data** — no GSC access this session | `### Search Console (Phase 4, 2026-09-22)` above |
+| 9 | Production CSP report-only violation harvest | **PASS (recorded)** — two hosts observed, both already known from 04-06's preview harvest, one pre-existing/unrelated, one Google-ad-related follow-up flagged for Phase 7 | `### CSP report-only violations (production, Phase 4, 2026-09-22)` above |
+| 10 | Day-2 CWV re-read (D-11) | **SCHEDULED, not due** — on or after 2026-09-24T09:23:24Z | `### Scheduled re-reads...` above |
+| 11 | Day-7 CWV re-read (D-11) | **SCHEDULED, not due** — on or after 2026-09-29T09:23:24Z | `### Scheduled re-reads...` above |
+| 12 | Today's CLS readability check (this task's own `<verify>`) | **PASS** — `/tbc-audit` row present, no route/device breaches the automatic-pause trigger at this sample size | `### Scheduled re-reads...` above |
+| 13 | AdSense reports revenue on live traffic (backstop) | **no-data / not yet measurable** — account status "Getting ready", `ads.txt` status "Not found" in AdSense's own dashboard as of 2026-09-22 (developer's direct check); not measurable until Google approves the account | this task's dispatch briefing |
+| 14 | CLS/LCP/INP p75 after 7 days inside D-10 (backstop) | **not yet measurable** — day-7 read not due until 2026-09-29 | row 11 above |
+
+**Sign-off: NOT SIGNED (2026-09-22).** Seven rows (2, 3, 4, 5, 9, 12, plus the pre-deploy half of
+row 7) are counted PASSes. Row 1 is an explicit, honestly-recorded non-closure — the requirement's
+own gating purpose was not met, a developer override was substituted for it, named plainly, not
+disguised as approval. Rows 6, 7 (live half), 8, 10, 11, 13, 14 are open, each with its own closing
+test named above — no threshold was lowered, no figure was fabricated, and no row was silently
+omitted to reach a signature. This matches the honest-interpretation expectation set for this
+dispatch: the ad-serving mechanism is proven live and correctly gated in production; the revenue and
+monitoring backstops are not yet due or not yet accessible, and are recorded as such.

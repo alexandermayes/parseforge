@@ -316,3 +316,51 @@ closure 03-10)`), SHARE-01, SHARE-02 and SHARE-03's underlying capability and th
 backstop now rest on their own counted evidence rather than a sibling plan's premature marking. The
 Discord-unfurl and first-hand-D-04 backstops above remain open and are tracked in
 `.planning/WINDOWS.md #9`; nothing here reverts or edits the checkbox lines above.
+
+### MONY-02 / MONY-03 Addendum (2026-09-22, Phase 4 gate 04-07)
+
+The MONY-02 and MONY-03 rows above still read "Pending" — this addendum does **not** flip either
+checkbox to complete. The production deploy alone does not prove either requirement in full, per
+this plan's own explicit prohibition: "Do not mark either requirement complete on the strength of
+the deploy alone."
+
+**What is closed by counted evidence (MONY-02's ad-serving-and-placement half).** The production
+deploy (`dpl_HRmX5EMk5aKgXtDp4z9FYW6jXNih`, commit `cc931c0`, 2026-09-22T09:23:24Z) proves, with
+captured evidence in `docs/OPS-01-SHIP-GATE.md` Part 6: all four reserved AdSlot components render
+on the two whitelisted routes (`/tbc-audit`: `tbc-audit-mid`, `tbc-audit-end`; the analyze page:
+`analyze-mid`, `analyze-end`), gated correctly behind the consent-gate loader (a real production ad
+request fires only for an admitted, non-consent-region visitor — confirmed this session via a fresh
+CDP capture on real production traffic, both routes, 12 ad-host requests each including real
+slot-scoped `doubleclick.net` ad calls); `npm run protected-elements` passes 25/25 against
+production; `/ads.txt` returns a `DIRECT` line; every canonical stays param-free; and
+`npm run seo-invariants` shows no unexplained diff on either ad route or `/privacy`. **This half is
+met by counted evidence** — ads render in the correct reserved space, on the correct routes, gated
+correctly, without disturbing SEO surface.
+
+**What remains open (MONY-03's monitoring half, and MONY-02's own revenue-adjacent edge).** The CWV
+baseline itself is captured (D-09, Part 6, pre-ad) and rollback criteria are defined (D-10) — that
+half of MONY-03 was already met before this deploy. What stays open: the day-2 CWV re-read (due on
+or after 2026-09-24T09:23:24Z), the day-7 CWV re-read (due on or after 2026-09-29T09:23:24Z), both
+scored against the D-09 baseline and D-10 triggers; the OPS-01 item 7 live-traffic PostHog
+thresholds (this session had no PostHog query channel — see `docs/OPS-01-SHIP-GATE.md`
+`### Item 7 — attempted counted result, PostHog access limitation (Phase 4, 2026-09-22)`); Search
+Console rows for the two ad routes (no GSC access this session); and AdSense reporting real revenue
+(not measurable — the AdSense account's own dashboard read "Getting ready" / `ads.txt` "Not found"
+as of 2026-09-22, i.e. Google has not yet approved the account to serve real creative on this
+domain, a separate fact from this session's own network capture showing genuine ad requests firing
+but not yet fillable).
+
+**R0-1's status, recorded here for completeness — not a REQUIREMENTS.md-tracked row.** The R0-x
+requirement family is not present in this file's traceability table at all (a pre-existing gap
+`04-04-SUMMARY.md` already recorded). RPGLogs' written commercial-use approval was never obtained;
+the developer issued an explicit, consequence-informed operator override instead
+(`docs/OPS-01-SHIP-GATE.md` `### Deploy decision (Phase 4, 2026-09-22)`). R0-1's own gating purpose
+— a recorded yes before shipping — was not satisfied; it was consciously bypassed by the account
+owner, a materially different outcome from "met," and is not claimed as one here.
+
+**Closing tests, restated.** MONY-03 (and this addendum) close only when the day-2 and day-7 CWV
+reads are appended to `docs/OPS-01-SHIP-GATE.md` Part 6 with a dated PASS against every D-10
+trigger, the OPS-01 item 7 PostHog thresholds are counted in a session with real PostHog access, and
+Search Console rows are recorded for the two ad routes. MONY-02's remaining open edge (AdSense
+actually serving and reporting revenue) closes once the AdSense dashboard shows an approved status
+and revenue accrues.

@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 13
+open_count: 16
 waived_count: 0
 fixed_count: 3
-total_count: 16
-last_updated: 2026-09-22T05:35:19.731Z
+total_count: 19
+last_updated: 2026-09-22T19:55:26.755Z
 ---
 
 # Broken Windows Ledger
@@ -31,6 +31,9 @@ last_updated: 2026-09-22T05:35:19.731Z
 | 14 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-06 Task 2 preview netlog/measured-box/CSP-harvest procedure could not be re-run against the second preview (dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV) after the box-size/dark-mode fixes: the one working method to source the Vercel SSO bypass secret was denied by the session's own Bash-permission auto-classifier (Credential Materialization). Closing test: re-run 04-06 Task 2's procedure against this preview once the bypass secret can be sourced in a session with permission. | open |  | 2026-09-21T22:32:39.303Z |  |
 | 15 | 04 | deviation | app/components/AdSlot.tsx | 190 | Round-2's visibility:hidden fix for the white unfilled-frame defect (WINDOWS #12's sibling Defect B) did not hold on the second preview: adsbygoogle.js injects a child div (#aswift_N_host) inside the <ins> with its own explicit visibility:visible, which CSS lets override an ancestor's visibility:hidden regardless of tree depth. Round 3 replaced it with a wrapper-level occluding cover (a later sibling of the <ins>, absolute/inset-0/z-10/bg-background) verified via pixel-sampled local screenshots in both themes, both viewports (0% white-pixel deviation, exact page-background color match). Preview-level (SSO-gated) re-verification is still blocked by the same bypass-secret gap #14 records; closing test is the developer's first-hand review of the third preview (dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1). | open |  | 2026-09-22T05:01:37.732Z |  |
 | 16 | 04 | deviation | app/components/AdSlot.tsx | 228 | Round-3's flat bg-background occluding cover painted a textureless patch against the page's grainy .bg-noise background (developer caught it on the third preview as a subtle different-shade box). Confirmed numerically via pixel-sampled CDP screenshots on a production build (cover stddev 0 vs control ~0.5-0.8, mean ~1-2.8 RGB levels warmer, both themes/viewports); fixed with a local (position:absolute) grain-texture pseudo-element scoped to the cover, matching within ~0.1-0.2 RGB levels post-fix. Closing test: developer's first-hand review of the fourth preview (dpl_9hkgsvPz57brpYzdHdFf3x7GM56Z). | open |  | 2026-09-22T05:35:19.731Z |  |
+| 17 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-07 Task 3: OPS-01 item 7 PostHog live-traffic thresholds and ad_slot breakdown NOT EVALUABLE - no PostHog MCP/API query channel available to this executor dispatch. Closing test: re-run Part 1 item 7's HogQL verbatim against PostHog project 337485 in a session with PostHog access. | open |  | 2026-09-22T19:55:25.355Z |  |
+| 18 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-07 Task 3: Search Console rows for /tbc-audit, the demo analyze page, and /privacy recorded no-data - no gscServer MCP tool available to this executor dispatch. Closing test: URL-inspect all three routes via sc-domain:parseforge.gg in a session with GSC access. | open |  | 2026-09-22T19:55:26.466Z |  |
+| 19 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-07 Task 3: day-2 (due 2026-09-24T09:23:24Z) and day-7 (due 2026-09-29T09:23:24Z) CWV re-reads against the D-09 pre-ad baseline are scheduled, not yet due; today's reading is an informal same-day readability check only, not the scored comparison. Closing test: re-run the three vercel metrics commands recorded in Part 6 and append a dated PASS/breach row against every D-10 trigger. | open |  | 2026-09-22T19:55:26.755Z |  |
 
 ````json
 [
@@ -224,6 +227,42 @@ last_updated: 2026-09-22T05:35:19.731Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-22T05:35:19.731Z",
+    "resolved_at": null
+  },
+  {
+    "id": 17,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "04-07 Task 3: OPS-01 item 7 PostHog live-traffic thresholds and ad_slot breakdown NOT EVALUABLE - no PostHog MCP/API query channel available to this executor dispatch. Closing test: re-run Part 1 item 7's HogQL verbatim against PostHog project 337485 in a session with PostHog access.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T19:55:25.355Z",
+    "resolved_at": null
+  },
+  {
+    "id": 18,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "04-07 Task 3: Search Console rows for /tbc-audit, the demo analyze page, and /privacy recorded no-data - no gscServer MCP tool available to this executor dispatch. Closing test: URL-inspect all three routes via sc-domain:parseforge.gg in a session with GSC access.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T19:55:26.466Z",
+    "resolved_at": null
+  },
+  {
+    "id": 19,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "docs/OPS-01-SHIP-GATE.md",
+    "line": null,
+    "description": "04-07 Task 3: day-2 (due 2026-09-24T09:23:24Z) and day-7 (due 2026-09-29T09:23:24Z) CWV re-reads against the D-09 pre-ad baseline are scheduled, not yet due; today's reading is an informal same-day readability check only, not the scored comparison. Closing test: re-run the three vercel metrics commands recorded in Part 6 and append a dated PASS/breach row against every D-10 trigger.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T19:55:26.755Z",
     "resolved_at": null
   }
 ]
