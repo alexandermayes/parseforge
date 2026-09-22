@@ -4143,3 +4143,65 @@ $ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
   bypass-secret gap #14 records is unresolved this session too, and this round's own instructions
   prohibited retrying it. The developer's first-hand look at this preview is this round's
   verification path instead, exactly as round 3 recorded.
+
+### Deploy decision (Phase 4, 2026-09-22)
+
+**Correspondence state, checked directly before writing anything below.** The RPGLogs
+commercial-use approval request drafted in 04-01
+(`.planning/research/rpglogs-approval-request-2026-09-19.md`) has never been sent. Its Status
+line has read "DRAFT — READY, NOT SENT" since 04-01's 2026-09-21 capture, and until this session
+the Thread table held only the single `deferred` row 04-01 wrote that same day. There is
+therefore no sent request, and consequently no reply to look for — this session did not check any
+mailbox, because nothing was ever addressed to `advertising@archon.gg` for a reply to arrive
+against. A new dated Thread row now records this plainly: "No reply as of 2026-09-22 — and no
+request has ever been sent (the draft remains unsent since the developer's 2026-09-21
+deferral)."
+
+**Why this doesn't cleanly fit this plan's five decision options.** Task 1 of `04-07-PLAN.md`
+offers five options: `approved`, `conditional`, `declined`, `silent-before-14` ("no reply yet and
+the day-14 deadline has not passed — wait"), and `silent-at-14` ("no reply and the day-14 deadline
+has passed — escalate"). Both `silent-*` options presuppose a request was actually sent and a
+14-day clock is running from that send date — this same Part's own `### Observation schedule and
+escalation clocks (D-11, D-14)` subsection above already records that "this clock has not
+started," for exactly that reason. The real state here — never sent, therefore no clock ever
+started — is a sixth situation none of the five options names outright. Of the five, it sits
+CLOSEST in shape to `silent-before-14`: there genuinely is no reply, exactly as that option's own
+text describes, and nothing has escalated past any deadline, because no deadline is running to
+escalate past. It is explicitly **not** `approved`, `conditional`, or `declined` — no
+correspondence exists to have produced any of those three outcomes, and none is claimed.
+
+**The developer's decision — an operator override, not an approval.** The developer, who owns
+this account and this third-party relationship with RPGLogs, was told directly and plainly the
+realistic consequence of deploying without their approval on record: "The realistic consequence
+isn't a fine; it's that they can revoke your API client — the whole site stops working, not just
+the ads." With that consequence stated in advance, the developer responded twice, verbatim:
+
+- **2026-09-21:** "yes, ship without approval it's just using the data pulled in but the product
+  itself isn't really that website. So whatever."
+- **2026-09-22:** "deploy" — given directly in this session, after being shown exactly what this
+  04-07 plan would do step by step, including this exact gate.
+
+These two verbatim statements are recorded here as a **developer-directed OPERATOR OVERRIDE** of
+this plan's default one-way gate. Task 1's own default behavior for a `silent-before-14`-shaped
+state is to wait; the developer has explicitly and knowingly instructed otherwise, with the actual
+risk (API-client revocation, not a fine) named to them beforehand, not glossed over. Task 2 (and
+later Task 3) proceed on that override authority — **not** because RPGLogs' approval was obtained.
+No option above was auto-selected by any mode; this decision is recorded because the developer
+stated it, in the developer's own words, at the times given.
+
+**What "approved" does and does not mean in this record.** Nowhere in this subsection does
+"approved" describe the RPGLogs correspondence outcome — no such approval exists, and none is
+implied by silence. Where "developer-approved" or "the developer's go-ahead" appears elsewhere in
+this Part (for example, describing the production deploy confirmation itself), it refers only to
+the developer's own authorization to ship — a distinct fact from whether RPGLogs said yes — and
+the two meanings are not interchangeable anywhere in this document.
+
+**Second, distinct deviation — Task 2's literal precondition.** `04-07-PLAN.md` Task 2's own
+`<precondition>` reads: "Task 1 resolved to the approved option (or to conditional with every
+stated condition already implemented and verified). If it resolved to declined,
+silent-before-14 or silent-at-14, this task does not run." Task 1 did not resolve to `approved`
+under the above — it resolved to an explicit developer-directed override of a
+`silent-before-14`-shaped state. Task 2 runs anyway, on that same override authority, not on the
+literal precondition text. This is named here explicitly, a second time, rather than silently
+proceeding as if the literal precondition had been met — citing the same two verbatim developer
+quotes above (2026-09-21 "yes, ship without approval..." and 2026-09-22 "deploy").

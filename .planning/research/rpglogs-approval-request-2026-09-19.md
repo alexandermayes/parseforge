@@ -37,3 +37,4 @@ info@lootlistplus.com
 | Date (UTC) | Direction | Summary | Verbatim copy |
 |---|---|---|---|
 | 2026-09-21 | deferred | developer deferred sending on 2026-09-21; captures completed | — |
+| 2026-09-22 | no-reply | No reply as of 2026-09-22 — and no request has ever been sent (the draft remains unsent since the developer's 2026-09-21 deferral). No mailbox was checked this session because nothing was ever sent to reply to; this row records the correspondence state honestly, not a checked-and-empty inbox. See `docs/OPS-01-SHIP-GATE.md` Part 6 `### Deploy decision (Phase 4, 2026-09-22)` for the full record of the developer's operator-override decision to proceed without this approval. | — |
