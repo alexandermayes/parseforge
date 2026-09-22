@@ -201,10 +201,11 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
         />
       )}
       {/*
-        Occluding cover, not a visibility toggle (round-3 defect fix).
-        `visibility: hidden` on the <ins> (tried in round 2) is defeated the
-        moment adsbygoogle.js processes the pushed unit: it inserts a child
-        div (`#aswift_N_host`) INSIDE the <ins> with its own explicit
+        Occluding cover, not a visibility toggle (round-3 defect fix; the
+        `bg-noise` grain match below is round-4). `visibility: hidden` on
+        the <ins> (tried in round 2) is defeated the moment adsbygoogle.js
+        processes the pushed unit: it inserts a child div
+        (`#aswift_N_host`) INSIDE the <ins> with its own explicit
         `visibility: visible` inline style, well before `data-ad-status`
         resolves — CSS lets any descendant re-assert visibility regardless
         of how many ancestor levels up it was set hidden, so the blank
@@ -215,18 +216,36 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
         something Google's script can reach, and paints on top of the
         <ins>'s entire subtree by document order — Google never sets a
         z-index on anything it injects, so tree order alone already decides
-        paint order here; the explicit z-10 is additional insurance. It uses
-        the page's own themed background (`bg-background`, the same token
-        `app/layout.tsx`'s `<body>` sets) so an unfilled/loading box reads as
-        "nothing here" in both light and dark mode, and the wrapper's
-        `overflow-hidden` stops any oversized frame Google renders from
-        spilling past the reserved box (D-04: the box size itself never
-        changes). Removed only once a confirmed "filled" status is backed by
-        an actually-rendered iframe (see the MutationObserver above) — never
-        on `data-ad-status` alone.
+        paint order here; the explicit z-10 is additional insurance.
+        Removed only once a confirmed "filled" status is backed by an
+        actually-rendered iframe (see the MutationObserver above) — never on
+        `data-ad-status` alone.
+
+        Round 4: the flat `bg-background` fill alone (round 3's only
+        treatment) was a real, if subtle, defect — the page's own
+        `.bg-noise::before` (app/globals.css, `<body>`) paints a faint 3%
+        grain texture everywhere the page is otherwise transparent, but an
+        opaque cover necessarily occludes that fixed layer, leaving a
+        flat, textureless rectangle in an otherwise-grainy page. A developer
+        screenshot of the third preview caught this as a subtly
+        different-shade box; pixel-sampled CDP screenshots confirmed it
+        numerically (an UNCLIPPED, full-viewport capture — a `clip`-scoped
+        one silently failed to see the fixed noise layer under headless
+        Chrome + software rendering, a false-negative this round also
+        diagnosed): the cover read flat at stddev 0 while an adjacent
+        page-background control read a small but real stddev (~0.5-0.8) and
+        a ~1-3 RGB-level warmer mean, in both themes, at both a desktop and
+        a phone viewport. `ad-cover-noise` (app/globals.css) adds the same
+        SVG turbulence tile at the same 0.03 opacity via a local (`position:
+        absolute`, not `fixed`) pseudo-element scoped to this cover, so the
+        occluded rectangle carries the same texture as the page around it
+        instead of standing out as a flat patch.
       */}
       {!filled && (
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 bg-background" />
+        <div
+          aria-hidden="true"
+          className="ad-cover-noise pointer-events-none absolute inset-0 z-10 bg-background"
+        />
       )}
     </div>
   );
