@@ -3,6 +3,8 @@ import {
   deriveConsentAction,
   startConsentListener,
   getConsentState,
+  deriveConsentGateOutcome,
+  type ConsentGatePath,
 } from "./consent";
 
 type TcfCallback = (tcData: unknown, success: boolean) => void;
@@ -148,5 +150,121 @@ describe("startConsentListener", () => {
       expect.objectContaining({ action: "opt-in-full", gdprApplies: true }),
     );
     dispose();
+  });
+});
+
+describe("deriveConsentGateOutcome", () => {
+  const GATE_PATHS: ConsentGatePath[] = [
+    "geo-non-consent-region",
+    "tcf-accept",
+    "tcf-reject",
+    "tcf-timeout",
+  ];
+
+  it("opts a non-consent-region visitor in with no event, regardless of a null TCF action", () => {
+    expect(deriveConsentGateOutcome(false, null)).toEqual({
+      gatePath: "geo-non-consent-region",
+      optIn: true,
+      startReplay: true,
+      event: null,
+      eventProps: {},
+    });
+  });
+
+  it("ignores a pending TCF action on the non-consent-region path — geo is the sole authority", () => {
+    expect(deriveConsentGateOutcome(false, "pending")).toEqual({
+      gatePath: "geo-non-consent-region",
+      optIn: true,
+      startReplay: true,
+      event: null,
+      eventProps: {},
+    });
+  });
+
+  it("ignores a cookieless TCF action on the non-consent-region path — geo is the sole authority", () => {
+    expect(deriveConsentGateOutcome(false, "cookieless")).toEqual({
+      gatePath: "geo-non-consent-region",
+      optIn: true,
+      startReplay: true,
+      event: null,
+      eventProps: {},
+    });
+  });
+
+  it("returns null for a consent-region visitor whose TCF listener hasn't resolved yet", () => {
+    expect(deriveConsentGateOutcome(true, null)).toBeNull();
+  });
+
+  it("resolves an EEA/UK full opt-in to tcf-accept with an accepted consent_resolved event", () => {
+    expect(deriveConsentGateOutcome(true, "opt-in-full")).toEqual({
+      gatePath: "tcf-accept",
+      optIn: true,
+      startReplay: true,
+      event: "consent_resolved",
+      eventProps: { accepted: true, gdpr_applies: true },
+    });
+  });
+
+  it("resolves an EEA/UK reject to tcf-reject with a rejected consent_resolved event and no opt-in or replay", () => {
+    expect(deriveConsentGateOutcome(true, "cookieless")).toEqual({
+      gatePath: "tcf-reject",
+      optIn: false,
+      startReplay: false,
+      event: "consent_resolved",
+      eventProps: { accepted: false, gdpr_applies: true },
+    });
+  });
+
+  it("resolves a CMP timeout to tcf-timeout with a consent_unavailable event and no opt-in or replay", () => {
+    expect(deriveConsentGateOutcome(true, "pending")).toEqual({
+      gatePath: "tcf-timeout",
+      optIn: false,
+      startReplay: false,
+      event: "consent_unavailable",
+      eventProps: { reason: "tcfapi_timeout" },
+    });
+  });
+
+  it("resolves the region-list-versus-CMP mismatch (opt-in-non-eea reached with isConsentRegion true) to tcf-accept with gdpr_applies false", () => {
+    expect(deriveConsentGateOutcome(true, "opt-in-non-eea")).toEqual({
+      gatePath: "tcf-accept",
+      optIn: true,
+      startReplay: true,
+      event: "consent_resolved",
+      eventProps: { accepted: true, gdpr_applies: false },
+    });
+  });
+
+  it("every non-null outcome's gatePath is one of the four ConsentGatePath literals", () => {
+    const inputs: Array<[boolean, Parameters<typeof deriveConsentGateOutcome>[1]]> = [
+      [false, null],
+      [true, "opt-in-full"],
+      [true, "cookieless"],
+      [true, "pending"],
+      [true, "opt-in-non-eea"],
+    ];
+    for (const [isConsentRegion, tcfAction] of inputs) {
+      const outcome = deriveConsentGateOutcome(isConsentRegion, tcfAction);
+      expect(outcome).not.toBeNull();
+      expect(GATE_PATHS).toContain(outcome!.gatePath);
+    }
+  });
+
+  it("never returns startReplay true while optIn is false", () => {
+    const inputs: Array<[boolean, Parameters<typeof deriveConsentGateOutcome>[1]]> = [
+      [false, null],
+      [false, "pending"],
+      [false, "cookieless"],
+      [true, null],
+      [true, "opt-in-full"],
+      [true, "cookieless"],
+      [true, "pending"],
+      [true, "opt-in-non-eea"],
+    ];
+    for (const [isConsentRegion, tcfAction] of inputs) {
+      const outcome = deriveConsentGateOutcome(isConsentRegion, tcfAction);
+      if (!outcome) continue;
+      expect(outcome.optIn === false && outcome.startReplay === true).toBe(false);
+    }
   });
 });

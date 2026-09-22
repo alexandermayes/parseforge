@@ -1,0 +1,59 @@
+{
+  "_provenance": {
+    "query": "RateLimitCheck (rateLimitData), sampled multiple times across this run",
+    "recorded": "2026-09-20T00:31:04.159Z",
+    "entity": "this run's own WCL client-credentials key budget (not report-specific)",
+    "api_host": "www.warcraftlogs.com"
+  },
+  "samples": [
+    {
+      "label": "before",
+      "recorded": "2026-09-20T00:31:00.706Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 790.23,
+      "pointsResetIn": 1838
+    },
+    {
+      "label": "after-report-rankings",
+      "recorded": "2026-09-20T00:31:01.180Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 793.23,
+      "pointsResetIn": 1837
+    },
+    {
+      "label": "after-encounter-rankings",
+      "recorded": "2026-09-20T00:31:01.425Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 796.24,
+      "pointsResetIn": 1837
+    },
+    {
+      "label": "after-character-rankings",
+      "recorded": "2026-09-20T00:31:01.790Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 803.25,
+      "pointsResetIn": 1837
+    },
+    {
+      "label": "after-zones",
+      "recorded": "2026-09-20T00:31:02.011Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 805.25,
+      "pointsResetIn": 1837
+    },
+    {
+      "label": "after-guild-rankings",
+      "recorded": "2026-09-20T00:31:02.387Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 825.54,
+      "pointsResetIn": 1836
+    },
+    {
+      "label": "end",
+      "recorded": "2026-09-20T00:31:04.159Z",
+      "limitPerHour": 18000,
+      "pointsSpentThisHour": 855.54,
+      "pointsResetIn": 1834
+    }
+  ]
+}

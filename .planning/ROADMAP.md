@@ -21,12 +21,13 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Themes & Consent** - Token audit unlocks a dark/light toggle; consent layer gates ads and PostHog replay (completed 2026-09-06)
 - [x] **Phase 2: Accuracy & Analysis Depth** - Verified game data, tested engines, cast timeline, healer metrics (completed 2026-09-08)
-- [ ] **Phase 2.1: PostHog Consent Gate Hotfix** (INSERTED) - Server-side geo opt-in for non-EEA; live-traffic OPS-01 re-verification
-- [ ] **Phase 3: Share Loop** - Roast/award cards, per-player permalinks, share CTA that survives later phases
+- [x] **Phase 2.1: PostHog Consent Gate Hotfix** (INSERTED) - Server-side geo opt-in for non-EEA; live-traffic OPS-01 re-verification (completed 2026-09-15)
+- [x] **Phase 3: Share Loop** - Roast/award cards, per-player permalinks, share CTA that survives later phases (completed 2026-09-19)
 - [ ] **Phase 4: Ads Live** - AdSense in reserved, consent-gated slots that never crowd the core flow
 - [ ] **Phase 5: Community & Cross-Promotion** - Dedicated Discord, LootList+ two-way links, auto-posted reports
 - [ ] **Phase 6: Discoverability & Content** - Programmatic pages, fixed guides, CTR metadata, structured data
 - [ ] **Phase 7: Redesign, De-bloat & Hardening** - Route-by-route visual overhaul behind an SEO gate; CSP enforcing
+- [ ] **Phase 8: WoW Forever Readiness (F0)** - Data-free prep so Forever support becomes "add rows + record fixtures" once WCL/wago expose it (queued 2026-09-19; unblocked, may be pulled forward)
 
 ## Phase Details
 
@@ -136,8 +137,29 @@ Plans:
   3. `consent_resolved` / `consent_unavailable` / `theme_changed` / `timeline_*` events appear in project 337485 within one hour of the prod deploy, with a `consent_gate_path` property distinguishing geo / TCF / timeout.
   4. `docs/OPS-01-SHIP-GATE.md` requires a post-deploy live-traffic check (≥ N `$pageview` from ≥ 2 non-EEA countries within 60 min) and this phase passes it for real; Phase 1 and 2 VERIFICATION docs carry an addendum noting their PostHog criterion was only met here.
 
-**Plans**: TBD
+**Plans**: 8/8 plans complete (incl. 4 gap-closure plans) — phase completed 2026-09-15 after human UAT (2/2), Nyquist validation and security verification
 **UI hint**: no
+
+Plans:
+**Wave 1**
+
+- [x] 02.1-01-PLAN.md — Tracer: server-side geo classification through `/api/geo` to an immediate PostHog opt-in, with the first `$pageview` gated on the consent path resolving
+- [x] 02.1-02-PLAN.md — OPS-01 hardening: mandatory post-deploy live-traffic check, plus dated addenda correcting the Phase 1 and Phase 2 records
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 02.1-03-PLAN.md — Preview deploy and the bounded headless-Chrome netlog proof that the first `$pageview` leaves the browser
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 02.1-04-PLAN.md — Approval-gated production deploy, the live-traffic gate run for real, and the dated Phase 2.1 sign-off
+
+**Gap closure** *(added 2026-09-14 from `02.1-VERIFICATION.md` — run with `/gsd-execute-phase 02.1 --gaps-only`; each depends on the previous)*
+
+- [x] 02.1-05-PLAN.md — Gap B: read the pending Vercel Web Analytics figure for the 22:16:59Z–23:16:59Z window, score item-7 threshold 3, then sign Part 4 with a date or record FAIL honestly (never lower the bar)
+- [x] 02.1-06-PLAN.md — Gap A (automatable half): drive the theme toggle and Timeline tab on production from a non-consent-region session, re-run the item-7 HogQL, record `theme_changed` / `timeline_*` with their `consent_gate_path`
+- [x] 02.1-07-PLAN.md — Developer-approved redeploy of the five code-review fixes (CR-01, WR-01..04) so WR-03 is testable, plus a fresh 60-minute item-7 window measured for real
+- [x] 02.1-08-PLAN.md — Truth 4 / MONY-01: EEA/UK TCF observation (reject, full opt-in, CMP re-confirm) as a human checkpoint with an honest not-performed branch
 
 **Notes**: Diagnosis in `02.1-DIAGNOSIS.md`. Root cause: `cookieless_mode: "on_reject"` makes PENDING consent *drop* events in posthog-js 1.360, and opt-in depended on `__tcfapi` calling back — which it never does for fresh visitors. Capture fell from ~4–10k events/day to 3–7/day on 2026-09-06. Not a traffic collapse.
 
@@ -154,8 +176,43 @@ Plans:
   3. Share actions are reachable without hunting on the analyze page on both desktop and mobile, and a protected-elements checklist naming the share CTA and OG pipeline exists for Phases 4 and 7 to honor.
   4. PostHog reports share rate per analysis against the ~2.8% baseline, and GSC verification confirms the new share routes/OG changes did not disturb indexing or canonicals (OPS-01 gate).
 
-**Plans**: TBD
+**Plans**: 10 plans — 7 executed; 03-08 through 03-10 are gap closure for the OPS-01 / GSC half of success criterion 4 (pending)
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [x] 03-01-PLAN.md — Awards tracer: fight → awards engine → OG image → forwarded metadata, plus the one normalized share-link module
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03-02-PLAN.md — Fill the award pool to fifteen conditional, stat-backed rules and lock the pool-wide invariants
+- [x] 03-03-PLAN.md — Per-player permalink: OG receipts (Kill/Wipe, length, vs-top-N, proof line) and the Share my parse button
+- [x] 03-04-PLAN.md — Analyze-page share surfaces: Raid-tab awards panel with its real preview, normalized header Share, bottom bar removed, landing rules and `ref` attribution
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03-05-PLAN.md — `docs/PROTECTED-ELEMENTS.md`, the `protected-elements` gate script, and the OPS-01 item plus share-rate HogQL
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03-06-PLAN.md — Full local gate, preview deploy, and the developer's award-pool / Discord-unfurl / mobile review (OPS-01 Part 5, unsigned)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03-07-PLAN.md — Approval-gated production deploy, the item-7 live-traffic and share-rate measurement, GSC pass, and an honest Part 5 sign-off
+
+**Wave 6** *(gap closure — blocked on Wave 5 completion)*
+
+- [x] 03-08-PLAN.md — The Search Console pass that was never run, plus the three developer-only backstops (Part 5 rows 4-9)
+
+**Wave 7** *(gap closure — blocked on Wave 6 completion)*
+
+- [x] 03-09-PLAN.md — Item-7 re-measure on a fully elapsed busier UTC window, the Web Analytics read for threshold 3, and the RESEARCH A3 consent-path disposition (Part 5 rows 1 and 3)
+
+**Wave 8** *(gap closure — blocked on Wave 7 completion)*
+
+- [x] 03-10-PLAN.md — The date-gated share-rate row (on/after 2026-09-23T09:15Z), the Part 5 close-out and its single sign-off, REQUIREMENTS Addendum 4, and the WINDOWS ledger dispositions (Part 5 row 2)
 
 **Notes**: Built on the existing `/og/route.tsx` infrastructure. The protected-elements checklist produced here is a hard input to the Phase 4 ad placement whitelist.
 
@@ -163,8 +220,8 @@ Plans:
 
 **Goal**: ParseForge earns ad revenue without the paste-and-analyze flow getting measurably worse
 **Mode:** mvp
-**Depends on**: Phase 1 (consent), Phase 3 (protected-elements checklist)
-**Requirements**: MONY-02, MONY-03
+**Depends on**: Phase 1 (consent), `docs/PROTECTED-ELEMENTS.md` (Phase 3)
+**Requirements**: MONY-02, MONY-03 (+ R0 contract scope from `.planning/research/PARSEFORGE-RANKINGS-SPEC.md` §7, folded in 2026-09-19 — no new v1 requirement ID)
 **Success Criteria** (what must be TRUE):
 
   1. A visitor sees ads only in whitelisted slots; the paste box, analysis tables, and share CTA are never covered, pushed down, or delayed by ad loading.
@@ -173,10 +230,36 @@ Plans:
   4. LCP/INP/CLS on `/`, `/analyze/*`, and `/tbc-audit` are captured before ad code ships and re-measured after, with a written rollback trigger that has been agreed before launch.
   5. AdSense reports revenue on live traffic, PostHog tracks ad-slot impact on analyze completion, and GSC shows no ranking movement attributable to the change (OPS-01 gate).
 
-**Plans**: TBD
+**Plans**: 6/7 plans executed
+
+Plans:
+**Wave 1**
+
+- [x] 04-01-PLAN.md — R0-1 approval request + the pre-ad CWV baseline and rollback trigger (OPS-01 Part 6)
+- [x] 04-02-PLAN.md — R0-2: rankings + rate-limit fixtures via the extended WCL recorder
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 04-03-PLAN.md — **Tracer**: one reserved, consent-gated ad slot end-to-end, plus CSP hosts, /ads.txt and the protected-elements slot gate
+- [x] 04-04-PLAN.md — R0-3: rankings blob types, pure parse-lens engine, Redis rate-budget gate (no UI)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 04-05-PLAN.md — the remaining three D-02 placements, the /privacy disclosure, and AdSense account configuration
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 04-06-PLAN.md — preview deploy: netlog proof of the consent gate, measured boxes, CSP harvest, human passes
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 04-07-PLAN.md — approval-gated production ads deploy + post-deploy OPS-01 evidence and sign-off
+
 **UI hint**: yes
 
-**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7). Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal.
+**Notes**: Ads ship while CSP is still report-only so all new script sources surface as violation reports (feeds OPS-02 in Phase 7).
+
+**R0 — WCL contract & approval (folded into this phase, decided 2026-09-19):** the RPGLogs API Terms make advertising "commercial" use that needs prior written approval, so Phase 4's first plan must (R0-1) save dated copies of the ToS + API-docs pages to `.planning/research/`, send the approval request (AdSense on the analyzer + the planned rankings lens + expected volume + Redis caching) and record the thread; the ads deploy plan is **gated on that reply**. Also in scope: (R0-2) extend `scripts/record-wcl-fixtures.mjs` to record `rateLimitData`, `report.rankings`, `zoneRankings`/`encounterRankings`, `characterRankings`/`fightRankings` page 1 and guild `members`/`attendance` for the public demo entities as `lib/__fixtures__/rankings-*.json`; (R0-3) `lib/wcl-types.ts` rankings types, a pure `lib/rankings/parse-lens.ts` (blob → per-player parse rows, honouring `hidden`) and a `rateLimitData`→Redis budget reader with a 90% gate — tests only, **no UI** (R1+ stay un-executed until the approval reply). `/privacy` must mention WCL-sourced data and ad sharing before ads ship. Research flag: verify current ad-network eligibility thresholds directly at signup before finalizing; model expected revenue (est. $50–300/mo) against the CWV/UX cost and treat as a reversible experiment if marginal. The ad-placement whitelist must be checked against `docs/PROTECTED-ELEMENTS.md` — no ad slot may cover, push down, or delay an element that file names — and `npm run protected-elements` must stay green.
 
 ### Phase 5: Community & Cross-Promotion
 
@@ -233,23 +316,43 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-**Notes**: Rollout order is low-traffic routes first, high-traffic (`/`, `/analyze/*`, `/tbc-audit`) last. Uses the project's `impeccable` skill for the design work. OPS-02 lands at the very end of the milestone, after every ad/CMP source has been discovered through report-only violation reports.
+**Notes**: Rollout order is low-traffic routes first, high-traffic (`/`, `/analyze/*`, `/tbc-audit`) last. Uses the project's `impeccable` skill for the design work. OPS-02 lands at the very end of the milestone, after every ad/CMP source has been discovered through report-only violation reports. The redesign may not remove any element listed in `docs/PROTECTED-ELEMENTS.md`, and `npm run protected-elements` is part of the per-route gate.
+
+### Phase 8: WoW Forever Readiness (F0)
+
+**Goal**: Every *structural* blocker to supporting World of Warcraft Forever is removed now, so the gated F1/F2 phases become data-only work the day WCL exposes Forever logs (raids from 9 Dec 2026)
+**Mode:** mvp
+**Depends on**: Phase 2 (generated game data, fixtures recorder)
+**Requirements**: none of the 24 v1 IDs — prep queued by the developer on 2026-09-19 from `.planning/research/WOW-FOREVER.md` §5 (F0-1…F0-4); F1/F2 stay outside this milestone until the upstream signal fires (re-check 4 Nov / 9 Dec 2026)
+**Success Criteria** (what must be TRUE):
+
+  1. `scripts/probe-wcl-game-versions.mjs` lists WCL `worldData` expansions/zones/partitions from env credentials without printing secrets, snapshots them into `docs/WCL-GAME-VERSIONS.md`, and exits 1 when a Forever zone appears (the unblock detector).
+  2. `npm run regen-game-data -- --report` accepts a fourth, report-only `forever` era descriptor with `hasGems:false` tolerated, while Classic+TBC/WotLK/Cata output is byte-identical (audit diff = build line only).
+  3. Domain-scoped lookups (`lookupEnchantName/lookupGem…/lookupConsumable(id, domain)`) exist with tests; `lib/cla-constants.ts` re-exports stay byte-compatible; pinned facts 2667/3003/32196 unchanged.
+  4. A single WCL link helper maps domain → subdomain and replaces the hard-coded `classic.warcraftlogs.com` links; a low-cardinality `expansion_domain` PostHog property ships with the change (OPS-01).
+  5. Full `npm test`, `npx tsc --noEmit`, `npm run lint` green with no new findings.
+
+**Plans**: TBD
+**UI hint**: no
+
+**Notes**: Deliberately data-free — no `game-data.forever.ts` is written by default (`--enable-forever` flag only). R0-2's fixtures extension and F0-1's probe are **one script, two consumers** (see PARSEFORGE-RANKINGS-SPEC §7 R0-2); if Phase 4 lands R0-2 first, F0-1 extends it rather than duplicating it.
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5 → 6 → 7 → 8 (Phase 8 is unblocked and may be pulled forward at the developer's call)
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Themes & Consent | 9/9 | Complete    | 2026-09-06 |
 | 2. Accuracy & Analysis Depth | 9/9 | Complete    | 2026-09-08 |
-| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 0/TBD | Not started | - |
-| 3. Share Loop | 0/TBD | Not started | - |
-| 4. Ads Live | 0/TBD | Not started | - |
+| 2.1. PostHog Consent Gate Hotfix (INSERTED) | 8/8 | Complete    | 2026-09-15 |
+| 3. Share Loop | 10/10 | Complete    | 2026-09-19 |
+| 4. Ads Live | 6/7 | In Progress|  |
 | 5. Community & Cross-Promotion | 0/TBD | Not started | - |
 | 6. Discoverability & Content | 0/TBD | Not started | - |
 | 7. Redesign, De-bloat & Hardening | 0/TBD | Not started | - |
+| 8. WoW Forever Readiness (F0) | 0/TBD | Not started | - |
 
 ## Requirement Coverage
 
@@ -264,6 +367,7 @@ All 24 v1 requirements mapped to exactly one phase. No orphans, no duplicates.
 | 5. Community & Cross-Promotion | COMM-01, COMM-02, SHARE-04 | 3 |
 | 6. Discoverability & Content | SEO-01, SEO-02, SEO-03, SEO-04 | 4 |
 | 7. Redesign, De-bloat & Hardening | DSGN-02, DSGN-04, SEO-05, OPS-02 | 4 |
+| 8. WoW Forever Readiness (F0) | — (prep; no v1 requirement) | 0 |
 | **Total** | | **24** |
 
 ## Sequencing Constraints Honored

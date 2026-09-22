@@ -2,7 +2,12 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { CLASS_COLORS_HEX } from "@/lib/constants";
 import { isValidReportCode } from "@/lib/api-utils";
-import type { AnalysisResult, ReportMeta } from "@/lib/wcl-types";
+import { formatFightTime } from "@/lib/utils";
+import type { AnalysisResult, ReportMeta, RaidOverviewResult, AwardsResult } from "@/lib/wcl-types";
+import { computeAwards, MIN_AWARDS_FOR_CARD } from "@/lib/awards-engine";
+
+/** The fight outcome the player branch resolves from ReportMeta — null when the meta fetch failed or no fight matched. */
+type PlayerCardOutcome = { kill: boolean; bossPercentage: number } | null;
 
 // Dynamic Open Graph image for shared analyze links. Only hit by link unfurlers
 // (Discord/Reddit/etc.), so the analysis fetch here is fine — it reuses the
@@ -90,7 +95,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PlayerCard({ data }: { data: AnalysisResult }) {
+function PlayerCard({ data, outcome }: { data: AnalysisResult; outcome: PlayerCardOutcome }) {
   const classColor = CLASS_COLORS_HEX[data.playerClass] ?? "#FFFFFF";
   const grade = data.metricPercentiles?.overallGrade ?? "—";
   const gradeColor = GRADE_HEX[grade] ?? MUTED;
@@ -99,13 +104,71 @@ function PlayerCard({ data }: { data: AnalysisResult }) {
   const dps = data.dps?.playerDps ?? 0;
   const unit = data.playerRole === "healer" ? "HPS" : "DPS";
 
+  // D-10 receipts: the comparison label, worded exactly as the Discord
+  // scorecard already words it.
+  const compLabel =
+    data.topPlayersCount > 1
+      ? `vs top ${data.topPlayersCount} ${data.playerSpec} ${data.playerClass}s`
+      : `vs #1 ${data.topPlayerName}`;
+
+  // The one proof line. Reads only data.healer (already computed by
+  // lib/healer-metrics.ts) or the shared metricPercentiles entry — never a
+  // second calculation of either number (Phase 2 D-08 lineage).
+  let proofLine: string | null;
+  if (data.playerRole === "healer") {
+    proofLine = data.healer?.hasHealing
+      ? `${formatNumber(data.healer.effectiveHps)} effective HPS · ${Math.round(data.healer.overhealPercent)}% overheal`
+      : "—";
+  } else {
+    const activeTime = data.metricPercentiles?.metrics?.find((m) => m.metric === "activeTime");
+    proofLine = activeTime
+      ? `Active Time ${activeTime.percentile}% · ${activeTime.playerValue} CPM`
+      : null;
+  }
+
   return (
     <Shell>
       <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "space-between", gap: "40px" }}>
         {/* Left: identity + stats */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "680px" }}>
-          <span style={{ fontSize: "22px", color: MUTED }}>{data.encounterName}</span>
-          <span style={{ fontSize: "76px", fontWeight: 800, color: classColor, lineHeight: 1.05 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "660px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <span style={{ fontSize: "22px", color: MUTED }}>{data.encounterName}</span>
+            {outcome != null && (
+              outcome.kill ? (
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    padding: "4px 12px",
+                    borderRadius: "9999px",
+                    color: "#4ade80",
+                    background: "#4ade801a",
+                  }}
+                >
+                  KILL
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    padding: "4px 12px",
+                    borderRadius: "9999px",
+                    color: "#f87171",
+                    background: "#f871711a",
+                  }}
+                >
+                  {`WIPE ${Math.round(outcome.bossPercentage / 100)}%`}
+                </div>
+              )
+            )}
+            <span style={{ fontSize: "22px", color: FAINT }}>
+              {"· "}{formatFightTime(data.fightDuration)}
+            </span>
+          </div>
+          <span style={{ fontSize: "68px", fontWeight: 800, color: classColor, lineHeight: 1.05 }}>
             {data.playerName}
           </span>
           <span style={{ fontSize: "26px", color: MUTED }}>{data.playerSpec} {data.playerClass}</span>
@@ -118,6 +181,32 @@ function PlayerCard({ data }: { data: AnalysisResult }) {
               <span style={{ fontSize: "20px", color: FAINT }}>Percentile</span>
               <span style={{ fontSize: "48px", fontWeight: 700, color: gradeColor }}>{pct}</span>
             </div>
+          </div>
+          <div style={{ display: "flex", gap: "28px", marginTop: "20px", fontSize: "22px", color: MUTED, whiteSpace: "nowrap" }}>
+            <span
+              style={{
+                display: "flex",
+                maxWidth: "380px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {compLabel}
+            </span>
+            {proofLine != null && (
+              <span
+                style={{
+                  display: "flex",
+                  maxWidth: "320px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {proofLine}
+              </span>
+            )}
           </div>
         </div>
         {/* Right: grade badge */}
@@ -137,6 +226,113 @@ function PlayerCard({ data }: { data: AnalysisResult }) {
           <span style={{ fontSize: "150px", fontWeight: 800, color: gradeColor, lineHeight: 1 }}>{grade}</span>
           <span style={{ fontSize: "28px", color: MUTED, marginTop: "8px" }}>{score}% overall</span>
         </div>
+      </div>
+    </Shell>
+  );
+}
+
+function AwardsCard({ awards }: { awards: AwardsResult }) {
+  const outcome = awards.outcome;
+  return (
+    <Shell>
+      <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span
+            style={{
+              fontSize: "44px",
+              fontWeight: 800,
+              color: "#fafafa",
+              maxWidth: "780px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {awards.encounterName}
+          </span>
+          {outcome != null && (
+            outcome.kill ? (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#4ade80",
+                  background: "#4ade801a",
+                  border: "2px solid #4ade8066",
+                }}
+              >
+                KILL
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#f87171",
+                  background: "#f871711a",
+                  border: "2px solid #f8717166",
+                }}
+              >
+                {`WIPE ${(outcome.bossPercentage / 100).toFixed(1)}%`}
+              </div>
+            )
+          )}
+        </div>
+        <span style={{ fontSize: "20px", color: GOLD, fontWeight: 600, letterSpacing: "1px" }}>
+          RAID AWARDS
+        </span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "8px", marginTop: "20px" }}>
+        {awards.awards.map((award) => (
+          <div key={award.id} style={{ display: "flex", alignItems: "center", height: "52px", gap: "18px" }}>
+            <span style={{ display: "flex", width: "40px", fontSize: "30px" }}>{award.icon}</span>
+            <span
+              style={{
+                fontSize: "26px",
+                fontWeight: 700,
+                color: "#fafafa",
+                width: "300px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {award.title}
+            </span>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                maxWidth: "430px",
+                gap: "6px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              {award.winners.map((w, i) => (
+                <span
+                  key={w.sourceId}
+                  style={{ fontSize: "26px", fontWeight: 600, color: CLASS_COLORS_HEX[w.className] ?? "#FFFFFF" }}
+                >
+                  {w.name}
+                  {i < award.winners.length - 1 ? ", " : ""}
+                </span>
+              ))}
+              {award.extraWinnerCount > 0 && (
+                <span style={{ fontSize: "26px", fontWeight: 600, color: MUTED }}>+{award.extraWinnerCount}</span>
+              )}
+            </div>
+            <span style={{ fontSize: "22px", color: MUTED, marginLeft: "auto", whiteSpace: "nowrap" }}>
+              {award.stat}
+            </span>
+          </div>
+        ))}
       </div>
     </Shell>
   );
@@ -189,6 +385,7 @@ export async function GET(request: NextRequest) {
     const reportCode = searchParams.get("report");
     const fightRaw = searchParams.get("fight");
     const sourceRaw = searchParams.get("source");
+    const view = searchParams.get("view");
     // Fetch our own API by an absolute origin. Pin to the canonical host in
     // production (an attacker can't steer us via a spoofed Host/origin), and
     // only fall back to the request origin in local dev.
@@ -202,20 +399,55 @@ export async function GET(request: NextRequest) {
       return new ImageResponse(<ReportCard meta={null} reportCode="" />, { ...size, headers });
     }
 
-    // Player scorecard only when fight + source are valid non-negative integers.
     const fightId = fightRaw != null ? Number.parseInt(fightRaw, 10) : NaN;
     const sourceId = sourceRaw != null ? Number.parseInt(sourceRaw, 10) : NaN;
+
+    // Awards card: an exact-literal check on `view`, before any fetch (ASVS
+    // V5 — an unrecognised value falls through to the branches below rather
+    // than reaching a network call).
+    if (view === "awards" && Number.isInteger(fightId) && fightId >= 0) {
+      const [overview, meta] = await Promise.all([
+        fetchJson<RaidOverviewResult>(`${origin}/api/raid-overview`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ reportCode, fightId }),
+        }),
+        fetchJson<ReportMeta>(`${origin}/api/report/${reportCode}`),
+      ]);
+      const fightMeta = meta?.fights.find((f) => f.id === fightId);
+      const outcome = fightMeta ? { kill: fightMeta.kill, bossPercentage: fightMeta.bossPercentage } : null;
+      const encounterName = fightMeta?.name ?? overview?.encounterName ?? "";
+      const awards = computeAwards(overview, { name: encounterName, outcome });
+      if (overview && awards.awards.length >= MIN_AWARDS_FOR_CARD) {
+        return new ImageResponse(<AwardsCard awards={awards} />, { ...size, headers });
+      }
+      // Falls through to the existing ReportCard branch below — the awards
+      // card never fails the unfurl, it just isn't ready yet.
+    }
+
+    // Player scorecard only when fight + source are valid non-negative integers.
     if (
       Number.isInteger(fightId) && fightId >= 0 &&
       Number.isInteger(sourceId) && sourceId >= 0
     ) {
-      const data = await fetchJson<AnalysisResult>(`${origin}/api/analyze`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ reportCode, fightId, sourceId }),
-      });
+      // Two fetches in parallel: the player analysis, and report meta to
+      // resolve the fight outcome for the D-10 Kill/Wipe receipt. A failed
+      // meta fetch (or no matching fight) degrades to `outcome: null` — it
+      // never turns into a thrown error or a changed branch (RESEARCH Pitfall 3).
+      const [data, meta] = await Promise.all([
+        fetchJson<AnalysisResult>(`${origin}/api/analyze`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ reportCode, fightId, sourceId }),
+        }),
+        fetchJson<ReportMeta>(`${origin}/api/report/${reportCode}`),
+      ]);
       if (data?.playerName) {
-        return new ImageResponse(<PlayerCard data={data} />, { ...size, headers });
+        const fightMeta = meta?.fights.find((f) => f.id === fightId);
+        const outcome: PlayerCardOutcome = fightMeta
+          ? { kill: fightMeta.kill, bossPercentage: fightMeta.bossPercentage }
+          : null;
+        return new ImageResponse(<PlayerCard data={data} outcome={outcome} />, { ...size, headers });
       }
     }
 

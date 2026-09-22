@@ -1,44 +1,44 @@
 ---
 gsd_state_version: 1.0
-current_phase: "2.1"
-current_phase_name: PostHog Consent Gate Hotfix
-status: planning
-stopped_at: Phase 2.1 inserted (urgent) — PostHog capture regression diagnosed, ready to plan
-last_updated: "2026-09-14T19:00:48.962Z"
-last_activity: 2026-09-14
-last_activity_desc: Phase 2 review fixes (PR #16); PostHog capture regression found, Phase 2.1 inserted
-state_head: 53db5a0f5d1c0c1ccefad272df2e9abe2e6345ec
+current_phase: 04
+current_phase_name: Ads Live
+status: verifying
+stopped_at: Completed 04-07-PLAN.md (Task 3 only; Tasks 1-2 done in prior dispatches)
+last_updated: "2026-09-22T19:58:21.223Z"
+last_activity: 2026-09-19
+last_activity_desc: Phase 04 execution started
+state_head: b7b5f4fa783a32a3c1d705fc8c20499624688872
 progress:
-  total_phases: 8
-  completed_phases: 2
-  total_plans: 18
-  completed_plans: 18
-  percent: 25
+  total_phases: 9
+  completed_phases: 4
+  total_plans: 43
+  completed_plans: 43
+  percent: 44
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-08 after Phase 2)
+See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 
 **Core value:** A player pastes a Warcraft Logs URL and instantly gets accurate, actionable answers to "why is my parse low" — accuracy is non-negotiable.
-**Current focus:** Phase 2.1 — PostHog Consent Gate Hotfix (URGENT: capture ~99.9% down since 2026-09-06; see `02.1-DIAGNOSIS.md`). Phase 3 Share Loop follows.
+**Current focus:** Phase 04 — Ads Live
 
 ## Current Position
 
-Phase: 3 — Share Loop
-Plan: Not started
-Status: planning
-Last activity: 2026-09-08 — Phase 02 complete, transitioned to Phase 3
+Phase: 04 (Ads Live) — EXECUTING
+Plan: 7 of 7
+Status: Phase complete — ready for verification
+Last activity: 2026-09-19 — Phase 04 execution started
 
-Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans complete)
+Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 planned plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 18
+- Total plans completed: 36
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -48,6 +48,8 @@ Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans 
 |-------|-------|-------|----------|
 | 01 | 9 | - | - |
 | 02 | 9 | - | - |
+| 02.1 | 8 | - | - |
+| 03 | 10 | - | - |
 
 **Recent Trend:**
 
@@ -77,6 +79,31 @@ Progress: [███░░░░░░░] 29% (2/7 phases; 18/18 planned plans 
 | Phase 02-accuracy-analysis-depth P07 | 45min | 2 tasks | 5 files |
 | Phase 02-accuracy-analysis-depth P08 | 55min | 3 tasks | 6 files |
 | Phase 02 P09 | 35min | 3 tasks | 1 files |
+| Phase 02.1 P02 | 25min | 2 tasks | 4 files |
+| Phase 02.1 P01 | continuation | 3 tasks | 7 files |
+| Phase 02.1 P03 | 30min | 3 tasks | 2 files |
+| Phase 02.1 P04 | 25min | 3 tasks | 3 files |
+| Phase 02.1 P05 | 20min | 2 tasks | 2 files |
+| Phase 02.1 P06 | 20min | 3 tasks | 1 files |
+| Phase 02.1 P07 | continuation | 3 tasks | 1 files |
+| Phase 02.1 P08 | continuation | 2 tasks | 2 files |
+| Phase 03 P01 | 12min | 2 tasks | 7 files |
+| Phase 03-share-loop P02 | 12min | 2 tasks | 3 files |
+| Phase 03 P03 | 8min | 2 tasks | 3 files |
+| Phase 03 P04 | 11min | 3 tasks | 2 files |
+| Phase 03 P05 | 10min | 3 tasks | 5 files |
+| Phase 03 P06 | 25min | 2 tasks | 3 files |
+| Phase 03 P07 | 35min | 3 tasks | 3 files |
+| Phase 03-share-loop P08 | 12min | 2 tasks | 2 files |
+| Phase 03-share-loop P09 | 8min | 1 tasks | 1 files |
+| Phase 03-share-loop P10 | 15min | 2 tasks | 3 files |
+| Phase 04 P02 | 35min | 3 tasks | 10 files |
+| Phase 04 P04 | 25min | 2 tasks | 5 files |
+| Phase 04 P01 | 55min | 3 tasks | 5 files |
+| Phase 04 P03 | 45min | 3 tasks | 10 files |
+| Phase 04-ads-live P05 | 45min | 3 tasks | 7 files |
+| Phase 04 P06 | 12min | 3 tasks | 1 files |
+| Phase 04-ads-live P07 | 55min | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -96,6 +123,45 @@ Recent decisions affecting current work:
 - [Phase 02 / 02-04, 02-07]: One `lib/healer-metrics.ts` helper feeds both the player card and the raid Healer Breakdown (D-08, parity asserted by test and confirmed live in prod); healer suggestion rules threshold against top healers' own values and DPS-shaped rules are role-gated off.
 - [Phase 02 / 02-02, 02-05]: Timeline idle threshold `max(2000ms, 3×median inter-cast gap)`; death rows merged chronologically; hand-rolled windowing (no virtualisation dependency); WCL `begincast` probes filtered, `-1` targetID = no target.
 - [Phase 02 / 02-09]: Shipped preview-first with push + PR #15 before prod (`dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c`); the harness classifier denied `vercel deploy --prod` for both executor and orchestrator until the developer granted `Bash(vercel deploy:*)`. ASVS review deferred again (tooling absent) with the developer's explicit choice.
+- [Phase 02.1]: [Phase 02.1 / 02-02]: OPS-01 gate hardened with a mandatory post-deploy live-traffic check (item 7: HogQL thresholds, zero-events-is-a-FAIL rule, bounded netlog proof) - an event definition's presence is no longer accepted as ingestion proof (D-08). Phase 1 and Phase 2 VERIFICATION.md records + REQUIREMENTS.md carry dated append-only addenda correcting the PostHog criterion (D-09).
+- [Phase 02.1]: Task 2 (02.1-01): user-selected option a at checkpoint — Gibraltar, Isle of Man, Jersey and Guernsey stay outside CONSENT_REGIONS (no code change needed, Task 1 already implemented the default).
+- [Phase 02.1]: [Phase 02.1 / 02.1-03]: Preview dpl_7JGkziQrpZrhKfvxHJNAmtuXfuFy proved the consent-gate fix end-to-end via headless-Chrome netlog (3 capture requests vs a production baseline of zero); RESEARCH Open Question 1 answered (preview deployments receive real x-vercel-ip-country geo headers).
+- [Phase 02.1]: [Phase 02.1 / 02.1-03]: Found and worked around a previously-unknown false-negative trap in the D-10 netlog technique - posthog-js's built-in bot filter drops all captures for any User-Agent containing "HeadlessChrome" by default; fixed via --user-agent override for this run, logged as WINDOWS.md todo #7 for Part 1's own command text.
+- [Phase 02.1]: [Phase 02.1 / 02.1-04]: Production deploy dpl_HY5319wSDVw3M4ibBU42JrSTgw4e ran the hardened OPS-01 live-traffic gate for the first time - 2 of 3 item-7 thresholds passed with counted PostHog evidence (25 pageviews across 3 non-consent-region countries); the Vercel Web Analytics ratio threshold is PENDING (unreadable this session), so Phase 2.1 was left deliberately unsigned rather than fabricated as complete. OPS-01 remains not-yet-met in REQUIREMENTS.md via an appended addendum.
+- [Phase 02.1]: [Phase 02.1 / 02.1-05]: OPS-01 gate SIGNED (2026-09-15) — Vercel Web Analytics figure (23 page views, recorded as an upper bound) scored PASS against 25 PostHog pageviews (25/23 ~ 108.7% >= 50%); all three item 7 thresholds now PASS. — Developer read the dashboard directly (route a); figure recorded as an upper bound because the range's end time was illegible, but the PASS is invariant to that imprecision since any true figure <= 23 also clears the <= 50 PASS line.
+- [Phase 02.1]: theme_changed, timeline_viewed and timeline_filter_used counted-observed in PostHog project 337485 with consent_gate_path=geo-non-consent-region via a targeted manual test (route: automation-performed, orchestrator-driven headless Chrome scoped to parseforge.gg, developer authorized "you drive it"); consent_resolved/consent_unavailable recorded structurally unobservable from a non-consent-region egress and handed off to 02.1-08; timeline_error not triggered by design (optional step not authorized).
+- [Phase 02.1]: [Phase 02.1 / 02.1-07]: Deployed dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 (commit dd19b0b) on the developer's verbatim "ship it" - all five 02.1-REVIEW-FIX.md commits (90f5a46, 0e03d9b, 7a7cf0c, 9657535, 9da21c4, incl. WR-03 consent_resolved dedupe) are now live in production. — Makes the WR-03 dedupe testable in 02.1-08 against actual reviewed source rather than known-unfixed code; the fail-closed geo body validation (CR-01/90f5a46) is now protecting real visitors too.
+- [Phase 02.1]: [Phase 02.1 / 02.1-07]: This deploy's own OPS-01 item 7 gate row is recorded NOT SIGNED - the new 60-minute window (2026-09-15T19:16:13Z-20:16:13Z) landed on a low-traffic UTC hour: Threshold 1 FAIL (3 pageviews, need 20), Threshold 2 FAIL (1 non-consent-region country, need 2), Threshold 3 NOT EVALUABLE (Vercel CLI API only returns an hour-rounded upper bound, not a window-exact figure). — 02.1-05's 2026-09-14 sign-off is untouched and rests on its own evidence; this deploy needs its own re-measurement on a busier UTC hour with a window-granularity Vercel read to close its own row. Recorded honestly rather than reused, softened, or omitted (docs/OPS-01-SHIP-GATE.md).
+- [Phase 02.1]: [Phase 02.1 / 02.1-08]: EEA/UK/CH TCF observation not performed - developer declined the manual VPN session verbatim ("Stop asking for me to do things. Do it for me please"), and no automation-side EEA egress exists in this environment; recorded as not-performed with the exact test that would close it, rather than upgraded on unit tests or code review. — Commit 9da21c4 (WR-03 dedupe) is confirmed live in the deployed production build (dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5, commit dd19b0b), so the test remains ready to run and meaningful whenever an EEA/UK/CH session becomes available.
+- [Phase 03]: [Phase 03 / 03-01]: Shipped the phase tracer - lib/awards-engine.ts (5-rule seed pool: first-to-die, top-dps, top-hps, flaskless, best-prepared) is the single source of truth for both the OG image and (03-04) the in-app panel; app/og/route.tsx's view=awards branch falls back to ReportCard on any failure or a thin award set; lib/share-links.ts is now the one tested module every later share button in this phase builds its URL from. — Local next dev has no WCL credentials (Vercel-only per CLAUDE.md), so the awards-card render path itself is unverified against real data locally - the plan's own must_haves flags this exact truth as a backstop verification item, closed on the first preview/prod deploy.
+- [Phase 03]: [Phase 03 / 03-02]: AWARD_POOL filled to the full 15-rule D-02 pool (priorities 6-15 appended); pool-wide invariant tests (unique ids, contiguous priorities, no unconditional firing, stat/winner shape, cap, stable sort, non-mutation) lock the contract for future rule additions. Full 15-row pool recorded in 03-02-SUMMARY.md for the developer's D-04 tone review at the 03-06 preview gate.
+- [Phase 03]: [Phase 03 / 03-03]: Player OG card gained D-10 receipts (Kill/Wipe, fight length, vs-top-N, one healer/DPS proof line) reading only data.healer and the metricPercentiles activeTime entry; Share my parse is now the primary button on the player scorecard (data-protected=share-player), Copy for Discord demoted to secondary (data-protected=share-discord), both dual-emitting share_action. Local next dev still lacks WCL credentials, so the receipts render path is unverified against real data locally (same gap as 03-01/03-02) — closes on first preview/prod deploy.
+- [Phase 03]: [Phase 03 / 03-04]: Raid tab AwardsPanel wired to computeAwards over the in-memory RaidOverviewResult and the real /og preview image; header Share normalized off buildReportShareUrl (no more raw location.href); bottom "Found this useful?" bar removed; landing rules open Player tab on source-present and scroll the awards panel into view on view=awards; one guarded mount effect captures share_landing for an allowlisted ref then strips it from the address bar. — Local next dev lacks WCL credentials (Vercel-only per CLAUDE.md), so the panel's real-data render and the two landing-behavior truths remain unverified locally — same gap already recorded by 03-01/03-02/03-03, closed at the 03-06 preview gate per the plan's own must_haves backstop entries.
+- [Phase 03]: [Phase 03 / 03-05]: Shipped the protected-elements checklist (docs/PROTECTED-ELEMENTS.md, all 6 shipped data-protected attributes) and the third node-script gate (scripts/protected-elements.mjs, seo-invariants/token-audit shape) — 10/10 checks pass live against production. OPS-01 gained item 8 plus the D-14 share-rate HogQL under item 4; ROADMAP Phase 4/7 entries now name the checklist as a hard input.
+- [Phase 03]: 03-06: Sourced VERCEL_AUTOMATION_BYPASS_SECRET from the Vercel project REST record (protectionBypass key) when `vercel env pull` didn't surface it; confirmed non-empty by length only, never printed.
+- [Phase 03]: 03-06: protected-elements.mjs has no bypass-header support and cannot gate an SSO-protected preview directly; recorded the gap (WINDOWS #8) and used curl for the real preview route evidence instead.
+- [Phase 03]: 03-06: D-04 award-pool tone review, real Discord unfurl, and D-13 mobile reachability left not-performed by the executor per resume instructions; recorded in OPS-01-SHIP-GATE.md Part 5 with exact closing tests and preview URLs (WINDOWS #9).
+- [Phase 03]: Phase 3 deployed to production (dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx, commit adaea2f, 2026-09-16T09:14:57Z) under a recorded deploy-now developer approval; all production OG/canonical/protected-elements contracts confirmed (10/10 PASS).
+- [Phase 03]: Item 7 counted for this deployment's 09:14:57Z-10:14:57Z window: threshold 1 FAIL (7 pageviews), threshold 2 PASS (2 countries: UA, US), threshold 3 NOT EVALUABLE (no Vercel Web Analytics endpoint on the personal token). Re-measure test recorded: full 60-min window on a busier UTC hour (candidate ~22:00Z) plus a window-granularity Vercel read.
+- [Phase 03]: Share-rate (D-14) read as a first reading: 0.0% (0 share_action / 19 analysis_complete sessions over 7 trailing days, only ~7.5h of live exposure) vs the ~2.8% baseline. Re-run scheduled on/after 2026-09-23T09:15Z.
+- [Phase 03]: Developer decision (2026-09-16T16:47Z): 'Record now, leave open' - write counted evidence into Part 5 as FAIL/PENDING with the exact re-measure test; 03-07 completes with Part 5 explicitly unsigned (Sign-off: LEFT OPEN - not signed); OPS-01's Phase 3 re-run recorded not-met via REQUIREMENTS.md Addendum 3, and a SHARE-01/02/03 addendum documents the capability-proven/backstop-open split rather than reverting the prior sibling plan's premature Complete marking.
+- [Phase 03-share-loop]: Row 7 (D-04 tone review) recorded PASS but explicitly labelled delegated, not the developer's own first-hand verdict — Developer delegated the verdict three times ('Just do whatever you think is best.') rather than stating one; the gate document preserves that distinction so a later reader does not mistake the orchestrator's assessment for a developer sign-off
+- [Phase 03-share-loop]: Row 8 (real Discord unfurl) recorded NOT OBTAINED despite strong proxy evidence, per the plan's prohibition against folding a not-obtained result into a pass — No real Discord channel was available this session; a Discord-crawler-shaped fetch is not the same evidence as an actual Discord unfurl
+- [Phase 03-share-loop]: Item-7 live-traffic thresholds re-measured on a full 60-minute window (2026-09-17T06:00-07:00Z) -- all three PASS; RESEARCH A3 closed on two real share_landing events carrying consent_gate_path. — The original deployment window's quiet-hour FAIL/NOT EVALUABLE reading was superseded (not overwritten) by a busier-hour re-measure per the developer's 'Record now, leave open' decision; threshold 3 became readable for the first time via the Vercel MCP aggregate_pageviews hourly breakdown.
+- [Phase 3]: OPS-01 Phase 3 gate SIGNED (2026-09-19) under sign-now-conditional: 7/9 rows counted PASS, D-14 share-rate and real Discord unfurl recorded as accepted dated re-deferrals; D-14 re-read (on/after 2026-09-23T09:15Z) must append a dated confirmation/correction and WINDOWS.md #11 stays open until then.
+- [Phase 3]: WINDOWS.md #10 (item-7 re-measure) marked fixed; #9 (developer backstops) and #11 (share-rate re-run) left open with dated reasons recorded in the Part 5 close-out.
+- [Phase 04]: R0-2: recorded real WCL rankings/rate-limit/guild fixtures (6 files) with measured (not assumed) per-query point costs; demo report confirmed to have no guild, fallback guild Sage (Dreamscythe-US) found via a real public character ranking and confirmed public via the API's own visibility field (browser check blocked, 403, in this environment).
+- [Phase 04]: [Phase 04 / 04-04]: R0-3 shipped as tested, unwired engine code - lib/wcl-types.ts gained a new rankings-blob type family verified against 04-02's rankings-report.json fixture (deliberately not extending WCLRanking/WCLRankingsData, per 04-RESEARCH.md Pitfall 1); lib/rankings/parse-lens.ts and lib/rankings/budget.ts (Redis-backed 90%-of-runtime-read-limit gate) both pass full TDD RED/GREEN and are imported by nothing (D-13) - confirmed via zero app/ imports and unchanged protected-elements/seo-invariants gates.
+- [Phase 04]: [Phase 04 / 04-01]: Developer deferred sending the RPGLogs commercial-use approval request on 2026-09-21 after supplying browser captures; Task 1 recorded PARTIAL, not rounded up.
+- [Phase 04]: [Phase 04 / 04-01]: vercel metrics --format json summary[] adopted as the Part 6 CWV baseline's number source (whole-window p75), distinct from the default text table's bucketed avg column, so 04-07's post-ship comparison reads the same statistic.
+- [Phase 04]: [Phase 04 / 04-01]: /analyze/[reportCode] pre-ad CLS p75 (0.2344 desktop / 0.4768 mobile) recorded as-is in the OPS-01 Part 6 baseline, not smoothed over — it is the baseline the ad rollout must not worsen, not a target.
+- [Phase 04]: [Phase 04 / 04-03]: Phase tracer shipped end-to-end on /tbc-audit — lib/consent.ts publishes the single resolved ConsentGatePath (PostHogProvider and the new ad gate both subscribe, neither re-derives it); lib/ads.ts's adsEnabled() (env flag + pub id) is split from adsConfigured() (adds the per-slot unit-wired check) so AdSlot reserves its exact box the moment ads are switched on even before a slot has a real AdSense unit id; scripts/protected-elements.mjs extended with a second machine-checked table for ad slot placements, proven with a real tamper test.
+- [Phase 04]: checkAdSlotContainment's blanket owner-file rule (owner may never also own a data-protected element) was removed and replaced with the 15-line proximity scan alone, since AnalyzeClient.tsx legitimately owns both share-header and the two analyze slots far apart
+- [Phase 04]: NEXT_PUBLIC_ADSENSE_PUB_ID stores digits only (no ca-pub- prefix) because lib/ads.ts and AdSlot.tsx both build the ca-pub- prefix themselves
+- [Phase 04]: Auto ads OFF confirmed by the developer directly from the AdSense UI (2026-09-21); ads.txt status and the /privacy Privacy & messaging site-settings paste remain open, no code can observe either
+- [Phase 04]: [Phase 04 / 04-06] Developer confirmed the fourth preview's ad-box visual defect (box sizing then occluding-cover mismatch) fully fixed in both themes, and confirmed /privacy reads true, closing this plan
+- [Phase 04]: [Phase 04 / 04-06] Vercel automation-bypass secret briefly appeared in a diagnostic tool-call transcript during round-1 debugging (never committed); developer explicitly declined rotation when asked
+- [Phase 04-ads-live]: OPS-01 item 7 and Search Console recorded NOT EVALUABLE/no-data for the Phase 4 post-deploy check (no PostHog/GSC access this dispatch); Phase 4 sign-off recorded NOT SIGNED with every open row named — No PostHog MCP or curl/API channel and no GSC tool were available to the executor; the project's own convention treats an unreadable figure as not-evaluable, never a fabricated pass
 
 ### Pending Todos
 
@@ -103,22 +169,35 @@ Recent decisions affecting current work:
 
 - `wow-forever-support.md` (2026-09-13) — add World of Warcraft Forever support once WCL exposes Forever logs; era module via wago regen, partition-aware rankings, fixtures. Not actionable until upstream data exists.
 
-Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP now authenticates; its *default* project is still "LootList+ App" — `switch-project 337485` per session works, but fix the connector default; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) ~~merge PR #15~~ done 2026-09-14 (`origin/main` = `f1d74f4`); PR #16 (Phase 2 review fixes) awaits preview + prod deploy; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) ~~code-review findings in `02-REVIEW.md`~~ fixed on `growth/phase-2-review-fixes` (PR #16, 4/4) — still needs deploy.
+Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European regulations → message → site settings: paste https://parseforge.gg/privacy (still open since 01-09); (2) PostHog MCP now authenticates; its *default* project is still "LootList+ App" — `switch-project 337485` per session works, but fix the connector default; (3) GSC: `/` and `/analyze/*` show "Crawled – currently not indexed" with crawl dates predating the Phase 2 deploy — request recrawl and watch `/` specifically; (4) ~~merge PR #15~~ done 2026-09-14; ~~PR #16~~ merged (fast-forward, `main` = `66b59da`) and deployed to prod 2026-09-14 (`dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7`), verified live: not-in-fight player → 404 on `/api/timeline`; (5) game-data ids 96264 / 96294 flagged for human review in `.planning/WINDOWS.md`; (6) ~~code-review findings in `02-REVIEW.md`~~ fixed (PR #16, 4/4) and live in prod since 2026-09-14; (7) PR #14 (external, Illidari-mark flasks — issue #13) must not merge as-is (hand-typed IDs, conflicting) — redo via `regen-game-data` + overrides with contributor credit, a `/gsd-quick` after Phase 2.1.
 
 ### Blockers/Concerns
 
-- **[URGENT — Phase 2.1] PostHog capture has been ~99.9% down since the Phase 1 prod deploy (2026-09-06).** `cookieless_mode: "on_reject"` drops all PENDING-consent events; opt-in depended on `__tcfapi` calling back, which never happens for fresh visitors. Phase 1 & 2 OPS-01 PostHog criteria were not actually met. Fix: server-side geo opt-in (decided 2026-09-14). Evidence: `02.1-DIAGNOSIS.md`.
-- Vercel CLI on this machine is logged into the `beast-app` team, not `loot-list-plus` — preview/prod deploys blocked until `vercel login` with the owning account.
+- ~~[URGENT — Phase 2.1] PostHog capture ~99.9% down since 2026-09-06~~ resolved by Phase 2.1 (server-side geo opt-in, prod since 2026-09-14; gate signed 2026-09-15 on counted live traffic; EEA/UK TCF path confirmed in a real browser at UAT 2026-09-15). Evidence: `02.1-DIAGNOSIS.md`, `docs/OPS-01-SHIP-GATE.md` Part 4, `02.1-UAT.md`.
+- ~~Vercel CLI logged into the wrong team~~ resolved 2026-09-14: personal login lives in `~/.vercel-personal`; every Vercel command needs `--global-config ~/.vercel-personal` (documented in CLAUDE.md).
+- **Preview deployments are behind Vercel SSO** (302 → `vercel.com/sso-api`). Developer chose to enable "Protection Bypass for Automation"; once on, `VERCEL_AUTOMATION_BYPASS_SECRET` appears in `vercel env pull --environment=preview` and is sent as the `x-vercel-protection-bypass` header (or `?x-vercel-protection-bypass=…&x-vercel-set-bypass-cookie=true` for headless Chrome) — never printed, file deleted after use. Phase 2.1's D-10 netlog and the PR #16 smoke test both depend on it.
+- **`NEXT_PUBLIC_GOOGLE_CMP_PUB_ID` (and `NEXT_PUBLIC_POSTHOG_HOST`) are Production-only env vars** — previews render no Google CMP, so the consent-region (EEA/UK/CH) path is only observable on production. Phase 2.1 verification must say so explicitly; adding the var to Preview is a developer decision (low risk).
 - Live brownfield product — deploys are manual Vercel CLI and require explicit user confirmation each time; the Claude Code auto-mode classifier also blocks `vercel deploy --prod` unless `Bash(vercel deploy:*)` is allowed (granted 2026-09-08 in `.claude/settings.local.json`). Preview-before-prod is the established pattern.
-- [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only.
-- [Phase 2 carry-forward] `02-REVIEW.md` CR-01: healer overheal/uptime suggestions fire when `hasHealing` is false — a wrong recommendation live on parseforge.gg; plus WR-01..03. Fix before Phase 3 bakes healer numbers into share images.
-- [Phase 2 carry-forward] `origin/main` at `55d2010`; Phase 2 on PR #15 — worktree isolation degrades to sequential until merged/pushed.
+- [Phase 1+2 carry-forward] Security ASVS review deferred for both phases (tooling not installed — see Deferred Items); CSP still report-only. Phase 2.1's own `02.1-SECURITY.md` closed at ASVS L1 grep-depth (45 threats, 0 open, `gsd-security-auditor` still not installed).
+- ~~[Phase 2 carry-forward] `02-REVIEW.md` CR-01 / WR-01..03~~ fixed and deployed 2026-09-14 (PR #16, `dpl_4KnNGpjHrY9q1vwECEXZRaNFF5u7`).
+- ~~[Phase 2 carry-forward] `origin/main` behind~~ resolved 2026-09-14 (PR #15 and #16 merged; `main` = `66b59da`).
 - [Phase 2 carry-forward] GSC reports `/` as "Crawled – currently not indexed" (crawl 2026-09-05, pre-deploy) — pre-existing but unexplained for the homepage; investigate at the Phase 3 gate.
 - [Phase 1 carry-forward] Build-time `[kv-cache] getRecentReports failed: Dynamic server usage` noise during prerender of `/` and `/sitemap.xml` — pre-existing, harmless at runtime; small cleanup candidate.
 - Phase 4 research flag: verify current ad-network eligibility thresholds directly at signup (Ezoic source contradiction unresolved); model revenue vs. CWV/UX cost before committing.
 - Phase 5 open question: dedicated ParseForge Discord vs. channel in existing LootList+ server (empty-room risk). Phase touches a second repo at /Users/alexander.mayes/Code/loot-list-plus (Railway deploy).
 - Phase 6 research flag: define the per-page uniqueness rubric before scaling programmatic pages past the 10–15 pilot set (scaled-content-abuse risk).
 - Scheduled check-in 2026-09-08 reviews /tbc-audit + PR #10 outcomes — do not re-diagnose those before then.
+- ~~[Phase 2.1 close] OPS-01 gate NOT signed / five review fixes not in production~~ resolved: gate signed 2026-09-15 (02.1-05, ratio 25/23); the five fix commits shipped in `dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5` (02.1-07).
+- [Phase 2.1 carry-forward → Phase 3 gate] The dpl_CDCu1FVfPZcd8dHr4RpLcrHWJcJ5 deploy's own OPS-01 item 7 gate row is unsigned (thresholds 1/2 FAIL on a low-traffic window, threshold 3 NOT EVALUABLE - Vercel CLI API only exposes an hour-rounded aggregate, not a window-exact figure). Next action: re-measure a full 60-minute window against this same deployment on a busier UTC hour (old build showed 1-pageview hours at 12:00/13:00/16:00/17:00Z the same day and 24 at 22:00Z on 2026-09-14), with a window-granularity Vercel Web Analytics dashboard read. Not a precondition for 02.1-08. Separate finding, not a defect: a pre-existing PostHog-vs-Vercel capture gap for a subset of non-consent-region countries (BR, SG), present on the old build too, most plausibly ad-blocker-related - candidate WINDOWS.md follow-up to quantify the ratio per country over a week.
+- ~~[Phase 02.1 close] ROADMAP SC2 / Truth 4 / MONY-01 behaviour-unverified~~ resolved 2026-09-15: the developer ran the EEA/UK/CH VPN session (reject, full opt-in, CMP re-confirm) and passed it as `02.1-UAT.md` Test 1; `consent_resolved` fired once (WR-03 dedupe holds in-browser).
+- ~~[Phase 3 gate] Three developer-only backstops from 03-06 (D-04 tone, real Discord unfurl, D-13 mobile)~~ resolved: D-13 counted 2026-09-18 (384px viewport); real Discord unfurl and first-hand D-04 tone verdict passed by the developer in `03-UAT.md` tests 1–2 on 2026-09-19 (WINDOWS #9 closed).
+- ~~[Phase 3 close] OPS-01 gate NOT signed for Phase 3~~ resolved 2026-09-19: `docs/OPS-01-SHIP-GATE.md` Part 5 signed under `sign-now-conditional` (7/9 counted PASS, rows 2 and 8 accepted dated re-deferrals; row 8 since closed via UAT). Phase 3 verified `passed`, `03-SECURITY.md` 50/50 closed.
+- [Phase 3 carry-forward → 2026-09-23] **D-14 share-rate re-read obligation** (WINDOWS #11): run the 7-day HogQL on/after 2026-09-23T09:15Z and append a dated confirmation/correction to Part 5. UAT test 3 was passed by the developer on 2026-09-19 *without* the reading (noted in `03-UAT.md`), so this is Phase 3's only open evidence obligation — do not let it lapse.
+- [Phase 3 carry-forward] `03-REVIEW.md` WR-01, WR-02, WR-03, IN-01 remain deferred to `/gsd-code-review 03 --fix`; explicitly outside the Part 5 signature and the security review.
+- [Phase 4 dependency] RPGLogs/WCL API ToS requires approval for commercial/ads use (see `.planning/research/PARSEFORGE-RANKINGS-SPEC.md`) — send the approval request before Phase 4 ships ads.
+- [Phase 4 dependency] R0-1 approval email deferred by developer on 2026-09-21 (not sent) — 04-07's production ad deploy checkpoint stays gated until a real 'sent' row with verbatim text lands in .planning/research/rpglogs-approval-request-2026-09-19.md's Thread table. Remaining: read WCL client name from warcraftlogs.com/api/clients, fill draft, send from info@lootlistplus.com to advertising@archon.gg.
+- 04-05: AdSense ads.txt status for parseforge.gg not confirmed by developer; the Phase 1 Privacy & messaging site-settings paste of https://parseforge.gg/privacy also not confirmed — STATE.md follow-up (1) stays open. Resolve before 04-07's production ad launch.
+- [Phase 04, 04-06 carry-forward to 04-07] AdSense account approval status still "Getting ready" (not approved); ads.txt "Not found" (expected pre-deploy); production deploy of env vars not yet shipped. 04-07's production ad launch checkpoint stays gated on account approval plus the RPGLogs approval reply (R0-1, deferred by developer per 04-01).
 
 ### Quick Tasks Completed
 
@@ -136,11 +215,13 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| Validation | Nyquist validate-phase for Phase 3 (`03-VALIDATION.md` remains `draft`, `nyquist_compliant: false`) — `gsd-validate-phase` skill not installed in this profile (verify:post hook active, `Unknown skill`); vitest 226/226 green and `03-VERIFICATION.md` passed. Close via full-profile install + `/gsd-validate-phase 03` | Deferred | 2026-09-19 (Phase 3 close) | v1 growth |
+| UI review | Visual quality audit of Phase 3 frontend changes (share CTAs, AwardsPanel, OG cards) — `gsd-ui-review` skill not installed (verify:post hook active, `Unknown skill`). Close via full-profile install + `/gsd-ui-review 03`, or fold into the Phase 7 redesign | Deferred | 2026-09-19 (Phase 3 close) | v1 growth |
 | Security | Formal ASVS L1 security review of Phase 2 (`02-SECURITY.md`) — `gsd-secure-phase` still not installed in this profile (verify:post hook active, `Unknown skill`); per-plan STRIDE registers exist. Developer chose to defer at UAT close. Close via full-profile install + `/gsd-secure-phase 02` | Deferred | 2026-09-08 (Phase 2 close) | v1 growth |
 | Security | Formal ASVS L1 security review of Phase 1 (`01-SECURITY.md`) — gsd security tooling (gsd-secure-phase skill, gsd-security-auditor agent) not installed in this profile; per-plan STRIDE registers exist. Close via full-profile install + `/gsd-secure-phase 01` | Deferred | 2026-09-07 (Phase 1 close) | v1 growth |
 
 ## Session Continuity
 
-Last session: 2026-09-08T21:30:00Z
-Stopped at: Phase 02 complete (verified, UAT 1/1, shipped dpl_5bwk1fJJNuZXkoC5poPGFZQpGy6c), ready to plan Phase 3
+Last session: 2026-09-22T19:58:20.628Z
+Stopped at: Completed 04-07-PLAN.md (Task 3 only; Tasks 1-2 done in prior dispatches)
 Resume file: None

@@ -14,14 +14,35 @@ import type { NextConfig } from "next";
 // declines to publish a fixed CMP domain list (01-RESEARCH.md Pitfall 2), so
 // any further hosts the dialog needs are to be discovered from report-only
 // violation reports post-deploy, not guessed at in advance.
+//
+// pagead2.googlesyndication.com serves the AdSense SDK itself (lib/ads.ts's
+// `loadAdSenseScript`) and opens the ad-request connection; googleads.g.
+// doubleclick.net is the ad-request/auction host the SDK calls; tpc.
+// googlesyndication.com serves the filled creative's iframe (Phase 4,
+// 04-CONTEXT.md D-06/D-07). `img-src`'s existing `https:` wildcard already
+// covers creative images, so it needs no addition. As with the CMP hosts
+// above, the remaining hosts a filled creative opens (e.g. a third-party
+// tracker inside the creative) are to be discovered from report-only
+// violation reports after deploy, not guessed exhaustively; promoting this
+// policy to enforcing is Phase 7, out of scope here.
+//
+// ep1/ep2.adtrafficquality.google are AdSense's "sodar" ad-viewability/
+// anti-fraud beacon network — harvested from the Phase 4 preview's
+// report-only CSP violations (04-06 Task 2/3, docs/OPS-01-SHIP-GATE.md Part
+// 6 "CSP violation harvest"): ep1 was observed under connect-src, ep2 under
+// script-src and frame-src, both only on the admitted (ads-loading) run.
+// `www.google.com` was also observed on that run but its violated directive
+// was not captured in the harvest sample, so per that harvest's own
+// disposition it is deliberately NOT added here — added only once a report
+// names its directive.
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com https://fundingchoicesmessages.google.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://wow.zamimg.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep2.adtrafficquality.google",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com https://fundingchoicesmessages.google.com",
-  "frame-src 'self' https://fundingchoicesmessages.google.com",
+  "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com https://fundingchoicesmessages.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google",
+  "frame-src 'self' https://fundingchoicesmessages.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google",
   "worker-src 'self' blob:",
   "frame-ancestors 'self'",
   "base-uri 'self'",

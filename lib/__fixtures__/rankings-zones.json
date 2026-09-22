@@ -1,0 +1,442 @@
+{
+  "_provenance": {
+    "query": "ZonesProbe (worldData.zones)",
+    "recorded": "2026-09-20T00:31:01.895Z",
+    "entity": "all worldData.zones (bracket vocabulary, not report-specific)",
+    "api_host": "www.warcraftlogs.com"
+  },
+  "worldData": {
+    "zones": [
+      {
+        "id": 41,
+        "name": "Delves",
+        "brackets": {
+          "min": 0,
+          "max": 0,
+          "bucket": 1,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 55,
+        "name": "Mythic+ Season 2",
+        "brackets": {
+          "min": 2,
+          "max": 30,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 47,
+        "name": "Mythic+ Season 1",
+        "brackets": {
+          "min": 2,
+          "max": 25,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 45,
+        "name": "Mythic+ Season 3",
+        "brackets": {
+          "min": 2,
+          "max": 25,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 43,
+        "name": "Mythic+ Season 2",
+        "brackets": {
+          "min": 1,
+          "max": 25,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 39,
+        "name": "Mythic+ Season 1",
+        "brackets": {
+          "min": 1,
+          "max": 25,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 37,
+        "name": "Mythic+ Season 4",
+        "brackets": {
+          "min": 1,
+          "max": 35,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 36,
+        "name": "Mythic+ Season 3",
+        "brackets": {
+          "min": 1,
+          "max": 35,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 34,
+        "name": "Mythic+ Season 2",
+        "brackets": {
+          "min": 1,
+          "max": 35,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 32,
+        "name": "Mythic+ Season 1",
+        "brackets": {
+          "min": 1,
+          "max": 30,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 30,
+        "name": "Mythic+ Season 4",
+        "brackets": {
+          "min": 1,
+          "max": 35,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 9,
+        "name": "Mythic+ Dungeons",
+        "brackets": {
+          "min": 1,
+          "max": 40,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 35,
+        "name": "Amirdrassil, the Dream's Hope",
+        "brackets": {
+          "min": 441,
+          "max": 535,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 33,
+        "name": "Aberrus, the Shadowed Crucible",
+        "brackets": {
+          "min": 402,
+          "max": 535,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 31,
+        "name": "Vault of the Incarnates",
+        "brackets": {
+          "min": 376,
+          "max": 535,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 29,
+        "name": "Sepulcher of the First Ones",
+        "brackets": {
+          "min": 233,
+          "max": 311,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 28,
+        "name": "Sanctum of Domination",
+        "brackets": {
+          "min": 203,
+          "max": 311,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 26,
+        "name": "Castle Nathria",
+        "brackets": {
+          "min": 173,
+          "max": 311,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 20,
+        "name": "Mythic+ Dungeons",
+        "brackets": {
+          "min": 1,
+          "max": 30,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 17,
+        "name": "Antorus, The Burning Throne",
+        "brackets": {
+          "min": 908,
+          "max": 986,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 13,
+        "name": "Tomb of Sargeras",
+        "brackets": {
+          "min": 862,
+          "max": 955,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 11,
+        "name": "The Nighthold",
+        "brackets": {
+          "min": 842,
+          "max": 935,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 53,
+        "name": "The Venomous Abyss",
+        "brackets": {
+          "min": 272,
+          "max": 344,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 50,
+        "name": "Sporefall",
+        "brackets": {
+          "min": 233,
+          "max": 300,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 46,
+        "name": "VS / DR / MQD",
+        "brackets": {
+          "min": 233,
+          "max": 300,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 44,
+        "name": "Manaforge Omega",
+        "brackets": {
+          "min": 679,
+          "max": 731,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 42,
+        "name": "Liberation of Undermine",
+        "brackets": {
+          "min": 633,
+          "max": 690,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 40,
+        "name": "Blackrock Depths",
+        "brackets": {
+          "min": 590,
+          "max": 639,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 38,
+        "name": "Nerub-ar Palace",
+        "brackets": {
+          "min": 590,
+          "max": 639,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 27,
+        "name": "Torghast",
+        "brackets": {
+          "min": 173,
+          "max": 311,
+          "bucket": 3,
+          "type": "Patch"
+        }
+      },
+      {
+        "id": 25,
+        "name": "Mythic+ Seasons 1 - 3",
+        "brackets": {
+          "min": 1,
+          "max": 35,
+          "bucket": 1,
+          "type": "Keystone Level"
+        }
+      },
+      {
+        "id": 24,
+        "name": "Ny'alotha",
+        "brackets": {
+          "min": 430,
+          "max": 487,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 23,
+        "name": "The Eternal Palace",
+        "brackets": {
+          "min": 400,
+          "max": 457,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 22,
+        "name": "Crucible of Storms",
+        "brackets": {
+          "min": 370,
+          "max": 427,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 21,
+        "name": "Battle of Dazar'alor",
+        "brackets": {
+          "min": 370,
+          "max": 427,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 19,
+        "name": "Uldir",
+        "brackets": {
+          "min": 340,
+          "max": 397,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 12,
+        "name": "Trial of Valor",
+        "brackets": {
+          "min": 827,
+          "max": 920,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 10,
+        "name": "Emerald Nightmare",
+        "brackets": {
+          "min": 827,
+          "max": 920,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 8,
+        "name": "Hellfire Citadel",
+        "brackets": {
+          "min": 682,
+          "max": 745,
+          "bucket": 3,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 7,
+        "name": "Blackrock Foundry",
+        "brackets": {
+          "min": 650,
+          "max": 695,
+          "bucket": 15,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 6,
+        "name": "Highmaul",
+        "brackets": {
+          "min": 633,
+          "max": 693,
+          "bucket": 15,
+          "type": "Item Level"
+        }
+      },
+      {
+        "id": 5,
+        "name": "Siege of Orgrimmar",
+        "brackets": null
+      },
+      {
+        "id": 4,
+        "name": "Throne of Thunder",
+        "brackets": null
+      },
+      {
+        "id": 3,
+        "name": "Challenge Modes",
+        "brackets": {
+          "min": 6,
+          "max": 6.2,
+          "bucket": 0.1,
+          "type": "Patch"
+        }
+      }
+    ]
+  }
+}

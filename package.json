@@ -11,6 +11,7 @@
     "theme-parity": "node scripts/theme-parity.mjs",
     "token-audit": "node scripts/token-audit.mjs",
     "seo-invariants": "node scripts/seo-invariants.mjs",
+    "protected-elements": "node scripts/protected-elements.mjs",
     "record-fixtures": "node scripts/record-wcl-fixtures.mjs",
     "regen-game-data": "node scripts/regen-game-data.mjs"
   },

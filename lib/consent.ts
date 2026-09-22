@@ -177,3 +177,153 @@ export function startConsentListener(
     }
   };
 }
+
+/**
+ * The path that admitted an event to PostHog (02.1-CONTEXT.md D-07). Deliberately
+ * NOT the same union as `ConsentAction` above, even though both have four members:
+ * `ConsentAction` is the raw TCF signal, this is the *gate* that decided whether to
+ * capture at all, and the two don't map 1:1 (`opt-in-non-eea` collapses into
+ * `tcf-accept` here; `cookieless` and `pending` become `tcf-reject` / `tcf-timeout`).
+ * Registered as the `consent_gate_path` super property before any capture.
+ */
+export type ConsentGatePath =
+  | "geo-non-consent-region"
+  | "tcf-accept"
+  | "tcf-reject"
+  | "tcf-timeout";
+
+/**
+ * The single decision a consent gate outcome resolves to: which gate path admitted
+ * the visitor, which SDK calls to make, and (optionally) which event to fire to
+ * make that decision visible in PostHog itself.
+ */
+export interface ConsentGateOutcome {
+  gatePath: ConsentGatePath;
+  optIn: boolean;
+  startReplay: boolean;
+  event: "consent_resolved" | "consent_unavailable" | null;
+  eventProps: Record<string, string | boolean>;
+}
+
+/**
+ * The pure merge of the server-side geo decision and the client-side TCF action
+ * into the SDK calls `PostHogProvider` should make (D-06). The provider becomes a
+ * thin executor of this function's result; every branch here maps 1:1 to a
+ * pre-existing SDK call site, so behaviour does not change — only who decides.
+ *
+ * A non-consent-region visitor (`isConsentRegion === false`) ignores `tcfAction`
+ * entirely, whatever its value or arrival order: there is no `__tcfapi` listener
+ * on that path at all (D-04), and geo is the sole authority for it. A TCF action
+ * can only be non-null here if some future caller wires up a listener it was never
+ * supposed to have — even then, the geo decision must win, because reintroducing
+ * a CMP dependency on this path is exactly the bug this hotfix removes.
+ *
+ * A consent-region visitor (`isConsentRegion === true`) reproduces today's SDK
+ * calls exactly rather than improving them (D-05): `opt-in-full` opts in and
+ * starts replay, `cookieless` does neither (memory-only persistence and no replay
+ * are already the `cookieless_mode`/`disable_session_recording` defaults), and
+ * `pending` (reached only via `CMP_TIMEOUT_MS`'s fail-closed timeout) does neither
+ * either. Making pre-choice EEA/UK capture cookieless instead of dropped is
+ * Phase 1 D-06's stated intent that the SDK never actually honoured — explicitly
+ * deferred here, not fixed (`02.1-CONTEXT.md` `<deferred>`). `tcfAction === null`
+ * means the TCF listener hasn't resolved yet, so there is nothing to apply — the
+ * caller keeps waiting rather than acting on an absent signal.
+ *
+ * `opt-in-non-eea` reached with `isConsentRegion` true is a region-list-versus-CMP
+ * mismatch: our server-side geo classification said "not a consent region" is
+ * false (so we started the TCF listener), yet the CMP itself told us
+ * `gdprApplies: false`. That disagreement is worth surfacing rather than silently
+ * absorbing — it resolves to `tcf-accept` with `gdpr_applies: false` in its event
+ * props, additive observability only; the SDK calls made are identical to the
+ * `opt-in-full` case, so this backstop does not change what capture happens, only
+ * whether the mismatch is countable.
+ */
+export function deriveConsentGateOutcome(
+  isConsentRegion: boolean,
+  tcfAction: ConsentAction | null,
+): ConsentGateOutcome | null {
+  if (!isConsentRegion) {
+    return {
+      gatePath: "geo-non-consent-region",
+      optIn: true,
+      startReplay: true,
+      event: null,
+      eventProps: {},
+    };
+  }
+
+  if (tcfAction === null) return null;
+
+  switch (tcfAction) {
+    case "opt-in-full":
+      return {
+        gatePath: "tcf-accept",
+        optIn: true,
+        startReplay: true,
+        event: "consent_resolved",
+        eventProps: { accepted: true, gdpr_applies: true },
+      };
+    case "cookieless":
+      return {
+        gatePath: "tcf-reject",
+        optIn: false,
+        startReplay: false,
+        event: "consent_resolved",
+        eventProps: { accepted: false, gdpr_applies: true },
+      };
+    case "opt-in-non-eea":
+      return {
+        gatePath: "tcf-accept",
+        optIn: true,
+        startReplay: true,
+        event: "consent_resolved",
+        eventProps: { accepted: true, gdpr_applies: false },
+      };
+    case "pending":
+      return {
+        gatePath: "tcf-timeout",
+        optIn: false,
+        startReplay: false,
+        event: "consent_unavailable",
+        eventProps: { reason: "tcfapi_timeout" },
+      };
+  }
+}
+
+let publishedGatePath: ConsentGatePath | null = null;
+const gatePathSubscribers = new Set<(path: ConsentGatePath) => void>();
+
+/**
+ * Publishes the single resolved consent gate path (04-CONTEXT.md D-07, the
+ * 04-03 "promote" decision): `PostHogProvider` calls this once it resolves
+ * an outcome; any future consumer (the ad gate today, others later)
+ * subscribes via `subscribeConsentGatePath` below rather than deriving its
+ * own. A re-publish of the already-published value is a no-op — only a
+ * genuine decision change (e.g. a CMP re-confirmation flow) notifies.
+ */
+export function publishConsentGatePath(path: ConsentGatePath): void {
+  if (publishedGatePath === path) return;
+  publishedGatePath = path;
+  for (const callback of gatePathSubscribers) callback(path);
+}
+
+/** The last published consent gate path, or `null` if none has published yet. */
+export function getConsentGatePath(): ConsentGatePath | null {
+  return publishedGatePath;
+}
+
+/**
+ * Subscribes to the published consent gate path. If a path has already been
+ * published, `callback` fires synchronously with it immediately (a late
+ * mount must not miss the decision); it then fires again on every
+ * subsequent change. Returns a disposer that removes the subscription.
+ */
+export function subscribeConsentGatePath(
+  callback: (path: ConsentGatePath) => void,
+): () => void {
+  gatePathSubscribers.add(callback);
+  if (publishedGatePath !== null) callback(publishedGatePath);
+  return () => {
+    gatePathSubscribers.delete(callback);
+  };
+}

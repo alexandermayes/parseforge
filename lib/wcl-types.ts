@@ -509,6 +509,37 @@ export interface RaidOverviewResult {
   healerMetrics: HealerMetrics[];
 }
 
+// ─── Awards Types (lib/awards-engine.ts) ─────────────────────────────
+
+export interface AwardWinner {
+  name: string;
+  className: string;
+  sourceId: number;
+}
+
+/** `praise` for a positive award, `jab` for a gentle roast (D-01). */
+export type AwardTone = "praise" | "jab";
+
+export interface AwardRow {
+  id: string;
+  title: string;
+  icon: string;
+  priority: number;
+  tone: AwardTone;
+  winners: AwardWinner[];
+  /** Winners beyond MAX_WINNER_NAMES, truncated from the `winners` list. */
+  extraWinnerCount: number;
+  /** The stat that earned the award, e.g. "0:42 in" or "no flask". */
+  stat: string;
+}
+
+export interface AwardsResult {
+  encounterName: string;
+  /** Null when the caller has no fight outcome — the card renders no Kill/Wipe pill. */
+  outcome: { kill: boolean; bossPercentage: number } | null;
+  awards: AwardRow[];
+}
+
 // ─── Healer Metrics Types ─────────────────────────────────────────────
 // HealerTableRow narrows the un-scoped per-player Healing row (`healingByPlayer`
 // in lib/wcl-queries.ts) to what the shared healer helper reads — the scoped
@@ -580,4 +611,83 @@ export interface ReportMeta {
     subType: string;
     icon: string;
   }>;
+}
+
+// ─── Report Rankings Blob Types (R0-3) ───────────────────────────────
+// Describes `reportData.report.rankings(fightIDs:)` — the per-report parse
+// blob returned for one report/fight combination. This is deliberately NOT
+// an extension of `WCLRanking`/`WCLRankingsData` above: those describe the
+// `characterRankings` boss-leaderboard query, a different WCL query that
+// shares no fields with this one. Every field name below was verified
+// against the recorded response in lib/__fixtures__/rankings-report.json
+// (recorded 2026-09-20) — not against PARSEFORGE-RANKINGS-SPEC.md alone —
+// see lib/rankings/parse-lens.ts, the sole consumer of this type.
+
+export interface RankingsCharacterServer {
+  id: number;
+  name: string;
+  region: string;
+}
+
+export interface RankingsCharacterEntry {
+  id: number;
+  name: string;
+  server: RankingsCharacterServer;
+  class: string;
+  spec: string;
+  amount: number;
+  bracketData: number;
+  bracket: number;
+  rank: string;
+  best: string;
+  totalParses: number;
+  rankPercent: number | null;
+  /** Absent from every character row in the 2026-09-20 recording
+   *  (lib/__fixtures__/README.md) — honour it when a future recording
+   *  includes it, never assume it is always present or always absent. */
+  hidden?: boolean;
+}
+
+export interface RankingsRoleGroup {
+  name: string;
+  characters: RankingsCharacterEntry[];
+}
+
+export interface RankingsRoles {
+  tanks: RankingsRoleGroup;
+  healers: RankingsRoleGroup;
+  dps: RankingsRoleGroup;
+}
+
+export interface RankingsSpeedExecution {
+  rank: string;
+  best: string;
+  totalParses: number;
+  rankPercent: number | null;
+}
+
+export interface ReportRankingEntry {
+  fightID: number;
+  partition: number;
+  zone: number;
+  encounter: { id: number; name: string };
+  difficulty: number;
+  size: number;
+  /** WCL returns this as 0/1, not a boolean — see the recorded fixture. */
+  kill: number;
+  duration: number;
+  bracketData: number;
+  deaths: number;
+  damageTakenExcludingTanks: number;
+  roles: RankingsRoles;
+  bracket: number;
+  /** Character ids blacklisted from this entry's rankings (e.g. "gaming" the parse — RANKINGS-SPEC.md §4.3). */
+  reportsBlacklistForCharacters: number[];
+  speed: RankingsSpeedExecution;
+  execution: RankingsSpeedExecution;
+}
+
+/** The top-level shape of `reportData.report.rankings`. */
+export interface ReportRankingsBlob {
+  data: ReportRankingEntry[];
 }

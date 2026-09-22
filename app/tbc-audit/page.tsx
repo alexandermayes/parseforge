@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Gem, FlaskConical, Sparkles, ScrollText } from "lucide-react";
 import ReportUrlForm from "@/app/components/ReportUrlForm";
+import AdSlot from "@/app/components/AdSlot";
 
 // Dedicated landing page for `tbc audit` search intent. GSC (Jul 2026) shows
 // ~3.3k impressions/28d at position ~4.9 for that query with the homepage as
@@ -200,6 +201,8 @@ export default function TbcAuditPage() {
         </ul>
       </section>
 
+      <AdSlot id="tbc-audit-mid" />
+
       <section className="space-y-5">
         <h2 className="text-xl font-bold tracking-tight text-foreground">
           Consumable, buff & talent checks
@@ -304,6 +307,8 @@ export default function TbcAuditPage() {
           </li>
         </ul>
       </section>
+
+      <AdSlot id="tbc-audit-end" />
     </main>
   );
 }

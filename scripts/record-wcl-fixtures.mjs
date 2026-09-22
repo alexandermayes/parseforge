@@ -25,12 +25,18 @@
 // code ZjKgNYxVcAqR8pGJ, fight 23. A committed fixture is permanent,
 // world-readable data — never point this script at a private report.
 //
+// R0-2 (PARSEFORGE-RANKINGS-SPEC.md §7) extends this recorder with rankings
+// fixtures: rankings-ratelimit.json (three rateLimitData samples per run —
+// before, after-report-rankings, end) and rankings-report.json (the
+// report.rankings(fightIDs:) blob for the demo report, recorded on its own).
+// Same secrets/public-entity discipline as the six fixtures above.
+//
 // Usage:
-//   node scripts/record-wcl-fixtures.mjs   -> records all six fixtures,
+//   node scripts/record-wcl-fixtures.mjs   -> records all eight fixtures,
 //                                              exits 0 on success.
 //
 // Exit codes:
-//   0  -> all six fixtures written successfully
+//   0  -> all fixtures written successfully
 //   1  -> a WCL query failed (network, GraphQL error, or unexpected shape)
 //   2  -> missing required environment variable(s), or no healer found in
 //         the target fight (never falls back to a damage-dealer source)
@@ -230,6 +236,145 @@ const MASTER_DATA_ACTORS_QUERY = `
   }
 `;
 
+// ─── R0-2 rankings probes (PARSEFORGE-RANKINGS-SPEC.md §7) ────────────────
+
+// Budget introspection — never hard-code limitPerHour, the spec's §2.2
+// records it changing mid-session.
+const RATE_LIMIT_QUERY = `
+  query RateLimitCheck {
+    rateLimitData {
+      limitPerHour
+      pointsSpentThisHour
+      pointsResetIn
+    }
+  }
+`;
+
+// The per-report rankings blob, recorded on its own (not as a by-product of
+// PLAYER_FULL_DATA_QUERY above) so rankings-report.json is a faithful,
+// independently-verifiable recording.
+const REPORT_RANKINGS_QUERY = `
+  query ReportRankings($code: String!, $fightIDs: [Int!]!) {
+    reportData {
+      report(code: $code) {
+        rankings(fightIDs: $fightIDs)
+      }
+    }
+  }
+`;
+
+// Boss leaderboard (page 1 of both the per-character and per-fight rankings),
+// scoped to the report's own partition — an unpartitioned read would compare
+// across raid phases (the "partition-unaware ranking query" anti-pattern).
+const ENCOUNTER_RANKINGS_PROBE_QUERY = `
+  query EncounterRankingsProbe($encounterID: Int!, $partition: Int) {
+    worldData {
+      encounter(id: $encounterID) {
+        characterRankings(partition: $partition, page: 1)
+        fightRankings(partition: $partition, page: 1)
+      }
+    }
+  }
+`;
+
+// A character's zone/encounter rankings. Confirmed by probing this session:
+// classic.warcraftlogs.com/api/v2/client is REQUIRED for this Classic
+// character to resolve — the default www.warcraftlogs.com host returns
+// `character: null` for the exact same name/serverSlug/serverRegion. This is
+// an explicit R0-2 finding, recorded in the fixture's own _provenance block
+// and in README.md, not just in this comment.
+const CLASSIC_API_URL = "https://classic.warcraftlogs.com/api/v2/client";
+const CHARACTER_RANKINGS_PROBE_QUERY = `
+  query CharacterRankingsProbe(
+    $name: String!
+    $serverSlug: String!
+    $serverRegion: String!
+    $zoneID: Int!
+    $encounterID: Int!
+    $partition: Int
+  ) {
+    characterData {
+      character(name: $name, serverSlug: $serverSlug, serverRegion: $serverRegion) {
+        id
+        zoneRankings(zoneID: $zoneID, partition: $partition)
+        encounterRankings(encounterID: $encounterID, partition: $partition)
+      }
+    }
+  }
+`;
+
+// The bracket vocabulary any displayed percentile has to be labelled with.
+const ZONES_PROBE_QUERY = `
+  query ZonesProbe {
+    worldData {
+      zones {
+        id
+        name
+        brackets {
+          min
+          max
+          bucket
+          type
+        }
+      }
+    }
+  }
+`;
+
+// ─── R0-2 guild probe (Task 3) ─────────────────────────────────────────────
+
+// Probed first, at record time: does the demo report itself resolve to a
+// guild? (Confirmed this session: it does not — reportData.report(code:
+// ZjKgNYxVcAqR8pGJ).guild is null.)
+const REPORT_GUILD_QUERY = `
+  query ReportGuild($code: String!) {
+    reportData {
+      report(code: $code) {
+        guild {
+          id
+          name
+          server { slug region { compactName } }
+        }
+      }
+    }
+  }
+`;
+
+// Fallback public guild, used only because the demo report has no guild.
+// "Sage" (guild id 816114, Dreamscythe-US) was found via the demo report's
+// own featured character (Effinore)'s public encounterRankings — one of her
+// ranked kills lists this guild, i.e. a guild attributed on a real, public
+// kill on the exact same realm and zone (SSC/TK) as the demo report. Public
+// visibility is confirmed at record time below via reportData.reports()'s
+// own `visibility` field, not a logged-out browser check: this environment's
+// direct HTTP requests to warcraftlogs.com return 403 to automated readers
+// regardless of a report's actual visibility (confirmed against the
+// already-known-public demo report URL, which also 403s) — see README.md.
+const FALLBACK_GUILD_ID = 816114;
+
+const GUILD_PROBE_QUERY = `
+  query GuildProbe($guildID: Int!, $zoneID: Int) {
+    guildData {
+      guild(id: $guildID) {
+        id
+        name
+        server { slug region { compactName } }
+        members(page: 1) {
+          data { name guildRank classID }
+        }
+        attendance(page: 1) {
+          data { code startTime zone { id name } }
+        }
+      }
+    }
+    reportData {
+      reports(guildID: $guildID, zoneID: $zoneID, limit: 10, page: 1) {
+        data { code title zone { id name } startTime visibility }
+      }
+    }
+  }
+`;
+
 // ─── WCL HTTP plumbing (mirrors lib/wcl-client.ts's auth mechanics; not a
 //     shared import — see header comment) ──────────────────────────────────
 
@@ -254,8 +399,8 @@ async function getAccessToken(clientId, clientSecret) {
   return data.access_token;
 }
 
-async function gqlQuery(token, query, variables) {
-  const res = await fetch(WCL_API_URL, {
+async function gqlQuery(token, query, variables, apiUrl = WCL_API_URL) {
+  const res = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -298,6 +443,17 @@ function writeFixture(filename, data) {
   console.log(`Wrote ${path.relative(REPO_ROOT, filePath)}`);
 }
 
+// Takes one rateLimitData sample, labeled and timestamped, for
+// rankings-ratelimit.json. Never writes the token — only the budget fields.
+async function sampleRateLimit(token, label) {
+  const data = await gqlQuery(token, RATE_LIMIT_QUERY, {});
+  return {
+    label,
+    recorded: new Date().toISOString(),
+    ...data.rateLimitData,
+  };
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -315,6 +471,155 @@ async function main() {
 
   console.log(`Recording fixtures for report ${REPORT_CODE}, fight ${FIGHT_ID}...`);
   const token = await getAccessToken(clientId, clientSecret);
+
+  // R0-2 rate-limit sample 1/3 — before any other query in this run.
+  const rateLimitSamples = [];
+  rateLimitSamples.push(await sampleRateLimit(token, "before"));
+
+  // R0-2: the per-report rankings blob, recorded on its own.
+  const rankingsReportData = await gqlQuery(token, REPORT_RANKINGS_QUERY, {
+    code: REPORT_CODE,
+    fightIDs: [FIGHT_ID],
+  });
+  writeFixture("rankings-report.json", {
+    _provenance: {
+      query: "ReportRankings (reportData.report(code:).rankings(fightIDs:))",
+      recorded: new Date().toISOString(),
+      entity: `report ${REPORT_CODE}, fight ${FIGHT_ID}`,
+      api_host: "www.warcraftlogs.com",
+    },
+    ...rankingsReportData,
+  });
+
+  // R0-2 rate-limit sample 2/3 — immediately after the rankings query above.
+  rateLimitSamples.push(await sampleRateLimit(token, "after-report-rankings"));
+
+  // R0-2 (Task 2): boss leaderboard, character and zone-bracket fixtures.
+  // Every id below is read from the just-recorded rankings-report.json blob,
+  // never a literal — including the partition, so the leaderboard read is
+  // scoped to the report's own raid phase.
+  const reportRankingEntry = rankingsReportData?.reportData?.report?.rankings?.data?.[0];
+  const encounterID = reportRankingEntry?.encounter?.id;
+  const encounterName = reportRankingEntry?.encounter?.name;
+  const partition = reportRankingEntry?.partition;
+  const zoneID = reportRankingEntry?.zone;
+  const targetCharacter = reportRankingEntry?.roles?.dps?.characters?.[0];
+
+  const encounterRankingsData = await gqlQuery(token, ENCOUNTER_RANKINGS_PROBE_QUERY, {
+    encounterID,
+    partition,
+  });
+  writeFixture("rankings-encounter.json", {
+    _provenance: {
+      query: "EncounterRankingsProbe (worldData.encounter.characterRankings + fightRankings)",
+      recorded: new Date().toISOString(),
+      entity: `encounter ${encounterID} ("${encounterName}"), partition ${partition}`,
+      api_host: "www.warcraftlogs.com",
+    },
+    ...encounterRankingsData.worldData.encounter,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-encounter-rankings"));
+
+  const characterRankingsData = await gqlQuery(
+    token,
+    CHARACTER_RANKINGS_PROBE_QUERY,
+    {
+      name: targetCharacter.name,
+      serverSlug: targetCharacter.server.name,
+      serverRegion: targetCharacter.server.region,
+      zoneID,
+      encounterID,
+      partition,
+    },
+    CLASSIC_API_URL,
+  );
+  writeFixture("rankings-character.json", {
+    _provenance: {
+      query: "CharacterRankingsProbe (characterData.character.zoneRankings + encounterRankings)",
+      recorded: new Date().toISOString(),
+      entity: `${targetCharacter.name}-${targetCharacter.server.name}-${targetCharacter.server.region}, zone ${zoneID}, partition ${partition}`,
+      api_host: "classic.warcraftlogs.com",
+      // R0-2 finding: this Classic character resolves to null on the
+      // default www.warcraftlogs.com host and requires the classic. host —
+      // confirmed by probing both hosts this session with identical args.
+      required_classic_host: true,
+    },
+    ...characterRankingsData.characterData.character,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-character-rankings"));
+
+  const zonesData = await gqlQuery(token, ZONES_PROBE_QUERY, {});
+  writeFixture("rankings-zones.json", {
+    _provenance: {
+      query: "ZonesProbe (worldData.zones)",
+      recorded: new Date().toISOString(),
+      entity: "all worldData.zones (bracket vocabulary, not report-specific)",
+      api_host: "www.warcraftlogs.com",
+    },
+    worldData: zonesData.worldData,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-zones"));
+
+  // R0-2 (Task 3): choose the guild, explicitly. Probe the demo report's own
+  // guild first; only fall back to the hand-picked public guild above if the
+  // report has none.
+  const reportGuildData = await gqlQuery(
+    token,
+    REPORT_GUILD_QUERY,
+    { code: REPORT_CODE },
+    CLASSIC_API_URL,
+  );
+  const reportGuild = reportGuildData?.reportData?.report?.guild;
+  const guildID = reportGuild?.id ?? FALLBACK_GUILD_ID;
+  const guildChoiceReason = reportGuild
+    ? `the demo report's own guild (reportData.report(code:).guild)`
+    : "fallback public guild — the demo report has no guild " +
+      "(reportData.report(code:).guild is null); see FALLBACK_GUILD_ID's " +
+      "comment above for how this guild was found and why it was chosen";
+
+  const guildProbeData = await gqlQuery(
+    token,
+    GUILD_PROBE_QUERY,
+    { guildID, zoneID },
+    CLASSIC_API_URL,
+  );
+  const guild = guildProbeData.guildData.guild;
+  const guildReports = guildProbeData.reportData.reports;
+  const allReportsPublic =
+    guildReports.data.length > 0 &&
+    guildReports.data.every((r) => r.visibility === "public");
+
+  if (!allReportsPublic) {
+    console.error(
+      `Guild ${guildID} could not be confirmed public (reports() returned ` +
+        `${guildReports.data.length} reports, not all public) — never ` +
+        "recording an unconfirmed entity. Pick a different fallback guild " +
+        "and rerun.",
+    );
+    process.exit(2);
+  }
+
+  writeFixture("rankings-guild.json", {
+    _provenance: {
+      query: "GuildProbe (guildData.guild.members + attendance, reportData.reports)",
+      recorded: new Date().toISOString(),
+      entity: `${guild.name} (${guild.server.slug}-${guild.server.region.compactName}), guild id ${guild.id}`,
+      api_host: "classic.warcraftlogs.com",
+      guild_choice: guildChoiceReason,
+      public_confirmed: true,
+      public_confirmed_method:
+        `reportData.reports(guildID) returned visibility: "public" for all ` +
+        `${guildReports.data.length} sampled reports; a logged-out browser ` +
+        "check was not possible in this environment (warcraftlogs.com " +
+        "returns HTTP 403 to automated readers, confirmed against the " +
+        "already-public demo report URL too — see README.md)",
+      public_confirmed_date: new Date().toISOString().slice(0, 10),
+    },
+    members: guild.members,
+    attendance: guild.attendance,
+    reports: guildReports.data,
+  });
+  rateLimitSamples.push(await sampleRateLimit(token, "after-guild-rankings"));
 
   // 1. DPS player data (fight 23, source 12)
   const dpsData = await gqlQuery(token, PLAYER_FULL_DATA_QUERY, {
@@ -414,7 +719,19 @@ async function main() {
     masterData: masterDataActorsData?.reportData?.report?.masterData ?? null,
   });
 
-  console.log("All six fixtures recorded successfully.");
+  // R0-2 rate-limit sample 3/3 — at the very end of the run.
+  rateLimitSamples.push(await sampleRateLimit(token, "end"));
+  writeFixture("rankings-ratelimit.json", {
+    _provenance: {
+      query: "RateLimitCheck (rateLimitData), sampled multiple times across this run",
+      recorded: new Date().toISOString(),
+      entity: "this run's own WCL client-credentials key budget (not report-specific)",
+      api_host: "www.warcraftlogs.com",
+    },
+    samples: rateLimitSamples,
+  });
+
+  console.log("All fixtures recorded successfully.");
   process.exit(0);
 }
 

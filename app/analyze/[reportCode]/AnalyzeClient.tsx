@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Link2, Check, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import AnalysisView, { AnalysisLoading } from "@/app/components/AnalysisView";
 import RaidOverview, { RaidOverviewLoading } from "@/app/components/RaidOverview";
 import CLAView, { CLALoading } from "@/app/components/CLAView";
 import PlayerQuickGrid from "@/app/components/PlayerQuickGrid";
+import AdSlot from "@/app/components/AdSlot";
 import { ShineBorder } from "@/components/ui/shine-border";
 import posthog from "posthog-js";
 import {
@@ -25,16 +26,29 @@ import { useReportMeta, useFightPlayers } from "./hooks/useReportMeta";
 import { useRaidOverview } from "./hooks/useRaidOverview";
 import { usePlayerAnalysis } from "./hooks/usePlayerAnalysis";
 import { useCLA } from "./hooks/useCLA";
+import { buildReportShareUrl, parseShareRef } from "@/lib/share-links";
 
 type TabMode = "player" | "raid" | "cla";
+
+const TAB_MODES: readonly TabMode[] = ["player", "raid", "cla"] as const;
+
+function isTabMode(value: string | null): value is TabMode {
+  return value != null && (TAB_MODES as readonly string[]).includes(value);
+}
 
 export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<TabMode>(
-    (searchParams.get("tab") as TabMode) || "raid"
-  );
+  // `tab` wins when present and valid; otherwise a `source` param means the
+  // visitor arrived via a player permalink, so the Player tab opens straight
+  // into that player's analysis (D-12). Everything else about tab state is
+  // unchanged.
+  const [activeTab, setActiveTab] = useState<TabMode>(() => {
+    const tabParam = searchParams.get("tab");
+    if (isTabMode(tabParam)) return tabParam;
+    return searchParams.get("source") ? "player" : "raid";
+  });
 
   const [selectedFight, setSelectedFight] = useState<number | null>(
     searchParams.get("fight") ? parseInt(searchParams.get("fight")!, 10) : null
@@ -80,6 +94,13 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const player = usePlayerAnalysis(reportCode, selectedFight, selectedSource, activeTab, report);
   const cla = useCLA(reportCode, report, selectedFight, activeTab);
 
+  // The Raid tab's awards panel needs the selected fight's kill/wipe outcome;
+  // this is the only source of that context (D-06).
+  const selectedFightEntry = useMemo(
+    () => report?.fights.find((f) => f.id === selectedFight) ?? null,
+    [report, selectedFight]
+  );
+
   // Player quick-jump handler: switch to player tab + select player
   const handlePlayerClick = useCallback(
     (sourceId: number) => {
@@ -97,13 +118,19 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleShareLink = useCallback(() => {
-    const url = window.location.href;
+    const url = buildReportShareUrl(window.location.origin, { reportCode, fightId: selectedFight });
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       posthog.capture("share_link_copied", { report_code: reportCode, url });
+      posthog.capture("share_action", {
+        kind: "report_link",
+        report_code: reportCode,
+        fight_id: selectedFight,
+        tab: activeTab,
+      });
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [reportCode]);
+  }, [reportCode, selectedFight, activeTab]);
 
   // A report that passes URL validation but fails to load (most often a
   // private/permission-gated log) was previously a silent drop-off. Capture it
@@ -116,6 +143,28 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
       });
     }
   }, [reportError, reportCode]);
+
+  // Inbound attribution (D-16): capture exactly one `share_landing` for a
+  // recognised `ref` value, then strip `ref` from the address bar so it never
+  // rides along into a link the visitor copies next. Guarded by a ref (not
+  // state) so this runs exactly once per mount even though stripping the
+  // param changes `searchParams` on the next render.
+  const refCaptureRanRef = useRef(false);
+  useEffect(() => {
+    if (refCaptureRanRef.current) return;
+    refCaptureRanRef.current = true;
+
+    const rawRef = searchParams.get("ref");
+    if (rawRef === null) return;
+
+    const resolvedRef = parseShareRef(rawRef);
+    if (resolvedRef !== null) {
+      posthog.capture("share_landing", { ref: resolvedRef, report_code: reportCode });
+    }
+    updateUrlParam("ref", null);
+    // Intentionally runs once on mount only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="py-6 space-y-6">
@@ -150,6 +199,7 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
             size="sm"
             onClick={handleShareLink}
             className="shrink-0"
+            data-protected="share-header"
           >
             {copied ? (
               <>
@@ -295,6 +345,13 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
         </div>
       )}
 
+      {/* Reserved ad slot — mounted inside the same `report &&` condition as
+          the tab switcher/selectors above, so the box appears the moment
+          the shell renders rather than arriving later and pushing the tab
+          body down after paint (D-02, D-06). One mount serves all three
+          tabs; it is not inside any tab-content block. */}
+      {report && <AdSlot id="analyze-mid" />}
+
       {/* Player Analysis tab content */}
       {activeTab === "player" && (
         <>
@@ -343,7 +400,16 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
           {raid.loading && <RaidOverviewLoading />}
           {raid.result && !raid.loading && (
-            <RaidOverview data={raid.result} onPlayerClick={handlePlayerClick} />
+            <RaidOverview
+              data={raid.result}
+              onPlayerClick={handlePlayerClick}
+              reportCode={reportCode}
+              fight={selectedFightEntry}
+              // True when the visitor arrived via an awards permalink (D-12) —
+              // the Raid tab is already the default in that case; the panel
+              // scrolls itself into view once this is true.
+              openAwards={searchParams.get("view") === "awards"}
+            />
           )}
         </>
       )}
@@ -385,34 +451,6 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           )}
         </>
       )}
-      {/* Share CTA — surface sharing on every tab where users finish reading,
-          not just the player scorecard's "Copy for Discord". */}
-      {(player.result || raid.result || cla.result) && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg glass px-4 py-3">
-          <p className="text-sm text-muted-foreground">
-            Found this useful? Share it with your guild.
-          </p>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleShareLink}
-            className="shrink-0"
-          >
-            {copied ? (
-              <>
-                <Check className="size-3.5 text-status-good" />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Link2 className="size-3.5" />
-                Share link
-              </>
-            )}
-          </Button>
-        </div>
-      )}
-
       {/* Guide links — cross-link to SEO content */}
       {(player.result || raid.result || cla.result) && (
         <div className="border-t border-white/[0.06] pt-6 mt-8">
@@ -424,6 +462,11 @@ export default function AnalyzeClient({ reportCode }: { reportCode: string }) {
           </div>
         </div>
       )}
+
+      {/* Reserved ad slot — last child of <main>, after the guide-links
+          block, so nothing below it can shift when it collapses. Renders
+          unconditionally so it does not appear/disappear as results load. */}
+      <AdSlot id="analyze-end" />
     </main>
   );
 }

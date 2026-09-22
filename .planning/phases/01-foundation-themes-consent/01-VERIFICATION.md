@@ -284,3 +284,41 @@ All 5 human-verification items passed in `01-UAT.md` (theme toggle, EEA/UK vs US
 ## Acknowledged Gaps
 
 - **Security review (ASVS L1) deferred.** `workflow.security_enforcement` is enabled, but this GSD install (standard profile) lacks the `gsd-secure-phase` skill and `gsd-security-auditor` agent, so `01-SECURITY.md` could not be produced. Developer chose to proceed and defer (2026-09-07). Mitigation already in place: every Phase 1 PLAN.md carries a STRIDE threat register (T-01-01 … T-01-30, T-01-SC) with dispositions; CSP remains report-only (pre-existing concern). To close: install the full gsd-core profile, run `/gsd-secure-phase 01`.
+
+## Addendum (2026-09-14)
+
+This phase's OPS-01 PostHog criterion, recorded above and in `docs/OPS-01-SHIP-GATE.md`'s Phase 1
+sign-off table as **pass (pre-deploy)** / **no-data (post-deploy)**, was not actually met.
+Nothing already written above is being changed — this addendum is the correction the sign-off
+did not have at the time.
+
+**What was actually true.** The Phase 1 production deploy of 2026-09-06 introduced
+`cookieless_mode: "on_reject"` in `app/components/PostHogProvider.tsx`. In posthog-js 1.360, that
+setting makes `isOptedOut()` return `true` whenever consent is `PENDING`, so every `capture()` call
+is dropped — not sent cookieless, dropped outright. Opt-in depended on a `__tcfapi` callback that
+Google's CMP never fires for a fresh visitor (`window.__tcfapi` is not present at `loaded` time),
+so the 3-second `CMP_TIMEOUT_MS` always resolved to `"pending"` and capture never resumed. The
+`no-data` row this sign-off recorded for `theme_changed` and `consent_resolved` was attributed to
+the deploy being minutes old and an unstable MCP connection — both true, but neither was the real
+cause, and the real cause did not go away once traffic arrived.
+
+**The volume evidence** (`.planning/phases/02.1-posthog-consent-gate-hotfix/02.1-DIAGNOSIS.md`):
+daily event volume ran roughly 4,000–10,000/day in the days before this deploy, fell to
+3–7/day within two days after it, and stayed there through 2026-09-13. `theme_changed` and
+`consent_resolved` — the two Phase 1 custom events this sign-off's PostHog row concerned — along
+with `consent_unavailable`, `timeline_viewed`, `timeline_filter_used` and `timeline_error` (the
+latter three shipped in Phase 2) were never ingested at all in that window.
+
+**What was actually wrong with the sign-off.** The gate asked whether an event *definition*
+existed in the PostHog project (Part 1 item 4, pre-hotfix wording) — and event definitions persist
+once created, whether or not a single event has been ingested since. The checklist's own recording
+rule ("a route Search Console has no data for is `no-data` — never a pass") already said the right
+thing about `no-data`; the gate simply never counted events, so no row could ever have gone
+`no-data` from a real outage. The gate asked the wrong question, not that this sign-off answered
+it dishonestly.
+
+**Where it was actually met.** The PostHog half of Phase 1's OPS-01 criterion was met for real by
+Phase 2.1 (`.planning/phases/02.1-posthog-consent-gate-hotfix/`), which fixes the capture path with
+server-side geo consent classification and adds a mandatory post-deploy live-traffic check —
+`docs/OPS-01-SHIP-GATE.md` Part 1 item 7 — that a gate whose events cannot be observed now fails
+outright rather than recording `no-data` and passing anyway.

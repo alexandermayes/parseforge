@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="text-sm text-muted-foreground">
-            Last updated: 2026-09-06
+            Last updated: 2026-09-21
           </p>
           <p className="text-muted-foreground text-lg">
             ParseForge is a small, free tool. This page explains what data we
@@ -96,6 +96,16 @@ export default function PrivacyPolicyPage() {
             collect or store that kind of data because we don&apos;t have
             anywhere to put it.
           </p>
+          <p className="text-muted-foreground">
+            The report data shown on the site — player names, gear, buffs,
+            parses, and rankings — comes from the public Warcraft Logs API
+            and belongs to Warcraft Logs and the report&apos;s uploader.
+            ParseForge only fetches a report when you paste its link; that
+            data is cached briefly (above) and shown back to you, not resold
+            or repackaged. The pages that display it — the report-analysis
+            pages and the raid-audit page — also carry the advertising
+            described below.
+          </p>
         </section>
 
         <section className="space-y-4">
@@ -135,10 +145,32 @@ export default function PrivacyPolicyPage() {
           <p className="text-muted-foreground">
             We use Google Privacy &amp; Messaging as our consent management
             platform, implementing the IAB Transparency &amp; Consent
-            Framework (TCF) v2.2. ParseForge does not currently show any
-            adverts; Google AdSense may serve ads on the site in the future,
-            and the consent choices you make through this dialog will apply
-            to that advertising once it goes live.
+            Framework (TCF) v2.2. Google AdSense serves display ads on the
+            report-analysis pages (parseforge.gg/analyze/&hellip;) and the
+            raid-audit page (parseforge.gg/tbc-audit). The homepage and the
+            guides carry no ads.
+          </p>
+          <p className="text-muted-foreground">
+            The ad script can see the page URL and the general browser
+            information any third-party script on a page receives — browser
+            type, device type, and similar technical signals. ParseForge
+            does not pass it your report code, character name, or any other
+            analysis content.
+          </p>
+          <p className="text-muted-foreground">
+            If you&apos;re visiting from the EEA or UK, the ad script is not
+            loaded at all unless you&apos;ve given consent through the
+            dialog above — declining, or leaving the dialog unanswered,
+            means the script is never requested. See{" "}
+            <a
+              href="https://policies.google.com/technologies/ads"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-from hover:underline"
+            >
+              Google&apos;s advertising privacy page
+            </a>{" "}
+            for what Google does with the data once an ad loads.
           </p>
           <p className="text-muted-foreground">
             You can change your mind at any time by re-opening the consent
@@ -156,8 +188,8 @@ export default function PrivacyPolicyPage() {
             </li>
             <li>
               <strong className="text-foreground">Google</strong> — provides
-              our consent management dialog and, in the future, may serve
-              AdSense ads.
+              our consent management dialog and serves the AdSense display
+              ads on the report-analysis and raid-audit pages.
             </li>
             <li>
               <strong className="text-foreground">PostHog</strong> — product
@@ -192,10 +224,13 @@ export default function PrivacyPolicyPage() {
             object to processing, and to withdraw consent at any time.
           </p>
           <p className="text-muted-foreground">
-            If you&apos;re a California resident, CCPA/CPRA applies: we do
-            not sell your personal information, and we do not share it for
-            cross-context behavioral advertising, as of this policy. You have
-            the right to know what we hold and the right to have it deleted.
+            If you&apos;re a California resident, CCPA/CPRA applies:
+            ParseForge does not sell your personal information for money.
+            Advertising on the report-analysis and raid-audit pages may
+            constitute &quot;sharing&quot; for cross-context behavioral
+            advertising under California law — the consent dialog above is
+            your control over that. You have the right to know what we hold
+            and the right to have it deleted.
           </p>
           <p className="text-muted-foreground">
             To exercise any of these rights, email{" "}

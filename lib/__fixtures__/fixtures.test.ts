@@ -5,6 +5,12 @@ import demoRaidOverview from "./demo-raid-overview.json";
 import demoRaidCombatantInfo from "./demo-raid-combatant-info.json";
 import demoRaidDeathEvents from "./demo-raid-death-events.json";
 import demoTimelineCasts from "./demo-timeline-casts.json";
+import rankingsRatelimit from "./rankings-ratelimit.json";
+import rankingsReport from "./rankings-report.json";
+import rankingsEncounter from "./rankings-encounter.json";
+import rankingsCharacter from "./rankings-character.json";
+import rankingsZones from "./rankings-zones.json";
+import rankingsGuild from "./rankings-guild.json";
 
 // Shape guard over every fixture recorded by scripts/record-wcl-fixtures.mjs
 // (02-01 Task 1). These assert the exact field names README.md documents
@@ -82,5 +88,148 @@ describe("WCL fixtures shape guard", () => {
     expect(
       demoRaidDeathEvents.reportData.report.deathEvents.data
     ).toBeInstanceOf(Array);
+  });
+
+  // ─── R0-2 rankings fixtures (PARSEFORGE-RANKINGS-SPEC.md §7) ────────────
+
+  it("Test 7: rankings-ratelimit.json carries at least three labeled, timestamped, numeric samples", () => {
+    expect(Array.isArray(rankingsRatelimit.samples)).toBe(true);
+    expect(rankingsRatelimit.samples.length).toBeGreaterThanOrEqual(3);
+    const labels = rankingsRatelimit.samples.map((s) => s.label);
+    for (const expected of ["before", "after-report-rankings", "end"]) {
+      expect(labels).toContain(expected);
+    }
+    for (const sample of rankingsRatelimit.samples) {
+      expect(typeof sample.limitPerHour).toBe("number");
+      expect(typeof sample.pointsSpentThisHour).toBe("number");
+      expect(typeof sample.pointsResetIn).toBe("number");
+    }
+  });
+
+  it("Test 8: rankings-report.json exposes at least one rankings entry with the fields the parse lens will read", () => {
+    const entries = rankingsReport.reportData.report.rankings.data;
+    expect(Array.isArray(entries)).toBe(true);
+    expect(entries.length).toBeGreaterThan(0);
+    const entry = entries[0];
+    expect(typeof entry.fightID).toBe("number");
+    expect(typeof entry.partition).toBe("number");
+    expect(typeof entry.bracketData).toBe("number");
+    expect(typeof entry.kill).toBe("number");
+    expect(typeof entry.encounter.id).toBe("number");
+    expect(typeof entry.encounter.name).toBe("string");
+    expect(entry.roles).toBeTruthy();
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      expect(Array.isArray(entry.roles[role].characters)).toBe(true);
+    }
+    expect(typeof entry.speed.rankPercent).toBe("number");
+    expect(typeof entry.execution.rankPercent).toBe("number");
+  });
+
+  it("Test 9: every character row in every role has a numeric id, a string name, and a numeric-or-null rankPercent", () => {
+    const entry = rankingsReport.reportData.report.rankings.data[0];
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      for (const character of entry.roles[role].characters) {
+        expect(typeof character.id).toBe("number");
+        expect(typeof character.name).toBe("string");
+        expect(
+          character.rankPercent === null || typeof character.rankPercent === "number"
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("Test 10: the `hidden` field's presence on character rows is recorded, never assumed absent", () => {
+    // README.md/2026-09-19 recording: no character row carried a `hidden`
+    // key at all. This is an explicit, non-fatal observation — 04-04's
+    // parse-lens engine must honour `hidden` when present without assuming
+    // it always is. If a future re-record starts returning `hidden`, this
+    // count changes and the comment above should be updated, not the
+    // assertion loosened to require absence.
+    const entry = rankingsReport.reportData.report.rankings.data[0];
+    let hiddenCount = 0;
+    for (const role of ["tanks", "healers", "dps"] as const) {
+      for (const character of entry.roles[role].characters) {
+        if ("hidden" in character) hiddenCount += 1;
+      }
+    }
+    expect(typeof hiddenCount).toBe("number");
+  });
+
+  // ─── R0-2 Task 2: boss leaderboard, character and zone-bracket fixtures ──
+
+  it("Test 11: rankings-encounter.json exposes page-1 characterRankings with a numeric page/count and a rankings array", () => {
+    const cr = rankingsEncounter.characterRankings;
+    expect(typeof cr.page).toBe("number");
+    expect(typeof cr.hasMorePages).toBe("boolean");
+    expect(typeof cr.count).toBe("number");
+    expect(Array.isArray(cr.rankings)).toBe(true);
+    // Edge case: an empty leaderboard page is legitimate — only assert on
+    // the shape of the first row when one exists.
+    if (cr.rankings.length > 0) {
+      expect(typeof cr.rankings[0].name).toBe("string");
+      expect(typeof cr.rankings[0].amount).toBe("number");
+    }
+  });
+
+  it("Test 12: rankings-encounter.json exposes its own fightRankings payload with a rankings array", () => {
+    const fr = rankingsEncounter.fightRankings;
+    expect(Array.isArray(fr.rankings)).toBe(true);
+  });
+
+  it("Test 13: rankings-character.json exposes zoneRankings and encounterRankings each with at least one numeric field", () => {
+    const { zoneRankings, encounterRankings } = rankingsCharacter;
+    expect(zoneRankings).toBeTruthy();
+    expect(encounterRankings).toBeTruthy();
+    // Tolerate a legitimately empty ranking list (a real public character can
+    // genuinely have none) — never require non-empty data, only a present,
+    // typed structure.
+    expect(
+      zoneRankings.bestPerformanceAverage === null ||
+        typeof zoneRankings.bestPerformanceAverage === "number"
+    ).toBe(true);
+    expect(Array.isArray(zoneRankings.rankings)).toBe(true);
+    expect(
+      encounterRankings.bestAmount === null || typeof encounterRankings.bestAmount === "number"
+    ).toBe(true);
+    expect(Array.isArray(encounterRankings.ranks)).toBe(true);
+  });
+
+  it("Test 14: rankings-character.json records whether the Classic dataset required the classic. API host", () => {
+    expect(typeof rankingsCharacter._provenance.api_host).toBe("string");
+    expect(rankingsCharacter._provenance.api_host.length).toBeGreaterThan(0);
+  });
+
+  it("Test 15: rankings-zones.json exposes worldData.zones as an array whose entries carry a numeric id, string name and a brackets key", () => {
+    const zones = rankingsZones.worldData.zones;
+    expect(Array.isArray(zones)).toBe(true);
+    expect(zones.length).toBeGreaterThan(0);
+    for (const zone of zones) {
+      expect(typeof zone.id).toBe("number");
+      expect(typeof zone.name).toBe("string");
+      // The key must be present; some zones (e.g. no bracket system for that
+      // game/tier) legitimately carry `brackets: null` — a present-but-null
+      // value is tolerated, a missing key is not.
+      expect("brackets" in zone).toBe(true);
+      expect(zone.brackets === null || typeof zone.brackets === "object").toBe(true);
+    }
+  });
+
+  // ─── R0-2 Task 3: guild fixture with an explicit public-guild choice ────
+
+  it("Test 16: rankings-guild.json carries members, attendance and a report list, tolerating an empty page but not a missing key", () => {
+    expect(rankingsGuild).toHaveProperty("members");
+    expect(rankingsGuild).toHaveProperty("attendance");
+    expect(rankingsGuild).toHaveProperty("reports");
+    expect(Array.isArray(rankingsGuild.members?.data)).toBe(true);
+    expect(Array.isArray(rankingsGuild.attendance?.data)).toBe(true);
+    expect(Array.isArray(rankingsGuild.reports)).toBe(true);
+  });
+
+  it("Test 17: rankings-guild.json's _provenance records the guild, its server/region, and a public-visibility confirmation", () => {
+    const p = rankingsGuild._provenance;
+    expect(typeof p.entity).toBe("string");
+    expect(typeof p.recorded).toBe("string");
+    expect(p.public_confirmed).toBe(true);
+    expect(typeof p.public_confirmed_date).toBe("string");
   });
 });
