@@ -2,9 +2,9 @@
 schema_version: 1
 open_count: 12
 waived_count: 0
-fixed_count: 2
-total_count: 14
-last_updated: 2026-09-21T22:32:39.303Z
+fixed_count: 3
+total_count: 15
+last_updated: 2026-09-22T05:01:37.732Z
 ---
 
 # Broken Windows Ledger
@@ -26,9 +26,10 @@ last_updated: 2026-09-21T22:32:39.303Z
 | 9 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-06 Task 2 developer-only backstops not performed by the executor: D-04 award-pool tone review, real Discord unfurl of preview awards+player links (longest-name ellipsis check), D-13 mobile reachability of both share buttons — exact tests and preview URLs recorded in Part 5 Developer review (preview) | fixed |  | 2026-09-16T09:02:42.606Z | 2026-09-19T20:19:49.601Z |
 | 10 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 item-7 re-measure needed: dpl_6Pj5Lz5Q1tSJYSCtUu3YTvtRx3mx's 09:14:57Z-10:14:57Z window scored threshold 1 FAIL (7 pageviews), threshold 2 PASS (2 countries), threshold 3 NOT EVALUABLE (no Vercel Web Analytics endpoint on the personal token). Re-run the three HogQL queries against a full 60-minute window on a busier UTC hour (candidate ~22:00Z, 24 pageviews on 2026-09-14) plus a window-granularity Vercel Web Analytics dashboard read. | fixed |  | 2026-09-16T16:56:13.409Z | 2026-09-19T01:10:28.150Z |
 | 11 | 03 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 03-07 share-rate (D-14) re-run needed: 7-day trailing HogQL read 0.0% (0 share_action sessions / 19 analysis_complete sessions) as a first reading with only ~7.5h of live share_action exposure. Re-run the same HogQL on/after 2026-09-23T09:15Z for the first meaningful comparison against the ~2.8% baseline. | open |  | 2026-09-16T16:56:13.555Z |  |
-| 12 | 04 | deviation | app/components/AdSlot.tsx | 162 | Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07. | open |  | 2026-09-21T20:15:46.704Z |  |
+| 12 | 04 | deviation | app/components/AdSlot.tsx | 162 | Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07. | fixed |  | 2026-09-21T20:15:46.704Z | 2026-09-22T05:01:23.318Z |
 | 13 | 04 | deviation | app/components/ReportUrlForm.tsx | 95 | Pre-existing, non-ad-related: the example-URL <code> string has no wrap class, forcing the layout viewport wider than 384px on / and /tbc-audit (not /guides, not /analyze) at phone width; found while measuring ad-box adjacency in 04-06 Task 3. Out of Phase 4 scope to fix. | open |  | 2026-09-21T20:15:47.035Z |  |
 | 14 | 04 | unrun-verify | docs/OPS-01-SHIP-GATE.md |  | 04-06 Task 2 preview netlog/measured-box/CSP-harvest procedure could not be re-run against the second preview (dpl_9SxD4PEAPUHv8aghVucyjqJ3LQoV) after the box-size/dark-mode fixes: the one working method to source the Vercel SSO bypass secret was denied by the session's own Bash-permission auto-classifier (Credential Materialization). Closing test: re-run 04-06 Task 2's procedure against this preview once the bypass secret can be sourced in a session with permission. | open |  | 2026-09-21T22:32:39.303Z |  |
+| 15 | 04 | deviation | app/components/AdSlot.tsx | 190 | Round-2's visibility:hidden fix for the white unfilled-frame defect (WINDOWS #12's sibling Defect B) did not hold on the second preview: adsbygoogle.js injects a child div (#aswift_N_host) inside the <ins> with its own explicit visibility:visible, which CSS lets override an ancestor's visibility:hidden regardless of tree depth. Round 3 replaced it with a wrapper-level occluding cover (a later sibling of the <ins>, absolute/inset-0/z-10/bg-background) verified via pixel-sampled local screenshots in both themes, both viewports (0% white-pixel deviation, exact page-background color match). Preview-level (SSO-gated) re-verification is still blocked by the same bypass-secret gap #14 records; closing test is the developer's first-hand review of the third preview (dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1). | open |  | 2026-09-22T05:01:37.732Z |  |
 
 ````json
 [
@@ -171,10 +172,10 @@ last_updated: 2026-09-21T22:32:39.303Z
     "file": "app/components/AdSlot.tsx",
     "line": 162,
     "description": "Reserved ad box <div> carries an inline style={{width:base.width,height:base.height}} that outranks the responsive md: Tailwind classes at every viewport, so no slot (tbc-audit-mid/-end, analyze-mid/-end) ever grows to its declared desktop size; verified live via CDP getComputedStyle on the preview (04-06 Task 2). Blocking finding for 04-07.",
-    "status": "open",
+    "status": "fixed",
     "reason": "",
     "recorded_at": "2026-09-21T20:15:46.704Z",
-    "resolved_at": null
+    "resolved_at": "2026-09-22T05:01:23.318Z"
   },
   {
     "id": 13,
@@ -198,6 +199,18 @@ last_updated: 2026-09-21T22:32:39.303Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-21T22:32:39.303Z",
+    "resolved_at": null
+  },
+  {
+    "id": 15,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "app/components/AdSlot.tsx",
+    "line": 190,
+    "description": "Round-2's visibility:hidden fix for the white unfilled-frame defect (WINDOWS #12's sibling Defect B) did not hold on the second preview: adsbygoogle.js injects a child div (#aswift_N_host) inside the <ins> with its own explicit visibility:visible, which CSS lets override an ancestor's visibility:hidden regardless of tree depth. Round 3 replaced it with a wrapper-level occluding cover (a later sibling of the <ins>, absolute/inset-0/z-10/bg-background) verified via pixel-sampled local screenshots in both themes, both viewports (0% white-pixel deviation, exact page-background color match). Preview-level (SSO-gated) re-verification is still blocked by the same bypass-secret gap #14 records; closing test is the developer's first-hand review of the third preview (dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T05:01:37.732Z",
     "resolved_at": null
   }
 ]

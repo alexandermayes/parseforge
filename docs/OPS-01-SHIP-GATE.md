@@ -3730,3 +3730,220 @@ the preview-level check can run.
 
 **This subsection is local, supplementary, code-level evidence only — not preview evidence and not
 a gate sign-off**, the same distinction every other preview subsection in this Part draws.
+
+### Round-3 diagnosis and fix — the wrapper-level occluding cover (Phase 4, 2026-09-21)
+
+**The round-2 fix did not hold.** The developer's screenshot of the second preview
+(`https://parseforge-ccifsdcjf-loot-list-plus.vercel.app`, dark theme,
+`/analyze/ZjKgNYxVcAqR8pGJ?fight=23&source=12&tab=raid`, desktop) showed `analyze-mid` as a solid
+white 728×90 rectangle between the Fight/Refresh controls and the "Hydross the Unstable" heading.
+Sizing (Defect A) was confirmed fixed by the same screenshot — the box was the correct wide banner,
+not the narrow one. Defect B (the white paint) was not.
+
+**The SSO bypass secret was still unavailable this session** — the same blocker #14 records: the one
+working method (`vercel project protection ... --format json`) was denied again by the same
+auto-mode Bash-permission classifier, and this dispatch's own instructions separately prohibit
+retrying it or touching project-protection settings. No preview-level netlog/measured-box/CSP
+re-verification could run this session either, for the identical reason #14 already names — that
+blocker is **not** closed by this entry and #14 stays open below.
+
+**Diagnosis and fix verification instead used a local reproduction that needs no secret at all** —
+the same `next dev` server and no-dependency CDP driver the previous round's supplementary evidence
+introduced (`NEXT_PUBLIC_ADS_ENABLED=1`, `NEXT_PUBLIC_ADSENSE_PUB_ID=2524016639017232`, the publisher
+id already public in `/ads.txt`), but this round additionally admitted a non-EEA visitor by spoofing
+the `x-vercel-ip-country` request header via CDP's `Network.setExtraHTTPHeaders`, set before
+navigation. The previous round's attempt at exactly this hit a `404` from `/api/geo` in the `next
+dev` log for reasons that session did not investigate; this session reproduced the same technique
+cleanly (`curl -H "x-vercel-ip-country: US" http://localhost:4123/api/geo` → `{"isConsentRegion":
+false}`, and the same header set via CDP before navigation produced an admitted, ins-mounted slot
+end to end) — the earlier 404 was not reproduced and remains unexplained, but the mechanism itself
+works and unblocked full live DOM inspection of a mounted, pushed AdSense unit without the account
+being out of review and without any EEA/CMP configuration.
+
+**Root cause: neither H1 nor H2 exactly as framed — a variant of H1, one level lower in the tree
+than expected.** Read live via CDP's `Runtime.evaluate` against `tbc-audit-mid` at a 1280px
+viewport, ~13s after navigation, `data-ad-status="unfilled"`:
+
+```
+outerHTML (the mounted <ins>, captured from the live DOM):
+<div data-ad-slot="tbc-audit-mid" class="mx-auto w-[300px] h-[250px] md:w-[728px] md:h-[90px] max-w-full">
+  <ins class="adsbygoogle" data-ad-client="ca-pub-2524016639017232" data-ad-slot="8721711041"
+       style="display: block; width: 728px; height: 90px; visibility: hidden;"
+       data-adsbygoogle-status="done" data-ad-status="unfilled">
+    <div id="aswift_1_host" style="border-width: medium; border-style: none; border-color: currentcolor;
+         border-image: none; height: 90px; width: 728px; margin: 0px; padding: 0px; position: relative;
+         visibility: visible; background-color: transparent; display: inline-block;">
+      <iframe id="aswift_1" style="left:0;position:absolute;top:0;border:0;width:728px;height:90px;..."
+              src="https://googleads.g.doubleclick.net/pagead/ads?..." data-load-complete="true"></iframe>
+    </div>
+  </ins>
+</div>
+```
+
+Round 2's own inline `visibility: hidden` on the `<ins>` is present and **not** clobbered — the
+literal H1 prediction ("Google's script rewrites the `<ins>` element's style attribute") is false as
+stated. What actually happens: `adsbygoogle.js` inserts a child `<div id="aswift_1_host">` **inside**
+the `<ins>` with its own explicit `visibility: visible` inline style. CSS `visibility` is inherited,
+but an element's own explicit value always wins over whatever it inherited, regardless of how many
+ancestor levels up the inherited value came from — so this div (and the `<iframe>` nested inside it,
+which sets no `visibility` of its own and inherits "visible" from its immediate parent, not from the
+`<ins>` two levels up) renders visible despite the `<ins>` ancestor being hidden. This happened while
+`data-ad-status` was still unresolved (observed at both a 2-second and a 13-second read: the host div
+and iframe are already present and already `visibility: visible` before the status attribute settles
+to `"unfilled"`), matching H1's core prediction (the frame paints before/without a "filled" status) —
+just via a descendant re-assertion one level inside the `<ins>`, not a direct clobber of the `<ins>`'s
+own style attribute. **H2 (a filled-but-blank creative) was not observed**: `data-ad-status` read
+`"unfilled"` throughout, consistent with the account's recorded review state ("Getting ready"), not a
+served-but-empty creative.
+
+**The fix: an occluding cover, not a visibility toggle.** `visibility: hidden` cannot be trusted at
+any level of this tree, because any element Google's script inserts anywhere inside the `<ins>` can
+locally re-declare `visibility: visible` and repaint through it — this is standard CSS behavior, not
+a bug in the browser, and it means putting the same `visibility: hidden` on the reserved wrapper
+`<div>` instead of the `<ins>` (the round-3 dispatch's own first suggested approach) would have been
+defeated identically, since an explicit descendant override wins regardless of how many ancestor
+levels up the hidden value was set. `app/components/AdSlot.tsx` now renders a plain sibling `<div>`
+after the `<ins>` inside the reserved wrapper — `absolute inset-0 z-10 bg-background`, `aria-hidden`,
+`pointer-events-none` — present whenever a confirmed-filled frame has not been observed. Google's
+script only ever touches inside the `<ins>` it owns; it cannot reach a later sibling. Because neither
+the `<ins>` nor anything Google injects sets an explicit `z-index`, plain document order already
+paints this cover on top of the `<ins>`'s entire subtree (CSS painting proceeds in tree order for
+`z-index: auto` elements, and a later sibling's whole render — including any positioned descendants —
+paints after an earlier sibling's whole subtree); the explicit `z-10` is additional insurance in case
+that ever changes. The wrapper `<div>` also gained `relative` (an anchor for the cover's
+`inset-0`) and `overflow-hidden` (stops any oversized frame from spilling past the reserved box); the
+box's declared size itself is unchanged — D-04 (space always reserved) was never at risk, only the
+paint underneath it. The `<ins>` also no longer carries the (now-redundant, previously-defeated)
+`visibility` inline style — `overflow-hidden` plus the cover are what do the work.
+
+**Additionally, per this dispatch's own instruction not to trust `data-ad-status="filled"` alone**:
+the `MutationObserver` that captures the terminal status now also requires an actually-rendered
+`<iframe>` (non-null, `offsetWidth > 0`, `offsetHeight > 0`) inside the `<ins>` before lifting the
+cover — a `"filled"` status arriving a tick before Google swaps the iframe in no longer reveals a gap.
+This check is a defense against a race, not a content check: it cannot read anything inside a
+cross-origin iframe's own document, so it cannot detect a genuinely filled-but-blank creative (the
+dispatch's own hypothesis (b), and the reason hypothesis (c) — a kill-switch — is also recorded here
+rather than implemented in code: **the recommended operational state is `NEXT_PUBLIC_ADS_ENABLED`
+left off (or unset) in Production until AdSense finishes reviewing parseforge.gg**, exactly as this
+plan's own `adsEnabled()` gate already causes when unset — no new code path, just the existing env
+switch used as the review-period safeguard. Once the account leaves "Getting ready" and starts
+serving real creative, this cover's job is done by the instant the first genuine `data-ad-status`
+resolution's iframe is observed with a non-zero size; nothing about the fix is specific to the
+review-period blank state.
+
+**`lib/ads.test.ts` and `lib/ads.ts` are unchanged by this fix** — round 3's edit is entirely inside
+`app/components/AdSlot.tsx` (occluding-cover render + the iframe-size check in the MutationObserver
+callback), so the existing `boxClass`/`max-w-full`/`adsConfigured` assertions still cover everything
+they covered before, and the full suite (below) still passes unmodified. No component-level test was
+added, for the same reason round 2 recorded: this repo's Vitest config runs `environment: "node"`
+with no React Testing Library or jsdom anywhere in the existing suite, and this dispatch's own
+instruction was to follow the existing pattern rather than introduce a testing library. The fix is
+verified by code review plus the live, pixel-sampled local reproduction below — not by an automated
+component test.
+
+**Local verification — pixel-sampled, not read from source.** A minimal dependency-free PNG decoder
+(Node's built-in `zlib.inflateSync`, no package added — the same no-new-dependency discipline the CDP
+driver itself follows) reads the raw pixel bytes of a `Page.captureScreenshot` clip and reports the
+average color and the fraction of near-white (`r,g,b > 245`) pixels, so "no white rectangle" is a
+counted result, not an eyeballed one. Screenshots and their intermediate PNG bytes were read only by
+this Node script, never loaded into the agent's own context.
+
+| Slot | Viewport | Theme | Clip region avg color | Adjacent page-background avg color (control) | White-pixel fraction |
+|---|---|---|---|---|---|
+| `tbc-audit-mid` | 1280×900 (desktop) | dark | `rgb(5, 7, 13)` | `rgb(5, 7, 13)` (identical, same clip re-sampled with 40px margin) | 0.0 |
+| `tbc-audit-mid` | 1280×900 (desktop) | light | `rgb(247, 248, 253)` | `rgb(247, 248, 253)` (identical, same clip re-sampled with 40px margin) | 1.0 (see note) |
+| `tbc-audit-mid` | 390×800 (phone) | dark | `rgb(5, 7, 13)` | not separately re-sampled; matches the desktop-dark control | 0.0 |
+| `tbc-audit-mid` | 390×800 (phone) | light | `rgb(247, 248, 253)` | not separately re-sampled; matches the desktop-light control | 1.0 (see note) |
+
+**Note on the light-theme "white-pixel fraction":** the light theme's own `--background` token
+(`oklch(0.98 0.006 270)`, the same value `app/layout.tsx`'s `<body>` renders) is a near-white
+`rgb(247, 248, 253)` — the decoder's blunt `>245`-per-channel threshold flags it as "white," which is
+why the fraction reads 1.0 in light mode. The result that actually matters is the **control**
+column: a second clip taken 40px above/below/around the slot (entirely outside the reserved box, over
+ordinary page content) sampled the exact same `rgb(247, 248, 253)` at every point, inside and outside
+the box, in both a coarse grid and a dense per-pixel scan. The ad box is not a distinguishable
+rectangle against the page — it is the page's own background, because the cover renders with the
+same `bg-background` token — which is the actual claim this evidence needs to support; a literal
+Google-served `#FFFFFF` iframe background would not have matched the light theme's `rgb(247, 248,
+253)` this exactly. Every desktop and phone reading, dark and light, was uniform across the whole
+sampled clip (0% variance) with zero exceptions.
+
+**Reserved box size, re-confirmed unaffected by this fix** (Defect A, `249058e`, untouched by round
+3): `tbc-audit-mid` measured 728×90 at 1280px and 300×250 at 390px; `tbc-audit-end` measured 336×280
+at 1280px and 300×250 at 390px — both exactly the declared `lib/ads.ts` dimensions, both viewports,
+read live via `getBoundingClientRect()` after the round-3 edit.
+
+**Zero layout shift, re-confirmed**: the y-position of `tbc-audit-end`'s wrapper (the next reserved
+box below `tbc-audit-mid` in document order) was read via `Runtime.evaluate` at 1.5s after navigation
+and again at 13s (after `tbc-audit-mid`'s `data-ad-status` had resolved to `"unfilled"`) —
+`2925.390625` both times, unchanged.
+
+**Gates re-run clean on the round-3 build**, captured verbatim:
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ npx tsc --noEmit
+(no output — exit 0)
+$ npm run lint
+✖ 1 problem (0 errors, 1 warning)   # app/components/CastTimeline.tsx:42 — pre-existing, unchanged
+$ npm test
+Test Files  21 passed (21)
+     Tests  285 passed (285)
+$ npm run theme-parity
+theme-parity: PASS — no parity or divergence issues found.
+$ npm run token-audit
+Total findings: 64 / Allowlisted: 64 / Non-allowlisted (gate-relevant): 0
+$ npm run protected-elements   # against production, per this plan's own WINDOWS #8 note
+25 passed, 0 failed
+```
+
+The four `ad_slot_*` event grep counts are unchanged from Task 1's evidence and round 2's re-run
+(`ad_slot_requested`/`ad_slot_blocked` = 1 literal match each, `ad_slot_filled`/`ad_slot_empty` = 0
+literal matches for the same documented ternary-call-site reason) — round 3 did not touch those
+capture call sites, only the visual gating around them.
+
+**What this round's local reproduction still cannot show** (same discipline as every other "cannot
+show" subsection in this Part — recorded, not rounded up):
+- **The actual SSO-gated preview.** The bypass secret remained unavailable this session for the same
+  reason #14 already records; this section's evidence is entirely local. #14 stays open below.
+- **The `/analyze/[reportCode]` route.** `AdSlot` is the same component on both routes with only the
+  `id` prop differing, so the fix applies identically, but the analyze page needs live WCL/Redis
+  credentials this local environment does not have (no `.env` beyond `.env.example`, confirmed) — it
+  was not independently rendered and pixel-sampled locally this round, the same limitation round 2's
+  own supplementary evidence recorded for the same reason.
+- **A genuinely filled creative.** The account is still in AdSense review; nothing here observes what
+  a real, correctly-sized creative looks like once one is served. **Closing test for both of the
+  above:** the developer's checkpoint review of the third preview below, plus 04-07's live-traffic
+  production check once the account leaves review.
+
+### Third preview deployment (Phase 4, 2026-09-21, round-3 fix)
+
+```
+$ export PATH="$HOME/.local/node20/bin:$PATH"
+$ vercel --global-config ~/.vercel-personal deploy --scope loot-list-plus --yes
+...
+  Preview         https://parseforge-r5620ivod-loot-list-plus.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1",
+    "url": "https://parseforge-r5620ivod-loot-list-plus.vercel.app",
+    "readyState": "READY",
+    "target": null
+  }
+}
+```
+
+- **Deployment id:** `dpl_2CU68Zw3yFuxq7qqMjxNeTjT1VC1`
+- **Preview URL:** `https://parseforge-r5620ivod-loot-list-plus.vercel.app`
+- **Branch/commit deployed:** `growth/phase-2-review-fixes` at `cfb6d05` (this round's occluding-cover
+  fix, on top of the second preview's `349c2e9`).
+- `"target": null` confirms this is a preview, not a production deployment. No `--prod` flag was
+  used anywhere in this task. No `promote`/`alias` command was run. No project-protection setting
+  was changed. No bypass secret was read, generated, rotated, or printed.
+- Confirmed still SSO-gated without a bypass: `curl -s -o /dev/null -w '%{http_code}'
+  .../tbc-audit` → `302`, the same redirect behavior every prior preview in this document shows.
+- **This preview has not been re-verified with the netlog/measured-box/CSP procedure** — the same
+  bypass-secret gap #14 records is unresolved this session too. The developer checkpoint below is
+  this round's verification path instead: a first-hand look at the actual preview, which needs no
+  bypass secret for a human using a normal browser.
