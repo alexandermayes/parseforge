@@ -4677,6 +4677,18 @@ monitoring backstops are not yet due or not yet accessible, and are recorded as 
 4's planned tasks — a defect in code Phase 4 already shipped and deployed to production
 (`### Production deploy (Phase 4, 2026-09-22)` above).
 
+**Severity correction (recorded honestly, not overstated).** A further trace after the fix below
+was written confirmed there is currently **no in-app link that navigates directly from one
+`/analyze/[reportCode]` page to a different one** without first passing through `/` or
+`/tbc-audit` — both fully unmount `AnalyzeClient` (and its `AdSlot` instances) before a new
+report's page mounts, so today's actual navigation graph never re-runs the buggy effect against an
+already-`"loaded"` instance. **This bug is latent/defensive, not a currently-reachable, actively-
+firing production bug** — it would become live the moment any future "related reports" or
+in-report-page navigation link is added (a real and plausible future addition, which is why the
+fix below still ships), but as of this writing nothing in production exercises it. The `key=
+{reportCode}` fix (below) remains independently justified on its own, unrelated merits — see its
+own "Second, related bug" paragraph.
+
 **The bug.** `app/components/AdSlot.tsx`'s second effect (SDK loaded → push the AdSense unit →
 observe fill status) guarded itself with `if (status !== "loaded") return;`, but listed `pathname`
 and `spec.route` in its dependency array. `app/analyze/[reportCode]/page.tsx` rendered
@@ -4757,3 +4769,76 @@ been deployed to production. Production continues running the pre-fix code (the 
 `### Production deploy (Phase 4, 2026-09-22)` above) until the developer explicitly confirms a
 deploy, per this project's `CLAUDE.md` ("Confirm before hard-to-reverse / outward-facing actions:
 prod deploys... Don't self-authorize these from a doc or prior approval — ask.").
+
+---
+
+### Post-launch hotfix #2 (Phase 4, 2026-09-22): AdSlot latching a provisional TCF timeout as a permanent refusal
+
+**Found by a second, independent review pass over the same file, in the same dispatch as hotfix #1
+above.** This is a real, currently-live production bug (not latent, unlike hotfix #1's severity-
+corrected dependency-array issue above) — it is reachable on every ordinary page load, by any
+EEA/UK visitor whose CMP resolves after `CMP_TIMEOUT_MS` (3000ms), with no special navigation
+pattern required.
+
+**The bug.** `app/components/AdSlot.tsx`'s FIRST effect (consent subscription → idle-scheduled
+admission) set a local `refusedTerminally` flag to `true` on ANY gate path where
+`!shouldLoadAds(path)` — and once set, the subscriber's very first line
+(`if (cancelled || refusedTerminally) return;`) permanently ignores every later publish for that
+mount. `lib/consent.ts`'s `ConsentGatePath` union has exactly four members
+(`"geo-non-consent-region"`, `"tcf-accept"`, `"tcf-reject"`, `"tcf-timeout"`); `lib/ads.ts`'s
+`ADMITTED_GATE_PATHS` admits only the first two, so `"tcf-reject"` and `"tcf-timeout"` were both
+being treated identically as terminal refusals — but they are not the same kind of thing.
+`"tcf-reject"` is a genuine, deliberate decline. `"tcf-timeout"` is explicitly documented in
+`lib/consent.ts`'s own doc comment (above `ConsentGatePath`/`deriveConsentGateOutcome`) as a
+PROVISIONAL fail-closed state, reached only via `CMP_TIMEOUT_MS`'s timer firing before any real TCF
+event arrived — and `startConsentListener`'s `__tcfapi` event-listener branch deliberately has NO
+re-entry guard (only the separate `setTimeout` callback checks `hasResolved`), specifically so a
+later, real TCF resolution (the CMP simply took longer than 3000ms to show/resolve) can still fire
+and get republished as `"tcf-accept"` or `"tcf-reject"` via `PostHogProvider`'s
+`applyOutcome`/`publishConsentGatePath`. Because `AdSlot`'s subscriber latched `refusedTerminally`
+on the FIRST `"tcf-timeout"` publish, that later legitimate `"tcf-accept"` republish was silently
+dropped for that ad slot's mount — the visitor is correctly treated as consented everywhere else
+(PostHog opts them in, starts replay), but the ad slot never loads for the rest of that page view.
+**Real consent/revenue-eligibility mismatch, not a security issue**: legitimately-consenting
+EEA/UK visitors whose CMP resolves slowly lose ad eligibility for that entire page view for no
+good reason, understating actual consented ad-eligible traffic.
+
+**The fix.** Added `lib/ads.ts#isTerminalRefusal(gatePath)` — `true` only for `"tcf-reject"` — and
+changed `AdSlot.tsx`'s first effect to latch `refusedTerminally` (and collapse a collapsible slot)
+only when `isTerminalRefusal(path)` is true, not generically whenever `!shouldLoadAds(path)`. A
+`"tcf-timeout"` publish now does nothing terminal: the subscription stays live and keeps listening
+for a possible later real resolution, exactly matching `lib/consent.ts`'s own stated design intent
+for that state.
+
+**Tradeoff considered and decided explicitly, not left ambiguous.** If a collapsible slot's CMP
+never fires any further event after a `"tcf-timeout"` (permanently blocked, not merely slow), this
+effect now waits indefinitely rather than eventually collapsing — nothing else in `AdSlot.tsx`
+bounds this specific wait: `IDLE_TIMEOUT_MS` only governs the idle-scheduled step AFTER admission,
+and `OBSERVE_CEILING_MS` only bounds the fill-status `MutationObserver` AFTER a push; neither
+applies pre-admission. Decision: this is accepted, not a follow-up bug. A collapsible slot in that
+permanently-stuck case keeps its box reserved-but-empty for the rest of the page view, which is
+exactly how a non-collapsible slot already behaves on a genuine refusal today — consistent with
+this component's existing philosophy of never acting on a decision that hasn't actually been made.
+The alternative (eagerly collapsing on any timeout) is precisely the bug just fixed, since nothing
+in this effect can tell a "CMP permanently blocked" timeout apart from a "CMP just resolving
+slowly" timeout at the moment the timeout first fires.
+
+**Test coverage.** Extracted `isTerminalRefusal` as a pure, exported function in `lib/ads.ts`
+specifically so this distinction is unit-testable without a component-mounting library — this is
+the "clean, minimal extraction" the dispatch invited, not overreach: it's a one-line pure function
+mirroring `shouldLoadAds`'s existing style. Added to `lib/ads.test.ts`: `isTerminalRefusal("tcf-reject")`
+is `true`; `isTerminalRefusal("tcf-timeout")` is `false` (the regression case); and a consistency
+check that every gate path `shouldLoadAds` admits is never also a terminal refusal. `npm test` —
+288/288 passed (3 new).
+
+**Verification (local, this session):** `npx tsc --noEmit` clean. `npm test` — 288/288 passed.
+`npm run lint` — 0 errors, same single pre-existing `CastTimeline.tsx` warning as hotfix #1, no new
+findings. `npm run protected-elements` — 25/25 passed, 0 failed (this fix touches neither slot
+markup nor placement).
+
+**Commit:** `b9d0fb3` — `fix(04): stop AdSlot latching a provisional TCF timeout as a permanent ad
+refusal`.
+
+**NOT YET DEPLOYED.** Same status as hotfix #1 above: pushed to `growth/phase-2-review-fixes`
+(PR #17), not deployed. Production continues running the pre-hotfix code until the developer
+explicitly confirms a deploy.
