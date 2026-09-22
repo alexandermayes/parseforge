@@ -4,6 +4,7 @@ import {
   AD_SLOTS,
   UNCONFIGURED_UNIT,
   shouldLoadAds,
+  isTerminalRefusal,
   adsConfigured,
   normalizeRoute,
 } from "./ads";
@@ -41,6 +42,28 @@ describe("shouldLoadAds", () => {
       const outcome = deriveConsentGateOutcome(isConsentRegion, tcfAction);
       expect(outcome).not.toBeNull();
       expect(shouldLoadAds(outcome!.gatePath)).toBe(outcome!.optIn);
+    }
+  });
+});
+
+describe("isTerminalRefusal", () => {
+  // Regression coverage for the AdSlot.tsx bug where `refusedTerminally` was
+  // latched on ANY non-admitted gate path, silently dropping a later
+  // legitimate "tcf-accept" republish that supersedes a merely-slow CMP's
+  // "tcf-timeout". Only "tcf-reject" is a genuine, deliberate decline.
+  it("treats tcf-reject as a genuine, terminal refusal", () => {
+    expect(isTerminalRefusal("tcf-reject")).toBe(true);
+  });
+
+  it("does NOT treat tcf-timeout as terminal — it is provisional and may still resolve to tcf-accept", () => {
+    expect(isTerminalRefusal("tcf-timeout")).toBe(false);
+  });
+
+  it("is consistent with shouldLoadAds: every path admitted by shouldLoadAds is never a terminal refusal", () => {
+    for (const path of ["geo-non-consent-region", "tcf-accept", "tcf-reject", "tcf-timeout"] as const) {
+      if (shouldLoadAds(path)) {
+        expect(isTerminalRefusal(path)).toBe(false);
+      }
     }
   });
 });

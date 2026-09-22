@@ -93,6 +93,25 @@ export function shouldLoadAds(gatePath: ConsentGatePath | null): boolean {
 }
 
 /**
+ * Whether a non-admitted gate path represents a GENUINE, permanent refusal
+ * that a consumer may treat as terminal (stop listening / collapse a
+ * collapsible slot) — as opposed to `"tcf-timeout"`, which `lib/consent.ts`'s
+ * own doc comment on `ConsentGatePath`/`deriveConsentGateOutcome` explicitly
+ * frames as a PROVISIONAL fail-closed state reached only via
+ * `CMP_TIMEOUT_MS`'s timeout, not a decision — `startConsentListener`'s
+ * `__tcfapi` listener has no re-entry guard specifically so a real, later TCF
+ * resolution (the CMP simply took longer than the timeout) can still
+ * supersede it with a fresh publish. Only `"tcf-reject"` is a deliberate,
+ * user-made decline and may be treated as terminal. `"geo-non-consent-region"`
+ * and `"tcf-accept"` never reach a caller's "not admitted" branch at all
+ * (`shouldLoadAds` is true for both), so this function is only ever
+ * meaningfully called with `"tcf-reject"` or `"tcf-timeout"` in practice.
+ */
+export function isTerminalRefusal(gatePath: ConsentGatePath): boolean {
+  return gatePath === "tcf-reject";
+}
+
+/**
  * Whether the ads feature is switched on for this build/deploy at all —
  * the env-level gate, independent of any single slot's unit-id wiring.
  * `AdSlot` uses this alone to decide whether to reserve a slot's box, so a

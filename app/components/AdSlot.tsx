@@ -9,6 +9,7 @@ import {
   adsEnabled,
   adsConfigured,
   shouldLoadAds,
+  isTerminalRefusal,
   normalizeRoute,
   loadAdSenseScript,
   type AdSlotId,
@@ -79,12 +80,46 @@ export default function AdSlot({ id, className }: { id: AdSlotId; className?: st
       if (cancelled || refusedTerminally) return;
 
       if (!shouldLoadAds(path)) {
-        // Terminal: once refused, ignore any later re-confirmation for this
-        // mount. Collapsing is safe only for a collapsible slot (nothing
-        // below it in document order, per AD_SLOTS); a non-collapsible slot
-        // keeps its reserved box empty forever instead.
-        refusedTerminally = true;
-        if (spec.collapsible) setStatus("collapsed");
+        // `path` here is always "tcf-reject" or "tcf-timeout" — the other
+        // two ConsentGatePath values both satisfy shouldLoadAds and take the
+        // admission branch below instead. Only "tcf-reject" is a genuine,
+        // deliberate decline; "tcf-timeout" is a PROVISIONAL fail-closed
+        // state (lib/consent.ts's own doc comment on ConsentGatePath /
+        // deriveConsentGateOutcome) that a later real TCF resolution can
+        // legitimately supersede — startConsentListener's __tcfapi listener
+        // has no re-entry guard specifically so that late resolution still
+        // republishes. Latching `refusedTerminally` (and collapsing a
+        // collapsible slot) on a mere timeout would permanently drop that
+        // later legitimate "tcf-accept" for this mount — a real
+        // consent/revenue-eligibility bug, not just a missed optimization:
+        // a legitimately-consenting visitor whose CMP resolved slowly would
+        // silently lose ad eligibility for the rest of the page view even
+        // though PostHogProvider correctly treats them as opted in.
+        //
+        // So: terminal (and collapse, if collapsible) only for the genuine
+        // refusal. For "tcf-timeout", do nothing terminal — keep the
+        // subscription live and keep waiting for a possible late
+        // resolution. Tradeoff, documented rather than left ambiguous: if
+        // the CMP never fires a further event at all (permanently blocked,
+        // not merely slow), this effect now waits indefinitely — nothing
+        // else in this file bounds it (IDLE_TIMEOUT_MS only governs the
+        // idle-scheduled step AFTER admission, and OBSERVE_CEILING_MS only
+        // bounds the fill-status MutationObserver AFTER a push — neither
+        // applies pre-admission). A collapsible slot in that permanently-
+        // stuck case keeps its box reserved-but-empty for the rest of the
+        // page view instead of collapsing, matching how a non-collapsible
+        // slot already behaves on a genuine refusal (see below) — accepted
+        // as consistent with "never guess a decision that hasn't actually
+        // been made," not treated as an oversight.
+        if (isTerminalRefusal(path)) {
+          // Terminal: once genuinely refused, ignore any later
+          // re-confirmation for this mount. Collapsing is safe only for a
+          // collapsible slot (nothing below it in document order, per
+          // AD_SLOTS); a non-collapsible slot keeps its reserved box empty
+          // forever instead.
+          refusedTerminally = true;
+          if (spec.collapsible) setStatus("collapsed");
+        }
         return;
       }
 
