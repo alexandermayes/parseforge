@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Ads Live
 status: executing
-stopped_at: Completed 04-05-PLAN.md
-last_updated: "2026-09-21T19:43:00.503Z"
+stopped_at: Completed 04-06-PLAN.md
+last_updated: "2026-09-22T09:07:36.853Z"
 last_activity: 2026-09-19
 last_activity_desc: Phase 04 execution started
-state_head: a7e0e318a846791c797eed616f0f307c50f72d09
+state_head: 0fa6c75a5b5c7b9a04acd647bf9e5ddcf3d95305
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 41
+  completed_plans: 42
   percent: 44
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-19 after Phase 3)
 ## Current Position
 
 Phase: 04 (Ads Live) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-09-19 — Phase 04 execution started
 
@@ -102,6 +102,7 @@ Progress: [████░░░░░░] 44% (4/8 phases incl. 2.1; 36/36 plan
 | Phase 04 P01 | 55min | 3 tasks | 5 files |
 | Phase 04 P03 | 45min | 3 tasks | 10 files |
 | Phase 04-ads-live P05 | 45min | 3 tasks | 7 files |
+| Phase 04 P06 | 12min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -157,6 +158,8 @@ Recent decisions affecting current work:
 - [Phase 04]: checkAdSlotContainment's blanket owner-file rule (owner may never also own a data-protected element) was removed and replaced with the 15-line proximity scan alone, since AnalyzeClient.tsx legitimately owns both share-header and the two analyze slots far apart
 - [Phase 04]: NEXT_PUBLIC_ADSENSE_PUB_ID stores digits only (no ca-pub- prefix) because lib/ads.ts and AdSlot.tsx both build the ca-pub- prefix themselves
 - [Phase 04]: Auto ads OFF confirmed by the developer directly from the AdSense UI (2026-09-21); ads.txt status and the /privacy Privacy & messaging site-settings paste remain open, no code can observe either
+- [Phase 04]: [Phase 04 / 04-06] Developer confirmed the fourth preview's ad-box visual defect (box sizing then occluding-cover mismatch) fully fixed in both themes, and confirmed /privacy reads true, closing this plan
+- [Phase 04]: [Phase 04 / 04-06] Vercel automation-bypass secret briefly appeared in a diagnostic tool-call transcript during round-1 debugging (never committed); developer explicitly declined rotation when asked
 
 ### Pending Todos
 
@@ -192,6 +195,7 @@ Manual follow-ups (not todos): (1) AdSense → Privacy & messaging → European 
 - [Phase 4 dependency] RPGLogs/WCL API ToS requires approval for commercial/ads use (see `.planning/research/PARSEFORGE-RANKINGS-SPEC.md`) — send the approval request before Phase 4 ships ads.
 - [Phase 4 dependency] R0-1 approval email deferred by developer on 2026-09-21 (not sent) — 04-07's production ad deploy checkpoint stays gated until a real 'sent' row with verbatim text lands in .planning/research/rpglogs-approval-request-2026-09-19.md's Thread table. Remaining: read WCL client name from warcraftlogs.com/api/clients, fill draft, send from info@lootlistplus.com to advertising@archon.gg.
 - 04-05: AdSense ads.txt status for parseforge.gg not confirmed by developer; the Phase 1 Privacy & messaging site-settings paste of https://parseforge.gg/privacy also not confirmed — STATE.md follow-up (1) stays open. Resolve before 04-07's production ad launch.
+- [Phase 04, 04-06 carry-forward to 04-07] AdSense account approval status still "Getting ready" (not approved); ads.txt "Not found" (expected pre-deploy); production deploy of env vars not yet shipped. 04-07's production ad launch checkpoint stays gated on account approval plus the RPGLogs approval reply (R0-1, deferred by developer per 04-01).
 
 ### Quick Tasks Completed
 
@@ -216,6 +220,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T19:42:59.928Z
-Stopped at: Completed 04-05-PLAN.md
+Last session: 2026-09-22T09:07:25.403Z
+Stopped at: Completed 04-06-PLAN.md
 Resume file: None
