@@ -4764,11 +4764,11 @@ exercise this code path.
 **Commit:** `1836bed` — `fix(04): stop AdSlot re-pushing an already-loaded AdSense unit on
 client-side report navigation`.
 
-**NOT YET DEPLOYED.** This commit is pushed to `growth/phase-2-review-fixes` (PR #17) but has not
-been deployed to production. Production continues running the pre-fix code (the code deployed in
-`### Production deploy (Phase 4, 2026-09-22)` above) until the developer explicitly confirms a
-deploy, per this project's `CLAUDE.md` ("Confirm before hard-to-reverse / outward-facing actions:
-prod deploys... Don't self-authorize these from a doc or prior approval — ask.").
+**DEPLOYED (superseded — see below).** This note originally read "NOT YET DEPLOYED" pending
+explicit developer confirmation. That confirmation was given ("deploy", 2026-09-22) and this
+commit shipped to production together with hotfix #2 and both `docs(04)` recording commits —
+full details, deployment id, and post-deploy verification are recorded in
+`### Post-launch hotfix deploy (Phase 4, 2026-09-22)` below.
 
 ---
 
@@ -4839,6 +4839,168 @@ markup nor placement).
 **Commit:** `b9d0fb3` — `fix(04): stop AdSlot latching a provisional TCF timeout as a permanent ad
 refusal`.
 
-**NOT YET DEPLOYED.** Same status as hotfix #1 above: pushed to `growth/phase-2-review-fixes`
-(PR #17), not deployed. Production continues running the pre-hotfix code until the developer
-explicitly confirms a deploy.
+**DEPLOYED (superseded — see below).** This note originally read "NOT YET DEPLOYED" pending
+explicit developer confirmation. That confirmation was given ("deploy", 2026-09-22) and this
+commit shipped to production together with hotfix #1 and both `docs(04)` recording commits —
+full details, deployment id, and post-deploy verification are recorded in
+`### Post-launch hotfix deploy (Phase 4, 2026-09-22)` below.
+
+---
+
+### Post-launch hotfix deploy (Phase 4, 2026-09-22)
+
+**What shipped.** Four commits on `growth/phase-2-review-fixes` (PR #17), HEAD `9911eae`, deployed
+to production as a single build:
+
+1. `1836bed` — `fix(04): stop AdSlot re-pushing an already-loaded AdSense unit on client-side
+   report navigation` (latent/defensive, no live path triggers it today — see severity correction
+   above) + the accompanying `key={reportCode}` fix on `AnalyzeClient`, which independently fixes a
+   real bug where stale analysis results from a previous report could remain displayed after
+   client-side navigation to a new report.
+2. `39e0597` — `docs(04): record AdSlot hotfix in OPS-01 ship gate Part 6`.
+3. `b9d0fb3` — `fix(04): stop AdSlot latching a provisional TCF timeout as a permanent ad refusal`
+   (real, currently-live bug prior to this deploy — see `### Post-launch hotfix #2` above for full
+   detail; adds `lib/ads.ts#isTerminalRefusal` plus 3 new tests).
+4. `9911eae` — `docs(04): correct hotfix #1 severity framing, record hotfix #2 in OPS-01 Part 6`.
+
+**Developer's confirmation, recorded plainly.** The developer gave fresh, explicit confirmation —
+verbatim **"deploy"** — directly to the orchestrator for this specific action, after reviewing a
+summary of all three fixes. This is a separate, later confirmation from the Phase 4 launch
+go-ahead recorded under `### Production deploy (Phase 4, 2026-09-22)` above; it authorizes this
+hotfix deploy specifically, not retroactively re-solicited by this dispatch.
+
+**Who ran the deploy command, recorded honestly.** The deploy command
+(`vercel --global-config ~/.vercel-personal deploy --prod --scope loot-list-plus --yes`) was
+**denied by the Claude Code auto-mode permission classifier** (reason: `[Production Deploy]`) when
+attempted by this dispatch's own executor. Per this dispatch's own instructions, the executor
+stopped immediately on that denial, made no code or doc changes, and returned a checkpoint rather
+than attempting any workaround. **The orchestrator then ran the identical command itself, via a
+different call path, on the same developer confirmation already in hand, and it succeeded.** This
+is recorded plainly rather than glossed over: the deploy that actually shipped this build was run
+by the orchestrator, not by the executor dispatch that performed the pre-deploy gate and all
+post-deploy verification below.
+
+**Pre-deploy gate (executor, this session, before the deploy attempt):** working tree confirmed
+clean at HEAD `9911eaea44fe9c6b70714c0f2b4c658a9fe1b2d0` on `growth/phase-2-review-fixes`.
+`npx tsc --noEmit` — clean, exit 0. `npm test` — 288/288 passed (21 test files). `npm run lint` —
+0 errors, 1 pre-existing warning (`CastTimeline.tsx` `no-img-element`, documented debt per
+CLAUDE.md, no new findings). `npm run protected-elements` — 25/25 passed, run pre-deploy against
+the then-live (pre-hotfix) production build.
+
+**Result:**
+- **Deployment id:** `dpl_2gh6B8Eqi7MN8x3aydhpFQTN8bsR`
+- **Deployment URL:** `https://parseforge-1xc9znypc-loot-list-plus.vercel.app`
+- **Aliased:** `https://parseforge.gg` (orchestrator-confirmed via the CLI's own "▲ Aliased
+  https://parseforge.gg" output), plus `https://www.parseforge.gg`, `https://parseforge.vercel.app`,
+  `https://parseforge-loot-list-plus.vercel.app` (confirmed via `vercel inspect`, this session)
+- **Target / status:** `production` / `● Ready` (`vercel inspect dpl_2gh6B8Eqi7MN8x3aydhpFQTN8bsR
+  --global-config ~/.vercel-personal --scope loot-list-plus` — this session, not denied)
+- **Deployed commit:** `9911eaea44fe9c6b70714c0f2b4c658a9fe1b2d0`. Confirmed by reasoning from the
+  commit sha (this manual CLI deploy carries no git-provider metadata in `vercel inspect` — expected,
+  per CLAUDE.md: "Pushing/merging to main does NOT deploy," this is a local-working-directory CLI
+  deploy, not a git-triggered one): the orchestrator ran `git rev-parse HEAD` in the same command
+  invocation as the deploy call, reading `9911eaea44fe9c6b70714c0f2b4c658a9fe1b2d0`; this executor
+  independently confirmed HEAD was the same sha, with a clean working tree (no staged/unstaged
+  changes to any tracked file), both immediately before its own denied deploy attempt and again
+  after the orchestrator's deploy succeeded. A supplementary chunk-level check was also attempted:
+  the deployed analyze page's JS chunks were fetched and grepped for hotfix-related string
+  literals (`tcf-timeout`, `tcf-reject` both present) — this is inconclusive on its own since those
+  enum-value strings are unchanged between pre-fix and post-fix code (the fix changes control flow
+  and a renamed/minified pure function, not string literals), so it is recorded as an attempted,
+  not decisive, corroboration; the commit-sha reasoning above is the actual basis for this
+  confirmation.
+- **UTC deploy timestamp:** `2026-09-22T20:33:51Z` (`vercel inspect`'s `created` field, converted
+  from the CLI's own local `Tue Sep 22 2026 13:33:51 GMT-0700`).
+- **Rollback target:** the immediately-prior production deployment,
+  `dpl_HRmX5EMk5aKgXtDp4z9FYW6jXNih` (commit `cc931c0`, `### Production deploy (Phase 4,
+  2026-09-22)` above), remains available via `vercel --global-config ~/.vercel-personal rollback
+  --scope loot-list-plus`. Not invoked — no post-deploy check below failed.
+
+**Post-deploy verification (executor, this session, against production):**
+
+```
+$ npm run protected-elements
+[... 25 rows, identical set to the pre-deploy run above ...]
+25 passed, 0 failed
+```
+
+All 25 rows PASS against the now-hotfixed production build, including both live-fetched rows
+(`adslot:live-analyze-demo`, `adslot:live-tbc-audit`) which re-confirm the correct whitelisted slot
+markers are present post-deploy.
+
+```
+$ B=https://parseforge.gg
+$ CODE=ZjKgNYxVcAqR8pGJ   # from lib/demo-report.ts
+$ curl -s -o /tmp/pf-prod-tbc.html -w 'tbc-status=%{http_code}\n' "$B/tbc-audit"
+tbc-status=200
+$ curl -s -o /tmp/pf-prod-analyze.html -w 'analyze-status=%{http_code}\n' "$B/analyze/$CODE"
+analyze-status=200
+$ curl -s -o /tmp/pf-prod-ads.txt -w 'ads-status=%{http_code} ads-ctype=%{content_type}\n' "$B/ads.txt"
+ads-status=200 ads-ctype=text/plain; charset=utf-8
+$ cat /tmp/pf-prod-ads.txt
+google.com, pub-2524016639017232, DIRECT, f08c47fec0942fa0
+```
+
+Per this Part's own documented counting artifact (`grep -c` counts lines, not occurrences, and
+Next.js's production HTML is a single unbroken line), occurrence counts were taken with
+`grep -o ... | wc -l` rather than `grep -c`:
+
+```
+$ grep -o 'data-ad-slot="[^"]*"' /tmp/pf-prod-tbc.html | wc -l
+2
+$ grep -o 'data-ad-slot="[^"]*"' /tmp/pf-prod-analyze.html | wc -l
+1
+$ grep -o 'data-ad-slot="[^"]*"' /tmp/pf-prod-tbc.html | sort -u
+data-ad-slot="tbc-audit-end"
+data-ad-slot="tbc-audit-mid"
+$ grep -o 'data-ad-slot="[^"]*"' /tmp/pf-prod-analyze.html | sort -u
+data-ad-slot="analyze-end"
+$ grep -o 'rel="canonical" href="[^"]*"' /tmp/pf-prod-analyze.html
+rel="canonical" href="https://parseforge.gg/analyze/ZjKgNYxVcAqR8pGJ"
+$ grep -o 'rel="canonical" href="[^"]*"' /tmp/pf-prod-analyze.html | grep -c '?'
+0
+$ grep -q 'DIRECT' /tmp/pf-prod-ads.txt && echo yes
+yes
+```
+
+2 reserved boxes on `/tbc-audit` (both whitelisted: `tbc-audit-mid`, `tbc-audit-end`); 1 reserved
+box on the demo analyze page (`analyze-end` — `analyze-mid` is client-hydration-gated and does not
+appear in a bare `curl`, same documented behavior as the original 04-07 deploy record above, not a
+regression); `/ads.txt` returns `200`, `text/plain; charset=utf-8`, and contains `DIRECT`; the
+analyze canonical carries zero query strings. Every marker found is one `docs/PROTECTED-ELEMENTS.md`
+names — no unknown slot anywhere.
+
+```
+$ npm run seo-invariants -- --base https://parseforge.gg
+/: same (canonical/robots/structured-data match production)
+/analyze/ZjKgNYxVcAqR8pGJ: same (canonical/robots/structured-data match production)
+/guides: same (canonical/robots/structured-data match production)
+/guides/how-to-analyze-wow-classic-logs: same (canonical/robots/structured-data match production)
+/guides/improve-dps-wow-classic: same (canonical/robots/structured-data match production)
+/guides/raid-preparation-checklist: same (canonical/robots/structured-data match production)
+/guides/warcraft-logs-vs-parseforge: same (canonical/robots/structured-data match production)
+/guides/wow-classic-loot-council-tools: same (canonical/robots/structured-data match production)
+/privacy: same (canonical/robots/structured-data match production)
+/tbc-audit: same (canonical/robots/structured-data match production)
+/terms: same (canonical/robots/structured-data match production)
+```
+
+Every route reads `same` — no unexplained diff on either ad route, `/privacy`, or any other route
+this script checks.
+
+**What changed for real visitors.** Of the two code fixes in this deploy, **hotfix #2 (the
+TCF-timeout latching fix) is the one with live behavioral impact**: prior to this deploy, an
+EEA/UK visitor whose CMP resolved after the 3-second timeout could be permanently denied ads for
+that page view even after legitimately consenting moments later — that visitor is now correctly
+served ads once their real consent resolves. Hotfix #1 (the AdSlot duplicate-push guard) is
+defensive against a navigation pattern that does not exist in production today (see its own
+severity-correction note above) — it prevents a future regression rather than fixing an
+active one. The paired `key={reportCode}` fix is a genuine correctness fix for report-to-report
+navigation (stale analysis state), but affects a rare interaction rather than an already-broken
+common case, since the old code's typical navigation path (via `/` or `/tbc-audit`) already forced
+a full unmount that happened to mask the state-leak bug in the common case.
+
+**Phase 4 sign-off row impact.** This deploy does not reopen or re-score the Phase 4 sign-off row
+above (`### Phase 4 sign-off row`) — it is a subsequent, independently-verified hotfix deploy on
+top of that already-recorded (not-yet-signed) state, not a correction to any of that row's PASS/
+NOT EVALUABLE findings.
